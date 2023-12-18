@@ -1,0 +1,15 @@
+{
+	"name": "samplekit-monorepo",
+	"description": "Monorepo for SampleKit",
+	"private": true,
+	"type": "module",
+	"author": "Tim Cohen <contact@timcohen.dev>",
+	"scripts": {},
+	"devDependencies": {},
+	"dependencies": {},
+	"packageManager": "pnpm@8.9.0",
+	"engines": {
+		"node": ">=18.13",
+		"pnpm": "^8.0.0"
+	}
+}
