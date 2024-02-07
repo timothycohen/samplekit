@@ -4,8 +4,8 @@
 
 	export let mfa: VerifierProps['mfa'];
 	export let passkeyAction: 'login' | 'confirmUser';
-	export let verifySMSTokenAction: string;
-	export let verifyAuthenticatorTokenAction: string;
+	export let verifySMSTokenAction: App.Form.Action;
+	export let verifyAuthenticatorTokenAction: App.Form.Action;
 	export let onPasskeyFinished: () => void;
 
 	let selectedMFAMethod: DB.MFAs.Kind | '' = '';

@@ -4,7 +4,7 @@
 	import { InputMessage } from '$lib/components';
 
 	export let email: string;
-	export let action: string;
+	export let action: App.Form.Action;
 
 	$: submitted = false || !!$page.url.searchParams.get('success');
 </script>
