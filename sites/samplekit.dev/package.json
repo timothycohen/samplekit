@@ -25,7 +25,10 @@
 		"ses:update_templates": "env-cmd -f .env._production node ./scripts/email/updateTemplates.js"
 	},
 	"dependencies": {
+		"@aws-sdk/client-cloudfront": "^3.474.0",
+		"@aws-sdk/client-s3": "^3.474.0",
 		"@aws-sdk/client-ses": "^3.474.0",
+		"@aws-sdk/s3-request-presigner": "^3.474.0",
 		"@samplekit/auth": "workspace:^",
 		"body-scroll-lock-upgrade": "^1.1.0",
 		"drizzle-orm": "^0.29.1",
