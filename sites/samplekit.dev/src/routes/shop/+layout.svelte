@@ -3,16 +3,18 @@
 	import { onMount } from 'svelte';
 	import { beforeNavigate, afterNavigate } from '$app/navigation';
 	import { page } from '$app/stores';
-	import { DesktopNav, Sidebar, MobileNav } from '$routes/shop/components';
+	import { DesktopNav, Sidebar, MobileNav, Cart } from '$routes/shop/components';
 	import {
 		createSearchAndFilterService,
 		useSearchAndFilterService,
 		createNavService,
 		useNavService,
+		createCartService,
 	} from '$routes/shop/services';
 
 	createSearchAndFilterService();
 	createNavService();
+	createCartService();
 
 	const { reset, pullFromUrl } = useSearchAndFilterService();
 	const { closeOnNavListener } = useNavService();
@@ -72,6 +74,7 @@
 	</div>
 
 	<Sidebar collections={data.collections} />
+	<Cart />
 
 	<slot />
 </div>
