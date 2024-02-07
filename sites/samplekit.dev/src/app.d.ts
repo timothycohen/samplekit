@@ -62,7 +62,8 @@ declare global {
 				| `/mfa/update/remove/${DB.MFAs.Kind}?/removeMFAWithSeshConf`
 				| `/password-reset?/emailPassReset`
 				| `/password-update/${string}?/createNewPassFromPwReset`
-				| `/account/profile?/updateName`;
+				| `/account/profile?/updateName`
+				| '/shop/collections/all';
 		}
 	}
 
