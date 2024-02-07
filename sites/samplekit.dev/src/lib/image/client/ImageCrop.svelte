@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { ImagePlus, XCircle } from 'lucide-svelte';
+	import { ImagePlus, Trash2, XCircle } from 'lucide-svelte';
 	import { CropWindow, defaultValue, defaultOptions, type CropValue } from '$lib/image/client';
 
 	export let url: string;
@@ -7,6 +7,7 @@
 	export let onSave: (value: CropValue) => void;
 	export let onNew: (() => void) | undefined = undefined;
 	export let onCancel: (() => void) | undefined = undefined;
+	export let onDelete: (() => void) | undefined = undefined;
 	export let crop: CropValue | undefined = undefined;
 	let value = { ...(crop || defaultValue) };
 </script>
@@ -30,6 +31,14 @@
 			</button>
 		{/if}
 	</div>
+
+	{#if onDelete}
+		<div class="rounded-tr-card absolute right-0 top-0">
+			<button {disabled} class="mr-3 mt-3 text-white" on:click|stopPropagation={onDelete} aria-label="Delete">
+				<Trash2 />
+			</button>
+		</div>
+	{/if}
 
 	<div class="absolute bottom-0 right-0">
 		<button
