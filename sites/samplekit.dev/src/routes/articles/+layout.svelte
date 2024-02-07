@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { Changelog, DateLine, LiveDemo, PrevNext, Series, TOC } from '$lib/articles/components';
+	import { Changelog, DateLine, PrevNext, Series, TOC } from '$lib/articles/components';
+	import { TabPanels } from '$lib/components';
 	import { pluralize } from '$lib/utils/common';
 
 	export let data;
@@ -28,7 +29,7 @@
 	{#key article.title}
 		<article>
 			<div class="mb-6-9">
-				{#if article.imgLg && !data.article.mainDemo}
+				{#if article.imgLg && !data.article.demos?.main}
 					<img
 						class="rounded-card mb-6 aspect-video h-auto w-full object-cover object-top"
 						src={article.imgLg}
@@ -56,14 +57,14 @@
 					</p>
 				</hgroup>
 
-				{#if data.article.mainDemo}
+				{#if data.article.demos?.main}
 					<span class="prose prose-radix prose-lg">
 						<h2 class="my-4" id="interactive-demo" data-auto-slug-anchor-position="prepend" data-auto-slug="">
 							<a href="#interactive-demo" aria-hidden="true" tabindex="-1" data-auto-slug-anchor="">#</a>
 							Interactive Demo
 						</h2>
 					</span>
-					<LiveDemo files={data.article.mainDemo} />
+					<TabPanels files={data.article.demos.main} />
 				{/if}
 			</div>
 

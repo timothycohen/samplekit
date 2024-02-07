@@ -4,7 +4,7 @@ import {
 	type RawFrontMatter,
 	type LoadedFrontMatter,
 } from '$lib/articles/schema';
-import type { ArticleSlug } from './types';
+import type { ArticleSlug } from '../types';
 
 /** @throws Error */
 const postData: Record<string, Promise<LoadedFrontMatter>> = (() => {
