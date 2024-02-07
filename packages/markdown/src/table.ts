@@ -1,6 +1,3 @@
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-nocheck
-
 import { marked } from 'marked';
 
 /**
@@ -41,16 +38,17 @@ import { marked } from 'marked';
  *   </table>
  * </div>
  * ```
- *
- * @param {Object} logger
- * @param {(message: string) => void} logger.debug
- * @param {(message: string) => void} logger.error
- * @param {(message: string) => void} logger.warn
- * @param {(filename: string) => boolean} include
  */
-export function preprocessTable(logger, include) {
+
+export function preprocessTable({
+	include,
+	logger,
+}: {
+	logger?: { error: (s: string) => void; debug: (s: string) => void };
+	include?: (filename: string) => boolean;
+} = {}) {
 	return {
-		markup({ content, filename }) {
+		markup({ content, filename }: { content: string; filename: string }): { code: string } | null {
 			if (include && !include(filename)) return null;
 			const slug = (() => {
 				const a = filename.split('/');
@@ -95,7 +93,7 @@ export function preprocessTable(logger, include) {
 	};
 }
 
-const mdTableToRawHtml = (rawMarkdown) => {
-	const tableHTML = marked(rawMarkdown, { sanitize: true });
+export const mdTableToRawHtml = (rawMarkdown: string): string => {
+	const tableHTML = marked(rawMarkdown);
 	return `<div class="table-wrapper">${tableHTML}</div>`;
 };
