@@ -16,10 +16,14 @@ const s3 = new S3Client({
 	credentials: { accessKeyId: IAM_ACCESS_KEY_ID, secretAccessKey: IAM_SECRET_ACCESS_KEY },
 });
 
-/** Default contentLength = 5MB */
-export const generateS3UploadPost = async (
-	{ contentLength }: { contentLength: number } = { contentLength: 1024 * 1024 * 5 },
-) => {
+/**
+ * Generates a presigned URL and POST policy for uploading files to an S3 bucket.
+ *
+ * @param {number} [options.maxContentLength=5242880] - (default 1024 * 1024 * 5: 5MB).
+ * @param {number} [options.expireSeconds=60] - (default 60: 60sec).
+ *
+ */
+export const generateS3UploadPost = async (a?: { maxContentLength?: number; expireSeconds?: number }) => {
 	try {
 		const rawBytes = crypto.randomBytes(16);
 		const key = rawBytes.toString('base64url');
@@ -27,8 +31,8 @@ export const generateS3UploadPost = async (
 		const res = await createPresignedPost(s3, {
 			Bucket: S3_BUCKET_NAME,
 			Key: key,
-			Expires: 60,
-			Conditions: [['content-length-range', 0, contentLength]],
+			Expires: a?.expireSeconds ?? 60,
+			Conditions: [['content-length-range', 0, a?.maxContentLength ?? 1024 * 1024 * 5]],
 		});
 
 		return {

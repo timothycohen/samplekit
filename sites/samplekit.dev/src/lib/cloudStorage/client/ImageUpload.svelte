@@ -19,17 +19,16 @@
 	export let cropValue: CropValue;
 	export let useCropWindow = false;
 
-	export let getUploadUrl: () => Promise<Result<SvelteGeneric & { uploadUrl: string; objectUrl: string }>>;
+	export let getUploadUrl: () => Promise<Result<SvelteGeneric & { uploadUrl: string }>>;
 
 	export let upload: (
-		a: SvelteGeneric & {
+		a: SvelteGeneric & { uploadUrl: string } & {
 			file: File;
-			uploadUrl: string;
 			uploadProgress?: { scale?: number | undefined; tweened?: Tweened<number> | undefined } | undefined;
 		},
 	) => UploaderRes;
 
-	export let saveToDb: (a: { objectUrl: string; crop: ImgCrop }) => Promise<Result<{ savedImg: CroppedImg | null }>>;
+	export let saveToDb: (a: { crop: ImgCrop }) => Promise<Result<{ savedImg: CroppedImg | null }>>;
 
 	export let onNewImg: (newImg: CroppedImg | null) => void;
 	export let onError: (
@@ -88,10 +87,7 @@
 		for (let i = 0; i < 10; i++) {
 			setTimeout(() => state === 'save_to_db' && uploadProgress.update((v) => Math.min(v + 1, 100)), 20 * i);
 		}
-		const { data: savedImgData, error: dbSaveError } = await saveToDb({
-			crop: cropValue,
-			objectUrl: getUrlData.objectUrl,
-		});
+		const { data: savedImgData, error: dbSaveError } = await saveToDb({ crop: cropValue });
 		uploadProgress.set(100);
 		if (dbSaveError) return handleError({ state: 'db_saving', error: dbSaveError });
 
