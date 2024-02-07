@@ -21,7 +21,7 @@ const escapeSvelte = (code) => {
 
 const getHighlightLines = (rawCode) => {
 	const highlightLines = [];
-	const strippedCode = rawCode.replace(/^\/\/\/\s*highlight:(.*)\s*\n/m, (_, group) => {
+	const strippedCode = rawCode.replaceAll('\t', '  ').replace(/^\/\/\/\s*highlight:(.*)\s*\n/m, (_, group) => {
 		group
 			.trim()
 			.split(',')
@@ -74,6 +74,34 @@ const createThemedCodeHtml = ({ scheme, theme, code, lang, highlightLines }) => 
 	});
 };
 
+const parseAndRemoveWrapper = (rawMarkdown) => {
+	rawMarkdown = rawMarkdown.trim();
+	const lines = rawMarkdown.split('\n');
+	if (!lines.length) return { error: new Error('Markdown file is empty') };
+
+	const startsWith = lines[0].startsWith('```') ? '```' : lines[0].startsWith('~~~') ? '~~~' : null;
+	if (!startsWith) return { error: new Error('Markdown file is not a codeblock') };
+
+	let lang;
+	if (startsWith === '```') {
+		lang = lines[0].replace('```', '').trim();
+		lines.splice(0, 1);
+	} else if (startsWith === '~~~') {
+		lang = lines[0].replace('~~~', '').trim();
+		lines.splice(0, 1);
+	}
+	if (!mdLanguages.includes(lang)) return { error: new Error(`Language ${lang} not loaded.`) };
+
+	while (lines.length) {
+		const lastLine = lines[lines.length - 1].trim();
+		if (lastLine === '' || lastLine === startsWith) lines.pop();
+		else break;
+	}
+
+	const rawCode = lines.join('\n');
+	return { rawCode, lang };
+};
+
 /**
  *
  * Markdown must be composed as
@@ -93,28 +121,7 @@ const createThemedCodeHtml = ({ scheme, theme, code, lang, highlightLines }) => 
  *
  * ///highlight:2,4-10
  */
-const mdCodeBlockToRawHtml = (rawMarkdown) => {
-	rawMarkdown = rawMarkdown.trim();
-	const lines = rawMarkdown.split('\n');
-	if (!lines.length) return { error: new Error('Markdown file is empty') };
-
-	if (!lines[0].startsWith('```')) {
-		return { error: new Error(`Markdown file does not start with code block: ${lines[0]}`) };
-	}
-	const lang = lines[0].replace('```', '').trim();
-	if (!mdLanguages.includes(lang)) return { error: new Error(`Language ${lang} not loaded.`) };
-
-	// eslint-disable-next-line no-constant-condition
-	while (true) {
-		if (!lines.length) break;
-		const lastLine = lines[lines.length - 1].trim();
-		if (lastLine === '' || lastLine === '```') lines.pop();
-		else break;
-	}
-
-	lines.splice(0, 1);
-	const rawCode = lines.join('\n').replaceAll('\t', '  ');
-
+export const mdCodeBlockToRawHtml = ({ rawCode, lang }) => {
 	try {
 		const { strippedCode: code, highlightLines } = getHighlightLines(rawCode);
 		const light = createThemedCodeHtml({ code, lang, highlightLines, scheme: 'light', theme: 'rose-pine-dawn' });
@@ -183,15 +190,24 @@ export function preprocessCodeblock(logger, include) {
 				return a[a.length - 2];
 			})();
 
-			const langRegex = new RegExp('```(' + mdLanguages.join('|') + ')');
-			const endMarker = '```';
+			const delimiters = [
+				{ startRegex: new RegExp('```(' + mdLanguages.join('|') + ')'), endMarker: '```' },
+				{ startRegex: new RegExp('~~~(' + mdLanguages.join('|') + ')'), endMarker: '~~~' },
+			];
 
 			let resultContent = content;
-			let startMatch = langRegex.exec(resultContent);
+			let { startRegex, endMarker } = delimiters.pop();
+			let startMatch = startRegex.exec(resultContent);
 
 			let count = 0;
 
-			while (startMatch) {
+			while (startMatch || delimiters.length) {
+				if (!startMatch) {
+					({ startRegex, endMarker } = delimiters.pop());
+					startMatch = startRegex.exec(resultContent);
+					continue;
+				}
+
 				count++;
 
 				const startIdx = startMatch.index;
@@ -204,23 +220,27 @@ export function preprocessCodeblock(logger, include) {
 					return { code: resultContent };
 				}
 
-				const extractedContent = resultContent.substring(startIdx, endIdx + endMarker.length);
-
 				const before = resultContent.substring(0, startIdx);
+				const extractedContentWithWrapper = resultContent.substring(startIdx, endIdx + endMarker.length);
+				const after = resultContent.substring(endIdx + endMarker.length);
+				let processedContent = '';
 
-				let { data: processedContent, error } = mdCodeBlockToRawHtml(extractedContent);
-				if (error) {
+				const { rawCode, lang, error: codeProcessError } = parseAndRemoveWrapper(extractedContentWithWrapper);
+				let highlightError;
+				if (!codeProcessError) {
+					const { data, error } = mdCodeBlockToRawHtml({ rawCode, lang });
+					if (data) processedContent = data;
+					else if (error) highlightError = error;
+				}
+
+				if (codeProcessError || highlightError) {
 					logger?.warn(
 						`[PREPROCESS] | ${slug} | Codeblock | Warning | Unable to process at start ${startIdx} count ${count}. Skipping.`,
 					);
-					processedContent = '';
 				}
 
-				const after = resultContent.substring(endIdx + endMarker.length);
-
 				resultContent = before + processedContent + after;
-
-				startMatch = langRegex.exec(resultContent);
+				startMatch = startRegex.exec(resultContent);
 			}
 
 			logger?.debug(`[PREPROCESS] | ${slug} | Codeblock | Success | { count: ${count} } }`);

@@ -3,20 +3,19 @@ import {
 	type ProcessedFrontMatter,
 	type RawFrontMatter,
 	type LoadedFrontMatter,
-} from '../schema';
+} from '$lib/articles/schema';
+import type { ArticleSlug } from './types';
 
 /** @throws Error */
 const postData: Record<string, Promise<LoadedFrontMatter>> = (() => {
-	const modules = Object.entries(import.meta.glob('/src/routes/articles/**/data.ts')) as [
+	const dataModules = Object.entries(import.meta.glob('/src/routes/articles/**/meta.data.ts')) as [
 		string,
 		() => Promise<{ default: RawFrontMatter }>,
 	][];
 
-	return modules.reduce<Record<string, Promise<LoadedFrontMatter>>>((acc, [url, load]) => {
-		const slug = (() => {
-			const a = url.split('/');
-			return a[a.length - 2]!;
-		})();
+	return dataModules.reduce<Record<string, Promise<LoadedFrontMatter>>>((acc, [url, load]) => {
+		const a = url.replace('/src/routes/articles/', '').split('/');
+		const slug = a.splice(0, 2)[0]! as ArticleSlug;
 		const frontMatter = load()
 			.then((loaded) => loaded.default)
 			.then((rawData) => {
@@ -110,8 +109,15 @@ function addPrevNextLinks<T extends { articleSlug: string; title: string }>(
 /**
  * .svx files are first processed by transforming markdown code and tables into valid html – see svelte.config.js
  *
- * in articles/load/common, all article/*\/data.ts files are imported and transformed from RawFrontMatter into ProcessedFrontMatter
+ * in articles/load/common, all meta.article/*\/data.ts files are imported and transformed from RawFrontMatter into ProcessedFrontMatter
  *
+ * in articles/load/server, all article/*\live-demo/* files are imported as raw strings, wrapped in small markdown code blocks, and passed to the markdown preprocessor to highlight and transform back into html
+ *
+ * in articles/load/client, all article/*\live-demo/Demo.svelte files are imported as modules, loaded and mapped to .default (the component).
+ *
+ * in articles/[some-article-slug], the LayoutServerLoad awaits the highlighter promises and passes the data to the client LayoutLoad
+ *
+ * finally, the LayoutLoad adds the LiveDemoComponent to the LayoutServerLoad data and passes it all the to TabPanels.svelte in +layout.svelte
  */
 export const allPostData: ProcessedFrontMatter[] = await Promise.all(Object.values(postData))
 	.then(expandSeries)
