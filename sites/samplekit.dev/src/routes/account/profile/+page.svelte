@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { Modal } from '$lib/components';
+	import { createConfirmationModal } from '$lib/components/layout/Modal.svelte';
 	import { ImageCrop, type CropValue } from '$lib/image/client';
 	import AvatarUploader from './AvatarUploader.svelte';
 	import ProfileCard from './ProfileCard.svelte';
@@ -10,6 +11,8 @@
 
 	let avatarEditorOpen: 'crop' | 'upload' | null = null;
 	let triggerAvatarUploadCancel = () => {};
+
+	const confirmDelAvatarModal = createConfirmationModal();
 
 	const cancel = () => {
 		if (avatarEditorOpen === 'upload') {
@@ -60,6 +63,8 @@
 	{#if avatarEditorOpen === 'crop' && data.user.avatar}
 		<ImageCrop
 			onDelete={async () => {
+				if (!(await confirmDelAvatarModal.confirm())) return;
+
 				const { error: deleteError } = await deletingAvatar.send();
 				if (deleteError) {
 					console.error(deleteError);
@@ -84,4 +89,20 @@
 			}}
 		/>
 	{/if}
+</Modal>
+
+<Modal
+	open={$confirmDelAvatarModal.open}
+	onOutclick={$confirmDelAvatarModal.onCancel}
+	onEscape={$confirmDelAvatarModal.onCancel}
+	dialogClasses="modal-content max-w-96"
+>
+	<div class="relative space-y-8">
+		<div class="text-h4 font-medium">Delete your avatar?</div>
+
+		<div class="modal-btns-wrapper justify-between">
+			<button class="btn btn-hollow" on:click={$confirmDelAvatarModal.onCancel}>Cancel</button>
+			<button class="btn btn-color-error" on:click={$confirmDelAvatarModal.onConfirm}>Delete</button>
+		</div>
+	</div>
 </Modal>
