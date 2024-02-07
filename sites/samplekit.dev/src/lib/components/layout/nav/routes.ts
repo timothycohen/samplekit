@@ -31,6 +31,12 @@ const userNavRoutes: (RouteLeaf | RouteGroup)[] = [
 		depth: 0,
 		children: [{ path: '/', text: 'Articles', depth: 1 }],
 	},
+	{
+		groupPath: '/account',
+		groupText: 'Account',
+		depth: 0,
+		children: [{ path: '/appearance', text: 'Appearance', depth: 1 }],
+	},
 ];
 
 const noUserNavRoutes: (RouteLeaf | RouteGroup)[] = [
@@ -39,6 +45,12 @@ const noUserNavRoutes: (RouteLeaf | RouteGroup)[] = [
 		groupText: 'Demos',
 		depth: 0,
 		children: [{ path: '/', text: 'Articles', depth: 1 }],
+	},
+	{
+		groupPath: '/settings',
+		groupText: 'Settings',
+		depth: 0,
+		children: [{ path: '/appearance', text: 'Appearance', depth: 1 }],
 	},
 ];
 
