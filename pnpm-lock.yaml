@@ -93,9 +93,6 @@ importers:
       '@aws-sdk/s3-presigned-post':
         specifier: ^3.478.0
         version: 3.502.0
-      '@aws-sdk/s3-request-presigner':
-        specifier: ^3.474.0
-        version: 3.502.0
       '@samplekit/auth':
         specifier: workspace:^
         version: link:../../packages/auth
@@ -930,20 +927,6 @@ packages:
       tslib: 2.6.2
     transitivePeerDependencies:
       - aws-crt
-    dev: false
-
-  /@aws-sdk/s3-request-presigner@3.502.0:
-    resolution: {integrity: sha512-3RxMt3kZ9Dq/m+QNFTNtUlzJQXRlu2iK7NBSUv2HXT0edlVE3D8W4ILY9GQzaCCtnpy9OSsv0nkSetWi65v9yQ==}
-    engines: {node: '>=14.0.0'}
-    dependencies:
-      '@aws-sdk/signature-v4-multi-region': 3.502.0
-      '@aws-sdk/types': 3.502.0
-      '@aws-sdk/util-format-url': 3.502.0
-      '@smithy/middleware-endpoint': 2.4.1
-      '@smithy/protocol-http': 3.1.1
-      '@smithy/smithy-client': 2.3.1
-      '@smithy/types': 2.9.1
-      tslib: 2.6.2
     dev: false
 
   /@aws-sdk/signature-v4-multi-region@3.502.0:

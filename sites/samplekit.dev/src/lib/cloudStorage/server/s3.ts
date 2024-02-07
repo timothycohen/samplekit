@@ -1,13 +1,6 @@
 import crypto from 'crypto';
-import {
-	DeleteObjectCommand,
-	GetObjectTaggingCommand,
-	PutObjectCommand,
-	PutObjectTaggingCommand,
-	S3Client,
-} from '@aws-sdk/client-s3';
+import { DeleteObjectCommand, GetObjectTaggingCommand, PutObjectTaggingCommand, S3Client } from '@aws-sdk/client-s3';
 import { createPresignedPost } from '@aws-sdk/s3-presigned-post';
-import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import {
 	AWS_SERVICE_REGION,
 	DB_NAME,
@@ -22,23 +15,6 @@ const s3 = new S3Client({
 	region: AWS_SERVICE_REGION,
 	credentials: { accessKeyId: IAM_ACCESS_KEY_ID, secretAccessKey: IAM_SECRET_ACCESS_KEY },
 });
-
-export const generateS3UploadURL = async () => {
-	try {
-		const rawBytes = crypto.randomBytes(16);
-		const key = rawBytes.toString('base64url');
-
-		const command = new PutObjectCommand({ Bucket: S3_BUCKET_NAME, Key: key });
-
-		return {
-			uploadUrl: await getSignedUrl(s3, command, { expiresIn: 60 }),
-			objectUrl: urlTransforms.keyToS3Url(key),
-		};
-	} catch (err) {
-		logger.error(err);
-		return null;
-	}
-};
 
 /** Default contentLength = 5MB */
 export const generateS3UploadPost = async (
