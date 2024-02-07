@@ -81,8 +81,6 @@ declare global {
 
 	module '*.svx' {
 		const component: import('svelte').ComponentType<import('svelte').SvelteComponent>;
-		export const metadata: { readingTime: { text: string; minutes: number; time: number; words: number } };
-
 		export default component;
 	}
 }

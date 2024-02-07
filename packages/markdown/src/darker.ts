@@ -1,4 +1,5 @@
-{
+// prettier-ignore
+export default {
 	"name": "darker",
 
 	"type": "dark",
