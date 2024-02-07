@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="amethyst" class="dark">
 	<head>
 		<!-- fonts -->
 		<link
@@ -47,6 +47,19 @@
 				font-style: normal;
 			}
 		</style>
+
+		<!-- JS indicator -->
+		<script>
+			document.documentElement.classList.add('js-enabled');
+		</script>
+
+		<noscript>
+			<style>
+				.js-only {
+					display: none;
+				}
+			</style>
+		</noscript>
 
 		<!-- general meta tags -->
 		<meta charset="utf-8" />
