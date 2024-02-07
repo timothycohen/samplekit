@@ -6,37 +6,70 @@ import type { Method } from './common';
 
 const stripGroup = (str: string) => str.replace(/\/\(.+\)/, '');
 
-type LocalOpts = { invalidate?: boolean; preventDuplicateRequests?: boolean; abortSignal?: AbortSignal };
+type LocalOpts = {
+	invalidate?: boolean;
+	preventDuplicateRequests?: boolean;
+	delayMs?: number;
+	timeoutMs?: number;
+	abortSignal?: AbortSignal;
+};
 type GlobalOpts = { invalidate?: true; preventDuplicateRequests?: true };
 
 const createFetcher =
-	<RequestData, ResponseData>(fetching: Writable<boolean>, method: Method) =>
+	<RequestData, ResponseData>(
+		{
+			submitting,
+			delayed,
+			timeout,
+		}: { submitting: Writable<boolean>; delayed: Writable<boolean>; timeout: Writable<boolean> },
+		method: Method,
+	) =>
 	async (url: string, body: RequestData, opts?: LocalOpts) => {
-		if (opts?.preventDuplicateRequests && get(fetching))
+		if (!browser) return { error: { status: 500, message: 'Client fetch called on server' } } as Result<ResponseData>;
+
+		if (opts?.preventDuplicateRequests && get(submitting))
 			return { error: { status: 429, message: 'Too Many Requests' } } as Result<ResponseData>;
 
-		if (browser) fetching.set(true);
+		submitting.set(true);
+		const delayTimeout = setTimeout(() => delayed.set(true), opts?.delayMs ?? 500);
+		const timeoutTimeout = setTimeout(() => timeout.set(true), opts?.timeoutMs ?? 10000);
 
-		return fetch(stripGroup(url), { signal: opts?.abortSignal, method, body: body ? JSON.stringify(body) : undefined })
-			.then((res) => {
-				if (res.redirected && browser) return goto(res.url);
-				return res.json();
-			})
-			.then(async (json) => {
-				if (browser) {
-					if (opts?.invalidate) await invalidateAll();
-					fetching.set(false);
-				}
+		const finish = () => {
+			clearTimeout(delayTimeout);
+			clearTimeout(timeoutTimeout);
+			submitting.set(false);
+			delayed.set(false);
+			timeout.set(false);
+		};
+
+		let cleanBody;
+		try {
+			cleanBody = body ? JSON.stringify(body) : undefined;
+		} catch (err) {
+			console.error(err);
+			return { error: { status: 400, message: 'Unable to stringify body' } } as Result<ResponseData>;
+		}
+
+		try {
+			const res = await fetch(stripGroup(url), { signal: opts?.abortSignal, method, body: cleanBody });
+			if (res.redirected) {
+				finish();
+				await goto(res.url);
+				return { error: { status: 302, message: 'Redirected' } } as Result<ResponseData>;
+			} else {
+				const json = await res.json();
+				if (opts?.invalidate) await invalidateAll();
+				finish();
 				return json as Result<ResponseData>;
-			})
-			.catch((err) => {
-				if (browser) fetching.set(false);
-				if ((err instanceof DOMException && err.name === 'AbortError') || err?.status === 499) {
-					return { error: { status: 499, message: 'The user aborted the request.' } } as Result<ResponseData>;
-				}
-				console.error(err);
-				return { error: { status: 500, message: 'Internal Error' } } as Result<ResponseData>;
-			});
+			}
+		} catch (err) {
+			finish();
+			if ((err instanceof DOMException && err.name === 'AbortError') || (err as { status: number })?.status === 499) {
+				return { error: { status: 499, message: 'The user aborted the request.' } } as Result<ResponseData>;
+			}
+			console.error(err);
+			return { error: { status: 500, message: 'Internal Error' } } as Result<ResponseData>;
+		}
 	};
 
 export const createClientFetch = <RouteId extends string, ResponseData, RequestData = void>(
@@ -45,13 +78,20 @@ export const createClientFetch = <RouteId extends string, ResponseData, RequestD
 	globalOpts?: GlobalOpts,
 ) => {
 	return () => {
-		const fetching = writable(false);
-		const fetcher = createFetcher<RequestData, ResponseData>(fetching, method);
+		const submitting = writable(false);
+		const delayed = writable(false);
+		const timeout = writable(false);
+		const fetcher = createFetcher<RequestData, ResponseData>({ submitting, delayed, timeout }, method);
 
 		const send = async (body: RequestData, localOpts?: LocalOpts): Promise<Result<ResponseData>> =>
 			fetcher(staticUrl, body, { ...globalOpts, ...localOpts });
 
-		return { ...fetching, send };
+		return {
+			subscribe: submitting.subscribe,
+			delayed: { subscribe: delayed.subscribe },
+			timeout: { subscribe: timeout.subscribe },
+			send,
+		};
 	};
 };
 
@@ -61,8 +101,10 @@ export const createDynClientFetch = <ResponseData, RequestData = void, URLProps 
 	globalOpts?: GlobalOpts,
 ) => {
 	return () => {
-		const fetching = writable(false);
-		const fetcher = createFetcher<RequestData, ResponseData>(fetching, method);
+		const submitting = writable(false);
+		const delayed = writable(false);
+		const timeout = writable(false);
+		const fetcher = createFetcher<RequestData, ResponseData>({ submitting, delayed, timeout }, method);
 
 		const sendUrl = async (
 			urlProps: URLProps,
@@ -70,6 +112,11 @@ export const createDynClientFetch = <ResponseData, RequestData = void, URLProps 
 			localOpts?: LocalOpts,
 		): Promise<Result<ResponseData>> => fetcher(urlCreator(urlProps), body, { ...globalOpts, ...localOpts });
 
-		return { ...fetching, sendUrl };
+		return {
+			subscribe: submitting.subscribe,
+			delayed: { subscribe: delayed.subscribe },
+			timeout: { subscribe: timeout.subscribe },
+			sendUrl,
+		};
 	};
 };
