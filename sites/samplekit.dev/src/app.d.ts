@@ -78,6 +78,13 @@ declare global {
 		/** loaded in Turnstile.svelte */
 		turnstile: import('turnstile-types').TurnstileObject;
 	}
+
+	module '*.svx' {
+		const component: import('svelte').ComponentType<import('svelte').SvelteComponent>;
+		export const metadata: { readingTime: { text: string; minutes: number; time: number; words: number } };
+
+		export default component;
+	}
 }
 
 export {};
