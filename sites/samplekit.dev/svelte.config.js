@@ -1,16 +1,16 @@
 import { sequence, preprocessMeltUI } from '@melt-ui/pp';
+import { preprocessCodeblock, preprocessTable } from '@samplekit/markdown';
 // @ts-expect-error – missing types
 import autoSlug from '@svelte-put/preprocess-auto-slug';
 import adapter from '@sveltejs/adapter-auto';
 import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
-import { preprocessCodeblock, preprocessTable } from './src/lib/articles/markdown/preprocess.js';
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
 	extensions: ['.svelte', '.svx'],
 	preprocess: sequence([
-		preprocessCodeblock(console, (filename) => filename.endsWith('.svx')),
-		preprocessTable(console, (filename) => filename.endsWith('.svx')),
+		preprocessCodeblock({ logger: console, include: (filename) => filename.endsWith('.svx') }),
+		preprocessTable({ logger: console, include: (filename) => filename.endsWith('.svx') }),
 		vitePreprocess(),
 		// https://github.com/vnphanquang/svelte-put/blob/main/packages/preprocessors/auto-slug/src/auto-slug.types.ts
 		autoSlug(() => ({

@@ -1,4 +1,4 @@
-import { mdCodeBlockToRawHtml } from '$lib/articles/markdown/codeblock.js';
+import { mdCodeBlockToRawHtml, isMdLang } from '@samplekit/markdown';
 import type { MetaRawCode } from '$lib/articles/schema';
 import type { ArticleSlug } from '../common';
 
@@ -24,6 +24,7 @@ export const demoCodeMap: Partial<Record<ArticleSlug, Record<DemoName, DemoModul
 			const filename = a.join('/');
 			if (filename === 'meta.components.ts' || filename === 'meta.code.ts') return acc;
 			const lang = filename.split('.').pop();
+			if (!isMdLang(lang)) throw new Error(`Slug "${slug}" | ${lang} not loaded.`);
 
 			const codePromise = load().then((rawCode) => {
 				const { data, error } = mdCodeBlockToRawHtml({ lang, rawCode });
@@ -50,6 +51,7 @@ export const demoCodeMap: Partial<Record<ArticleSlug, Record<DemoName, DemoModul
 
 		loaded.default.modules.forEach(({ rawCodePromise, title: filename }) => {
 			const lang = filename.split('.').pop();
+			if (!isMdLang(lang)) throw new Error(`Slug "${slug}" | ${lang} not loaded.`);
 			const highlightedRawHTML = rawCodePromise().then((rawCode) => {
 				const { data, error } = mdCodeBlockToRawHtml({ lang, rawCode });
 				if (!data) {

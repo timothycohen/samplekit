@@ -1,11 +1,11 @@
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-nocheck
-import shiki, { getHighlighter } from 'shiki';
-import darkerJSON from './darker.json' assert { type: 'json' };
+import { renderToHtml, getHighlighter, type IThemeRegistration, type Lang as ShikiLang } from 'shiki';
+import darkerJSON from './darker.js';
 
-const mdLanguages = ['json', 'sh', 'html', 'css', 'md', 'js', 'ts', 'svelte', 'diff'];
+export const mdLanguages = ['json', 'sh', 'html', 'css', 'md', 'js', 'ts', 'svelte', 'diff'] satisfies ShikiLang[];
+export type MdLang = (typeof mdLanguages)[number];
+export const isMdLang = (lang?: string): lang is MdLang => mdLanguages.includes(lang as MdLang);
 
-const escapeSvelte = (code) => {
+const escapeSvelte = (code: string) => {
 	return code.replace(
 		/[{}`]|&amp;tripgrave;|&amp;tripslash;/g,
 		(character) =>
@@ -15,17 +15,17 @@ const escapeSvelte = (code) => {
 				'`': '&grave;',
 				'&amp;tripgrave;': '&grave;&grave;&grave;',
 				'&amp;tripslash;': '///',
-			})[character],
+			})[character]!,
 	);
 };
 
-const getHighlightLines = (rawCode) => {
-	const highlightLines = [];
+const getHighlightLines = (rawCode: string) => {
+	const highlightLines: number[] = [];
 	const strippedCode = rawCode.replaceAll('\t', '  ').replace(/^\/\/\/\s*highlight:(.*)\s*\n/m, (_, group) => {
 		group
 			.trim()
 			.split(',')
-			.forEach((lineStr) => {
+			.forEach((lineStr: string) => {
 				lineStr = lineStr.trim().replace(/[^0-9-]/g, '');
 				if (lineStr.includes('-')) {
 					const [start, end] = lineStr.split('-');
@@ -45,12 +45,24 @@ const getHighlightLines = (rawCode) => {
 };
 
 const highlighter = await getHighlighter({ themes: ['rose-pine-dawn'], langs: mdLanguages });
-await highlighter.loadTheme(darkerJSON);
+await highlighter.loadTheme(darkerJSON as unknown as IThemeRegistration);
 
-const createThemedCodeHtml = ({ scheme, theme, code, lang, highlightLines }) => {
+const createThemedCodeHtml = ({
+	scheme,
+	theme,
+	code,
+	lang,
+	highlightLines,
+}: {
+	scheme: 'light' | 'dark';
+	theme: 'rose-pine-dawn' | 'darker';
+	code: string;
+	lang: MdLang;
+	highlightLines: number[];
+}) => {
 	const tokens = highlighter.codeToThemedTokens(code, lang, theme);
 
-	return shiki.renderToHtml(tokens, {
+	return renderToHtml(tokens, {
 		elements: {
 			pre({ children }) {
 				return `<pre data-${scheme} class="${theme}">${children}</pre>`;
@@ -74,26 +86,29 @@ const createThemedCodeHtml = ({ scheme, theme, code, lang, highlightLines }) => 
 	});
 };
 
-const parseAndRemoveWrapper = (rawMarkdown) => {
+const parseAndRemoveWrapper = (
+	rawMarkdown: string,
+): { rawCode: string; lang: MdLang; error?: never } | { rawCode?: never; lang?: never; error: Error } => {
 	rawMarkdown = rawMarkdown.trim();
 	const lines = rawMarkdown.split('\n');
-	if (!lines.length) return { error: new Error('Markdown file is empty') };
+	const firstLine = lines[0];
+	if (!firstLine) return { error: new Error('Markdown file is empty') };
 
-	const startsWith = lines[0].startsWith('```') ? '```' : lines[0].startsWith('~~~') ? '~~~' : null;
+	const startsWith = firstLine.startsWith('```') ? '```' : firstLine.startsWith('~~~') ? '~~~' : null;
 	if (!startsWith) return { error: new Error('Markdown file is not a codeblock') };
 
-	let lang;
+	let lang: string;
 	if (startsWith === '```') {
-		lang = lines[0].replace('```', '').trim();
+		lang = firstLine.replace('```', '').trim();
 		lines.splice(0, 1);
-	} else if (startsWith === '~~~') {
-		lang = lines[0].replace('~~~', '').trim();
+	} else {
+		lang = firstLine.replace('~~~', '').trim();
 		lines.splice(0, 1);
 	}
-	if (!mdLanguages.includes(lang)) return { error: new Error(`Language ${lang} not loaded.`) };
+	if (!isMdLang(lang)) return { error: new Error(`Language ${lang} not loaded.`) };
 
 	while (lines.length) {
-		const lastLine = lines[lines.length - 1].trim();
+		const lastLine = lines[lines.length - 1]!.trim();
 		if (lastLine === '' || lastLine === startsWith) lines.pop();
 		else break;
 	}
@@ -121,14 +136,15 @@ const parseAndRemoveWrapper = (rawMarkdown) => {
  *
  * ///highlight:2,4-10
  */
-export const mdCodeBlockToRawHtml = ({ rawCode, lang }) => {
+export const mdCodeBlockToRawHtml = ({ rawCode, lang }: { rawCode: string; lang: MdLang }) => {
 	try {
 		const { strippedCode: code, highlightLines } = getHighlightLines(rawCode);
 		const light = createThemedCodeHtml({ code, lang, highlightLines, scheme: 'light', theme: 'rose-pine-dawn' });
 		const dark = createThemedCodeHtml({ code, lang, highlightLines, scheme: 'dark', theme: 'darker' });
 		return { data: `<div class="code-wrapper">` + escapeSvelte(light) + escapeSvelte(dark) + '</div>' };
 	} catch (err) {
-		return { error: new Error(`Unable to highlight | ${err.message}`) };
+		if (err instanceof Error) return { error: err };
+		return { error: new Error(`Unable to highlight`) };
 	}
 };
 
@@ -175,15 +191,16 @@ export const mdCodeBlockToRawHtml = ({ rawCode, lang }) => {
  * </div>
  * ```
  *
- * @param {Object} logger
- * @param {(message: string) => void} logger.debug
- * @param {(message: string) => void} logger.error
- * @param {(message: string) => void} logger.warn
- * @param {(filename: string) => boolean} include
- */
-export function preprocessCodeblock(logger, include) {
+ * */
+export function preprocessCodeblock({
+	include,
+	logger,
+}: {
+	logger?: { error: (s: string) => void; debug: (s: string) => void; warn: (s: string) => void };
+	include?: (filename: string) => boolean;
+} = {}) {
 	return {
-		markup({ content, filename }) {
+		markup({ content, filename }: { content: string; filename: string }): { code: string } | null {
 			if (include && !include(filename)) return null;
 			const slug = (() => {
 				const a = filename.split('/');
@@ -196,14 +213,14 @@ export function preprocessCodeblock(logger, include) {
 			];
 
 			let resultContent = content;
-			let { startRegex, endMarker } = delimiters.pop();
+			let { startRegex, endMarker } = delimiters.pop()!;
 			let startMatch = startRegex.exec(resultContent);
 
 			let count = 0;
 
 			while (startMatch || delimiters.length) {
 				if (!startMatch) {
-					({ startRegex, endMarker } = delimiters.pop());
+					({ startRegex, endMarker } = delimiters.pop()!);
 					startMatch = startRegex.exec(resultContent);
 					continue;
 				}
@@ -227,7 +244,7 @@ export function preprocessCodeblock(logger, include) {
 
 				const { rawCode, lang, error: codeProcessError } = parseAndRemoveWrapper(extractedContentWithWrapper);
 				let highlightError;
-				if (!codeProcessError) {
+				if (rawCode && lang) {
 					const { data, error } = mdCodeBlockToRawHtml({ rawCode, lang });
 					if (data) processedContent = data;
 					else if (error) highlightError = error;

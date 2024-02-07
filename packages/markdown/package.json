@@ -1,0 +1,23 @@
+{
+	"name": "@samplekit/markdown",
+	"version": "0.0.1",
+	"description": "Markdown utils and svelte preprocessors.",
+	"private": true,
+	"type": "module",
+	"author": "Tim Cohen <contact@timcohen.dev>",
+	"scripts": {
+		"clean": "rm -rf dist",
+		"build": "pnpm clean && tsc",
+		"check": "tsc --noEmit"
+	},
+	"dependencies": {
+		"marked": "^11.1.0",
+		"shiki": "^0.14.7"
+	},
+	"exports": {
+		".": "./dist/index.js",
+		"./codeblock": "./dist/codeblock.js",
+		"./table": "./dist/table.js",
+		"./package.json": "./package.json"
+	}
+}
