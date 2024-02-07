@@ -15,6 +15,10 @@ vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 logs
 
+storefront-2023-10.schema.json
+storefront.generated.d.ts
+storefront.types.d.ts
+
 pnpm-lock.yaml
 *migrations/
 static/

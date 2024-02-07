@@ -1,0 +1,31 @@
+export {
+	createCart,
+	getCart,
+	addToCart,
+	updateCart,
+	removeFromCart,
+	// getCollection,
+	getCollections,
+	getCollectionProducts,
+	getProduct,
+	getProductRecommendations,
+	getProducts,
+	getMenu,
+	// getPage,
+	// getPages,
+} from './shopify';
+
+export type {
+	Cart,
+	CartItem,
+	Collection,
+	Image,
+	// Menu,
+	// Money,
+	// Page,
+	Product,
+	ProductOption,
+	ProductVariant,
+	// SEO,
+	SearchQuery,
+} from './types';

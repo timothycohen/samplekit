@@ -34,16 +34,25 @@ export const accountLayoutRoutes: (RouteLeaf | RouteGroup)[] = [
 	},
 ];
 
-const userDesktopRoutes: { title: string; url: string }[] = [{ title: 'Account', url: '/account/profile' }];
+const userDesktopRoutes: { title: string; url: string }[] = [
+	{ title: 'Shop', url: '/shop' },
+	{ title: 'Account', url: '/account/profile' },
+];
 
-const noUserDesktopRoutes: { title: string; url: string }[] = [{ title: 'Login', url: '/login' }];
+const noUserDesktopRoutes: { title: string; url: string }[] = [
+	{ title: 'Shop', url: '/shop' },
+	{ title: 'Login', url: '/login' },
+];
 
 const userNavRoutes: (RouteLeaf | RouteGroup)[] = [
 	{
 		groupPath: '_',
 		groupText: 'Demos',
 		depth: 0,
-		children: [{ path: '/', text: 'Articles', depth: 1 }],
+		children: [
+			{ path: '/', text: 'Articles', depth: 1 },
+			{ path: '/shop', text: 'Shop', depth: 1 },
+		],
 	},
 	{
 		groupPath: '/account',
@@ -70,7 +79,10 @@ const noUserNavRoutes: (RouteLeaf | RouteGroup)[] = [
 		groupPath: '_',
 		groupText: 'Demos',
 		depth: 0,
-		children: [{ path: '/', text: 'Articles', depth: 1 }],
+		children: [
+			{ path: '/', text: 'Articles', depth: 1 },
+			{ path: '/shop', text: 'Shop', depth: 1 },
+		],
 	},
 	{
 		groupPath: '/settings',
