@@ -21,9 +21,11 @@
 		"build": "pnpm build:dependencies && pnpm build:site",
 		"preview": "vite preview",
 		"check": "svelte-kit sync && svelte-check --fail-on-warnings --tsconfig ./tsconfig.json",
-		"check:watch": "svelte-kit sync && svelte-check --fail-on-warnings --tsconfig ./tsconfig.json --watch"
+		"check:watch": "svelte-kit sync && svelte-check --fail-on-warnings --tsconfig ./tsconfig.json --watch",
+		"ses:update_templates": "env-cmd -f .env._production node ./scripts/email/updateTemplates.js"
 	},
 	"dependencies": {
+		"@aws-sdk/client-ses": "^3.474.0",
 		"@samplekit/auth": "workspace:^",
 		"body-scroll-lock-upgrade": "^1.1.0",
 		"drizzle-orm": "^0.29.1",
@@ -32,6 +34,7 @@
 		"pg": "^8.11.3",
 		"pino": "^8.17.2",
 		"pino-pretty": "^10.3.1",
+		"twilio": "^4.20.0",
 		"zod": "^3.22.4"
 	},
 	"devDependencies": {
