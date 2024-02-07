@@ -1,77 +1,130 @@
+code {
+	font-family: theme('fontFamily.mono');
+	color: theme('colors.gray.11');
+}
+
 /* Title ####################### */
-.md-code-topper {
-	padding: 0.5em 1em 0.5em 1.5em;
+.code-topper {
+	font-size: 1rem;
 	z-index: 0;
-	border-radius: var(--radius-card) var(--radius-card) 0 0;
-	font-family: UbuntuMonoLigaturized;
+	font-family: theme('fontFamily.mono');
 	display: flex;
 	justify-content: space-between;
-	border: 1px solid transparent;
 	gap: 1rem;
 }
-
-.md-code-topper span {
-	overflow: scroll;
+.code-topper span {
 	overflow: auto;
 }
-
-.dark .md-code-topper {
+.dark .code-topper {
 	color: #4fa8e1;
 	background-color: black;
 }
-
-.light .md-code-topper {
+.light .code-topper {
 	color: hsl(189, 30%, 48%);
 	background-color: white;
-	border-color: gray gray transparent gray;
 }
 
-/* Wrapper ####################### */
-.dark .md-code-wrapper [data-light] {
-	display: none !important;
+/* Borders ####################### */
+.code-wrapper,
+.code-topper {
+	border-width: 1px;
+	border-style: solid;
 }
-
-.light .md-code-wrapper [data-dark] {
-	display: none !important;
+.light .code-wrapper,
+.light .code-topper {
+	border-color: theme(colors.gray.9);
 }
-
-.light .md-code-wrapper pre[data-light] {
-	border: 1px solid gray;
+.dark .code-wrapper,
+.dark .code-topper {
+	border-color: theme(colors.gray.5);
 }
-
-.dark .md-code-wrapper pre[data-dark] {
-	border: 1px solid transparent;
+.code-topper {
+	border-radius: var(--radius-card) var(--radius-card) 0 0;
+	border-bottom-width: 0px;
 }
-
-.dark .md-code-wrapper pre[data-light] {
-	display: none !important;
+.code-wrapper {
+	border-radius: var(--radius-card);
 }
-
-.md-code-wrapper pre {
-	line-height: 1.5 !important;
-}
-.md-code-wrapper pre * {
-	font-family: UbuntuMonoLigaturized;
-}
-
-.md-code-topper + .md-code-wrapper pre {
-	margin-top: 0;
+.code-topper + .code-wrapper {
 	border-radius: 0 0 var(--radius-card) var(--radius-card);
 }
 
-.dark .md-code-topper + .md-code-wrapper pre[data-dark] {
-	border-top-color: hsl(0, 0%, 20%);
+/* Wrapper ####################### */
+.dark .code-wrapper pre[data-light] {
+	display: none;
+}
+.light .code-wrapper pre[data-dark] {
+	display: none;
+}
+
+.code-wrapper {
+	overflow: hidden;
+	font-family: theme('fontFamily.mono');
+}
+.code-wrapper pre {
+	overflow: auto;
+	margin: 0;
+}
+.code-wrapper {
+	margin: 0 0 1.5rem 0;
+}
+
+.code-wrapper pre {
+	line-height: 1.5 !important;
+}
+
+.code-wrapper pre.darker {
+	background-color: black;
+}
+.code-wrapper pre.rose-pine-dawn {
+	background-color: rgb(250, 244, 237);
+}
+
+/* Scrollbar ####################### */
+.code-wrapper pre::-webkit-scrollbar-thumb {
+	border-radius: 0;
+}
+
+.code-wrapper pre.rose-pine-dawn {
+	scrollbar-color: hsl(268.1, 21.5%, 57.1%) hsl(268.1, 21.5%, 75%);
+}
+.code-wrapper pre::-webkit-scrollbar {
+	height: 0.35rem;
+	@media (min-width: 640px) {
+		height: 0.75rem;
+	}
+}
+.code-wrapper pre.rose-pine-dawn::-webkit-scrollbar {
+	&-thumb {
+		background-color: hsl(268.1, 21.5%, 57.1%);
+	}
+	&-track {
+		-webkit-box-shadow: none;
+		background-color: hsl(268.1, 21.5%, 75%);
+	}
+}
+
+.code-wrapper pre.darker {
+	scrollbar-color: theme(colors.gray.7) theme(colors.gray.3);
+}
+.code-wrapper pre.darker::-webkit-scrollbar {
+	&-thumb {
+		background-color: theme(colors.gray.7);
+	}
+	&-track {
+		-webkit-box-shadow: none;
+		background-color: theme(colors.gray.3);
+	}
 }
 
 /* Line Numbers ####################### */
-.md-code-wrapper pre code {
+.code-wrapper pre code {
 	counter-reset: line;
 }
 
-.md-code-wrapper pre code > [data-line]::before {
+.code-wrapper pre code > [data-line]::before {
 	counter-increment: line;
 	content: counter(line);
-
 	display: inline-block;
 	width: 1rem;
 	margin-right: 1rem;
@@ -79,8 +132,12 @@
 	color: gray;
 }
 
+.no-lines .code-wrapper pre code > [data-line]::before {
+	display: none;
+}
+
 @media (min-width: 768px) {
-	.md-code-wrapper pre code > [data-line]::before {
+	.code-wrapper pre code > [data-line]::before {
 		margin-right: 2rem;
 	}
 }
@@ -102,4 +159,8 @@
 .dark [data-chars-highlighted] {
 	border: 1px solid hsla(210, 100%, 65%, 0.25);
 	background-color: hsl(210, 100%, 65%, 0.25);
+}
+
+code {
+	font-family: theme('fontFamily.mono');
 }

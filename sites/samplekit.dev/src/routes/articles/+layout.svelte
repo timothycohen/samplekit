@@ -1,15 +1,31 @@
 <script lang="ts">
-	import { TOC, ClipboardScript, Changelog, Series, DateLine, PrevNext } from '$lib/articles/components';
+	import { onMount } from 'svelte';
+	import { Changelog, DateLine, PrevNext, Series, TOC } from '$lib/articles/components';
 	import { pluralize } from '$lib/utils/common';
 
 	export let data;
-	$: article = data.article.data;
+	$: article = data.article;
+
+	let wordCount = 0;
+	let readingTime = 0;
+
+	function updateReadingTime() {
+		const text = articleContentWrapper.innerText;
+		const wpm = 225;
+		const words = text.trim().split(/\s+/);
+		wordCount = words.length;
+		readingTime = Math.ceil(wordCount / wpm);
+	}
+
+	onMount(() => {
+		updateReadingTime();
+	});
+
+	let articleContentWrapper: HTMLDivElement;
 </script>
 
 <div id="use-toc" class="page">
 	{#key article.title}
-		<ClipboardScript />
-
 		<article>
 			<div class="mb-6-9">
 				{#if article.imgLg}
@@ -33,13 +49,11 @@
 							{/each}
 						</ul>
 					{/if}
-					{#if data.article.readingTime}
-						<p class="text-gray-11 text-xs font-bold uppercase tracking-wider">
-							<span>{data.article.readingTime.text}</span>
-							<span class="mx-2" aria-hidden="true">•</span>
-							<span>{data.article.readingTime.words} {pluralize('word', data.article.readingTime.words)}</span>
-						</p>
-					{/if}
+					<p class="text-gray-11 text-xs font-bold uppercase tracking-wider">
+						<span class="uppercase">{readingTime} min read</span>
+						<span class="mx-2" aria-hidden="true">•</span>
+						<span class="uppercase">{wordCount} {pluralize('word', wordCount)}</span>
+					</p>
 				</hgroup>
 			</div>
 
@@ -49,8 +63,8 @@
 			</div>
 
 			<div class="flex gap-[clamp(2.5rem,8vw,4rem)]">
-				<div class="prose prose-radix prose-lg min-w-0 max-w-none flex-1">
-					<svelte:component this={data.article.component} />
+				<div class="prose prose-radix prose-lg min-w-0 max-w-none flex-1" bind:this={articleContentWrapper}>
+					<slot />
 				</div>
 
 				<div class="hidden flex-col gap-8 lg:flex">
@@ -94,6 +108,10 @@
 
 	article :global([data-auto-slug-ignore] a[data-auto-slug-anchor]) {
 		display: none;
+	}
+
+	article :global(.table-wrapper) {
+		overflow-x: auto;
 	}
 
 	article :global(a[data-auto-slug-anchor]) {

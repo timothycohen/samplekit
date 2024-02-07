@@ -4,4 +4,5 @@ import type { UserConfig } from 'vite';
 
 export default {
 	plugins: [enhancedImages(), sveltekit()],
+	assetsInclude: '**/*.svx',
 } satisfies UserConfig;
