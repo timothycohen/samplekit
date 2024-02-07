@@ -1,0 +1,42 @@
+import { redirect } from '@sveltejs/kit';
+import platform from 'platform';
+import { auth } from '$lib/auth/server';
+import type { RequestHandler } from './$types';
+import type { RequestEvent } from '@sveltejs/kit';
+
+const verifyEmailWithEmailVeri = async ({
+	params,
+	locals,
+	request,
+	getClientAddress,
+}: RequestEvent<{ token: string }>): Promise<Response> => {
+	const { token } = params;
+
+	const { tokenErr, userId } = await auth.token.emailVeri.validate({ token });
+	if (tokenErr) return redirect(302, '/invalid-token');
+
+	const res = await locals.seshHandler.getSessionUser();
+
+	const pf = platform.parse(request.headers.get('user-agent') ?? undefined);
+
+	const [session] = await Promise.all([
+		auth.session.deleteAll({ userId }).then(() =>
+			auth.session.create(
+				{
+					userId,
+					// SAFETY: Assumes that the user cannot set up MFA until they verify their email
+					awaitingMFA: false,
+					awaitingEmailVeri: false,
+					persistent: res?.session.persistent ?? false,
+				},
+				{ os: pf.os?.family ?? null, browser: pf.name ?? null, ip: getClientAddress() },
+			),
+		),
+		auth.provider.pass.email.verifyEmail({ userId }),
+	]);
+
+	locals.seshHandler.set({ session });
+	return redirect(302, '/account/profile');
+};
+
+export const GET: RequestHandler = verifyEmailWithEmailVeri;

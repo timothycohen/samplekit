@@ -4,6 +4,7 @@ import { type HandleServerError, type Handle, redirect } from '@sveltejs/kit';
 import { sequence } from '@sveltejs/kit/hooks';
 import { auth, createAuthMiddleware } from '$lib/auth/server';
 import { logger } from '$lib/logging/server';
+import { handleAccountRedirects } from '$routes/account/hooks.server';
 
 export type SessionHandler = ReturnType<
 	(typeof import('./lib/auth/server/createAuth').auth)['createSessionHandler']
@@ -36,15 +37,13 @@ const populateLocals: Handle = async ({ event, resolve }) => {
 	seshHandler.userOrRedirect = async ({ skipCache }: { skipCache?: true } = {}) => {
 		const seshUser = await event.locals.seshHandler.getSessionUser({ skipCache });
 
-		let loginPath: null | string = null;
-		if (!seshUser) loginPath = '/login';
-		else if (seshUser.session.awaitingEmailVeri) loginPath = '/email-verification';
-		else if (seshUser.session.awaitingMFA) loginPath = '/login/verify-mfa';
+		let sanitizedPath: null | string = null;
+		if (!seshUser) sanitizedPath = '/login';
+		else if (seshUser.session.awaitingEmailVeri) sanitizedPath = '/email-verification';
+		else if (seshUser.session.awaitingMFA) sanitizedPath = '/login/verify-mfa';
 
-		if (loginPath) {
-			const url = new URL(loginPath, event.url.origin);
-			url.searchParams.set('redirect_url', event.url.href.replace(event.url.origin, ''));
-			return redirect(302, url);
+		if (sanitizedPath) {
+			return redirect(302, sanitizedPath);
 		}
 
 		return seshUser!;
@@ -55,7 +54,7 @@ const populateLocals: Handle = async ({ event, resolve }) => {
 	return await resolve(event);
 };
 
-export const handle = sequence(populateLocals);
+export const handle = sequence(populateLocals, handleAccountRedirects);
 
 export const handleError: HandleServerError = async ({ error, event, status, message }) => {
 	const errorId = crypto.randomUUID();
