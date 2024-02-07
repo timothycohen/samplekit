@@ -66,6 +66,8 @@ export type MetaRawComponents = Record<
 export const defaultMetaRawComponents: MetaRawComponents = { 'Demo.svelte': { title: 'Interactive Demo' } };
 export type MetaProcessedComponents = MetaRawComponents[keyof MetaRawComponents] & { title: string };
 
+export type MetaRawCode = { modules: Array<{ rawCodePromise: () => Promise<string>; title: string }> };
+
 type DemoEagerServer = { highlightedFiles: Array<{ title: string; rawHTML: string }> };
 export type DemoLazyServer = { highlightedFiles: Array<{ title: string; rawHTML: Promise<string> }> };
 type DemoEagerClient = DemoEagerServer & {

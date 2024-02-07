@@ -106,23 +106,6 @@ function addPrevNextLinks<T extends { articleSlug: string; title: string }>(
 	});
 }
 
-/**
- * .svx files are first processed by transforming markdown code and tables into valid html – see svelte.config.js
- *
- * in articles/load/common, all meta.data.ts files are imported and transformed from RawFrontMatter into ProcessedFrontMatter
- *
- * also in articles/load/common all meta.components.ts files inside the live-demos are imported and transformed from MetaRawComponents into MetaProcessedComponents
- *
- * in articles/load/server, all files in the live-demos are imported as raw strings, wrapped in small markdown code blocks, and passed to the markdown preprocessor to highlight and transform back into html
- *
- * in articles/load/client, all components specified by the live-demos meta.components.ts files are imported as modules, loaded and mapped to .default (the component).
- *
- * in articles/[some-article-slug], the LayoutServerLoad awaits the highlighter promises and passes the data to the client LayoutLoad
- *
- * finally, the LayoutLoad adds the Component to the LayoutServerLoad's data and passes it all the to TabPanels.svelte in +layout.svelte
- *
- * live-demos/main is eager and is in article.mainDemo. All the other live-demos/[some-demo-slug] are streamed to the browser and are in article.lazyDemos[some-demo-slug]
- */
 export const allPostData: ProcessedFrontMatter[] = await Promise.all(Object.values(postData))
 	.then(expandSeries)
 	.then(addPrevNextLinks)
