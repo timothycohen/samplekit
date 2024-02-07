@@ -2,6 +2,7 @@ import { error } from '@sveltejs/kit';
 import { message, superValidate } from 'sveltekit-superforms/server';
 import { auth } from '$lib/auth/server';
 import { transports } from '$lib/auth/server';
+import { createDeviceLimiter } from '$lib/botProtection/rateLimit/server';
 import { turnstileFormInputName } from '$lib/botProtection/turnstile/common';
 import { validateTurnstile } from '$lib/botProtection/turnstile/server';
 import { emailPassResetSchema } from '$routes/(auth)/validators';
@@ -12,7 +13,10 @@ export const load: PageServerLoad = async () => {
 	error(404);
 };
 
-const emailPassReset: Action = async ({ request }) => {
+const resetPassLimiter = createDeviceLimiter({ id: 'emailPassReset', rate: [3, '6h'] });
+
+const emailPassReset: Action = async (event) => {
+	const { request } = event;
 	const formData = await request.formData();
 	const clientToken = formData.get(turnstileFormInputName);
 	const emailPassResetForm = await superValidate(formData, emailPassResetSchema);
@@ -36,6 +40,15 @@ const emailPassReset: Action = async ({ request }) => {
 			emailPassResetForm,
 			{ fail: `We've detected unusual traffic. Please refresh and try again.` },
 			{ status: 403 },
+		);
+	}
+
+	const rateCheck = await resetPassLimiter.check(event, { log: { email: emailPassResetForm.data.email } });
+	if (rateCheck.limited) {
+		return message(
+			emailPassResetForm,
+			{ fail: `Please wait ${rateCheck.humanTryAfter} and try again.` },
+			{ status: 429 },
 		);
 	}
 

@@ -2,6 +2,7 @@ import { error, redirect } from '@sveltejs/kit';
 import { message, superValidate } from 'sveltekit-superforms/server';
 import { auth } from '$lib/auth/server';
 import { transports } from '$lib/auth/server';
+import { createUserIdLimiter } from '$lib/botProtection/rateLimit/server';
 import { checkedRedirect, sanitizeRedirectUrl } from '$lib/http/server';
 import { sendSMSTokenSchema } from '$routes/(auth)/validators';
 import type { Actions, PageServerLoad } from './$types';
@@ -11,7 +12,10 @@ export const load: PageServerLoad = () => {
 	error(404);
 };
 
-const sendSMSVeri: Action = async ({ locals, request }) => {
+const smsVeriLimiter = createUserIdLimiter({ id: 'sendSMSVeri', rate: [10, '2h'] });
+
+const sendSMSVeri: Action = async (event) => {
+	const { locals, request } = event;
 	const seshUser = await locals.seshHandler.getSessionUser();
 	if (!seshUser) return checkedRedirect('/login');
 	if (seshUser.session.awaitingEmailVeri) return checkedRedirect('/email-verification');
@@ -28,6 +32,15 @@ const sendSMSVeri: Action = async ({ locals, request }) => {
 
 	const { tokenErr, otp } = await auth.token.smsVeri.createOrRefresh({ userId: seshUser.user.id });
 	if (tokenErr) return auth.token.err.toMessage(tokenErr, sendSMSTokenForm);
+
+	const rateCheck = await smsVeriLimiter.check(event, { log: { userId: seshUser.user.id } });
+	if (rateCheck.limited) {
+		return message(
+			sendSMSTokenForm,
+			{ fail: `Please wait ${rateCheck.humanTryAfter} and try again.` },
+			{ status: 429 },
+		);
+	}
 
 	const { transportErr } = await transports.sms.send.Otp({ phoneNumber, otp });
 	if (transportErr) {

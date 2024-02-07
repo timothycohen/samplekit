@@ -1,5 +1,6 @@
 import { eq } from 'drizzle-orm';
 import { CLOUDFRONT_URL } from '$env/static/private';
+import { createUserIdLimiter } from '$lib/botProtection/rateLimit/server';
 import {
 	deleteS3Object,
 	generateS3UploadPost,
@@ -13,6 +14,13 @@ import { jsonFail, jsonOk } from '$lib/http/server';
 import { MAX_UPLOAD_SIZE, putReqSchema, type GetRes, type PutRes } from '.';
 import type { RequestHandler } from './$types';
 import type { RequestEvent } from '@sveltejs/kit';
+
+// generateS3UploadPost enforces max upload size and denies any upload that we don't sign
+// uploadLimiter limits the userId to 2 uploads per 15 minutes
+// presigned ensures we don't have to trust the client to tell us what the uploaded objectUrl is after the upload
+// detectModerationLabels prevents explicit content
+
+const uploadLimiter = createUserIdLimiter({ id: 'checkAndSaveUploadedAvatar', rate: [2, '15m'] });
 
 const getSignedAvatarUploadUrl = async ({ locals }: RequestEvent) => {
 	const { user } = await locals.seshHandler.userOrRedirect();
@@ -32,6 +40,11 @@ const checkAndSaveUploadedAvatar = async (event: RequestEvent) => {
 	const body = await request.json().catch(() => null);
 	const parsed = putReqSchema.safeParse(body);
 	if (!parsed.success) return jsonFail(400);
+
+	const rateCheck = await uploadLimiter.check(event, { log: { userId: user.id } });
+	if (rateCheck.limited) {
+		return jsonFail(429, `Please wait ${rateCheck.humanTryAfter} and try again.`);
+	}
 
 	const presignedObjectUrl = await presigned.get({ userId: user.id });
 	if (!presignedObjectUrl) return jsonFail(400);
