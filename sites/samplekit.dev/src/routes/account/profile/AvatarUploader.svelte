@@ -103,8 +103,8 @@
 {:else}
 	<ImageUpload
 		getUploadUrl={async () => getS3UploadUrl().send()}
-		upload={({ data, uploadUrl, uploadProgress }) =>
-			uploadToCloudStorage({ method: 'PUT', data, uploadUrl, uploadProgress })}
+		upload={({ file, uploadUrl, uploadProgress }) =>
+			uploadToCloudStorage({ method: 'PUT', data: file, uploadUrl, uploadProgress })}
 		saveToDb={async ({ crop, objectUrl }) => checkAndSaveUploadedAvatar().send({ crop, s3ObjectUrl: objectUrl })}
 		{file}
 		{inMemoryFileURI}
