@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { createDialog, melt } from '@melt-ui/svelte';
 	import {
 		Check,
 		Eraser,
@@ -7,12 +8,12 @@
 		Pencil,
 		ShieldEllipsis,
 		Trash2,
-		X,
 		KeySquare,
+		X,
 	} from 'lucide-svelte';
 	import { slide } from 'svelte/transition';
 	import { goto } from '$app/navigation';
-	import { Icon, Modal } from '$lib/components';
+	import { Icon } from '$lib/components';
 	import { mfaLabels } from '$lib/db/client';
 	import UpdatePassForm from './UpdatePassForm.svelte';
 
@@ -25,10 +26,41 @@
 		{ AuthIcon: MessageCircle, enabled: mfasEnabled.sms, next: 'sms' as DB.MFAs.Kind },
 	];
 
-	let mfaToDelete: DB.MFAs.Kind | false = false;
-	let deleteAccountModal = false;
 	let signingOut: 'current' | 'all' | false = false;
 	let editingPassword = false;
+
+	const {
+		elements: {
+			portalled: delAccountPortalled,
+			overlay: delAccountOverlay,
+			content: delAccountContent,
+			title: delAccountTitle,
+			description: delAccountDescription,
+			close: delAccountClose,
+			trigger: delAccountTrigger,
+		},
+		states: { open: delAccountOpen },
+	} = createDialog({ forceVisible: true });
+
+	let mfaToDelete: DB.MFAs.Kind | false = false;
+	const {
+		elements: {
+			portalled: delMFAPortalled,
+			overlay: delMFAOverlay,
+			content: delMFAContent,
+			title: delMFATitle,
+			description: delMFADescription,
+			close: delMFAClose,
+			trigger: delMFATrigger,
+		},
+		states: { open: delMFAOpen },
+	} = createDialog({
+		forceVisible: true,
+		onOpenChange: ({ next }) => {
+			if (next === false) mfaToDelete = false;
+			return next;
+		},
+	});
 </script>
 
 <section class="space-y-6">
@@ -131,10 +163,12 @@
 								</div>
 								<a
 									href="/mfa/update?next=remove-{next}"
+									{...mfaCount === 1 ? $delMFATrigger : {}}
 									on:click={(e) => {
 										if (mfaCount === 1) {
 											e.preventDefault();
 											mfaToDelete = next;
+											delMFAOpen.set(true);
 										}
 									}}
 									class:btn-disabled={method === 'oauth'}
@@ -176,7 +210,7 @@
 		</div>
 
 		<div class="flex justify-end">
-			<button type="button" class="btn btn-hollow" on:click|preventDefault={() => (deleteAccountModal = true)}>
+			<button type="button" class="btn btn-hollow" use:melt={$delAccountTrigger}>
 				<small>Delete account</small>
 			</button>
 		</div>
@@ -184,51 +218,57 @@
 </section>
 
 {#if mfaCount === 1}
-	<Modal open={!!mfaToDelete} onOutclick={() => (mfaToDelete = false)} onEscape={() => (mfaToDelete = false)}>
-		<h3 class="modal-title">Delete MFA Method</h3>
-		<p class="modal-description">You'll be prompted for authentication on the next screen.</p>
+	<div use:melt={$delMFAPortalled}>
+		{#if $delMFAOpen}
+			<div class="modal-overlay" use:melt={$delMFAOverlay} />
+			<div class="modal-content" use:melt={$delMFAContent}>
+				<h2 class="modal-title" use:melt={$delMFATitle}>Delete MFA Method</h2>
+				<p class="modal-description" use:melt={$delMFADescription}>
+					You'll be prompted for authentication on the next screen.
+				</p>
 
-		<div class="alert-wrapper alert-wrapper-error">
-			<p class="alert-header">
-				<strong>Final MFA Method</strong>
-			</p>
-			<p class="mb-2">This will remove your final MFA method.</p>
-			<p>Enable two MFA methods to fully secure your account.</p>
-		</div>
+				<div class="alert-wrapper alert-wrapper-error">
+					<p class="alert-header">
+						<strong>Final MFA Method</strong>
+					</p>
+					<p class="mb-2">This will remove your final MFA method.</p>
+					<p>Enable two MFA methods to fully secure your account.</p>
+				</div>
 
-		<div class="modal-btns-wrapper justify-between">
-			<button on:click={() => (mfaToDelete = false)} class="btn btn-hollow">Cancel</button>
-			<button on:click={() => goto(`/mfa/update?next=remove-${mfaToDelete}`)} class="btn btn-error"> Continue </button>
-		</div>
-
-		<button class="modal-x-btn" on:click={() => (mfaToDelete = false)}>
-			<X />
-		</button>
-	</Modal>
+				<div class="modal-btns-wrapper">
+					<button class="btn btn-hollow" use:melt={$delMFAClose}>Cancel</button>
+					<button on:click={() => goto(`/mfa/update?next=remove-${mfaToDelete}`)} class="btn btn-error">
+						Continue
+					</button>
+				</div>
+			</div>
+		{/if}
+	</div>
 {/if}
 
-<Modal
-	open={deleteAccountModal}
-	onEscape={() => (deleteAccountModal = false)}
-	onOutclick={() => (deleteAccountModal = false)}
->
-	<h3 class="modal-title">Delete Account</h3>
-	<p class="modal-description">You'll be prompted for authentication on the next screen.</p>
+<div use:melt={$delAccountPortalled}>
+	{#if $delAccountOpen}
+		<div class="modal-overlay" use:melt={$delAccountOverlay} />
+		<div class="modal-content" use:melt={$delAccountContent}>
+			<h2 class="modal-title" use:melt={$delAccountTitle}>Delete Account</h2>
+			<p class="modal-description" use:melt={$delAccountDescription}>
+				You'll be prompted for authentication on the next screen.
+			</p>
 
-	<div class="alert-wrapper alert-wrapper-warning">
-		<p class="alert-header">
-			Delete <strong class="text-accent-9 font-extrabold underline">{data.email}</strong>?
-		</p>
-		<p>There is no going back. Please be certain.</p>
-	</div>
+			<div class="alert-wrapper alert-wrapper-warning">
+				<p class="alert-header">
+					Delete <strong class="text-accent-9 font-extrabold underline">{data.email}</strong>?
+				</p>
+				<p>There is no going back. Please be certain.</p>
+			</div>
 
-	<div class="m-6">
-		<a href="/account/delete" class="btn btn-hollow w-full">
-			<small>I want to delete my account</small>
-		</a>
-	</div>
+			<div class="modal-btns-wrapper">
+				<button on:click={() => goto('/account/delete')} class="btn btn-hollow text-sm">
+					I want to delete my account
+				</button>
+			</div>
 
-	<button on:click={() => (deleteAccountModal = false)} class="modal-x-btn">
-		<X />
-	</button>
-</Modal>
+			<button class="modal-x-btn" use:melt={$delAccountClose}><X /></button>
+		</div>
+	{/if}
+</div>
