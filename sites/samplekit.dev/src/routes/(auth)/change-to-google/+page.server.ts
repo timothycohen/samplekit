@@ -1,0 +1,63 @@
+import { fail as formFail, redirect } from '@sveltejs/kit';
+import { message, superValidate } from 'sveltekit-superforms/server';
+import { PUBLIC_GOOGLE_OAUTH_CLIENT_ID } from '$env/static/public';
+import { auth } from '$lib/auth/server';
+import { checkedRedirect } from '$lib/http/server';
+import { PUBLIC_GOOGLE_OAUTH_LINK_PATHNAME } from '$routes/(auth)/consts';
+import { confirmPassSchema } from '$routes/(auth)/validators';
+import type { Actions, PageServerLoad } from './$types';
+import type { Action } from '@sveltejs/kit';
+
+export const load: PageServerLoad = async ({ locals, url }) => {
+	const seshUser = await locals.seshHandler.getSessionUser();
+	if (!seshUser) return checkedRedirect('/login');
+	const authDetails = await auth.provider.pass.MFA.getDetailsOrThrow(seshUser.user.id);
+	const method = authDetails.method;
+	if (method === 'oauth') return checkedRedirect('/account/profile');
+
+	const confirmPassForm = await superValidate(confirmPassSchema, { id: 'confirmPassForm_/change-to-google' });
+
+	const error = url.searchParams.get('error') as null | 'auth-failed' | 'email-mismatch';
+	let errMsg = null;
+	switch (error) {
+		case 'auth-failed':
+			errMsg = 'Authentication failed.';
+			break;
+		case 'email-mismatch':
+			errMsg = `You are not logged into Google as ${seshUser.user.email}`;
+			break;
+	}
+
+	return {
+		errMsg,
+		mfaCount: authDetails.mfaCount,
+		email: seshUser.user.email,
+		confirmPassForm,
+	};
+};
+
+const passwordToLinkGoogle: Action = async ({ locals, request, cookies }) => {
+	const { user, session } = await locals.seshHandler.userOrRedirect();
+
+	const authDetails = await auth.provider.pass.MFA.getDetailsOrThrow(user.id);
+	if (authDetails.method === 'oauth') return checkedRedirect('/account/profile');
+	if (authDetails.mfaCount) return checkedRedirect('/account/profile');
+
+	const confirmPassForm = await superValidate(request, confirmPassSchema);
+
+	if (!confirmPassForm.valid) return formFail(400, { confirmPassForm });
+	const password = confirmPassForm.data.password;
+
+	const provider = await auth.provider.pass.email.get({ email: user.email, pass: password });
+	if (!provider) return message(confirmPassForm, { fail: 'Invalid password.' }, { status: 403 });
+
+	const googleLink = auth.provider.oauth.google.createStatelessUrl({
+		redirectPathname: PUBLIC_GOOGLE_OAUTH_LINK_PATHNAME,
+		clientId: PUBLIC_GOOGLE_OAUTH_CLIENT_ID,
+	});
+	auth.provider.oauth.google.setState({ persistent: session.persistent, cookies, url: googleLink });
+
+	return redirect(302, googleLink);
+};
+
+export const actions: Actions = { passwordToLinkGoogle };

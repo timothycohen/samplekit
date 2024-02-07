@@ -1,0 +1,151 @@
+<script lang="ts">
+	import { KeyRound, Loader2, X } from 'lucide-svelte';
+	import { superForm } from 'sveltekit-superforms/client';
+	import { useTurnstileService } from '$lib/botProtection/turnstile/client';
+	import { InputMessage, Modal } from '$lib/components';
+	import { GoogleFormButton, Or } from '$routes/(auth)/(login)/components';
+	import { PassInput } from '$routes/(auth)/components';
+	import { signinSchema } from '$routes/(auth)/validators';
+
+	export let data;
+
+	const {
+		form: signinForm,
+		errors: signinErrors,
+		constraints: signinConstraints,
+		enhance: signinEnhance,
+		message: signinMessage,
+		submitting: signinSubmitting,
+	} = superForm(data.signinForm, { taintedMessage: null, validators: signinSchema });
+
+	const {
+		form: resetForm,
+		errors: resetErrors,
+		constraints: resetConstraints,
+		enhance: resetEnhance,
+		message: resetMessage,
+		submitting: resetSubmitting,
+	} = superForm(data.emailPassResetForm, { taintedMessage: null });
+
+	const { turnstile, turnstileInput } = useTurnstileService();
+
+	$: inputDisabled = $signinSubmitting || $resetSubmitting;
+	$: signinDisabled = $signinSubmitting || $resetSubmitting || !$turnstile;
+	$: resetDisabled = $signinSubmitting || $resetSubmitting || !$turnstile || !!$resetMessage?.success;
+
+	let emailPassModal = false;
+</script>
+
+<h1 class="text-h4 font-medium">Welcome to SampleKit!</h1>
+<p class="text-sm">New here? <a href="/signup" class="link">Create an account.</a></p>
+<div class="mb-6" />
+<GoogleFormButton persistent={$signinForm.persistent} />
+<Or />
+
+<form action="/login?/loginWithPassword" method="post" use:signinEnhance use:turnstileInput={{ form: signinForm }}>
+	<label for="email" class="input-label">Email</label>
+	<input
+		bind:value={$signinForm.email}
+		name="email"
+		type="email"
+		id="email"
+		class="input-text peer"
+		class:input-invalid={$signinErrors.email}
+		placeholder="Enter your email"
+		autocomplete="username"
+		disabled={inputDisabled}
+		required
+		{...$signinConstraints.email}
+	/>
+	<div class="input-subtext text-error-9">{$signinErrors.email ?? ''}</div>
+
+	<div class="mt-5 flex justify-between">
+		<label class="input-label" for="password">Password</label>
+		<button type="button" class="link" on:click|preventDefault={() => (emailPassModal = true)}>
+			<small>Forgot Password?</small>
+		</button>
+	</div>
+
+	<PassInput
+		value={$signinForm.password}
+		onChange={(e) => ($signinForm.password = e.currentTarget.value)}
+		name_id="password"
+		invalid={!!$signinErrors.password}
+		autocomplete="current-password"
+		disabled={inputDisabled}
+		attrs={$signinConstraints.password}
+	/>
+	<div class="input-subtext text-error-9">{$signinErrors.password ?? ''}</div>
+
+	<div class="group mb-1 flex items-center justify-end gap-2">
+		<input type="checkbox" name="persistent" bind:checked={$signinForm.persistent} id="persistent" />
+		<label
+			for="persistent"
+			class="decoration-accent-6 select-none text-sm font-light underline-offset-2 group-hover:underline"
+		>
+			Remember me
+		</label>
+	</div>
+
+	<button class="btn btn-accent h-10 w-full py-0 transition-colors" disabled={signinDisabled} type="submit">
+		{#if $signinSubmitting}
+			<Loader2 class="inline h-5 w-5 animate-spin" />
+			Signing in...
+		{:else}
+			Sign in
+		{/if}
+	</button>
+
+	<InputMessage message={signinMessage} />
+</form>
+
+<Modal open={emailPassModal} onEscape={() => (emailPassModal = false)} onOutclick={() => (emailPassModal = false)}>
+	<form
+		action="/password-reset?/emailPassReset"
+		method="post"
+		use:resetEnhance
+		use:turnstileInput={{ form: resetForm }}
+	>
+		<div class="modal-icon-wrapper">
+			<KeyRound class="h-full w-full" />
+		</div>
+
+		<h4 class="modal-title">Reset your password.</h4>
+		<p class="modal-description">We will email you a password reset link.</p>
+
+		<label for="reset-email" class="input-label">Email</label>
+		<input
+			bind:value={$resetForm.email}
+			name="email"
+			type="email"
+			id="reset-email"
+			class="input-text peer"
+			class:input-invalid={$resetErrors.email}
+			placeholder="Enter your email"
+			autocomplete="username"
+			disabled={inputDisabled}
+			required
+			{...$resetConstraints.email}
+		/>
+		<InputMessage message={resetMessage} failOnly />
+
+		<button
+			class="btn btn-accent h-10 w-full py-0 transition-colors {$resetMessage?.success ? 'font-semibold' : ''}"
+			disabled={resetDisabled}
+			type="submit"
+		>
+			{#if $resetSubmitting}
+				<Loader2 class="inline h-5 w-5 animate-spin" />
+				Sending
+			{:else if $resetMessage?.success}
+				Sent!
+			{:else}
+				Email Password Reset Link
+			{/if}
+		</button>
+	</form>
+
+	<button type="button" on:click={() => (emailPassModal = false)} class="modal-x-btn">
+		<X />
+	</button>
+</Modal>

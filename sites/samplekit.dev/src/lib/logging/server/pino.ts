@@ -5,12 +5,13 @@ import type { PrettyOptions } from 'pino-pretty';
 
 export type PrettyOpts = Partial<Omit<pino.TransportTargetOptions<PrettyOptions>, 'target'>>;
 export type FileOpts = { destination: string; mkdir?: boolean };
-export type LogKey = 'debug' | 'error';
+export type LogKey = 'debug' | 'error' | 'expireTokens';
 export type LogOptions = Record<LogKey, FileOpts>;
 
 export const fileLogs: Record<LogKey, FileOpts> = {
 	debug: { destination: `${PINO_LOGFILE_ROOT}/debug.log`, mkdir: true },
 	error: { destination: `${PINO_LOGFILE_ROOT}/error.log`, mkdir: true },
+	expireTokens: { destination: `${PINO_LOGFILE_ROOT}/expire-tokens.log`, mkdir: true },
 };
 
 export const createPrettyTransport = (a: { level: Level; options?: PrettyOptions }): pino.TransportTargetOptions => ({
