@@ -1,43 +1,34 @@
-import { frontmatterSchema, type FrontMatter } from '../schema';
+import {
+	rawFrontMatterSchema,
+	type ProcessedFrontMatter,
+	type RawFrontMatter,
+	type LoadedFrontMatter,
+} from '../schema';
 
-const getPublishedPostData = async (): Promise<Array<FrontMatter>> => {
-	let modules;
-	try {
-		modules = Object.entries(import.meta.glob('./**/data.ts'));
-	} catch {
-		console.error('Error reading posts directory. Skipping...');
-		return [];
-	}
+/** @throws Error */
+const postData: Record<string, Promise<LoadedFrontMatter>> = (() => {
+	const modules = Object.entries(import.meta.glob('/src/routes/articles/**/data.ts')) as [
+		string,
+		() => Promise<{ default: RawFrontMatter }>,
+	][];
 
-	const maybePosts = await Promise.all(
-		modules.map(async ([path, load]) => {
-			const rawData = ((await load()) as { default: FrontMatter })?.default ?? {};
-			rawData.articleSlug = path.split('/')[1]!;
-			const validated = frontmatterSchema.safeParse(rawData);
-			if (validated.success) return validated.data;
-			console.error(`Error reading frontmatter for \`${path}\`. Skipping...`);
-			console.error(validated.error.errors);
-			return null;
-		}),
-	);
-
-	return maybePosts
-		.filter((p): p is FrontMatter => p !== null)
-		.sort((a, b) => b.publishedAt.getTime() - a.publishedAt.getTime());
-};
-
-type Neighbor = { slug: string; title: string } | null;
-
-function addPrevNext(sortedParsed: FrontMatter[]) {
-	return sortedParsed.map((data, i) => {
-		const prevFM = sortedParsed[i - 1];
-		const nextFM = sortedParsed[i + 1];
-
-		const prev: Neighbor = prevFM ? { slug: prevFM.articleSlug, title: prevFM.title } : null;
-		const next: Neighbor = nextFM ? { slug: nextFM.articleSlug, title: nextFM.title } : null;
-		return { ...data, prev, next };
-	});
-}
+	return modules.reduce<Record<string, Promise<LoadedFrontMatter>>>((acc, [url, load]) => {
+		const slug = (() => {
+			const a = url.split('/');
+			return a[a.length - 2]!;
+		})();
+		const frontMatter = load()
+			.then((loaded) => loaded.default)
+			.then((rawData) => {
+				const validated = rawFrontMatterSchema.safeParse({ ...rawData });
+				if (validated.success) return { ...validated.data, articleSlug: slug };
+				console.error(validated.error.errors);
+				throw new Error(`Error reading frontmatter for \`${slug}\`. Skipping...`);
+			});
+		acc[slug] = frontMatter;
+		return acc;
+	}, {});
+})();
 
 const expandSeries = <
 	T extends { title: string; articleSlug: string; publishedAt: Date; series?: { name: string; position: number } },
@@ -83,19 +74,46 @@ const expandSeries = <
 	});
 };
 
-export const allPostData = await getPublishedPostData().then(addPrevNext).then(expandSeries);
+const sort = <T extends { publishedAt: Date; series?: { name: string; position: number; finalPublishDate: Date } }>(
+	parsed: T[],
+	method: 'date' | 'series',
+): T[] => {
+	if (method === 'date') return parsed.sort((a, b) => b.publishedAt.getTime() - a.publishedAt.getTime());
 
-const modules = import.meta.glob('./**/+page.svx', { eager: true }) as Record<string, typeof import('./post.svx')>;
-
-export const getPublishedPost = async (slug: string) => {
-	const data = allPostData.find((p) => p.articleSlug === slug);
-	if (!data) return null;
-	try {
-		const module = modules[`./${slug}/+page.svx`];
-		if (!module) throw new Error('module not found');
-		return { data, readingTime: module.metadata.readingTime, component: module.default };
-	} catch (e) {
-		console.log(`unable to load article ${slug}`);
-		return null;
-	}
+	return parsed.sort((a, b) => {
+		if (a.series && b.series) {
+			if (a.series.name === b.series.name) {
+				return b.series.position - a.series.position;
+			}
+		}
+		return (
+			(b.series?.finalPublishDate ?? b.publishedAt).getTime() - (a.series?.finalPublishDate ?? a.publishedAt).getTime()
+		);
+	});
 };
+
+function addPrevNextLinks<T extends { articleSlug: string; title: string }>(
+	parsed: T[],
+): (T & { prev: { slug: string; title: string } | null; next: { slug: string; title: string } | null })[] {
+	type Neighbor = { slug: string; title: string } | null;
+
+	return parsed.map((data, i) => {
+		const nextFM = parsed[i - 1];
+		const prevFM = parsed[i + 1];
+
+		const prev: Neighbor = prevFM ? { slug: prevFM.articleSlug, title: prevFM.title } : null;
+		const next: Neighbor = nextFM ? { slug: nextFM.articleSlug, title: nextFM.title } : null;
+		return { ...data, prev, next };
+	});
+}
+
+/**
+ * .svx files are first processed by transforming markdown code and tables into valid html – see svelte.config.js
+ *
+ * in articles/load/common, all article/*\/data.ts files are imported and transformed from RawFrontMatter into ProcessedFrontMatter
+ *
+ */
+export const allPostData: ProcessedFrontMatter[] = await Promise.all(Object.values(postData))
+	.then(expandSeries)
+	.then(addPrevNextLinks)
+	.then((fm) => sort(fm, 'date'));
