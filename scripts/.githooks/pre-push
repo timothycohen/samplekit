@@ -1,0 +1,5 @@
+#!/bin/bash
+
+printf '\n=====================\nchecking dependencies\n=====================\n\n'
+pnpm install --frozen-lockfile
+exit $?
