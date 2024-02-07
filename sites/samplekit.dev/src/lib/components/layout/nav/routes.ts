@@ -20,6 +20,8 @@ export type RouteGroup = {
 	children: (RouteLeaf | RouteGroup)[];
 };
 
+export const accountLayoutRoutes: (RouteLeaf | RouteGroup)[] = [{ path: '/appearance', text: 'Appearance', depth: 0 }];
+
 const userDesktopRoutes: { title: string; url: string }[] = [];
 
 const noUserDesktopRoutes: { title: string; url: string }[] = [];
