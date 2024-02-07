@@ -14,9 +14,15 @@ declare global {
 		interface PageData {
 			layout: { showFooter: boolean; showHeader: boolean };
 		}
-		// interface Locals {}
+		interface Locals extends Record<string, unknown> {
+			seshHandler: import('./hooks.server').SessionHandler;
+		}
 		// interface PageState {}
 		// interface Platform {}
+
+		namespace Superforms {
+			type Message = { success?: never; fail: string } | { fail?: never; success: string };
+		}
 	}
 
 	interface Window {
