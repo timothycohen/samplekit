@@ -11,7 +11,18 @@ import { SESClient, UpdateTemplateCommand } from '@aws-sdk/client-ses';
 /**
  * @type {EmailTemplate[]}
  */
-const templates = [];
+const templates = [
+	{
+		name: 'authEmails',
+		location: './scripts/email/templates/auth-email.html',
+		TextPart: `{{header}}
+
+{{body}}
+
+{{button_text}}: {{href}}
+`,
+	},
+];
 
 const IAM_ACCESS_KEY_ID = process.env['IAM_ACCESS_KEY_ID'];
 const IAM_SECRET_ACCESS_KEY = process.env['IAM_SECRET_ACCESS_KEY'];
