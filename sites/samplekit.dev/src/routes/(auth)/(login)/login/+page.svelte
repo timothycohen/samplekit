@@ -1,8 +1,9 @@
 <script lang="ts">
+	import { createDialog, melt } from '@melt-ui/svelte';
 	import { KeyRound, Loader2, X } from 'lucide-svelte';
 	import { superForm } from 'sveltekit-superforms/client';
 	import { useTurnstileService } from '$lib/botProtection/turnstile/client';
-	import { InputMessage, Modal } from '$lib/components';
+	import { InputMessage } from '$lib/components';
 	import { GoogleFormButton, Or } from '$routes/(auth)/(login)/components';
 	import { PassInput } from '$routes/(auth)/components';
 	import { signinSchema } from '$routes/(auth)/validators';
@@ -29,11 +30,14 @@
 
 	const { turnstile, turnstileInput } = useTurnstileService();
 
+	const {
+		elements: { portalled, overlay, content, title, description, close, trigger },
+		states: { open: emailPassModal },
+	} = createDialog({ forceVisible: true });
+
 	$: inputDisabled = $signinSubmitting || $resetSubmitting;
 	$: signinDisabled = $signinSubmitting || $resetSubmitting || !$turnstile;
 	$: resetDisabled = $signinSubmitting || $resetSubmitting || !$turnstile || !!$resetMessage?.success;
-
-	let emailPassModal = false;
 </script>
 
 <h1 class="text-h4 font-medium">Welcome to SampleKit!</h1>
@@ -61,7 +65,7 @@
 
 	<div class="mt-5 flex justify-between">
 		<label class="input-label" for="password">Password</label>
-		<button type="button" class="link" on:click|preventDefault={() => (emailPassModal = true)}>
+		<button type="button" class="link" use:melt={$trigger}>
 			<small>Forgot Password?</small>
 		</button>
 	</div>
@@ -99,53 +103,56 @@
 	<InputMessage message={signinMessage} />
 </form>
 
-<Modal open={emailPassModal} onEscape={() => (emailPassModal = false)} onOutclick={() => (emailPassModal = false)}>
-	<form
-		action="/password-reset?/emailPassReset"
-		method="post"
-		use:resetEnhance
-		use:turnstileInput={{ form: resetForm }}
-	>
-		<div class="modal-icon-wrapper">
-			<KeyRound class="h-full w-full" />
+<div use:melt={$portalled}>
+	{#if $emailPassModal}
+		<div use:melt={$overlay} class="modal-overlay" />
+		<div class="modal-content" use:melt={$content}>
+			<form
+				action="/password-reset?/emailPassReset"
+				method="post"
+				use:resetEnhance
+				use:turnstileInput={{ form: resetForm }}
+			>
+				<div class="modal-icon-wrapper">
+					<KeyRound class="h-full w-full" />
+				</div>
+
+				<h2 use:melt={$title} class="modal-title">Reset your password.</h2>
+				<p use:melt={$description} class="modal-description">We will email you a password reset link.</p>
+
+				<label for="reset-email" class="input-label">Email</label>
+				<input
+					bind:value={$resetForm.email}
+					name="email"
+					type="email"
+					id="reset-email"
+					class="input-text peer"
+					class:input-invalid={$resetErrors.email}
+					placeholder="Enter your email"
+					autocomplete="username"
+					disabled={inputDisabled}
+					required
+					{...$resetConstraints.email}
+				/>
+				<InputMessage message={resetMessage} failOnly />
+
+				<button
+					class="btn btn-accent h-10 w-full py-0 transition-colors {$resetMessage?.success ? 'font-semibold' : ''}"
+					disabled={resetDisabled}
+					type="submit"
+				>
+					{#if $resetSubmitting}
+						<Loader2 class="inline h-5 w-5 animate-spin" />
+						Sending
+					{:else if $resetMessage?.success}
+						Sent!
+					{:else}
+						Email Password Reset Link
+					{/if}
+				</button>
+			</form>
+
+			<button use:melt={$close} class="modal-x-btn"><X /></button>
 		</div>
-
-		<h4 class="modal-title">Reset your password.</h4>
-		<p class="modal-description">We will email you a password reset link.</p>
-
-		<label for="reset-email" class="input-label">Email</label>
-		<input
-			bind:value={$resetForm.email}
-			name="email"
-			type="email"
-			id="reset-email"
-			class="input-text peer"
-			class:input-invalid={$resetErrors.email}
-			placeholder="Enter your email"
-			autocomplete="username"
-			disabled={inputDisabled}
-			required
-			{...$resetConstraints.email}
-		/>
-		<InputMessage message={resetMessage} failOnly />
-
-		<button
-			class="btn btn-accent h-10 w-full py-0 transition-colors {$resetMessage?.success ? 'font-semibold' : ''}"
-			disabled={resetDisabled}
-			type="submit"
-		>
-			{#if $resetSubmitting}
-				<Loader2 class="inline h-5 w-5 animate-spin" />
-				Sending
-			{:else if $resetMessage?.success}
-				Sent!
-			{:else}
-				Email Password Reset Link
-			{/if}
-		</button>
-	</form>
-
-	<button type="button" on:click={() => (emailPassModal = false)} class="modal-x-btn">
-		<X />
-	</button>
-</Modal>
+	{/if}
+</div>
