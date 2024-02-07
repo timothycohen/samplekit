@@ -20,8 +20,10 @@
 		"build:site": "read -p 'Which .env mode? (ex: production uses .env.production): ' mode; if [ -z $mode ]; then echo Aborted && exit 1; elif [ ! -e .env.$mode ]; then echo Not found && exit 1; fi; vite build --mode $mode",
 		"build": "pnpm build:dependencies && pnpm build:site",
 		"preview": "vite preview",
-		"check": "svelte-kit sync && svelte-check --fail-on-warnings --tsconfig ./tsconfig.json",
-		"check:watch": "svelte-kit sync && svelte-check --fail-on-warnings --tsconfig ./tsconfig.json --watch",
+		"check:spell": "cspell lint --no-must-find-files **/*.svx",
+		"check:svelte": "svelte-kit sync && svelte-check --fail-on-warnings --tsconfig ./tsconfig.json",
+		"check:watch": "pnpm check-svelte --watch",
+		"check": "pnpm check:spell && pnpm run check:svelte",
 		"ses:update_templates": "env-cmd -f .env._production node ./scripts/email/updateTemplates.js"
 	},
 	"dependencies": {
@@ -58,6 +60,7 @@
 		"@types/platform": "^1.3.6",
 		"@types/postcss-js": "^4.0.4",
 		"autoprefixer": "^10.4.16",
+		"cspell": "^8.3.2",
 		"drizzle-kit": "^0.20.6",
 		"env-cmd": "^10.1.0",
 		"mdsvex": "^0.11.0",
