@@ -172,6 +172,9 @@ importers:
       tailwindcss:
         specifier: ^3.3.6
         version: 3.4.1
+      turnstile-types:
+        specifier: ^1.2.0
+        version: 1.2.0
       vite:
         specifier: ^5.0.3
         version: 5.0.11(@types/node@20.11.0)
@@ -5917,6 +5920,10 @@ packages:
   /tslib@2.6.2:
     resolution: {integrity: sha512-AEYxH93jGFPn/a2iVAwW87VuUIkR1FVUKB77NwMF7nBTDkDrrT/Hpt/IrCJ0QXhW27jTBDcf5ZY7w6RiqTMw2Q==}
     requiresBuild: true
+
+  /turnstile-types@1.2.0:
+    resolution: {integrity: sha512-cTtNEtCYpcXeXR5AOD0YR0xZpXk1iZeTOuXT5vAGNowGGdgapC+k6m/lOVSkmDOUopZmPtmu311XeULIro4gUA==}
+    dev: true
 
   /twilio@4.21.0:
     resolution: {integrity: sha512-+meDbJPOxs6vEysJ7xX7XMn6FLKmZFSeVzMKjzN9NWgDXssp713Kf1ukteZlXhnhd7/NtNiUv5OU17qVgBb/BQ==}
