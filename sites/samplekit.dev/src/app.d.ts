@@ -7,6 +7,10 @@ declare global {
 		}
 		type JSONError = App.Error & { status: number };
 
+		namespace Superforms {
+			type Message = { success?: never; fail: string } | { fail?: never; success: string };
+		}
+
 		// interface Locals {}
 		// interface PageData {}
 		// interface PageState {}
