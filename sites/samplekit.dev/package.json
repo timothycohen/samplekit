@@ -11,6 +11,10 @@
 		"check": "svelte-kit sync && svelte-check --fail-on-warnings --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --fail-on-warnings --tsconfig ./tsconfig.json --watch"
 	},
+	"dependencies": {
+		"pino": "^8.17.2",
+		"pino-pretty": "^10.3.1"
+	},
 	"devDependencies": {
 		"@sveltejs/adapter-auto": "^3.0.0",
 		"@sveltejs/enhanced-img": "^0.1.6",
