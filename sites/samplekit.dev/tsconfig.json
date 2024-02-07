@@ -3,7 +3,9 @@
 	"include": [
 		"./drizzle.gen.ts",
 		"./drizzle.studio.ts",
+		"./postcss.config.js",
 		"./svelte.config.js",
+		"./tailwind.config.ts",
 		"./vite.config.ts",
 		"./.svelte-kit/ambient.d.ts",
 		"./.svelte-kit/non-ambient.d.ts",
