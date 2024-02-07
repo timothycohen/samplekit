@@ -105,6 +105,9 @@ importers:
       pino-pretty:
         specifier: ^10.3.1
         version: 10.3.1
+      platform:
+        specifier: ^1.3.6
+        version: 1.3.6
       twilio:
         specifier: ^4.20.0
         version: 4.21.0
@@ -142,6 +145,9 @@ importers:
       '@types/pg':
         specifier: ^8.10.9
         version: 8.10.9
+      '@types/platform':
+        specifier: ^1.3.6
+        version: 1.3.6
       '@types/postcss-js':
         specifier: ^4.0.4
         version: 4.0.4
@@ -2274,6 +2280,10 @@ packages:
       '@types/node': 20.11.0
       pg-protocol: 1.6.0
       pg-types: 4.0.1
+
+  /@types/platform@1.3.6:
+    resolution: {integrity: sha512-ZmSaqHuvzv+jC232cFoz2QqPUkaj6EvMmCrWcx3WRr7xTPVFCMUOTcOq8m2d+Zw1iKRc1kDiaA+jtNrV0hkVew==}
+    dev: true
 
   /@types/postcss-js@4.0.4:
     resolution: {integrity: sha512-j5+GMZVIPCJpRTwI/mO64mCzv7X+zAEq3JP0EV2lo/BrLWHAohEubUJimIAY23rH27+wKce0fXUYjAdBoqlaYw==}
@@ -4918,6 +4928,10 @@ packages:
     resolution: {integrity: sha512-saLsH7WeYYPiD25LDuLRRY/i+6HaPYr6G1OUlN39otzkSTxKnubR9RTxS3/Kk50s1g2JTgFwWQDQyplC5/SHZg==}
     engines: {node: '>= 6'}
     dev: true
+
+  /platform@1.3.6:
+    resolution: {integrity: sha512-fnWVljUchTro6RiCFvCXBbNhJc2NijN7oIQxbwsyL0buWJPG85v81ehlHI9fXrJsMNgTofEoWIQeClKpgxFLrg==}
+    dev: false
 
   /pngjs@5.0.0:
     resolution: {integrity: sha512-40QW5YalBNfQo5yRYmiw7Yz6TKKVr3h6970B2YE+3fQpsWcrbj1PzJgxeJ19DRQjhMbKPIuMY8rFaXc8moolVw==}
