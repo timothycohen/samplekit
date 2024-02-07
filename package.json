@@ -4,9 +4,13 @@
 	"private": true,
 	"type": "module",
 	"author": "Tim Cohen <contact@timcohen.dev>",
-	"scripts": {},
-	"devDependencies": {},
-	"dependencies": {},
+	"scripts": {
+		"check": "pnpm --recursive --no-bail check"
+	},
+	"devDependencies": {
+		"@types/node": "^20.10.5",
+		"typescript": "^5.3.3"
+	},
 	"packageManager": "pnpm@8.9.0",
 	"engines": {
 		"node": ">=18.13",
