@@ -1,22 +1,26 @@
 import { error } from '@sveltejs/kit';
-import { allPostData, type ArticleSlug } from '$lib/articles/load';
+import { allPostData, demoMetaComponentsMap, type ArticleSlug } from '$lib/articles/load';
 import { demoCodeMap } from '$lib/articles/load/server';
-import type { ServerFrontMatter } from '$lib/articles/schema';
+import { defaultMetaRawComponents, type DemoLazyServer, type ServerFrontMatter } from '$lib/articles/schema';
 import type { LayoutServerLoad } from './$types';
 
 /**
  * Sort Order:
- * Demo.svelte
+ * The rendered components
  * folder depth
  * alphabetic svelte files
  * alphabetic ts files
  * alphabetic extensions
  * alphabetic file name
  */
-const sortInPlace = <T extends { title: string }>(hasTitle: T[]): T[] =>
+const sortInPlace = <T extends { title: string; renderIndex: number }>(hasTitle: T[]): T[] =>
 	hasTitle.sort((a, b) => {
-		if (a.title === 'Demo.svelte') return -1;
-		else if (b.title === 'Demo.svelte') return 1;
+		if (a.renderIndex >= 0 && b.renderIndex >= 0) {
+			return a.renderIndex - b.renderIndex;
+		}
+		if (a.renderIndex >= 0 || b.renderIndex >= 0) {
+			return b.renderIndex - a.renderIndex;
+		}
 
 		const extensionA = a.title.split('.').pop()!;
 		const extensionB = b.title.split('.').pop()!;
@@ -41,24 +45,33 @@ export const load: LayoutServerLoad = async ({ url }): Promise<{ article: Server
 	const slug = url.pathname.split('/').pop()! as ArticleSlug;
 	const frontMatter = allPostData.find((p) => p.articleSlug === slug);
 	if (!frontMatter) return error(404, `Article not found`);
+	const article: ServerFrontMatter = { ...frontMatter, lazyDemos: {} };
 
 	const demos = demoCodeMap[slug];
-	if (!demos) return { article: frontMatter };
+	if (!demos) return { article };
 
-	const article: ServerFrontMatter = frontMatter;
-	const { main, ...lazy } = Object.entries(demos).reduce<NonNullable<ServerFrontMatter['lazyDemos']>>(
+	const { main, lazy } = Object.entries(demos).reduce<{
+		main: DemoLazyServer;
+		lazy: Record<string, DemoLazyServer>;
+	}>(
 		(acc, [demoName, demoModulesCode]) => {
-			acc[demoName] = {
-				highlightedFiles: sortInPlace(
-					demoModulesCode.map(({ filename: title, highlightedRawHTML: rawHTML }) => ({ title, rawHTML })),
-				),
-			};
+			const svelteFileNames = Object.keys(demoMetaComponentsMap[slug]?.[demoName] ?? defaultMetaRawComponents);
+
+			const highlightedFiles = sortInPlace(
+				demoModulesCode.map(({ filename, highlightedRawHTML }) => ({
+					title: filename,
+					rawHTML: highlightedRawHTML,
+					renderIndex: svelteFileNames.indexOf(filename),
+				})),
+			);
+			if (demoName === 'main') acc.main = { highlightedFiles };
+			else acc.lazy[demoName] = { highlightedFiles };
 			return acc;
 		},
-		{},
+		{ main: { highlightedFiles: [] }, lazy: {} },
 	);
 
-	if (main) {
+	if (main.highlightedFiles.length) {
 		article.mainDemo = {
 			highlightedFiles: await Promise.all(
 				main.highlightedFiles.map(async ({ title, rawHTML }) => ({ title, rawHTML: await rawHTML })),

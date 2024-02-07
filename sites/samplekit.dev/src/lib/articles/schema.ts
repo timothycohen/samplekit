@@ -59,15 +59,20 @@ export type RawFrontMatter = z.infer<typeof rawFrontMatterSchema>;
 export type LoadedFrontMatter = z.infer<typeof loadedFrontMatter>;
 export type ProcessedFrontMatter = z.infer<typeof processedFrontMatter>;
 
-export type RawDemoMeta = { bg?: true; center?: true; noBorder?: true; noPadding?: true; title?: string };
-export const defaultRawMetaData: RawDemoMeta = { title: 'Interactive Demo' };
-export type ProcessedDemoMeta = RawDemoMeta & { title: string };
+export type MetaRawComponents = Record<
+	`${string}${'.svelte'}`,
+	{ bg?: true; center?: true; noBorder?: true; noPadding?: true; title?: string }
+>;
+export const defaultMetaRawComponents: MetaRawComponents = { 'Demo.svelte': { title: 'Interactive Demo' } };
+export type MetaProcessedComponents = MetaRawComponents[keyof MetaRawComponents] & { title: string };
 
 type DemoEagerServer = { highlightedFiles: Array<{ title: string; rawHTML: string }> };
-type DemoLazyServer = { highlightedFiles: Array<{ title: string; rawHTML: Promise<string> }> };
-type DemoEagerClient = DemoEagerServer & { renderable?: { meta: ProcessedDemoMeta; component: NoPropComponent } };
+export type DemoLazyServer = { highlightedFiles: Array<{ title: string; rawHTML: Promise<string> }> };
+type DemoEagerClient = DemoEagerServer & {
+	renderables?: Array<{ meta: MetaProcessedComponents; component: NoPropComponent }>;
+};
 type DemoLazyClient = DemoLazyServer & {
-	renderable?: { meta: ProcessedDemoMeta; component: Promise<NoPropComponent> };
+	renderables?: Array<{ meta: MetaProcessedComponents; component: Promise<NoPropComponent> }>;
 };
 
 export type ServerFrontMatter = ProcessedFrontMatter & {
