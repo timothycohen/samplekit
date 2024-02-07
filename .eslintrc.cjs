@@ -32,10 +32,19 @@ module.exports = {
 			parserOptions: { parser: '@typescript-eslint/parser', sourceType: 'module', ecmaVersion: 2021 },
 			env: { browser: true, es2021: true, node: false },
 		},
-		// {
-		// files: ['sites/**'],
-		// rules: { '@typescript-eslint/no-throw-literal': 'error' },
-		// },
+		{
+			files: ['packages/**' /* 'sites/**' */],
+			rules: { '@typescript-eslint/no-throw-literal': 'error' },
+		},
+		{
+			files: ['packages/**'],
+			rules: { 'no-console': 'error' },
+		},
+		{
+			files: ['packages/auth/**'],
+			parserOptions: { project: './packages/auth/tsconfig.json' },
+			env: { browser: false, es2021: true, node: false },
+		},
 		{
 			files: ['sites/samplekit.dev/**'],
 			// parserOptions: { project: './sites/samplekit.dev/tsconfig.json' },
