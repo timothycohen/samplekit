@@ -1,6 +1,6 @@
-import { redirect } from '@sveltejs/kit';
 import { superValidate } from 'sveltekit-superforms/server';
 import { auth } from '$lib/auth/server';
+import { checkedRedirect } from '$lib/http/server';
 import { pluralize } from '$lib/utils/common';
 import { confirmPassSchema, sendSMSTokenSchema, verifyOTPSchema } from '$routes/(auth)/validators';
 import { desiredParamsOrRedirect } from './utils';
@@ -16,7 +16,7 @@ export const load: LayoutServerLoad = async ({ locals, url }) => {
 		: authDetails.method === 'oauth'
 			? ('Email' as const)
 			: ('Password' as const);
-	if (authDetails.method !== 'pass') return redirect(302, '/account/security/auth');
+	if (authDetails.method !== 'pass') return checkedRedirect('/account/security/auth');
 
 	const timeRemaining = auth.session.getTempConf({ session });
 	const verified = !!timeRemaining;

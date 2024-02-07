@@ -1,5 +1,5 @@
-import { redirect } from '@sveltejs/kit';
 import { mfaKinds } from '$lib/db/client';
+import { checkedRedirect } from '$lib/http/server';
 
 type Res = { action: 'register' | 'remove'; desiredMFA: DB.MFAs.Kind };
 
@@ -23,15 +23,15 @@ const getAfterValidatedParams = (path: string): Res | null => {
 export const desiredParamsOrRedirect = (arg: { verified: boolean; nextParam: string | null; path: string }): Res => {
 	if (!arg.verified) {
 		const after = getAfterValidatedParams(arg.path);
-		if (after) return redirect(302, `/mfa/update?next=${after.action}-${after.desiredMFA}`);
+		if (after) return checkedRedirect(`/mfa/update?next=${after.action}-${after.desiredMFA}`);
 		const before = getBeforeValidatedParams(arg.nextParam);
-		if (!before) return redirect(302, '/account/security/auth');
+		if (!before) return checkedRedirect('/account/security/auth');
 		return before;
 	} else {
 		const before = getBeforeValidatedParams(arg.nextParam);
-		if (before) return redirect(302, `/mfa/update/${before.action}/${before.desiredMFA}`);
+		if (before) return checkedRedirect(`/mfa/update/${before.action}/${before.desiredMFA}`);
 		const after = getAfterValidatedParams(arg.path);
-		if (!after) return redirect(302, '/account/security/auth');
+		if (!after) return checkedRedirect('/account/security/auth');
 		return after;
 	}
 };

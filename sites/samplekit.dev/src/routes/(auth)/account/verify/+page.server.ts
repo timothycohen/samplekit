@@ -1,6 +1,7 @@
 import { fail as formFail, redirect } from '@sveltejs/kit';
 import { message, superValidate } from 'sveltekit-superforms/server';
 import { auth } from '$lib/auth/server';
+import { checkedRedirect } from '$lib/http/server';
 import { sanitizeRedirectUrl } from '$lib/http/server';
 import { confirmPassSchema, verifyOTPSchema } from '$routes/(auth)/validators';
 import type { Actions } from './$types';
@@ -14,7 +15,7 @@ const seshConfFromPassword: Action = async ({ request, locals }) => {
 	const sanitizedPath = sanitizeRedirectUrl(confirmPassForm.data.redirect_path);
 
 	const authDetails = await auth.provider.pass.MFA.getDetailsOrThrow(user.id);
-	if (authDetails.method !== 'pass') return redirect(302, '/account/security/auth');
+	if (authDetails.method !== 'pass') return checkedRedirect('/account/security/auth');
 	if (authDetails.mfaCount > 0)
 		return message(confirmPassForm, { fail: 'Please authenticate with MFA.' }, { status: 403 });
 

@@ -1,19 +1,19 @@
-import { redirect } from '@sveltejs/kit';
 import { message, superValidate } from 'sveltekit-superforms/server';
 import { auth } from '$lib/auth/server';
+import { checkedRedirect } from '$lib/http/server';
 import { sendSMSTokenSchema, verifyOTPSchema } from '$routes/(auth)/validators';
 import type { Actions, PageServerLoad } from './$types';
 import type { Action } from '@sveltejs/kit';
 
 export const load: PageServerLoad = async ({ locals }) => {
 	const seshUser = await locals.seshHandler.getSessionUser();
-	if (!seshUser) return redirect(302, '/login');
-	if (seshUser.session.awaitingEmailVeri) return redirect(302, '/email-verification');
-	if (!seshUser.session.awaitingMFA) return redirect(302, '/account/profile');
+	if (!seshUser) return checkedRedirect('/login');
+	if (seshUser.session.awaitingEmailVeri) return checkedRedirect('/email-verification');
+	if (!seshUser.session.awaitingMFA) return checkedRedirect('/account/profile');
 
 	const authDetails = await auth.provider.pass.MFA.getDetailsOrThrow(seshUser.user.id);
-	if (authDetails.method !== 'pass') return redirect(302, '/account/security/auth');
-	if (!authDetails.mfaCount) return redirect(302, '/account/security/auth');
+	if (authDetails.method !== 'pass') return checkedRedirect('/account/security/auth');
+	if (!authDetails.mfaCount) return checkedRedirect('/account/security/auth');
 
 	const phoneNumberLast4 = authDetails.mfas.sms?.slice(-4);
 	const [sendSMSTokenForm, verifySMSTokenForm, verifyAuthenticatorTokenForm] = await Promise.all([
@@ -41,9 +41,9 @@ export const load: PageServerLoad = async ({ locals }) => {
 
 const loginWithSMS: Action = async ({ request, locals }) => {
 	const seshUser = await locals.seshHandler.getSessionUser();
-	if (!seshUser) return redirect(302, '/login');
-	if (seshUser.session.awaitingEmailVeri) return redirect(302, '/email-verification');
-	if (!seshUser.session.awaitingMFA) return redirect(302, '/account/profile');
+	if (!seshUser) return checkedRedirect('/login');
+	if (seshUser.session.awaitingEmailVeri) return checkedRedirect('/email-verification');
+	if (!seshUser.session.awaitingMFA) return checkedRedirect('/account/profile');
 
 	const verifySMSTokenForm = await superValidate(request, verifyOTPSchema);
 	if (!verifySMSTokenForm.valid) return message(verifySMSTokenForm, { fail: 'Invalid digits' }, { status: 400 });
@@ -54,14 +54,14 @@ const loginWithSMS: Action = async ({ request, locals }) => {
 
 	await auth.session.removeAwaitingMFA({ sessionId: seshUser.session.id });
 
-	return redirect(302, `/account/profile`);
+	return checkedRedirect(`/account/profile`);
 };
 
 const loginWithAuthenticator: Action = async ({ request, locals }) => {
 	const seshUser = await locals.seshHandler.getSessionUser();
-	if (!seshUser) return redirect(302, '/login');
-	if (seshUser.session.awaitingEmailVeri) return redirect(302, '/email-verification');
-	if (!seshUser.session.awaitingMFA) return redirect(302, '/account/profile');
+	if (!seshUser) return checkedRedirect('/login');
+	if (seshUser.session.awaitingEmailVeri) return checkedRedirect('/email-verification');
+	if (!seshUser.session.awaitingMFA) return checkedRedirect('/account/profile');
 
 	const verifyAuthenticatorTokenForm = await superValidate(request, verifyOTPSchema);
 	if (!verifyAuthenticatorTokenForm.valid)
@@ -73,7 +73,7 @@ const loginWithAuthenticator: Action = async ({ request, locals }) => {
 
 	await auth.session.removeAwaitingMFA({ sessionId: seshUser.session.id });
 
-	return redirect(302, `/account/profile`);
+	return checkedRedirect(`/account/profile`);
 };
 
 export const actions: Actions = { loginWithSMS, loginWithAuthenticator };

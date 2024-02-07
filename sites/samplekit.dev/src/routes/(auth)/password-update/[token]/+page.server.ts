@@ -1,9 +1,9 @@
 import { fail as formFail } from '@sveltejs/kit';
-import { redirect } from '@sveltejs/kit';
 import platform from 'platform';
 import { message, superValidate } from 'sveltekit-superforms/server';
 import { auth } from '$lib/auth/server';
 import { transports } from '$lib/auth/server';
+import { checkedRedirect } from '$lib/http/server';
 import { createNewPassSchema } from '$routes/(auth)/validators';
 import type { Actions, PageServerLoad } from './$types';
 import type { Action } from '@sveltejs/kit';
@@ -11,9 +11,9 @@ import type { Action } from '@sveltejs/kit';
 export const load: PageServerLoad = async ({ params }) => {
 	const { token } = params;
 	const { tokenErr, userId } = await auth.token.pwReset.validate({ token: token, checkOnly: true });
-	if (tokenErr) return redirect(302, '/invalid-token');
+	if (tokenErr) return checkedRedirect('/invalid-token');
 	const user = await auth.user.get({ userId });
-	if (!user) return redirect(302, '/invalid-token');
+	if (!user) return checkedRedirect('/invalid-token');
 
 	const createNewPassForm = await superValidate(createNewPassSchema, {
 		id: 'createNewPassForm_/password-update/[token]',
@@ -66,9 +66,9 @@ const createNewPassFromPwReset: Action<{ token: string }> = async ({ request, pa
 	);
 	locals.seshHandler.set({ session });
 
-	if (awaitingMFA) return redirect(302, '/login/verify-mfa');
+	if (awaitingMFA) return checkedRedirect('/login/verify-mfa');
 
-	return redirect(302, '/account/profile');
+	return checkedRedirect('/account/profile');
 };
 
 export const actions: Actions = { createNewPassFromPwReset };

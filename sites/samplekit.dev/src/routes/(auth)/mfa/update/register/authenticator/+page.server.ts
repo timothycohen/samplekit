@@ -1,8 +1,8 @@
-import { redirect } from '@sveltejs/kit';
 import { message, superValidate } from 'sveltekit-superforms/server';
 import { auth } from '$lib/auth/server';
 import { transports } from '$lib/auth/server';
 import { mfaLabels } from '$lib/db/client';
+import { checkedRedirect } from '$lib/http/server';
 import { verifyOTPSchema } from '$routes/(auth)/validators';
 import type { Actions, PageServerLoad } from './$types';
 import type { Action } from '@sveltejs/kit';
@@ -52,7 +52,7 @@ const registerMFA_Authenticator_WithSeshConf: Action = async ({ request, locals 
 		transports.sendEmail.MFAUpdate({ editKind: 'added', email: user.email, mfaLabel: mfaLabels['authenticator'] }),
 	]);
 
-	return redirect(302, `/account/security/auth`);
+	return checkedRedirect(`/account/security/auth`);
 };
 
 export const actions: Actions = { registerMFA_Authenticator_WithSeshConf };

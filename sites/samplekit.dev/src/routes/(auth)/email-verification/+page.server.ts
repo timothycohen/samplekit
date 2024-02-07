@@ -1,21 +1,21 @@
 import { fail as formFail } from '@sveltejs/kit';
-import { redirect } from '@sveltejs/kit';
 import { auth } from '$lib/auth/server';
 import { transports } from '$lib/auth/server';
+import { checkedRedirect } from '$lib/http/server';
 import type { Actions, PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ locals }) => {
 	const seshUser = await locals.seshHandler.getSessionUser();
-	if (!seshUser) return redirect(302, '/login');
-	if (!seshUser.session.awaitingEmailVeri) return redirect(302, '/account/profile');
+	if (!seshUser) return checkedRedirect('/login');
+	if (!seshUser.session.awaitingEmailVeri) return checkedRedirect('/account/profile');
 
 	return { unverifiedEmail: seshUser.user.email };
 };
 
 const resendEmailVeriToVerifyEmailLink: App.CommonServerAction = async ({ locals }) => {
 	const seshUser = await locals.seshHandler.getSessionUser();
-	if (!seshUser) return redirect(302, '/login');
-	if (!seshUser.session.awaitingEmailVeri) return redirect(302, '/account/profile');
+	if (!seshUser) return checkedRedirect('/login');
+	if (!seshUser.session.awaitingEmailVeri) return checkedRedirect('/account/profile');
 
 	const { tokenErr, token } = await auth.token.emailVeri.createOrRefresh({ userId: seshUser.user.id });
 	if (tokenErr) return auth.token.err.toFormFail(tokenErr);

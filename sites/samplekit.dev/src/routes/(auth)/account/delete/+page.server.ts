@@ -1,9 +1,9 @@
-import { redirect } from '@sveltejs/kit';
 import { superValidate } from 'sveltekit-superforms/server';
 import { CLOUDFRONT_URL } from '$env/static/private';
 import { auth } from '$lib/auth/server';
 import { transports } from '$lib/auth/server';
 import { deleteS3Object, invalidateCloudfront, urlTransforms } from '$lib/cloudStorage/server';
+import { checkedRedirect } from '$lib/http/server';
 import { pluralize } from '$lib/utils/common';
 import { confirmPassSchema, sendSMSTokenSchema, verifyOTPSchema } from '$routes/(auth)/validators';
 import type { VerifierProps } from '$routes/(auth)/components';
@@ -61,7 +61,7 @@ const deleteUserWithSeshConf: Action = async ({ locals }) => {
 	const { user, session } = await locals.seshHandler.userOrRedirect();
 
 	const timeRemaining = auth.session.getTempConf({ session });
-	if (timeRemaining === null) return redirect(302, '/account/delete');
+	if (timeRemaining === null) return checkedRedirect('/account/delete');
 
 	if (user.avatar?.url.startsWith(CLOUDFRONT_URL)) {
 		const key = urlTransforms.cloudfrontUrlToKey(user.avatar.url);
@@ -72,7 +72,7 @@ const deleteUserWithSeshConf: Action = async ({ locals }) => {
 
 	locals.seshHandler.set({ session: null });
 
-	return redirect(302, '/');
+	return checkedRedirect('/');
 };
 
 export const actions: Actions = { deleteUserWithSeshConf };
