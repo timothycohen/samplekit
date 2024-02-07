@@ -1,4 +1,4 @@
-import type { LayoutRouteId } from '../../../../routes/articles/$types';
+import type { LayoutRouteId } from '../../../routes/articles/$types';
 
 type Replace<
 	T extends string,
@@ -9,6 +9,3 @@ type Replace<
 
 type _ArticleSlug = Replace<Exclude<LayoutRouteId, '/articles'>, '/articles/', ''>;
 export type ArticleSlug = _ArticleSlug extends never ? '' : _ArticleSlug;
-
-export type SvelteFileName = `${string}.svelte`;
-export const isSvelteFile = (file: string): file is `${string}.svelte` => file.endsWith('.svelte');

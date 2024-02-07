@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import type { NoPropComponent } from '$lib/utils/common';
+import type { CodeProcessed, ComponentProcessed } from './load';
 
 export const authorSchema = z.object({
 	name: z.string(),
@@ -68,22 +68,15 @@ export type MetaProcessedComponents = MetaRawComponents[keyof MetaRawComponents]
 
 export type MetaRawCode = { modules: Array<{ rawCodePromise: () => Promise<string>; title: string }> };
 
-type DemoEagerServer = { highlightedFiles: Array<{ title: string; rawHTML: string }> };
-export type DemoLazyServer = { highlightedFiles: Array<{ title: string; rawHTML: Promise<string> }> };
-type DemoEagerClient = DemoEagerServer & {
-	renderables?: Array<{ meta: MetaProcessedComponents; component: NoPropComponent }>;
-};
-type DemoLazyClient = DemoLazyServer & {
-	renderables?: Array<{ meta: MetaProcessedComponents; component: Promise<NoPropComponent> }>;
-};
-
 export type ServerFrontMatter = ProcessedFrontMatter & {
-	mainDemo?: DemoEagerServer;
-	lazyDemos?: Record<string, DemoLazyServer>;
+	demos?: {
+		main?: CodeProcessed[] | undefined;
+		lazy?: Record<string, CodeProcessed[]> | undefined;
+	};
 };
 export type ClientFrontMatter = ProcessedFrontMatter & {
-	mainDemo?: DemoEagerClient;
-	lazyDemos?: Record<string, DemoLazyClient>;
+	demos?: {
+		main?: (CodeProcessed | ComponentProcessed)[];
+		lazy?: Record<string, (CodeProcessed | ComponentProcessed)[]>;
+	};
 };
-
-export type Demo = DemoEagerClient | DemoLazyClient;
