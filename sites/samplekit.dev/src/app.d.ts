@@ -18,10 +18,6 @@ declare global {
 		// interface PageState {}
 		// interface Platform {}
 	}
-
-	namespace DB {
-		type User = typeof import('$lib/db/server/schema').users.$inferSelect;
-	}
 }
 
 export {};
