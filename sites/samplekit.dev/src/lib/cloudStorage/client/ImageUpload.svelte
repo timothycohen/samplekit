@@ -11,7 +11,7 @@
 	import { fade } from 'svelte/transition';
 	import { CropWindow, type CropValue, defaultOptions } from '$lib/image/client';
 	import { assertUnreachable, type Result } from '$lib/utils/common';
-	import type { Uploader } from '$lib/cloudStorage/client';
+	import type { UploaderArgs, UploaderRes } from '$lib/cloudStorage/client';
 	import type { CroppedImg, ImgCrop } from '$lib/db/client';
 
 	export let file: File;
@@ -20,7 +20,7 @@
 	export let useCropWindow = false;
 
 	export let getUploadUrl: () => Promise<Result<{ uploadUrl: string; objectUrl: string }>>;
-	export let upload: Uploader;
+	export let upload: (a: Omit<UploaderArgs, 'method'>) => UploaderRes;
 	export let saveToDb: (a: { objectUrl: string; crop: ImgCrop }) => Promise<Result<{ savedImg: CroppedImg | null }>>;
 
 	export let onNewImg: (newImg: CroppedImg | null) => void;
@@ -70,12 +70,7 @@
 
 		// upload file to image storage (progress 10%-90%)
 		state = 'upload';
-		const uploading = upload({
-			method: 'PUT',
-			data: file,
-			uploadUrl,
-			uploadProgress: { tweened: uploadProgress, scale: 0.9 },
-		});
+		const uploading = upload({ data: file, uploadUrl, uploadProgress: { tweened: uploadProgress, scale: 0.9 } });
 		abort = uploading.abort;
 		const { error: uploadError } = await uploading.promise;
 		abort = () => {};
