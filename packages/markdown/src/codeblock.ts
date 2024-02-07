@@ -6,12 +6,19 @@ export const mdLanguages = ['json', 'sh', 'html', 'css', 'md', 'js', 'ts', 'svel
 export type MdLang = (typeof mdLanguages)[number];
 export const isMdLang = (lang?: string): lang is MdLang => mdLanguages.includes(lang as MdLang);
 
-const escapeSvelte = (code: string) => {
-	return code.replace(/tripgrave;|tripslash;|triptilde;|[{}`]/g, (match) => {
+const escapePreprocessor = (code: string) => {
+	return code.replace(/&tripgrave;|&tripslash;|&triptilde;/g, (match) => {
 		return {
-			'tripgrave;': '&grave;&grave;&grave;',
-			'tripslash;': '///',
-			'triptilde;': '~~~',
+			'&tripgrave;': '&grave;&grave;&grave;',
+			'&tripslash;': '///',
+			'&triptilde;': '~~~',
+		}[match]!;
+	});
+};
+
+const escapeSvelte = (code: string) => {
+	return code.replace(/[{}`]/g, (match) => {
+		return {
 			'{': '&lbrace;',
 			'}': '&rbrace;',
 			'`': '&grave;',
@@ -105,7 +112,9 @@ export const mdCodeBlockToRawHtml = ({ rawCode, lang }: { rawCode: string; lang:
 		const { strippedCode: code, highlightLines } = getHighlightLines(rawCode);
 		return {
 			data:
-				`<div class="code-wrapper">` + escapeSvelte(createThemedCodeHtml({ code, lang, highlightLines })) + '</div>',
+				`<div class="code-wrapper">` +
+				escapeSvelte(createThemedCodeHtml({ code: escapePreprocessor(code), lang, highlightLines })) +
+				'</div>',
 		};
 	} catch (err) {
 		if (err instanceof Error) return { error: err };
