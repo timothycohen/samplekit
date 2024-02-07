@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { page } from '$app/stores';
+	import { keyboard } from '$lib/actions';
 	import { themeController, ThemeSwitchDayNightSystem } from '$lib/styles';
 	import { Logo } from '..';
 	import DesktopNavItem from './nav/DesktopNavItem.svelte';
@@ -54,11 +55,22 @@
 
 			<span class="js-only block h-6 w-6 shrink-0 animate-[fadeIn_100ms_ease-in-out_forwards]">
 				<ThemeSwitchDayNightSystem
+					let:next
+					let:prev
 					schemeSystem={$themeController.schemeSystem}
 					mode={$themeController.mode}
 					modeApplied={$themeController.modeApplied}
 					onModeChange={themeController.setMode}
-				></ThemeSwitchDayNightSystem>
+				>
+					<a
+						tabindex="-1"
+						href="/appearance"
+						class="hover:bg-gray-4 rounded-b-card focus-visible:bg-gray-4 text-gray-11 decoration-accent-6 flex items-center p-2 pl-4 text-xs font-light underline-offset-2 hover:underline"
+						use:keyboard={{ ArrowUp: [prev], ArrowDown: [next] }}
+					>
+						Customize appearance
+					</a>
+				</ThemeSwitchDayNightSystem>
 			</span>
 			<span class="flex items-center justify-center md:hidden">
 				<MobileNavToggler toggle={mobileNavController.toggle} mobileNavOpen={$mobileNavOpen} />
