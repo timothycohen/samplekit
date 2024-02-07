@@ -6,6 +6,7 @@ import {
 	PutObjectTaggingCommand,
 	S3Client,
 } from '@aws-sdk/client-s3';
+import { createPresignedPost } from '@aws-sdk/s3-presigned-post';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import {
 	AWS_SERVICE_REGION,
@@ -32,6 +33,32 @@ export const generateS3UploadURL = async () => {
 		return {
 			uploadUrl: await getSignedUrl(s3, command, { expiresIn: 60 }),
 			objectUrl: urlTransforms.keyToS3Url(key),
+		};
+	} catch (err) {
+		logger.error(err);
+		return null;
+	}
+};
+
+/** Default contentLength = 5MB */
+export const generateS3UploadPost = async (
+	{ contentLength }: { contentLength: number } = { contentLength: 1024 * 1024 * 5 },
+) => {
+	try {
+		const rawBytes = crypto.randomBytes(16);
+		const key = rawBytes.toString('base64url');
+
+		const res = await createPresignedPost(s3, {
+			Bucket: S3_BUCKET_NAME,
+			Key: key,
+			Expires: 60,
+			Conditions: [['content-length-range', 0, contentLength]],
+		});
+
+		return {
+			uploadUrl: res.url,
+			objectUrl: urlTransforms.keyToS3Url(key),
+			fields: res.fields,
 		};
 	} catch (err) {
 		logger.error(err);
