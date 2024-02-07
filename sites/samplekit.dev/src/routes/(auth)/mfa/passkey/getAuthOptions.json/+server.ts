@@ -1,5 +1,5 @@
-import { redirect } from '@sveltejs/kit';
 import { auth } from '$lib/auth/server';
+import { checkedRedirect } from '$lib/http/server';
 import { jsonOk } from '$lib/http/server';
 import type { GetRes } from '.';
 import type { RequestHandler } from './$types';
@@ -7,7 +7,7 @@ import type { RequestEvent } from '@sveltejs/kit';
 
 const getPasskeyAuthOpts = async ({ locals }: RequestEvent) => {
 	const seshUser = await locals.seshHandler.getSessionUser();
-	if (!seshUser) return redirect(302, '/login');
+	if (!seshUser) return checkedRedirect('/login');
 
 	const savedPasskeys = await auth.provider.pass.MFA.passkey.getSaved(seshUser.user.id);
 	const opts = await auth.provider.pass.MFA.passkey.createAuthOpts({ savedPasskeys });

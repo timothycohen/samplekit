@@ -1,6 +1,6 @@
-import { redirect } from '@sveltejs/kit';
 import platform from 'platform';
 import { auth } from '$lib/auth/server';
+import { checkedRedirect } from '$lib/http/server';
 import type { RequestHandler } from './$types';
 import type { RequestEvent } from '@sveltejs/kit';
 
@@ -13,7 +13,7 @@ const verifyEmailWithEmailVeri = async ({
 	const { token } = params;
 
 	const { tokenErr, userId } = await auth.token.emailVeri.validate({ token });
-	if (tokenErr) return redirect(302, '/invalid-token');
+	if (tokenErr) return checkedRedirect('/invalid-token');
 
 	const res = await locals.seshHandler.getSessionUser();
 
@@ -36,7 +36,7 @@ const verifyEmailWithEmailVeri = async ({
 	]);
 
 	locals.seshHandler.set({ session });
-	return redirect(302, '/account/profile');
+	return checkedRedirect('/account/profile');
 };
 
 export const GET: RequestHandler = verifyEmailWithEmailVeri;

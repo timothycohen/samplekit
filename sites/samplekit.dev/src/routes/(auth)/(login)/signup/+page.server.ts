@@ -1,11 +1,11 @@
 import { fail as formFail } from '@sveltejs/kit';
-import { redirect } from '@sveltejs/kit';
 import platform from 'platform';
 import { message, superValidate } from 'sveltekit-superforms/server';
 import { auth } from '$lib/auth/server';
 import { transports } from '$lib/auth/server';
 import { turnstileFormInputName } from '$lib/botProtection/turnstile/common';
 import { validateTurnstile } from '$lib/botProtection/turnstile/server';
+import { checkedRedirect } from '$lib/http/server';
 import { logger } from '$lib/logging/server';
 import { signupSchema } from '$routes/(auth)/validators';
 import type { Actions, PageServerLoad } from './$types';
@@ -14,9 +14,9 @@ import type { Action } from '@sveltejs/kit';
 export const load: PageServerLoad = async ({ locals }) => {
 	const seshUser = await locals.seshHandler.getSessionUser();
 	if (seshUser) {
-		if (seshUser.session.awaitingEmailVeri) return redirect(302, '/email-verification');
-		if (seshUser.session.awaitingMFA) return redirect(302, '/login/verify-mfa');
-		return redirect(302, '/account/profile');
+		if (seshUser.session.awaitingEmailVeri) return checkedRedirect('/email-verification');
+		if (seshUser.session.awaitingMFA) return checkedRedirect('/login/verify-mfa');
+		return checkedRedirect('/account/profile');
 	}
 
 	const signupForm = await superValidate(signupSchema, { id: 'signupForm_/signup' });
@@ -78,7 +78,7 @@ const signupWithPassword: Action = async ({ request, locals, getClientAddress })
 		logger.error('Unable to send email verification email. Sending user to email-verification page with resend link.');
 	}
 
-	return redirect(302, '/email-verification');
+	return checkedRedirect('/email-verification');
 };
 
 export const actions: Actions = { signupWithPassword };

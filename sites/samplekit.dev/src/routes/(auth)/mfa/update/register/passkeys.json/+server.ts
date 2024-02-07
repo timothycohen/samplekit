@@ -1,7 +1,7 @@
-import { redirect } from '@sveltejs/kit';
 import { auth } from '$lib/auth/server';
 import { transports } from '$lib/auth/server';
 import { mfaLabels } from '$lib/db/client';
+import { checkedRedirect } from '$lib/http/server';
 import { jsonFail, jsonOk } from '$lib/http/server';
 import type { PostReq } from '.';
 import type { RequestHandler } from './$types';
@@ -9,7 +9,7 @@ import type { RequestEvent } from '@sveltejs/kit';
 
 const registerMFA_Passkey_WithSeshConfAndPasskey = async ({ request, locals }: RequestEvent): Promise<Response> => {
 	const seshUser = await locals.seshHandler.getSessionUser();
-	if (!seshUser) return redirect(302, '/login');
+	if (!seshUser) return checkedRedirect('/login');
 
 	const body = await (request.json() as Promise<PostReq>).catch(() => null);
 	if (!body) return jsonFail(400);

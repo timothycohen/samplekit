@@ -2,6 +2,7 @@ import { fail as formFail, redirect } from '@sveltejs/kit';
 import { message, superValidate } from 'sveltekit-superforms/server';
 import { PUBLIC_GOOGLE_OAUTH_CLIENT_ID } from '$env/static/public';
 import { auth } from '$lib/auth/server';
+import { checkedRedirect } from '$lib/http/server';
 import { PUBLIC_GOOGLE_OAUTH_LINK_PATHNAME } from '$routes/(auth)/consts';
 import { confirmPassSchema } from '$routes/(auth)/validators';
 import type { Actions, PageServerLoad } from './$types';
@@ -9,10 +10,10 @@ import type { Action } from '@sveltejs/kit';
 
 export const load: PageServerLoad = async ({ locals, url }) => {
 	const seshUser = await locals.seshHandler.getSessionUser();
-	if (!seshUser) return redirect(302, '/login');
+	if (!seshUser) return checkedRedirect('/login');
 	const authDetails = await auth.provider.pass.MFA.getDetailsOrThrow(seshUser.user.id);
 	const method = authDetails.method;
-	if (method === 'oauth') return redirect(302, '/account/profile');
+	if (method === 'oauth') return checkedRedirect('/account/profile');
 
 	const confirmPassForm = await superValidate(confirmPassSchema, { id: 'confirmPassForm_/change-to-google' });
 
@@ -39,8 +40,8 @@ const passwordToLinkGoogle: Action = async ({ locals, request, cookies }) => {
 	const { user, session } = await locals.seshHandler.userOrRedirect();
 
 	const authDetails = await auth.provider.pass.MFA.getDetailsOrThrow(user.id);
-	if (authDetails.method === 'oauth') return redirect(302, '/account/profile');
-	if (authDetails.mfaCount) return redirect(302, '/account/profile');
+	if (authDetails.method === 'oauth') return checkedRedirect('/account/profile');
+	if (authDetails.mfaCount) return checkedRedirect('/account/profile');
 
 	const confirmPassForm = await superValidate(request, confirmPassSchema);
 

@@ -1,20 +1,20 @@
-import { redirect } from '@sveltejs/kit';
+import { redirect, type RequestEvent } from '@sveltejs/kit';
 import platform from 'platform';
 import { GOOGLE_OAUTH_CLIENT_SECRET } from '$env/static/private';
 import { PUBLIC_GOOGLE_OAUTH_CLIENT_ID } from '$env/static/public';
 import { auth } from '$lib/auth/server';
 import { transports } from '$lib/auth/server';
+import { checkedRedirect } from '$lib/http/server';
 import { logger } from '$lib/logging/server';
 import { PUBLIC_GOOGLE_OAUTH_LINK_PATHNAME } from '$routes/(auth)/consts';
 import type { RequestHandler } from './$types';
-import type { RequestEvent } from '@sveltejs/kit';
 
 const changeToGoogleProvider = async ({ url, cookies, locals, request, getClientAddress }: RequestEvent) => {
 	const { user, session: oldSession } = await locals.seshHandler.userOrRedirect();
 
 	const authDetails = await auth.provider.pass.MFA.getDetailsOrThrow(user.id);
-	if (authDetails.method === 'oauth') return redirect(302, '/account/profile');
-	if (authDetails.mfaCount) return redirect(302, '/account/profile');
+	if (authDetails.method === 'oauth') return checkedRedirect('/account/profile');
+	if (authDetails.mfaCount) return checkedRedirect('/account/profile');
 
 	const res = await auth.provider.oauth.google.serverCBUrlToOAuthData({
 		cookies,
@@ -54,7 +54,7 @@ const changeToGoogleProvider = async ({ url, cookies, locals, request, getClient
 
 	locals.seshHandler.set({ session });
 
-	return redirect(302, '/account/profile');
+	return checkedRedirect('/account/profile');
 };
 
 export const GET: RequestHandler = changeToGoogleProvider;

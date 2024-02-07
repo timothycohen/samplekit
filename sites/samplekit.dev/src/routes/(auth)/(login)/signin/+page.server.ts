@@ -1,6 +1,6 @@
-import { redirect } from '@sveltejs/kit';
+import { checkedRedirect } from '$lib/http/server';
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async () => {
-	return redirect(301, '/login');
+	return checkedRedirect('/login', 301);
 };

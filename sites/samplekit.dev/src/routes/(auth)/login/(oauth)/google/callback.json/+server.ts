@@ -3,12 +3,13 @@ import platform from 'platform';
 import { GOOGLE_OAUTH_CLIENT_SECRET } from '$env/static/private';
 import { PUBLIC_GOOGLE_OAUTH_CLIENT_ID } from '$env/static/public';
 import { auth } from '$lib/auth/server';
+import { checkedRedirect } from '$lib/http/server';
 import { PUBLIC_GOOGLE_OAUTH_LOGIN_PATHNAME } from '$routes/(auth)/consts';
 import type { RequestHandler } from './$types';
 import type { RequestEvent } from '@sveltejs/kit';
 
 const loginWithGoogle = async ({ url, cookies, locals, request, getClientAddress }: RequestEvent) => {
-	if (await locals.seshHandler.getVerifiedUser()) return redirect(302, '/account/profile');
+	if (await locals.seshHandler.getVerifiedUser()) return checkedRedirect('/account/profile');
 
 	const res = await auth.provider.oauth.google.serverCBUrlToOAuthData({
 		url,
@@ -36,7 +37,7 @@ const loginWithGoogle = async ({ url, cookies, locals, request, getClientAddress
 	);
 	locals.seshHandler.set({ session });
 
-	return redirect(302, '/account/profile');
+	return checkedRedirect('/account/profile');
 };
 
 export const GET: RequestHandler = loginWithGoogle;

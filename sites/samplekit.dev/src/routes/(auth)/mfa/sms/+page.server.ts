@@ -2,7 +2,7 @@ import { error, redirect } from '@sveltejs/kit';
 import { message, superValidate } from 'sveltekit-superforms/server';
 import { auth } from '$lib/auth/server';
 import { transports } from '$lib/auth/server';
-import { sanitizeRedirectUrl } from '$lib/http/server';
+import { checkedRedirect, sanitizeRedirectUrl } from '$lib/http/server';
 import { sendSMSTokenSchema } from '$routes/(auth)/validators';
 import type { Actions, PageServerLoad } from './$types';
 import type { Action } from '@sveltejs/kit';
@@ -13,8 +13,8 @@ export const load: PageServerLoad = () => {
 
 const sendSMSVeri: Action = async ({ locals, request }) => {
 	const seshUser = await locals.seshHandler.getSessionUser();
-	if (!seshUser) return redirect(302, '/login');
-	if (seshUser.session.awaitingEmailVeri) return redirect(302, '/email-verification');
+	if (!seshUser) return checkedRedirect('/login');
+	if (seshUser.session.awaitingEmailVeri) return checkedRedirect('/email-verification');
 
 	const [sendSMSTokenForm, { mfas }] = await Promise.all([
 		superValidate(request, sendSMSTokenSchema),
