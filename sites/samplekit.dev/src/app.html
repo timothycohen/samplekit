@@ -1,9 +1,61 @@
 <!doctype html>
 <html lang="en">
 	<head>
+		<!-- fonts -->
+		<link
+			rel="preload"
+			href="/fonts/Nunito/Nunito-VariableFont_wght.ttf"
+			as="font"
+			type="font/ttf"
+			crossorigin="anonymous"
+		/>
+		<style>
+			@font-face {
+				font-family: 'Nunito';
+				src: url('/fonts/Nunito/Nunito-VariableFont_wght.ttf') format('truetype-variations');
+				font-style: normal;
+				font-weight: 300 800;
+			}
+		</style>
+
+		<link
+			rel="preload"
+			href="/fonts/UbuntuMonoLigaturized/UbuntuMonoLigaturized-Regular.ttf"
+			as="font"
+			type="font/ttf"
+			crossorigin="anonymous"
+		/>
+		<style>
+			@font-face {
+				font-family: 'UbuntuMonoLigaturized';
+				src: url('/fonts/UbuntuMonoLigaturized/UbuntuMonoLigaturized-Regular.ttf') format('truetype-variations');
+				font-style: normal;
+			}
+		</style>
+
+		<link
+			rel="preload"
+			href="/fonts/Alegreya/Alegreya-VariableFont_wght.ttf"
+			as="font"
+			type="font/ttf"
+			crossorigin="anonymous"
+		/>
+		<style>
+			@font-face {
+				font-family: 'Alegreya';
+				src: url('/fonts/Alegreya/Alegreya-VariableFont_wght.ttf') format('truetype-variations');
+				font-style: normal;
+			}
+		</style>
+
+		<!-- general meta tags -->
 		<meta charset="utf-8" />
-		<link rel="icon" href="%sveltekit.assets%/favicon.png" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+		<!-- favicons -->
+		<link rel="icon" href="%sveltekit.assets%/favicon.png" />
+
+		<!-- <svelte:head> -->
 		%sveltekit.head%
 	</head>
 	<body data-sveltekit-preload-data="hover">
