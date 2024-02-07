@@ -1,0 +1,30 @@
+{
+	"name": "@samplekit/auth",
+	"description": "Auth helpers for SvelteKit",
+	"private": true,
+	"type": "module",
+	"author": "Tim Cohen <contact@timcohen.dev>",
+	"scripts": {
+		"clean": "rm -rf dist",
+		"build": "pnpm clean && tsc",
+		"check": "tsc --noEmit"
+	},
+	"devDependencies": {
+		"@simplewebauthn/typescript-types": "^8.3.4",
+		"@types/cookie": "^0.6.0",
+		"@types/qrcode": "^1.5.5"
+	},
+	"dependencies": {
+		"@simplewebauthn/browser": "^8.3.4",
+		"@simplewebauthn/server": "8.3.5",
+		"nanoid": "^5.0.4",
+		"otplib": "^12.0.1",
+		"qrcode": "^1.5.3",
+		"zod": "^3.22.4"
+	},
+	"exports": {
+		"./client": "./dist/client/index.js",
+		"./server": "./dist/server/index.js",
+		"./package.json": "./package.json"
+	}
+}
