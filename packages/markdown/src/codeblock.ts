@@ -1,22 +1,22 @@
-import { renderToHtml, getHighlighter, type IThemeRegistration, type Lang as ShikiLang } from 'shiki';
+import { getHighlighter, type BundledLanguage as ShikiLang } from 'shiki';
 import darkerJSON from './darker.js';
+import type { Element } from 'hast';
 
 export const mdLanguages = ['json', 'sh', 'html', 'css', 'md', 'js', 'ts', 'svelte', 'diff'] satisfies ShikiLang[];
 export type MdLang = (typeof mdLanguages)[number];
 export const isMdLang = (lang?: string): lang is MdLang => mdLanguages.includes(lang as MdLang);
 
 const escapeSvelte = (code: string) => {
-	return code.replace(
-		/[{}`]|&amp;tripgrave;|&amp;tripslash;/g,
-		(character) =>
-			({
-				'{': '&lbrace;',
-				'}': '&rbrace;',
-				'`': '&grave;',
-				'&amp;tripgrave;': '&grave;&grave;&grave;',
-				'&amp;tripslash;': '///',
-			})[character]!,
-	);
+	return code.replace(/tripgrave;|tripslash;|triptilde;|[{}`]/g, (match) => {
+		return {
+			'tripgrave;': '&grave;&grave;&grave;',
+			'tripslash;': '///',
+			'triptilde;': '~~~',
+			'{': '&lbrace;',
+			'}': '&rbrace;',
+			'`': '&grave;',
+		}[match]!;
+	});
 };
 
 const getHighlightLines = (rawCode: string) => {
@@ -44,46 +44,73 @@ const getHighlightLines = (rawCode: string) => {
 	return { strippedCode, highlightLines };
 };
 
-const highlighter = await getHighlighter({ themes: ['rose-pine-dawn'], langs: mdLanguages });
-await highlighter.loadTheme(darkerJSON as unknown as IThemeRegistration);
+const highlighter = await getHighlighter({ themes: [darkerJSON, 'rose-pine-dawn'], langs: mdLanguages });
 
 const createThemedCodeHtml = ({
-	scheme,
-	theme,
 	code,
 	lang,
 	highlightLines,
 }: {
-	scheme: 'light' | 'dark';
-	theme: 'rose-pine-dawn' | 'darker';
 	code: string;
 	lang: MdLang;
 	highlightLines: number[];
 }) => {
-	const tokens = highlighter.codeToThemedTokens(code, lang, theme);
+	let lineNum = 1;
 
-	return renderToHtml(tokens, {
-		elements: {
-			pre({ children }) {
-				return `<pre data-${scheme} class="${theme}">${children}</pre>`;
+	return highlighter.codeToHtml(code.trim(), {
+		lang,
+		themes: { darker: 'darker', 'rose-pine-dawn': 'rose-pine-dawn' },
+		defaultColor: false,
+		cssVariablePrefix: '--h-',
+		transformers: [
+			{
+				pre(el: Element) {
+					delete el.properties['class'];
+					delete el.properties['tabindex'];
+					return el;
+				},
+				line(el: Element) {
+					delete el.properties['class'];
+					el.properties['data-line'] = lineNum;
+					if (highlightLines?.includes(lineNum)) el.properties['data-line-highlighted'] = '';
+					lineNum++;
+					return el;
+				},
 			},
-
-			code({ children }) {
-				return `<code>${children}</code>`;
-			},
-
-			line({ children, index }) {
-				const dataLine = `data-line="${index + 1}"`;
-				const dataHighlight = highlightLines?.includes(index + 1) ? `data-line-highlighted` : '';
-
-				return `<span ${dataLine} ${dataHighlight}>${children}</span>`;
-			},
-
-			token({ style, children }) {
-				return `<span style="${style}">${children}</span>`;
-			},
-		},
+		],
 	});
+};
+
+/**
+ *
+ * Markdown must be composed as
+ *
+ * \`\`\`lang
+ *
+ * content
+ *
+ * \`\`\`
+ *
+ *
+ * Optionally, to highlight specific lines you can write (0 or 1 times per codeblock):
+ *
+ * ///highlight:1-2
+ *
+ * or
+ *
+ * ///highlight:2,4-10
+ */
+export const mdCodeBlockToRawHtml = ({ rawCode, lang }: { rawCode: string; lang: MdLang }) => {
+	try {
+		const { strippedCode: code, highlightLines } = getHighlightLines(rawCode);
+		return {
+			data:
+				`<div class="code-wrapper">` + escapeSvelte(createThemedCodeHtml({ code, lang, highlightLines })) + '</div>',
+		};
+	} catch (err) {
+		if (err instanceof Error) return { error: err };
+		return { error: new Error(`Unable to highlight`) };
+	}
 };
 
 const parseAndRemoveWrapper = (
@@ -118,37 +145,6 @@ const parseAndRemoveWrapper = (
 };
 
 /**
- *
- * Markdown must be composed as
- *
- * \`\`\`lang
- *
- * content
- *
- * \`\`\`
- *
- *
- * Optionally, to highlight specific lines you can write (0 or 1 times per codeblock):
- *
- * ///highlight:1-2
- *
- * or
- *
- * ///highlight:2,4-10
- */
-export const mdCodeBlockToRawHtml = ({ rawCode, lang }: { rawCode: string; lang: MdLang }) => {
-	try {
-		const { strippedCode: code, highlightLines } = getHighlightLines(rawCode);
-		const light = createThemedCodeHtml({ code, lang, highlightLines, scheme: 'light', theme: 'rose-pine-dawn' });
-		const dark = createThemedCodeHtml({ code, lang, highlightLines, scheme: 'dark', theme: 'darker' });
-		return { data: `<div class="code-wrapper">` + escapeSvelte(light) + escapeSvelte(dark) + '</div>' };
-	} catch (err) {
-		if (err instanceof Error) return { error: err };
-		return { error: new Error(`Unable to highlight`) };
-	}
-};
-
-/**
  * Preprocess .svx markdown code block into html
  *
  * from
@@ -163,35 +159,30 @@ export const mdCodeBlockToRawHtml = ({ rawCode, lang }: { rawCode: string; lang:
  *
  * ```html
  * <div class="code-wrapper">
- * 	<pre data-light="" class="rose-pine-dawn">
+ * 	<pre style="--h-darker: #D4D4D4; --h-rose-pine-dawn: #575279; --h-darker-bg: #000; --h-rose-pine-dawn-bg: #faf4ed; --h-rose-pine-dawn-scroll-thumb: hsl(268.1, 21.5%, 57.1%); --h-rose-pine-dawn-scroll-track: hsl(268.1, 21.5%, 75%); --h-darker-scroll-thumb: hsl(var(--gray-7)); --h-darker-scroll-track: hsl(var(--gray-3));">
  * 		<code>
  * 			<span data-line="1">
- * 				<span style="color: #575279; font-style: italic">console</span>
- * 				<span style="color: #286983">.</span>
- * 				<span style="color: #D7827E">log</span>
- * 				<span style="color: #575279">(</span>
- * 				<span style="color: #EA9D34">'hello world'</span>
- * 				<span style="color: #575279">)</span>
- * 				<span style="color: #797593">;</span>
+ * 				<span style="--h-darker: #9CDCFE; --h-rose-pine-dawn: #575279; --h-darker-font-style: inherit; --h-rose-pine-dawn-font-style: italic;">console</span>
+ * 				<span style="--h-darker: #D4D4D4; --h-rose-pine-dawn: #286983;">.</span>
+ * 				<span style="--h-darker: #DCDCAA; --h-rose-pine-dawn: #D7827E;">log</span>
+ * 				<span style="--h-darker: #D4D4D4; --h-rose-pine-dawn: #575279;">(</span>
+ * 				<span style="--h-darker: #CE9178; --h-rose-pine-dawn: #EA9D34;">'hello world'</span>
+ * 				<span style="--h-darker: #D4D4D4; --h-rose-pine-dawn: #575279;">)</span>
+ * 				<span style="--h-darker: #D4D4D4; --h-rose-pine-dawn: #797593;">;</span>
  * 			</span>
- * 		</code>
- * 	</pre>
- * 	<pre data-dark="" class="darker">
- * 		<code>
- * 			<span data-line="1">
- * 				<span style="color: #9CDCFE">console</span>
- * 				<span style="color: #D4D4D4">.</span>
- * 				<span style="color: #DCDCAA">log</span>
- * 				<span style="color: #D4D4D4">(</span>
- * 				<span style="color: #CE9178">'hello world'</span>
- * 				<span style="color: #D4D4D4">);</span>
+ * 			<span data-line="2" data-line-highlighted>
+ * 				<span style="--h-darker: #569CD6; --h-rose-pine-dawn: #286983; --h-darker-font-style: italic; --h-rose-pine-dawn-font-style: inherit;">const</span>
+ * 				<span style="--h-darker: #4FC1FF; --h-rose-pine-dawn: #575279; --h-darker-font-style: inherit; --h-rose-pine-dawn-font-style: italic;"> highlightedLine</span>
+ * 				<span style="--h-darker: #D4D4D4; --h-rose-pine-dawn: #286983;"> =</span>
+ * 				<span style="--h-darker: #569CD6; --h-rose-pine-dawn: #D7827E; --h-darker-font-style: italic; --h-rose-pine-dawn-font-style: inherit;"> true</span>
+ * 				<span style="--h-darker: #D4D4D4; --h-rose-pine-dawn: #797593;">;</span>
  * 			</span>
  * 		</code>
  * 	</pre>
  * </div>
  * ```
- *
  * */
+
 export function preprocessCodeblock({
 	include,
 	logger,

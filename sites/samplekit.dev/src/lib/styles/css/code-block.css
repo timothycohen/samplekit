@@ -3,6 +3,22 @@ code {
 	color: theme('colors.gray.11');
 }
 
+:root {
+	--h-rose-pine-dawn: hsl(247.7, 19.2%, 39.8%);
+	--h-rose-pine-dawn-bg: hsl(32.3, 56.5%, 95.5%);
+	--h-rose-pine-dawn-scroll-thumb: hsl(268.1, 21.5%, 57.1%);
+	--h-rose-pine-dawn-scroll-track: hsl(268.1, 21.5%, 75%);
+	--h-rose-pine-dawn-highlighted-line: hsla(248.6, 11.7%, 47.1%, 0.1);
+	--h-rose-pine-dawn-highlighted-char: hsla(248.6, 11.7%, 47.1%, 0.1);
+
+	--h-darker: hsl(203.4, 70.9%, 59.6%);
+	--h-darker-bg: hsl(0, 0%, 0%);
+	--h-darker-scroll-thumb: hsl(var(--gray-7));
+	--h-darker-scroll-track: hsl(var(--gray-3));
+	--h-darker-highlighted-line: hsla(210, 100%, 65%, 0.2);
+	--h-darker-highlighted-char: hsla(210, 100%, 65%, 0.25);
+}
+
 /* Title ####################### */
 .code-topper {
 	font-size: 1rem;
@@ -16,12 +32,12 @@ code {
 	overflow: auto;
 }
 .dark .code-topper {
-	color: #4fa8e1;
-	background-color: black;
+	color: var(--h-darker);
+	background-color: var(--h-darker-bg);
 }
 .light .code-topper {
-	color: hsl(189, 30%, 48%);
-	background-color: white;
+	color: var(--h-rose-pine-dawn);
+	background-color: var(--h-rose-pine-dawn-bg);
 }
 
 /* Borders ####################### */
@@ -50,13 +66,6 @@ code {
 }
 
 /* Wrapper ####################### */
-.dark .code-wrapper pre[data-light] {
-	display: none;
-}
-.light .code-wrapper pre[data-dark] {
-	display: none;
-}
-
 .code-wrapper {
 	overflow: hidden;
 	font-family: theme('fontFamily.mono');
@@ -73,20 +82,28 @@ code {
 	line-height: 1.5 !important;
 }
 
-.code-wrapper pre.darker {
-	background-color: black;
+/* Colors ####################### */
+.dark .code-wrapper {
+	color: var(--h-darker);
+	background-color: var(--h-darker-bg);
 }
-.code-wrapper pre.rose-pine-dawn {
-	background-color: rgb(250, 244, 237);
+.light .code-wrapper {
+	color: var(--h-rose-pine-dawn);
+	background-color: var(--h-rose-pine-dawn-bg);
+}
+
+.dark .code-wrapper * {
+	color: var(--h-darker);
+	font-style: var(--h-darker-font-style);
+}
+.light .code-wrapper * {
+	color: var(--h-rose-pine-dawn);
+	font-style: var(--h-rose-pine-dawn-font-style);
 }
 
 /* Scrollbar ####################### */
 .code-wrapper pre::-webkit-scrollbar-thumb {
 	border-radius: 0;
-}
-
-.code-wrapper pre.rose-pine-dawn {
-	scrollbar-color: hsl(268.1, 21.5%, 57.1%) hsl(268.1, 21.5%, 75%);
 }
 .code-wrapper pre::-webkit-scrollbar {
 	height: 0.35rem;
@@ -94,26 +111,28 @@ code {
 		height: 0.75rem;
 	}
 }
-.code-wrapper pre.rose-pine-dawn::-webkit-scrollbar {
+.light .code-wrapper pre {
+	scrollbar-color: var(--h-rose-pine-dawn-scroll-thumb) var(--h-rose-pine-dawn-scroll-track);
+}
+.light .code-wrapper pre::-webkit-scrollbar {
 	&-thumb {
-		background-color: hsl(268.1, 21.5%, 57.1%);
+		background-color: var(--h-rose-pine-dawn-scroll-thumb);
 	}
 	&-track {
 		-webkit-box-shadow: none;
-		background-color: hsl(268.1, 21.5%, 75%);
+		background-color: var(--h-rose-pine-dawn-scroll-track);
 	}
 }
-
-.code-wrapper pre.darker {
-	scrollbar-color: theme(colors.gray.7) theme(colors.gray.3);
+.dark .code-wrapper pre {
+	scrollbar-color: var(--h-darker-scroll-thumb) var(--h-darker-scroll-track);
 }
-.code-wrapper pre.darker::-webkit-scrollbar {
+.dark .code-wrapper pre::-webkit-scrollbar {
 	&-thumb {
-		background-color: theme(colors.gray.7);
+		background-color: var(--h-darker-scroll-thumb);
 	}
 	&-track {
 		-webkit-box-shadow: none;
-		background-color: theme(colors.gray.3);
+		background-color: var(--h-darker-scroll-track);
 	}
 }
 
@@ -129,7 +148,7 @@ code {
 	width: 1rem;
 	margin-right: 1rem;
 	text-align: right;
-	color: gray;
+	color: theme('colors.gray.9');
 }
 
 .no-lines .code-wrapper pre code > [data-line]::before {
@@ -144,23 +163,19 @@ code {
 
 /* Highlighting ####################### */
 .light [data-line-highlighted] {
-	background-color: hsla(248.6, 11.7%, 47.1%, 0.1);
+	background-color: var(--h-rose-pine-dawn-highlighted-line);
 }
 
 .light [data-chars-highlighted] {
-	background-color: hsla(248.6, 11.7%, 47.1%, 0.1);
-	border: 1px solid hsla(248.6, 11.7%, 47.1%, 0.1);
+	background-color: var(--h-rose-pine-dawn-highlighted-char);
+	border: 1px solid var(--h-rose-pine-dawn-highlighted-char);
 }
 
 .dark [data-line-highlighted] {
-	background-color: hsla(210, 100%, 65%, 0.2);
+	background-color: var(--h-darker-highlighted-line);
 }
 
 .dark [data-chars-highlighted] {
-	border: 1px solid hsla(210, 100%, 65%, 0.25);
-	background-color: hsl(210, 100%, 65%, 0.25);
-}
-
-code {
-	font-family: theme('fontFamily.mono');
+	border: 1px solid var(--h-darker-highlighted-char);
+	background-color: var(--h-darker-highlighted-char);
 }
