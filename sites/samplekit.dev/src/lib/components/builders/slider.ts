@@ -6,9 +6,48 @@ import type { ActionReturn } from 'svelte/action';
 // afaik melt-ui updates the attrs stores and that updates the DOM
 // this simply spreads the attrs as initial state and then the actions modify the DOM directly
 
-export const createSlider = () => {
-	const gapPerc = 5;
-	const marginPerc = 10;
+//#region Props & Types
+type Props = {
+	fixedLength: number | undefined;
+	defaultActiveIndex: number;
+	onActiveIndexChange: ((value: number) => void) | undefined;
+	duration: number;
+	playOnStart: boolean;
+	unpauseOnChange: boolean;
+	initialParentWidth: number;
+	marginPerc: number;
+	gapPerc: number;
+};
+
+export const createSliderPropsDefaults: Props = {
+	fixedLength: undefined,
+	defaultActiveIndex: 0,
+	onActiveIndexChange: undefined,
+	duration: 7000,
+	playOnStart: true,
+	unpauseOnChange: false,
+	initialParentWidth: 768,
+	marginPerc: 10,
+	gapPerc: 5,
+};
+
+export type CreateSliderProps = Partial<Props>;
+
+export type SliderBuilder = ReturnType<typeof createSlider>;
+//#endregion Props & Types
+
+export const createSlider = (opts: CreateSliderProps = {}) => {
+	const {
+		fixedLength,
+		playOnStart,
+		defaultActiveIndex,
+		duration,
+		unpauseOnChange,
+		onActiveIndexChange,
+		initialParentWidth,
+		gapPerc,
+		marginPerc,
+	} = { ...createSliderPropsDefaults, ...opts };
 	const itemWidthPerc = 100 - 2 * (marginPerc + gapPerc);
 
 	//#region helpers
@@ -29,11 +68,11 @@ export const createSlider = () => {
 	//#endregion helpers
 
 	//#region states
-	const itemsLength = writable(0);
-	const activeIndex = createIndexStore({ itemsLength });
-	const playPercentage = createPausableTweened(0, 100, { duration: 7000 });
-	const parentWidth = writable(768);
-	const transformXPerc = writable(calcTransformXPerc({ activeIndex: 0 }));
+	const itemsLength = writable(fixedLength ?? 0);
+	const activeIndex = createIndexStore({ itemsLength, index: writable(defaultActiveIndex) });
+	const playPercentage = createPausableTweened(0, 100, { duration });
+	const parentWidth = writable(initialParentWidth);
+	const transformXPerc = writable(calcTransformXPerc({ activeIndex: defaultActiveIndex }));
 	const isSelected = derived(activeIndex, ($activeIndex) => (i: number) => $activeIndex === i);
 	//#endregion states
 
@@ -116,6 +155,7 @@ export const createSlider = () => {
 			 * ### Logic:
 			 * - bind:parentWidth
 			 * - set the rootEl used for focus
+			 * - add the onValueChange callback
 			 */
 			root: {
 				attrs: {},
@@ -129,10 +169,16 @@ export const createSlider = () => {
 					rootEl = node;
 					bindParentWidth.observe(node);
 
+					const destroyers = [bindParentWidth.disconnect];
+
+					if (onActiveIndexChange) {
+						destroyers.push(activeIndex.subscribe(onActiveIndexChange));
+					}
+
 					return {
 						destroy() {
 							try {
-								bindParentWidth.disconnect();
+								destroyers.forEach((d) => d());
 							} catch (_) {
 								// HMR bug with ResizeObserver
 							}
@@ -144,16 +190,16 @@ export const createSlider = () => {
 			/**
 			 * ### Logic:
 			 * - When the playPercentage is finished, increment the activeIndex
-			 * - When the activeIndex changes, restart the playPercentage and recalculate the transformXPerc
+			 * - When the activeIndex changes, restart the playPercentage according to the unpauseOnChange opt and recalculate the transformXPerc
 			 * - When the parentWidth changes, recalculate the transformXPerc
-			 * - Automatically play the playPercentage
+			 * - Automatically play the playPercentage according to the playOnStart opt
 			 */
 			accordionRoot: {
 				attrs: {},
 				action: (_: HTMLElement): ActionReturn => {
 					const unsubLoop = playPercentage.isFinished.subscribe((finished) => finished && activeIndex.inc());
 					const unsubActiveIndex = activeIndex.subscribe((i) => {
-						if (!get(playPercentage.isPaused)) playPercentage.restart();
+						if (unpauseOnChange || !get(playPercentage.isPaused)) playPercentage.restart();
 						else playPercentage.reset();
 						transformXPerc.set(calcTransformXPerc({ activeIndex: i }));
 					});
@@ -161,7 +207,7 @@ export const createSlider = () => {
 						transformXPerc.set(calcTransformXPerc({ activeIndex: get(activeIndex) }));
 					});
 
-					playPercentage.play();
+					if (playOnStart) playPercentage.play();
 
 					return {
 						destroy() {
@@ -203,7 +249,7 @@ export const createSlider = () => {
 			 * - data-control-id
 			 *
 			 * ### Logic:
-			 * - Increment the itemsLength
+			 * - Increment the itemsLength if fixedLength opt is not set
 			 * - 'keydown': increment/decrement the activeIndex with arrow keys
 			 * - 'click': set the activeIndex
 			 */
@@ -217,8 +263,7 @@ export const createSlider = () => {
 						'data-control-id': i,
 					},
 					action: (node: HTMLElement): ActionReturn => {
-						itemsLength.update((count) => count + 1);
-
+						if (typeof fixedLength !== 'number') itemsLength.update((count) => count + 1);
 						const triggerOnClickSetActive = () => activeIndex.set(i);
 
 						const unsubActiveIndex = activeIndex.subscribe((index) =>
@@ -313,5 +358,3 @@ export const createSlider = () => {
 		},
 	};
 };
-
-export type SliderBuilder = ReturnType<typeof createSlider>;
