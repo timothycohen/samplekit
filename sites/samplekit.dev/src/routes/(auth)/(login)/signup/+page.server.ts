@@ -3,6 +3,7 @@ import platform from 'platform';
 import { message, superValidate } from 'sveltekit-superforms/server';
 import { auth } from '$lib/auth/server';
 import { transports } from '$lib/auth/server';
+import { createDeviceLimiter } from '$lib/botProtection/rateLimit/server';
 import { turnstileFormInputName } from '$lib/botProtection/turnstile/common';
 import { validateTurnstile } from '$lib/botProtection/turnstile/server';
 import { checkedRedirect } from '$lib/http/server';
@@ -10,6 +11,8 @@ import { logger } from '$lib/logging/server';
 import { signupSchema } from '$routes/(auth)/validators';
 import type { Actions, PageServerLoad } from './$types';
 import type { Action } from '@sveltejs/kit';
+
+const signupLimiter = createDeviceLimiter({ id: 'signupWithPassword', rate: [3, 'd'] });
 
 export const load: PageServerLoad = async ({ locals }) => {
 	const seshUser = await locals.seshHandler.getSessionUser();
@@ -25,7 +28,8 @@ export const load: PageServerLoad = async ({ locals }) => {
 	return { signupForm, layout: { showFooter: false, showHeader: false } };
 };
 
-const signupWithPassword: Action = async ({ request, locals, getClientAddress }) => {
+const signupWithPassword: Action = async (event) => {
+	const { request, locals, getClientAddress } = event;
 	const formData = await request.formData();
 	const clientToken = formData.get(turnstileFormInputName);
 	const signupForm = await superValidate(formData, signupSchema);
@@ -44,6 +48,16 @@ const signupWithPassword: Action = async ({ request, locals, getClientAddress })
 			signupForm,
 			{ fail: `We've detected unusual traffic. Please refresh and try again.` },
 			{ status: 403 },
+		);
+	}
+
+	const rateCheck = await signupLimiter.check(event, { log: { email: signupForm.data.email } });
+	if (rateCheck.limited) {
+		signupForm.data.password = '';
+		return message(
+			signupForm,
+			{ fail: `Too many new accounts. Please wait ${rateCheck.humanTryAfter} and try again.` },
+			{ status: 429 },
 		);
 	}
 

@@ -1,11 +1,14 @@
 import pino from 'pino';
 import { DELETE_EXPIRED_TOKENS_IP_WHITELIST, DELETE_EXPIRED_TOKENS_KEY } from '$env/static/private';
 import { auth } from '$lib/auth/server';
+import { createDeviceLimiter } from '$lib/botProtection/rateLimit/server';
 import { jsonFail, jsonOk } from '$lib/http/server';
 import { createPersistentTransport, createPrettyTransport } from '$lib/logging/server';
 import { postReq } from '.';
 import type { RequestHandler } from './$types';
 import type { RequestEvent } from '@sveltejs/kit';
+
+const deleteExpiredTokensLimiter = createDeviceLimiter({ id: 'deleteExpiredTokens', rate: [2, '6h'] });
 
 const fileLogger = pino(
 	{ timestamp: pino.stdTimeFunctions.isoTime },
@@ -28,15 +31,18 @@ const log = (
 };
 
 // curl -X POST http://localhost:5173/api/expire-tokens.json -H 'Content-Type: application/json' -d '{"cron_api_key":"..."}'
-const deleteExpiredTokens = async ({ request, getClientAddress }: RequestEvent) => {
+const deleteExpiredTokens = async (event: RequestEvent) => {
+	const { request, getClientAddress } = event;
 	const req = postReq.safeParse(await request.json().catch(() => ({})));
 	const whitelist = DELETE_EXPIRED_TOKENS_IP_WHITELIST.split(',');
 	const openWhitelist = whitelist.length === 1 && whitelist[0]! === '*';
 
-	let err: { err_code: string; status: 400 | 403 } | null = null;
+	let err: { err_code: string; status: 400 | 403 | 429 } | null = null;
 
 	if (!req.success) {
 		err = { err_code: req.error.issues[0]?.code ?? 'bad_request', status: 400 };
+	} else if ((await deleteExpiredTokensLimiter.check(event)).limited) {
+		err = { err_code: 'rate_limited', status: 429 };
 	} else if (DELETE_EXPIRED_TOKENS_KEY === '' || DELETE_EXPIRED_TOKENS_KEY !== req.data.cron_api_key) {
 		err = { err_code: 'incorrect_key', status: 403 };
 	} else if (!openWhitelist && !whitelist.includes(getClientAddress())) {
