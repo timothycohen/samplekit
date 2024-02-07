@@ -1,20 +1,20 @@
 import type { Result } from '$lib/utils/common';
 import type { Tweened } from 'svelte/motion';
 
+export type UploaderArgs = {
+	uploadUrl: string;
+	data: File | FormData;
+	uploadProgress?: { scale?: number | undefined; tweened?: Tweened<number> | undefined } | undefined;
+	method: 'PUT' | 'POST';
+};
+export type UploaderRes = { promise: Promise<Result<{ status: number }>>; abort: () => void };
+
 /**
  * @aws-sdk/s3-request-presigner: uploadUrl: `${bucketUrl}/${objectKey}`, method: PUT, data: File
  *
  * @aws-sdk/s3-presigned-post: uploadUrl: bucketUrl, method: POST, data: FormData
  */
-export type Uploader = (a: {
-	uploadUrl: string;
-	data: File | FormData;
-	uploadProgress?: { scale?: number | undefined; tweened?: Tweened<number> | undefined } | undefined;
-	method: 'PUT' | 'POST';
-}) => {
-	promise: Promise<Result<{ status: number }>>;
-	abort: () => void;
-};
+export type Uploader = (a: UploaderArgs) => UploaderRes;
 
 export const uploadToCloudStorage: Uploader = ({ method, uploadUrl, data, uploadProgress }) => {
 	const req = new XMLHttpRequest();

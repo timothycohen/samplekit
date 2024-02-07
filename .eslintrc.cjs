@@ -48,7 +48,7 @@ module.exports = {
 		{
 			files: ['sites/samplekit.dev/**'],
 			// parserOptions: { project: './sites/samplekit.dev/tsconfig.json' },
-			globals: { App: 'readonly', DB: 'readonly' },
+			globals: { App: 'readonly', DB: 'readonly', SvelteGeneric: 'readonly' },
 			env: { browser: true, es2021: true, node: true },
 		},
 	],

@@ -4,8 +4,11 @@
 	import { FileInput } from '$lib/components';
 	import { ImageCrop, fileToDataUrl, humanReadableFileSize } from '$lib/image/client';
 	import { assertUnreachable } from '$lib/utils/common';
-	import { checkAndSaveUploadedAvatar } from '$routes/account/profile/avatar/upload.json';
-	import { MAX_UPLOAD_SIZE, getS3UploadUrl } from '$routes/s3/upload-url.json';
+	import {
+		MAX_UPLOAD_SIZE,
+		getSignedAvatarUploadUrl,
+		checkAndSaveUploadedAvatar,
+	} from '$routes/account/profile/avatar/upload.json';
 	import type { CroppedImg } from '$lib/db/client';
 	import type { CropValue } from 'svelte-crop-window';
 
@@ -102,15 +105,30 @@
 	/>
 {:else}
 	<ImageUpload
-		getUploadUrl={async () => getS3UploadUrl().send()}
-		upload={uploadToCloudStorage}
-		saveToDb={async ({ crop, objectUrl }) => checkAndSaveUploadedAvatar().send({ crop, s3ObjectUrl: objectUrl })}
+		getUploadUrl={async () => {
+			const res = await getSignedAvatarUploadUrl().send();
+			if (res.error) return res;
+			const { uploadUrl, fields } = res.data;
+
+			const formData = new FormData();
+			for (const [key, value] of Object.entries(fields)) {
+				formData.append(key, value);
+			}
+
+			return { data: { formData, uploadUrl } };
+		}}
+		upload={({ formData, uploadUrl, file, uploadProgress }) => {
+			formData.append('file', file);
+			return uploadToCloudStorage({ data: formData, uploadUrl, method: 'POST', uploadProgress });
+		}}
+		saveToDb={async ({ crop }) => checkAndSaveUploadedAvatar().send({ crop })}
 		{file}
 		{inMemoryFileURI}
 		{cropValue}
 		useCropWindow
 		bind:cancel={triggerUploadCancel}
 		onError={(error) => {
+			console.error(error);
 			const state = error.state;
 
 			switch (state) {
