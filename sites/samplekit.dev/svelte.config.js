@@ -25,6 +25,7 @@ const config = {
 		adapter: adapter(),
 		alias: {
 			$routes: 'src/routes',
+			$generated: 'generated',
 		},
 	},
 };
