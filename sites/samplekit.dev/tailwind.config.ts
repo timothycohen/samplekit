@@ -265,6 +265,8 @@ export default {
 			}
 			addVariant('light', `.light &`);
 			addVariant('invalid-shown', '&:invalid&:data-interacted');
+			addVariant('progress-unfilled', ['&::-webkit-progress-bar', '&']);
+			addVariant('progress-filled', ['&::-webkit-progress-value', '&::-moz-progress-bar', '&']);
 		},
 		({ matchUtilities, theme }) => {
 			matchUtilities(
