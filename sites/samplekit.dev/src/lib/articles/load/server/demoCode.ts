@@ -18,7 +18,7 @@ export const demoCodeMap: Partial<Record<ArticleSlug, Record<DemoName, DemoModul
 			const slug = a.splice(0, 2)[0]! as ArticleSlug;
 			const demoName = a.splice(0, 1)[0]!;
 			const filename = a.join('/');
-			if (filename === 'meta.ts') return acc;
+			if (filename === 'meta.components.ts') return acc;
 			const lang = filename.split('.').pop();
 
 			const codePromise = load().then((rawCode) => {

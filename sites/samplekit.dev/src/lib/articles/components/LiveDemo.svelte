@@ -6,13 +6,13 @@
 	export let files: Demo | undefined;
 
 	let fullFiles: Array<TabPanel> = [];
-	if (files?.renderable) {
-		fullFiles.push({
-			wrapperProps: files.renderable.meta,
-			title: files.renderable.meta.title,
-			component: files.renderable.component,
+	if (files?.renderables) {
+		fullFiles = files.renderables.map(({ component, meta }) => ({
+			wrapperProps: meta,
+			title: meta.title,
+			component,
 			icon: 'svelte',
-		});
+		}));
 	}
 	if (files?.highlightedFiles.length) {
 		fullFiles = fullFiles.concat(files.highlightedFiles);
