@@ -20,11 +20,23 @@ export type RouteGroup = {
 	children: (RouteLeaf | RouteGroup)[];
 };
 
-export const accountLayoutRoutes: (RouteLeaf | RouteGroup)[] = [{ path: '/appearance', text: 'Appearance', depth: 0 }];
+export const accountLayoutRoutes: (RouteLeaf | RouteGroup)[] = [
+	{ path: '/account/profile', text: 'Profile', depth: 0 },
+	{ path: '/appearance', text: 'Appearance', depth: 0 },
+	{
+		groupPath: '/account/security',
+		groupText: 'Security',
+		depth: 0,
+		children: [
+			{ path: '/account/security/auth', text: 'Authentication', depth: 1 },
+			{ path: '/account/security/devices', text: 'Devices', depth: 1 },
+		],
+	},
+];
 
-const userDesktopRoutes: { title: string; url: string }[] = [];
+const userDesktopRoutes: { title: string; url: string }[] = [{ title: 'Account', url: '/account/profile' }];
 
-const noUserDesktopRoutes: { title: string; url: string }[] = [];
+const noUserDesktopRoutes: { title: string; url: string }[] = [{ title: 'Login', url: '/login' }];
 
 const userNavRoutes: (RouteLeaf | RouteGroup)[] = [
 	{
@@ -37,7 +49,19 @@ const userNavRoutes: (RouteLeaf | RouteGroup)[] = [
 		groupPath: '/account',
 		groupText: 'Account',
 		depth: 0,
-		children: [{ path: '/appearance', text: 'Appearance', depth: 1 }],
+		children: [
+			{ path: '/account/profile', text: 'Profile', depth: 1 },
+			{ path: '/appearance', text: 'Appearance', depth: 1 },
+		],
+	},
+	{
+		groupPath: '/account/security',
+		groupText: 'Security',
+		depth: 0,
+		children: [
+			{ path: '/account/security/auth', text: 'Authentication', depth: 1 },
+			{ path: '/account/security/devices', text: 'Devices', depth: 1 },
+		],
 	},
 ];
 
@@ -53,6 +77,15 @@ const noUserNavRoutes: (RouteLeaf | RouteGroup)[] = [
 		groupText: 'Settings',
 		depth: 0,
 		children: [{ path: '/appearance', text: 'Appearance', depth: 1 }],
+	},
+	{
+		groupPath: '/account',
+		groupText: 'Account',
+		depth: 0,
+		children: [
+			{ path: '/login', text: 'Login', depth: 1 },
+			{ path: '/signup', text: 'Sign Up', depth: 1 },
+		],
 	},
 ];
 

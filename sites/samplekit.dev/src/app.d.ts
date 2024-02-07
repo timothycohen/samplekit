@@ -23,6 +23,12 @@ declare global {
 		namespace Superforms {
 			type Message = { success?: never; fail: string } | { fail?: never; success: string };
 		}
+
+		type CommonServerAction = import('@sveltejs/kit').Action<
+			Record<string, never>,
+			| import('@sveltejs/kit').ActionFailure<{ success?: undefined; fail: string }>
+			| { fail?: undefined; success: string }
+		>;
 	}
 
 	interface Window {
