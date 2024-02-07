@@ -18,6 +18,11 @@ declare global {
 		// interface PageState {}
 		// interface Platform {}
 	}
+
+	interface Window {
+		/** loaded in Turnstile.svelte */
+		turnstile: import('turnstile-types').TurnstileObject;
+	}
 }
 
 export {};
