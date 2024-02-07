@@ -6,7 +6,7 @@
 	import type { SuperValidated } from 'sveltekit-superforms';
 
 	export let phoneNumberForm: SuperValidated<typeof phoneNumberSchema>;
-	export let action: string;
+	export let action: App.Form.Action;
 
 	const { form, errors, enhance, submitting, message } = superForm(phoneNumberForm, {
 		taintedMessage: null,

@@ -6,7 +6,7 @@
 	import type { SuperValidated } from 'sveltekit-superforms';
 
 	export let confirmPassForm: SuperValidated<typeof confirmPassSchema>;
-	export let action: string;
+	export let action: App.Form.Action;
 	export let email: string;
 	export let disabled = false;
 

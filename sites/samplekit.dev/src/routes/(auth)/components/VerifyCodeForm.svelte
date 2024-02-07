@@ -5,7 +5,7 @@
 	import type { verifyOTPSchema } from '$routes/(auth)/validators';
 	import type { SuperValidated } from 'sveltekit-superforms';
 
-	export let action: string;
+	export let action: App.Form.Action;
 	export let verifyOTPForm: SuperValidated<typeof verifyOTPSchema>;
 
 	const { enhance, message, submitting, delayed } = superForm(verifyOTPForm, { taintedMessage: null });
