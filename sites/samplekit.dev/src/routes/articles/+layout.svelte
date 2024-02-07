@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { Changelog, DateLine, PrevNext, Series, TOC } from '$lib/articles/components';
+	import { Changelog, DateLine, LiveDemo, PrevNext, Series, TOC } from '$lib/articles/components';
 	import { pluralize } from '$lib/utils/common';
 
 	export let data;
@@ -28,7 +28,7 @@
 	{#key article.title}
 		<article>
 			<div class="mb-6-9">
-				{#if article.imgLg}
+				{#if article.imgLg && !data.article.mainDemo}
 					<img
 						class="rounded-card mb-6 aspect-video h-auto w-full object-cover object-top"
 						src={article.imgLg}
@@ -55,6 +55,16 @@
 						<span class="uppercase">{wordCount} {pluralize('word', wordCount)}</span>
 					</p>
 				</hgroup>
+
+				{#if data.article.mainDemo}
+					<span class="prose prose-radix prose-lg">
+						<h2 class="my-4" id="interactive-demo" data-auto-slug-anchor-position="prepend" data-auto-slug="">
+							<a href="#interactive-demo" aria-hidden="true" tabindex="-1" data-auto-slug-anchor="">#</a>
+							Interactive Demo
+						</h2>
+					</span>
+					<LiveDemo files={data.article.mainDemo} />
+				{/if}
 			</div>
 
 			<div class="mb-6-9 flex flex-col gap-8 lg:hidden">
