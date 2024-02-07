@@ -1,4 +1,4 @@
-<script lang="ts">
+<script lang="ts" generics="SvelteGeneric extends Record<string, unknown>">
 	/* Responsibilities:
 	 * - handleUpload immediately onMount (get upload url, upload to image storage, save to db)
 	 * - if canceled during upload, abort it
@@ -7,21 +7,28 @@
 
 	import { onMount } from 'svelte';
 	import { circOut } from 'svelte/easing';
-	import { tweened } from 'svelte/motion';
+	import { tweened, type Tweened } from 'svelte/motion';
 	import { fade } from 'svelte/transition';
 	import { CropWindow, type CropValue, defaultOptions } from '$lib/image/client';
 	import { assertUnreachable, type Result } from '$lib/utils/common';
-	import type { Uploader } from '$lib/cloudStorage/client';
 	import type { CroppedImg, ImgCrop } from '$lib/db/client';
+	import type { UploaderRes } from '.';
 
 	export let file: File;
 	export let inMemoryFileURI: string;
 	export let cropValue: CropValue;
 	export let useCropWindow = false;
 
-	export let getUploadUrl: () => Promise<Result<{ uploadUrl: string; objectUrl: string }>>;
-	export let upload: Uploader;
-	export let saveToDb: (a: { objectUrl: string; crop: ImgCrop }) => Promise<Result<{ savedImg: CroppedImg | null }>>;
+	export let getUploadUrl: () => Promise<Result<SvelteGeneric & { uploadUrl: string }>>;
+
+	export let upload: (
+		a: SvelteGeneric & { uploadUrl: string } & {
+			file: File;
+			uploadProgress?: { scale?: number | undefined; tweened?: Tweened<number> | undefined } | undefined;
+		},
+	) => UploaderRes;
+
+	export let saveToDb: (a: { crop: ImgCrop }) => Promise<Result<{ savedImg: CroppedImg | null }>>;
 
 	export let onNewImg: (newImg: CroppedImg | null) => void;
 	export let onError: (
@@ -65,17 +72,11 @@
 		uploadProgress.set(3);
 		const { data: getUrlData, error: getUrlError } = await getUploadUrl();
 		if (getUrlError) return handleError({ state: 'upload_url_fetching', error: getUrlError });
-		const { uploadUrl, objectUrl } = getUrlData;
 		uploadProgress.set(10);
 
 		// upload file to image storage (progress 10%-90%)
 		state = 'upload';
-		const uploading = upload({
-			method: 'PUT',
-			data: file,
-			uploadUrl,
-			uploadProgress: { tweened: uploadProgress, scale: 0.9 },
-		});
+		const uploading = upload({ file, ...getUrlData, uploadProgress: { tweened: uploadProgress, scale: 0.9 } });
 		abort = uploading.abort;
 		const { error: uploadError } = await uploading.promise;
 		abort = () => {};
@@ -86,7 +87,7 @@
 		for (let i = 0; i < 10; i++) {
 			setTimeout(() => state === 'save_to_db' && uploadProgress.update((v) => Math.min(v + 1, 100)), 20 * i);
 		}
-		const { data: savedImgData, error: dbSaveError } = await saveToDb({ crop: cropValue, objectUrl });
+		const { data: savedImgData, error: dbSaveError } = await saveToDb({ crop: cropValue });
 		uploadProgress.set(100);
 		if (dbSaveError) return handleError({ state: 'db_saving', error: dbSaveError });
 

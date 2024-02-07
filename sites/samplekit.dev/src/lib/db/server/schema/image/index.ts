@@ -1,4 +1,6 @@
+import { pgTable, timestamp, varchar } from 'drizzle-orm/pg-core';
 import { z } from 'zod';
+import { uniqueUserReference } from '../userAndAuth/utils';
 
 export const croppedImgSchema = z.object({
 	url: z.string().url(),
@@ -10,4 +12,10 @@ export const croppedImgSchema = z.object({
 			scale: z.number(),
 		})
 		.default({ position: { x: 0, y: 0 }, aspect: 1, rotation: 0, scale: 1 }),
+});
+
+export const presignedUrls = pgTable('presigned_url', {
+	...uniqueUserReference({ onDelete: 'cascade' }),
+	objectUrl: varchar('url').primaryKey(),
+	created: timestamp('created', { mode: 'date' }).notNull(),
 });

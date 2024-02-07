@@ -1,3 +1,46 @@
+<script lang="ts" context="module">
+	import { writable, type Writable } from 'svelte/store';
+
+	type ConfirmationModal = { open: boolean; confirmed?: boolean | null; onCancel?: () => void; onConfirm?: () => void };
+
+	/**
+	 * confirmed === undefined -> never presented
+	 *
+	 * confirmed === null -> currently presenting
+	 *
+	 * confirmed === false -> canceled
+	 *
+	 * confirmed === true -> confirmed
+	 */
+	export const createConfirmationModal = () => {
+		// @ts-expect-error SAFETY: confirm references confirmationModal so it is added after the store is created
+		const confirmationModal: Writable<ConfirmationModal> & { confirm: () => Promise<boolean> } = writable({
+			open: false,
+		});
+
+		const confirm = () => {
+			return new Promise<boolean>((resolve) => {
+				confirmationModal.set({
+					open: true,
+					confirmed: null,
+					onCancel: () => {
+						confirmationModal.set({ open: false, confirmed: false });
+						resolve(false);
+					},
+					onConfirm: () => {
+						confirmationModal.set({ open: false, confirmed: true });
+						resolve(true);
+					},
+				});
+			});
+		};
+
+		confirmationModal.confirm = confirm;
+
+		return confirmationModal;
+	};
+</script>
+
 <script lang="ts">
 	import { disableBodyScroll, enableBodyScroll } from 'body-scroll-lock-upgrade';
 	import { onDestroy } from 'svelte';

@@ -1,14 +1,18 @@
 <script lang="ts">
 	import { Modal } from '$lib/components';
+	import { createConfirmationModal } from '$lib/components/layout/Modal.svelte';
 	import { ImageCrop, type CropValue } from '$lib/image/client';
 	import AvatarUploader from './AvatarUploader.svelte';
 	import ProfileCard from './ProfileCard.svelte';
 	import { updateAvatarCrop } from './avatar/crop.json';
+	import { deleteAvatar } from './avatar/upload.json';
 
 	export let data;
 
 	let avatarEditorOpen: 'crop' | 'upload' | null = null;
 	let triggerAvatarUploadCancel = () => {};
+
+	const confirmDelAvatarModal = createConfirmationModal();
 
 	const cancel = () => {
 		if (avatarEditorOpen === 'upload') {
@@ -24,6 +28,7 @@
 	};
 
 	const updatingAvatarCrop = updateAvatarCrop();
+	const deletingAvatar = deleteAvatar();
 
 	const saveToDB = async ({ crop }: { crop: CropValue }) => {
 		const { error: saveError, data: saveData } = await updatingAvatarCrop.send({ crop });
@@ -57,9 +62,20 @@
 >
 	{#if avatarEditorOpen === 'crop' && data.user.avatar}
 		<ImageCrop
+			onDelete={async () => {
+				if (!(await confirmDelAvatarModal.confirm())) return;
+
+				const { error: deleteError } = await deletingAvatar.send();
+				if (deleteError) {
+					console.error(deleteError);
+				} else {
+					updateAvatar(null);
+					avatarEditorOpen = null;
+				}
+			}}
 			crop={data.user.avatar.crop}
 			url={data.user.avatar.url}
-			disabled={$updatingAvatarCrop}
+			disabled={$updatingAvatarCrop || $deletingAvatar}
 			onCancel={cancel}
 			onNew={() => (avatarEditorOpen = 'upload')}
 			onSave={async (crop) => await saveToDB({ crop })}
@@ -73,4 +89,20 @@
 			}}
 		/>
 	{/if}
+</Modal>
+
+<Modal
+	open={$confirmDelAvatarModal.open}
+	onOutclick={$confirmDelAvatarModal.onCancel}
+	onEscape={$confirmDelAvatarModal.onCancel}
+	dialogClasses="modal-content max-w-96"
+>
+	<div class="relative space-y-8">
+		<div class="text-h4 font-medium">Delete your avatar?</div>
+
+		<div class="modal-btns-wrapper justify-between">
+			<button class="btn btn-hollow" on:click={$confirmDelAvatarModal.onCancel}>Cancel</button>
+			<button class="btn btn-color-error" on:click={$confirmDelAvatarModal.onConfirm}>Delete</button>
+		</div>
+	</div>
 </Modal>

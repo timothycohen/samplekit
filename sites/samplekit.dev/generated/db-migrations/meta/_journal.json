@@ -15,6 +15,13 @@
       "when": 1707279790793,
       "tag": "0001_tricky_rick_jones",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1707279851830,
+      "tag": "0002_sturdy_young_avengers",
+      "breakpoints": true
     }
   ]
 }

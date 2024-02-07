@@ -1,12 +1,6 @@
 import crypto from 'crypto';
-import {
-	DeleteObjectCommand,
-	GetObjectTaggingCommand,
-	PutObjectCommand,
-	PutObjectTaggingCommand,
-	S3Client,
-} from '@aws-sdk/client-s3';
-import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
+import { DeleteObjectCommand, GetObjectTaggingCommand, PutObjectTaggingCommand, S3Client } from '@aws-sdk/client-s3';
+import { createPresignedPost } from '@aws-sdk/s3-presigned-post';
 import {
 	AWS_SERVICE_REGION,
 	DB_NAME,
@@ -22,16 +16,29 @@ const s3 = new S3Client({
 	credentials: { accessKeyId: IAM_ACCESS_KEY_ID, secretAccessKey: IAM_SECRET_ACCESS_KEY },
 });
 
-export const generateS3UploadURL = async () => {
+/**
+ * Generates a presigned URL and POST policy for uploading files to an S3 bucket.
+ *
+ * @param {number} [options.maxContentLength=5242880] - (default 1024 * 1024 * 5: 5MB).
+ * @param {number} [options.expireSeconds=60] - (default 60: 60sec).
+ *
+ */
+export const generateS3UploadPost = async (a?: { maxContentLength?: number; expireSeconds?: number }) => {
 	try {
 		const rawBytes = crypto.randomBytes(16);
 		const key = rawBytes.toString('base64url');
 
-		const command = new PutObjectCommand({ Bucket: S3_BUCKET_NAME, Key: key });
+		const res = await createPresignedPost(s3, {
+			Bucket: S3_BUCKET_NAME,
+			Key: key,
+			Expires: a?.expireSeconds ?? 60,
+			Conditions: [['content-length-range', 0, a?.maxContentLength ?? 1024 * 1024 * 5]],
+		});
 
 		return {
-			uploadUrl: await getSignedUrl(s3, command, { expiresIn: 60 }),
+			uploadUrl: res.url,
 			objectUrl: urlTransforms.keyToS3Url(key),
+			fields: res.fields,
 		};
 	} catch (err) {
 		logger.error(err);
