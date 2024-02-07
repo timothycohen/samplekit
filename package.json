@@ -4,9 +4,28 @@
 	"private": true,
 	"type": "module",
 	"author": "Tim Cohen <contact@timcohen.dev>",
-	"scripts": {},
-	"devDependencies": {},
-	"dependencies": {},
+	"scripts": {
+		"format": "prettier --check .",
+		"format:fix": "prettier --list-different --write .",
+		"lint": "eslint --max-warnings 0 .",
+		"lint:fix": "eslint --fix --max-warnings 0 .",
+		"check": "pnpm --recursive --no-bail check",
+		"clean": "./scripts/.githooks/pre-commit --write",
+		"githooks:init": "git config core.hookspath ./scripts/.githooks"
+	},
+	"devDependencies": {
+		"@types/node": "^20.10.5",
+		"@typescript-eslint/eslint-plugin": "^6.14.0",
+		"@typescript-eslint/parser": "^6.14.0",
+		"eslint": "^8.56.0",
+		"eslint-config-prettier": "^9.1.0",
+		"eslint-plugin-disable-autofix": "^4.1.0",
+		"eslint-plugin-import": "^2.29.1",
+		"eslint-plugin-svelte": "^2.35.1",
+		"prettier": "^3.1.1",
+		"prettier-plugin-svelte": "^3.1.2",
+		"typescript": "^5.3.3"
+	},
 	"packageManager": "pnpm@8.9.0",
 	"engines": {
 		"node": ">=18.13",

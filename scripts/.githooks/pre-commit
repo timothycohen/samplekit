@@ -1,0 +1,53 @@
+#!/bin/sh
+
+trap "printf '\n=====================\naborted\n=====================\n'; exit 1" INT
+
+# Turn to true to write changes instead of failing. Any staged files will be restaged after changes.
+write=false
+
+if [ "$1" = "--write" ]; then
+	write=true
+fi
+
+# Diff filters: Added (A), Copied (C), Modified (M), Renamed (R)
+STAGED_FILES=$(git diff --cached --name-only --diff-filter=ACMR | sed 's| |\\ |g')
+
+exit_code=0
+
+printf '\n=====================\ninstall\n=====================\n\n'
+pnpm install --frozen-lockfile
+exit_code=$(($exit_code + $?))
+
+if [ $exit_code -ne 0 ]; then
+	exit "$exit_code"
+fi
+
+if [ $write = true ]; then
+	printf '\n=====================\nformat fix\n=====================\n'
+	pnpm format:fix
+	exit_code=$(($exit_code + $?))
+
+	printf '\n=====================\nlint fix\n=====================\n'
+	pnpm lint:fix
+	exit_code=$(($exit_code + $?))
+
+	echo "$STAGED_FILES" | xargs git add
+else
+	printf '\n=====================\nformat\n=====================\n'
+	pnpm format
+	exit_code=$(($exit_code + $?))
+
+	printf '\n=====================\nlint\n=====================\n'
+	pnpm lint
+	exit_code=$(($exit_code + $?))
+fi
+
+if [ $exit_code -ne 0 ]; then
+	exit "$exit_code"
+fi
+
+printf '\n=====================\ncheck\n=====================\n'
+pnpm -r check
+exit_code=$(($exit_code + $?))
+
+exit "$exit_code"
