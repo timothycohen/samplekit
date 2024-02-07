@@ -136,6 +136,9 @@ importers:
       '@melt-ui/svelte':
         specifier: ^0.70.0
         version: 0.70.0(svelte@4.2.8)
+      '@svelte-put/preprocess-auto-slug':
+        specifier: ^1.0.1
+        version: 1.0.1(svelte@4.2.8)
       '@sveltejs/adapter-auto':
         specifier: ^3.0.0
         version: 3.1.0(@sveltejs/kit@2.3.2)
@@ -2552,6 +2555,17 @@ packages:
       tslib: 2.6.2
     dev: false
 
+  /@svelte-put/preprocess-auto-slug@1.0.1(svelte@4.2.8):
+    resolution: {integrity: sha512-hfNWTQtGyeaijaE/gVlywczXsHW/aedsaRVBC0PqwdkMKm8zFVg8qAS2YpsDnUEaA5ycFuS/+/bxOKvgZLfE8Q==}
+    peerDependencies:
+      svelte: ^3.55.0 || ^4.0.0
+    dependencies:
+      github-slugger: 2.0.0
+      magic-string: 0.30.5
+      svelte: 4.2.8
+      svelte-parse-markup: 0.1.2(svelte@4.2.8)
+    dev: true
+
   /@sveltejs/adapter-auto@3.1.0(@sveltejs/kit@2.3.2):
     resolution: {integrity: sha512-igS5hqCwdiXWb8NoWzThKCVQQj9tKgUkbTtzfxBPgSLOyFjkiGNDX0SgCoY2QIUWBqOkfGTOqGlrW5Ynw9oUvw==}
     peerDependencies:
@@ -4335,6 +4349,10 @@ packages:
     resolution: {integrity: sha512-wuMsz4leaj5hbGgg4IvDU0bqJagpftG5l5cXIAvo8uZrqn0NJqwtfupTN00VnkQJPcIRrxYrm1Ue24btpCha2A==}
     dependencies:
       resolve-pkg-maps: 1.0.0
+    dev: true
+
+  /github-slugger@2.0.0:
+    resolution: {integrity: sha512-IaOQ9puYtjrkq7Y0Ygl9KDZnrf/aiUJYUpVf89y8kyaxbRG7Y1SrX/jaumrv81vc61+kiMempujsM3Yw7w5qcw==}
     dev: true
 
   /glob-parent@5.1.2:
