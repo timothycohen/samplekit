@@ -4,6 +4,7 @@
 	import AvatarUploader from './AvatarUploader.svelte';
 	import ProfileCard from './ProfileCard.svelte';
 	import { updateAvatarCrop } from './avatar/crop.json';
+	import { deleteAvatar } from './avatar/upload.json';
 
 	export let data;
 
@@ -24,6 +25,7 @@
 	};
 
 	const updatingAvatarCrop = updateAvatarCrop();
+	const deletingAvatar = deleteAvatar();
 
 	const saveToDB = async ({ crop }: { crop: CropValue }) => {
 		const { error: saveError, data: saveData } = await updatingAvatarCrop.send({ crop });
@@ -57,9 +59,18 @@
 >
 	{#if avatarEditorOpen === 'crop' && data.user.avatar}
 		<ImageCrop
+			onDelete={async () => {
+				const { error: deleteError } = await deletingAvatar.send();
+				if (deleteError) {
+					console.error(deleteError);
+				} else {
+					updateAvatar(null);
+					avatarEditorOpen = null;
+				}
+			}}
 			crop={data.user.avatar.crop}
 			url={data.user.avatar.url}
-			disabled={$updatingAvatarCrop}
+			disabled={$updatingAvatarCrop || $deletingAvatar}
 			onCancel={cancel}
 			onNew={() => (avatarEditorOpen = 'upload')}
 			onSave={async (crop) => await saveToDB({ crop })}
