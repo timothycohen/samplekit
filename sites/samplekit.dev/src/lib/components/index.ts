@@ -8,4 +8,5 @@ export { default as Icon } from './Icon.svelte';
 export * from './input';
 export * from './layout';
 export * from './user';
-export * from './slider';
+
+export * from './builders';
