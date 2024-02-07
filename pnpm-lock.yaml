@@ -78,6 +78,9 @@ importers:
 
   sites/samplekit.dev:
     dependencies:
+      '@samplekit/auth':
+        specifier: workspace:^
+        version: link:../../packages/auth
       body-scroll-lock-upgrade:
         specifier: ^1.1.0
         version: 1.1.0

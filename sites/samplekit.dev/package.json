@@ -16,12 +16,15 @@
 		"generate:db_migrations": "drizzle-kit generate:pg --config drizzle.gen.ts",
 		"generate:theme_utils": "./scripts/generate-theme-utils.sh",
 		"generate": "for cmd in db_migrations theme_utils; do pnpm generate:$cmd; done",
-		"build": "read -p 'Which .env mode? (ex: production uses .env.production): ' mode; if [ -z $mode ]; then echo Aborted && exit 1; elif [ ! -e .env.$mode ]; then echo Not found && exit 1; fi; vite build --mode $mode",
+		"build:dependencies": "for dir in auth; do pnpm --prefix ../../packages/$dir build; done",
+		"build:site": "read -p 'Which .env mode? (ex: production uses .env.production): ' mode; if [ -z $mode ]; then echo Aborted && exit 1; elif [ ! -e .env.$mode ]; then echo Not found && exit 1; fi; vite build --mode $mode",
+		"build": "pnpm build:dependencies && pnpm build:site",
 		"preview": "vite preview",
 		"check": "svelte-kit sync && svelte-check --fail-on-warnings --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --fail-on-warnings --tsconfig ./tsconfig.json --watch"
 	},
 	"dependencies": {
+		"@samplekit/auth": "workspace:^",
 		"body-scroll-lock-upgrade": "^1.1.0",
 		"drizzle-orm": "^0.29.1",
 		"drizzle-zod": "^0.5.1",
