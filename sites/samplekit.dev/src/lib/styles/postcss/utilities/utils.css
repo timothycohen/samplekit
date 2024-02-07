@@ -1,0 +1,5 @@
+@layer utilities {
+	.no-motion {
+		@apply motion-reduce:!animation-delay-0 motion-reduce:!animation-duration-0 motion-reduce:!delay-0 motion-reduce:!duration-0;
+	}
+}

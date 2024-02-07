@@ -99,6 +99,9 @@ importers:
       '@types/pg':
         specifier: ^8.10.9
         version: 8.10.9
+      '@types/postcss-js':
+        specifier: ^4.0.4
+        version: 4.0.4
       autoprefixer:
         specifier: ^10.4.16
         version: 10.4.16(postcss@8.4.33)
@@ -111,6 +114,9 @@ importers:
       postcss:
         specifier: ^8.4.32
         version: 8.4.33
+      postcss-js:
+        specifier: ^4.0.1
+        version: 4.0.1(postcss@8.4.33)
       svelte:
         specifier: ^4.2.7
         version: 4.2.8
@@ -1205,6 +1211,12 @@ packages:
       '@types/node': 20.11.0
       pg-protocol: 1.6.0
       pg-types: 4.0.1
+
+  /@types/postcss-js@4.0.4:
+    resolution: {integrity: sha512-j5+GMZVIPCJpRTwI/mO64mCzv7X+zAEq3JP0EV2lo/BrLWHAohEubUJimIAY23rH27+wKce0fXUYjAdBoqlaYw==}
+    dependencies:
+      postcss: 8.4.33
+    dev: true
 
   /@types/pug@2.0.10:
     resolution: {integrity: sha512-Sk/uYFOBAB7mb74XcpizmH0KOR2Pv3D2Hmrh1Dmy5BmK3MpdSa5kqZcg6EKBdklU0bFXX9gCfzvpnyUehrPIuA==}

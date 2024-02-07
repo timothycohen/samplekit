@@ -1,0 +1,105 @@
+/* Title ####################### */
+.md-code-topper {
+	padding: 0.5em 1em 0.5em 1.5em;
+	z-index: 0;
+	border-radius: var(--radius-card) var(--radius-card) 0 0;
+	font-family: UbuntuMonoLigaturized;
+	display: flex;
+	justify-content: space-between;
+	border: 1px solid transparent;
+	gap: 1rem;
+}
+
+.md-code-topper span {
+	overflow: scroll;
+	overflow: auto;
+}
+
+.dark .md-code-topper {
+	color: #4fa8e1;
+	background-color: black;
+}
+
+.light .md-code-topper {
+	color: hsl(189, 30%, 48%);
+	background-color: white;
+	border-color: gray gray transparent gray;
+}
+
+/* Wrapper ####################### */
+.dark .md-code-wrapper [data-light] {
+	display: none !important;
+}
+
+.light .md-code-wrapper [data-dark] {
+	display: none !important;
+}
+
+.light .md-code-wrapper pre[data-light] {
+	border: 1px solid gray;
+}
+
+.dark .md-code-wrapper pre[data-dark] {
+	border: 1px solid transparent;
+}
+
+.dark .md-code-wrapper pre[data-light] {
+	display: none !important;
+}
+
+.md-code-wrapper pre {
+	line-height: 1.5 !important;
+}
+.md-code-wrapper pre * {
+	font-family: UbuntuMonoLigaturized;
+}
+
+.md-code-topper + .md-code-wrapper pre {
+	margin-top: 0;
+	border-radius: 0 0 var(--radius-card) var(--radius-card);
+}
+
+.dark .md-code-topper + .md-code-wrapper pre[data-dark] {
+	border-top-color: hsl(0, 0%, 20%);
+}
+
+/* Line Numbers ####################### */
+.md-code-wrapper pre code {
+	counter-reset: line;
+}
+
+.md-code-wrapper pre code > [data-line]::before {
+	counter-increment: line;
+	content: counter(line);
+
+	display: inline-block;
+	width: 1rem;
+	margin-right: 1rem;
+	text-align: right;
+	color: gray;
+}
+
+@media (min-width: 768px) {
+	.md-code-wrapper pre code > [data-line]::before {
+		margin-right: 2rem;
+	}
+}
+
+/* Highlighting ####################### */
+.light [data-line-highlighted] {
+	background-color: hsla(248.6, 11.7%, 47.1%, 0.1);
+}
+
+.light [data-chars-highlighted] {
+	background-color: hsla(248.6, 11.7%, 47.1%, 0.1);
+	border: 1px solid hsla(248.6, 11.7%, 47.1%, 0.1);
+}
+
+.dark [data-line-highlighted] {
+	background-color: hsla(210, 100%, 65%, 0.2);
+}
+
+.dark [data-chars-highlighted] {
+	border: 1px solid hsla(210, 100%, 65%, 0.25);
+	background-color: hsl(210, 100%, 65%, 0.25);
+}
