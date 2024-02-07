@@ -1,0 +1,38 @@
+@layer components {
+	.radio {
+		appearance: none;
+		width: 1.15rem;
+		height: 1.15rem;
+		border: 1px solid hsl(var(--gray-7));
+		border-radius: 50%;
+		display: grid;
+		place-content: center;
+	}
+
+	.radio:hover {
+		border-color: hsl(var(--gray-8));
+	}
+
+	.radio:checked {
+		border-color: hsl(var(--accent-9));
+	}
+
+	.radio:focus {
+		outline: 2px solid hsl(var(--accent-9));
+		outline-offset: -2px;
+	}
+
+	.radio::before {
+		content: '';
+		width: 0.575rem;
+		height: 0.575rem;
+		border-radius: 50%;
+		transition: 150ms transform ease-in-out;
+		box-shadow: inset 1em 1em hsl(var(--accent-9));
+		transform: scale(0);
+	}
+
+	.radio:checked::before {
+		transform: scale(1);
+	}
+}

@@ -1,0 +1,103 @@
+@layer components {
+	.t-h1 {
+		font-size: theme('fontSize.h1');
+		line-height: theme('lineHeight.h1');
+		font-family: theme('fontFamily.serif');
+	}
+	.t-h1-min {
+		font-size: theme('fontSize.h1-min');
+		line-height: theme('lineHeight.h1-min');
+		font-family: theme('fontFamily.serif');
+	}
+	.t-h1-max {
+		font-size: theme('fontSize.h1-max');
+		line-height: theme('lineHeight.h1-max');
+		font-family: theme('fontFamily.serif');
+	}
+
+	.t-h2 {
+		font-size: theme('fontSize.h2');
+		line-height: theme('lineHeight.h2');
+		font-family: theme('fontFamily.serif');
+	}
+	.t-h2-min {
+		font-size: theme('fontSize.h2-min');
+		line-height: theme('lineHeight.h2-min');
+		font-family: theme('fontFamily.serif');
+	}
+	.t-h2-max {
+		font-size: theme('fontSize.h2-max');
+		line-height: theme('lineHeight.h2-max');
+		font-family: theme('fontFamily.serif');
+	}
+
+	.t-h3 {
+		font-size: theme('fontSize.h3');
+		line-height: theme('lineHeight.h3');
+		font-family: theme('fontFamily.serif');
+	}
+	.t-h3-min {
+		font-size: theme('fontSize.h3-min');
+		line-height: theme('lineHeight.h3-min');
+		font-family: theme('fontFamily.serif');
+	}
+	.t-h3-max {
+		font-size: theme('fontSize.h3-max');
+		line-height: theme('lineHeight.h3-max');
+		font-family: theme('fontFamily.serif');
+	}
+
+	.t-h4 {
+		font-size: theme('fontSize.h4');
+		line-height: theme('lineHeight.h4');
+		font-family: theme('fontFamily.serif');
+	}
+	.t-h4-min {
+		font-size: theme('fontSize.h4-min');
+		line-height: theme('lineHeight.h4-min');
+		font-family: theme('fontFamily.serif');
+	}
+	.t-h4-max {
+		font-size: theme('fontSize.h4-max');
+		line-height: theme('lineHeight.h4-max');
+		font-family: theme('fontFamily.serif');
+	}
+
+	.t-h5 {
+		font-size: theme('fontSize.h5');
+		line-height: theme('lineHeight.h5');
+	}
+
+	.t-body {
+		font-size: theme('fontSize.body');
+		line-height: theme('lineHeight.body');
+	}
+
+	.t-body-sm {
+		font-size: theme('fontSize.body-sm');
+		line-height: theme('lineHeight.body');
+	}
+
+	.t-caption {
+		font-size: theme('fontSize.caption');
+		line-height: theme('lineHeight.caption');
+	}
+
+	.t-caption-sm {
+		font-size: theme('fontSize.caption-sm');
+		line-height: theme('lineHeight.caption');
+	}
+
+	.t-sm-base {
+		font-size: theme('fontSize.sm-base');
+		line-height: theme('lineHeight.sm-base');
+	}
+	.t-base-lg {
+		font-size: theme('fontSize.base-lg');
+		line-height: theme('lineHeight.base-lg');
+	}
+	.t-lg-2xl {
+		font-size: theme('fontSize.lg-2xl');
+		line-height: theme('lineHeight.lg-2xl');
+	}
+}

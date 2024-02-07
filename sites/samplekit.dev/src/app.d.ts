@@ -11,8 +11,10 @@ declare global {
 			type Message = { success?: never; fail: string } | { fail?: never; success: string };
 		}
 
+		interface PageData {
+			layout: { showFooter: boolean; showHeader: boolean };
+		}
 		// interface Locals {}
-		// interface PageData {}
 		// interface PageState {}
 		// interface Platform {}
 	}

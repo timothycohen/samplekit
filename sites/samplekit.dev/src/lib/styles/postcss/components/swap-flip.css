@@ -1,0 +1,35 @@
+@layer components {
+	.swap-flip {
+		transform-style: preserve-3d;
+		perspective: 10000px;
+		position: relative;
+	}
+	.swap-flip .swap-front,
+	.swap-flip .swap-back {
+		backface-visibility: hidden;
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.swap-flip .swap-front,
+		.swap-flip .swap-back {
+			transition-duration: 0ms;
+		}
+	}
+	.swap-flip .swap-front {
+		transform: rotateY(0deg);
+	}
+	.swap-flip .swap-back {
+		transform: rotateY(180deg);
+	}
+	.swap-flip input:checked ~ .swap-front {
+		transform: rotateY(-180deg);
+	}
+	.swap-flip input:checked ~ .swap-back {
+		transform: rotateY(0deg);
+	}
+	.swap-flip.preview .swap-front {
+		transform: rotateY(-150deg);
+	}
+	.swap-flip.preview .swap-back {
+		transform: rotateY(-30deg);
+	}
+}

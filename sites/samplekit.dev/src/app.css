@@ -1,3 +1,53 @@
+@import './lib/styles/theme.css';
+
+/* The base layer is for things like reset rules or default styles applied to plain HTML elements. Generally not recommended because html should follow semantics, not styles */
 @tailwind base;
+/* The components layer is for class-based styles that you want to be able to override with utilities. Things like .btn, .card, etc. */
 @tailwind components;
+/* The utilities layer is for small, single-purpose classes that should always take precedence over any other styles. */
 @tailwind utilities;
+/* @layer <layername> is better than adding classes directly to the css because the classes will then support tailwind variants, like sm: or hover: */
+
+/* Resets ####################### */
+* {
+	-webkit-tap-highlight-color: transparent;
+}
+select {
+	-moz-appearance: none;
+	-webkit-appearance: none;
+	appearance: none;
+}
+
+.lucide {
+	@apply stroke-[1.25];
+}
+
+/* Base Colors ####################### */
+::selection {
+	@apply bg-accent-9 text-accent-9-contrast;
+}
+* {
+	@apply outline-accent-7 outline-2 outline-offset-2 focus-visible:outline;
+}
+html {
+	@apply accent-accent-9;
+	scroll-behavior: smooth;
+}
+body {
+	@apply bg-app-bg text-gray-12;
+}
+
+/* Layout ####################### */
+html,
+body {
+	@apply h-full;
+}
+:root {
+	--nav-height: 3.5rem;
+}
+
+/* Fonts ####################### */
+body,
+html {
+	@apply font-sans;
+}
