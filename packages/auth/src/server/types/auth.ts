@@ -3,7 +3,7 @@ export type AuthenticatorDevice = {
 	credentialPublicKey: Base64Url;
 	credentialID: Base64Url;
 	counter: number;
-	transport?: string[]; // import('@simplewebauthn/typescript-types').AuthenticatorTransportFuture[];
+	transport?: string[]; // import('@simplewebauthn/types').AuthenticatorTransportFuture[];
 };
 
 export declare namespace Auth {

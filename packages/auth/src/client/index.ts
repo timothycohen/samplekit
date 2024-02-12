@@ -1,5 +1,5 @@
 import { startAuthentication, startRegistration } from '@simplewebauthn/browser';
-import type { AuthenticationResponseJSON, RegistrationResponseJSON } from '@simplewebauthn/typescript-types';
+import type { AuthenticationResponseJSON, RegistrationResponseJSON } from '@simplewebauthn/types';
 
 export const startPasskeyReg = async (
 	opts: Parameters<typeof startRegistration>[0],
