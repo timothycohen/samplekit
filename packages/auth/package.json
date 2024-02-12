@@ -10,14 +10,14 @@
 		"check": "tsc --noEmit"
 	},
 	"devDependencies": {
-		"@simplewebauthn/typescript-types": "^8.3.4",
+		"@simplewebauthn/types": "^9.0.1",
 		"@types/cookie": "^0.6.0",
 		"@types/qrcode": "^1.5.5"
 	},
 	"dependencies": {
-		"@simplewebauthn/browser": "^8.3.4",
-		"@simplewebauthn/server": "8.3.5",
-		"nanoid": "^5.0.4",
+		"@simplewebauthn/browser": "^9.0.1",
+		"@simplewebauthn/server": "9.0.1",
+		"nanoid": "^5.0.5",
 		"otplib": "^12.0.1",
 		"qrcode": "^1.5.3",
 		"zod": "^3.22.4"
