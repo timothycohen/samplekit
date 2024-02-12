@@ -13,6 +13,7 @@ declare global {
 
 		interface PageData {
 			layout: { showFooter: boolean; showHeader: boolean };
+			meta?: Partial<import('$lib/components/SEO.svelte').SEOMeta>;
 		}
 		interface Locals extends Record<string, unknown> {
 			seshHandler: import('./hooks.server').SessionHandler;
