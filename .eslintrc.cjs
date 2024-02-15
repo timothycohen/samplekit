@@ -51,6 +51,11 @@ module.exports = {
 			env: { browser: false, es2021: true, node: false },
 		},
 		{
+			files: ['packages/pino-pg/**'],
+			parserOptions: { project: './packages/pino-pg/tsconfig.json' },
+			env: { browser: false, es2021: true, node: false },
+		},
+		{
 			files: ['sites/samplekit.dev/**'],
 			// parserOptions: { project: './sites/samplekit.dev/tsconfig.json' },
 			globals: { App: 'readonly', DB: 'readonly', SvelteGeneric: 'readonly' },
