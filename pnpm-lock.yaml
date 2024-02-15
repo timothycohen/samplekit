@@ -125,6 +125,9 @@ importers:
       '@samplekit/markdown':
         specifier: workspace:^
         version: link:../../packages/markdown
+      '@samplekit/pino-pg':
+        specifier: workspace:^
+        version: link:../../packages/pino-pg
       '@shopify/storefront-api-client':
         specifier: ^0.2.2
         version: 0.2.2
