@@ -1,3 +1,4 @@
+import * as sentry from '@sentry/sveltekit';
 import {
 	rawFrontMatterSchema,
 	type ProcessedFrontMatter,
@@ -21,7 +22,7 @@ const postData: Record<string, Promise<LoadedFrontMatter>> = (() => {
 			.then((rawData) => {
 				const validated = rawFrontMatterSchema.safeParse({ ...rawData });
 				if (validated.success) return { ...validated.data, articleSlug: slug };
-				console.error(validated.error.errors);
+				sentry.captureException(validated.error);
 				throw new Error(`Error reading frontmatter for \`${slug}\`. Skipping...`);
 			});
 		acc[slug] = frontMatter;
