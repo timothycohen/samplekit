@@ -1,0 +1,24 @@
+{
+	"name": "@samplekit/pino-pg",
+	"version": "0.0.1",
+	"description": "Save json logs to a postgres database",
+	"private": true,
+	"type": "module",
+	"author": "Tim Cohen <contact@timcohen.dev>",
+	"scripts": {
+		"clean": "rm -rf dist",
+		"build": "pnpm clean && tsc",
+		"check": "tsc --noEmit"
+	},
+	"dependencies": {
+		"pg": "^8.11.3",
+		"pino-abstract-transport": "^1.1.0"
+	},
+	"devDependencies": {
+		"@types/pg": "^8.11.0"
+	},
+	"exports": {
+		".": "./dist/pino-pg.js",
+		"./package.json": "./package.json"
+	}
+}
