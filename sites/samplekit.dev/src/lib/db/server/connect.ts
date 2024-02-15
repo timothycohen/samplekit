@@ -1,7 +1,7 @@
 import { drizzle, type NodePgDatabase } from 'drizzle-orm/node-postgres';
 import pg from 'pg';
 import { browser } from '$app/environment';
-import { DB_NAME, PG_CONNECTION_STRING } from '$env/static/private';
+import { DB_NAME, LOG_TO, PG_CONNECTION_STRING } from '$env/static/private';
 import { logger } from '$lib/logging/server';
 import * as schema from './schema';
 
@@ -18,7 +18,8 @@ export const initDB = async () => {
 		client.release();
 		logger.info(`[SETUP] DB: Connected to ${DB_NAME}`);
 	} catch (err) {
-		logger.fatal(
+		const log = LOG_TO === 'DB' ? console.error.bind(console) : logger.fatal.bind(logger);
+		log(
 			`[SETUP] Connection to db DB_NAME=\`${DB_NAME}\` failed using PG_CONNECTION_STRING. If you are using docker, is it running? (look at package.json db: scripts)`,
 		);
 		process.exit(1);
