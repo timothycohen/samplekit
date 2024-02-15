@@ -36,6 +36,7 @@
 		"@samplekit/auth": "workspace:^",
 		"@samplekit/markdown": "workspace:^",
 		"@samplekit/pino-pg": "workspace:^",
+		"@sentry/sveltekit": "^7.101.0",
 		"@shopify/storefront-api-client": "^0.2.2",
 		"body-scroll-lock-upgrade": "^1.1.0",
 		"drizzle-orm": "^0.29.3",

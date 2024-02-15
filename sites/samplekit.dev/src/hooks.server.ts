@@ -1,5 +1,6 @@
 import '$lib/initServer';
 
+import { sentryHandle, handleErrorWithSentry } from '@sentry/sveltekit';
 import { type HandleServerError, type Handle, redirect } from '@sveltejs/kit';
 import { sequence } from '@sveltejs/kit/hooks';
 import { auth, createAuthMiddleware } from '$lib/auth/server';
@@ -54,9 +55,9 @@ const populateLocals: Handle = async ({ event, resolve }) => {
 	return await resolve(event);
 };
 
-export const handle = sequence(populateLocals, handleAccountRedirects);
+export const handle = sequence(sentryHandle(), populateLocals, handleAccountRedirects);
 
-export const handleError: HandleServerError = async ({ error, event, status, message }) => {
+export const handleError: HandleServerError = handleErrorWithSentry(async ({ error, event, status, message }) => {
 	const errorId = crypto.randomUUID();
 	const platform = event.request.headers.get('user-agent') ?? undefined;
 
@@ -73,4 +74,4 @@ export const handleError: HandleServerError = async ({ error, event, status, mes
 	logger.error(ctx);
 
 	return { message, status, errorId };
-};
+});
