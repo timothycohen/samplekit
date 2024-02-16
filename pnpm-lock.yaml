@@ -125,9 +125,6 @@ importers:
       '@samplekit/markdown':
         specifier: workspace:^
         version: link:../../packages/markdown
-      '@samplekit/pino-pg':
-        specifier: workspace:^
-        version: link:../../packages/pino-pg
       '@sentry/sveltekit':
         specifier: ^7.101.0
         version: 7.101.1(@sveltejs/kit@2.5.0)(svelte@4.2.10)
