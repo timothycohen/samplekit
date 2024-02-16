@@ -1,27 +1,13 @@
-import pino from 'pino';
 import { z } from 'zod';
 import { createDeviceLimiter } from '$lib/botProtection/rateLimit/server';
 import { jsonFail, jsonOk } from '$lib/http/server';
-import { createPersistentTransport, createPrettyTransport } from '$lib/logging/server';
+import { logger } from '$lib/logging/server';
 import type { RequestEvent } from '@sveltejs/kit';
 
 const postReq = z.object({ cron_api_key: z.string().length(63) });
 
-const fileLogger = pino(
-	{ timestamp: pino.stdTimeFunctions.isoTime },
-	pino.transport({
-		targets: [
-			createPersistentTransport({ level: 'trace', logKey: 'guardApi' }),
-			createPersistentTransport({ level: 'error', logKey: 'error' }),
-		],
-	}),
-);
-
-const consoleLogger = pino({ transport: createPrettyTransport({ level: 'trace' }) });
-
-const log = (method: 'info' | 'error', log: { address: string; id: string; err_code?: string }) => {
-	fileLogger[method](log);
-	consoleLogger[method](log, 'guardApi');
+const log = (method: 'info' | 'error', log: { id: string; address: string; err_code?: string }) => {
+	logger[method](log);
 };
 
 export const guardApiKey = async ({
