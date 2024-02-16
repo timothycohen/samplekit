@@ -1,42 +1,84 @@
-import pino, { type Level } from 'pino';
-import { PINO_LOGFILE_ROOT } from '$env/static/private';
-import { PUBLIC_PINO_LOG_LEVEL } from '$env/static/public';
-import type { PrettyOptions } from 'pino-pretty';
+import pino, { levels } from 'pino';
+import { defaultPreparePayload, extractPayloadMeta } from 'pino-logflare';
+import pinoPretty, { type PrettyOptions } from 'pino-pretty';
+import { dev, building, version } from '$app/environment';
+import {
+	PUBLIC_LOGFLARE_ACCESS_TOKEN_SERVER,
+	PUBLIC_LOGFLARE_SOURCE_ID_SERVER,
+	PUBLIC_LOGLEVEL_CONSOLE_SERVER,
+	PUBLIC_LOGLEVEL_LOGFLARE_SERVER,
+} from '$env/static/public';
 
-export type PrettyOpts = Partial<Omit<pino.TransportTargetOptions<PrettyOptions>, 'target'>>;
-export type FileOpts = { destination: string; mkdir?: boolean };
-export type LogKey = 'debug' | 'error' | 'guardApi';
-export type LogOptions = Record<LogKey, FileOpts>;
+const createPinoPretty = (options?: PrettyOptions) =>
+	pinoPretty({
+		destination: 1,
+		ignore: 'context',
+		translateTime: 'SYS:HH:mm:ss',
+		hideObject: false,
+		...options,
+	});
 
-export const fileLogs: Record<LogKey, FileOpts> = {
-	debug: { destination: `${PINO_LOGFILE_ROOT}/debug.log`, mkdir: true },
-	error: { destination: `${PINO_LOGFILE_ROOT}/error.log`, mkdir: true },
-	guardApi: { destination: `${PINO_LOGFILE_ROOT}/guard_api.log`, mkdir: true },
-};
+const createLogflareFetch =
+	({ sourceToken, apiKey }: { sourceToken: string; apiKey: string }) =>
+	async (cleanBody: string): Promise<{ data: unknown; error?: never } | { data?: never; error: Error }> => {
+		try {
+			const res = await fetch(`https://api.logflare.app/logs?source=${sourceToken}`, {
+				method: 'POST',
+				headers: {
+					Accept: 'application/json',
+					'Content-Type': 'application/json',
+					'X-API-KEY': apiKey,
+				},
+				body: cleanBody,
+			});
+			const data = await res.json();
+			if (data['error']) return { error: new Error(data['error']) };
+			return { data };
+		} catch (err) {
+			if (err instanceof Error) return { error: err };
+			else return { error: new Error('logflare fetch error') };
+		}
+	};
 
-export const createPrettyTransport = (a: { level: Level; options?: PrettyOptions }): pino.TransportTargetOptions => ({
-	target: 'pino-pretty',
-	level: a.level,
-	options: { destination: 1, ignore: 'hostname,pid', translateTime: 'SYS:HH:mm:ss', hideObject: false, ...a.options },
+const consoleLevel = levels.values[PUBLIC_LOGLEVEL_CONSOLE_SERVER] || 30;
+const logflareLevel = levels.values[PUBLIC_LOGLEVEL_LOGFLARE_SERVER] || 30;
+
+const fetcher = createLogflareFetch({
+	apiKey: PUBLIC_LOGFLARE_ACCESS_TOKEN_SERVER,
+	sourceToken: PUBLIC_LOGFLARE_SOURCE_ID_SERVER,
 });
 
-const createFileTransport = (a: { level: Level; options: FileOpts }): pino.TransportTargetOptions => ({
-	target: 'pino/file',
-	level: a.level,
-	options: a.options,
-});
-
-export const createPersistentTransport = (a: { level: Level; logKey: LogKey }): pino.TransportTargetOptions => {
-	return createFileTransport({ level: a.level, options: fileLogs[a.logKey] });
-};
+const pretty = createPinoPretty();
 
 export const logger = pino(
-	{ level: PUBLIC_PINO_LOG_LEVEL || 'info', timestamp: pino.stdTimeFunctions.isoTime },
-	pino.transport({
-		targets: [
-			createPersistentTransport({ level: 'debug', logKey: 'debug' }),
-			createPersistentTransport({ level: 'error', logKey: 'error' }),
-			createPrettyTransport({ level: 'trace', options: { hideObject: true } }),
-		],
-	}),
+	{
+		base: { context: { env: dev ? 'development' : 'production', building, version } },
+	},
+	{
+		write: (msg: string) => {
+			let cleanMsg;
+			let o;
+			try {
+				// This is grotesque for a reason
+				// This isn't using pino v7+ transports because globalThis.__bundlerPathsOverrides hacks to rectify module resolution errors caused by adapter-vercel were too unsavory.
+				// This isn't using pino.multiStream because pino-logflare.createWriteStream had undici errors (UND_ERR_CONNECT_TIMEOUT)
+				const parsed = JSON.parse(msg);
+				o = defaultPreparePayload(parsed, extractPayloadMeta(parsed));
+				cleanMsg = JSON.stringify(o);
+			} catch {
+				return console.error(new Error('Unable to stringify logger body'));
+			}
+			if (!cleanMsg || !o) return console.error(new Error('Unable to stringify logger body'));
+
+			const wordLevel = o['metadata']['level'];
+			const level = levels.values[wordLevel];
+
+			if (typeof level === 'number' && level >= consoleLevel) pretty.write(msg);
+			if (typeof level === 'number' && level >= logflareLevel) {
+				fetcher(cleanMsg).then(({ error }) => {
+					if (error) console.error(error);
+				});
+			}
+		},
+	},
 );
