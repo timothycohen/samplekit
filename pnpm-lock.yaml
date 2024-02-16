@@ -89,19 +89,6 @@ importers:
         specifier: ^3.0.4
         version: 3.0.4
 
-  packages/pino-pg:
-    dependencies:
-      pg:
-        specifier: ^8.11.3
-        version: 8.11.3
-      pino-abstract-transport:
-        specifier: ^1.1.0
-        version: 1.1.0
-    devDependencies:
-      '@types/pg':
-        specifier: ^8.11.0
-        version: 8.11.0
-
   sites/samplekit.dev:
     dependencies:
       '@aws-sdk/client-cloudfront':
