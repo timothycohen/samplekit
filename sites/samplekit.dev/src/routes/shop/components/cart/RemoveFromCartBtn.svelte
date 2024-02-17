@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { X } from 'lucide-svelte';
 	import { LoadingDots } from '$lib/components';
+	import { logger } from '$lib/logging/client';
 	import { useCartService } from '$routes/shop/services';
 	import type { Result } from '$lib/utils/common';
 
@@ -18,7 +19,7 @@
 		if ($pending) return;
 		removingCartItem.send({ lineId: props.lineId }).then((res) => {
 			if (props.handle) return props.handle(res);
-			if (res.error) console.error(res.error);
+			if (res.error) logger.error(res.error);
 			else cart.refresh();
 		});
 	}}

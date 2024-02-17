@@ -1,11 +1,12 @@
 import { DetectModerationLabelsCommand, RekognitionClient } from '@aws-sdk/client-rekognition';
 import { AWS_SERVICE_REGION, IAM_ACCESS_KEY_ID, IAM_SECRET_ACCESS_KEY, S3_BUCKET_NAME } from '$env/static/private';
-import { logger } from '$lib/logging/server';
+import { logger, setupLogger } from '$lib/logging/server';
 
 const rekognition = new RekognitionClient({
 	region: AWS_SERVICE_REGION,
 	credentials: { accessKeyId: IAM_ACCESS_KEY_ID, secretAccessKey: IAM_SECRET_ACCESS_KEY },
 });
+setupLogger.info('RekognitionClient created.');
 
 export const detectModerationLabels = async ({
 	s3Key,
@@ -27,7 +28,7 @@ export const detectModerationLabels = async ({
 			return { error: { message: `Image may contain inappropriate content: ${labels[0]?.Name}.` } };
 		}
 	} catch (err) {
-		logger.error(`Error detecting moderation labels for ${s3Key}:\n`, err);
+		logger.error({ msg: `Error detecting moderation labels for ${s3Key}:\n`, error: err });
 		return { error: { message: 'Error detecting moderation labels' } };
 	}
 

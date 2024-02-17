@@ -1,14 +1,17 @@
 import twilio from 'twilio';
 import { TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_NUMBER } from '$env/static/private';
-import { logger } from '$lib/logging/server';
+import { logger, setupLogger } from '$lib/logging/server';
 import { INTERCEPT_TRANSPORTS } from './consts';
 
 const twilioClient = twilio(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN);
+setupLogger.info('TwilioClient created.');
+
 const from = TWILIO_NUMBER;
 
 type Props = { phoneNumber: string; body: string };
 
 const log = ({ phoneNumber, body }: Props) => {
+	// eslint-disable-next-line no-console
 	console.info(`
 From: ${from}
 To: ${phoneNumber}
