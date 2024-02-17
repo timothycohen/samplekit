@@ -2,7 +2,7 @@
 	import '../app.css';
 	import { onMount } from 'svelte';
 	import { page } from '$app/stores';
-	import { Header } from '$lib/components';
+	import { Header, SEO } from '$lib/components';
 	import { themeController } from '$lib/styles';
 
 	onMount(() => {
@@ -11,9 +11,7 @@
 	});
 </script>
 
-<svelte:head>
-	<title>SampleKit</title>
-</svelte:head>
+<SEO meta={$page.data.meta} />
 
 {#if $page.data.layout.showHeader}
 	<Header />

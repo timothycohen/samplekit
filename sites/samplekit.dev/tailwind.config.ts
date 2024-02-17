@@ -61,6 +61,7 @@ export default {
 				white: 'hsl(0deg 0% 100% / <alpha-value>)',
 				logo: 'hsl(var(--logo) / <alpha-value>)',
 				'sun-moon': `hsl(var(--amber-9))`,
+				svelte: `hsl(14.6 100% 50% / <alpha-value>)`,
 			};
 
 			res['app'] = {

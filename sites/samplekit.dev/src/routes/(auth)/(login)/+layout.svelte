@@ -33,6 +33,7 @@
 				<noscript>
 					<div class="alert-wrapper alert-wrapper-warning mt-6">Please enable JavaScript to continue.</div>
 				</noscript>
+				<div class="text-gray-11 text-center text-sm">This is a demo site. The database is reset every 24 hours.</div>
 			</div>
 		</div>
 	</div>
