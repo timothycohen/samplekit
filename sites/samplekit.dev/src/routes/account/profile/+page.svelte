@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { createDialog, melt } from '@melt-ui/svelte';
 	import { ImageCrop, type CropValue } from '$lib/image/client';
+	import { logger } from '$lib/logging/client';
 	import AvatarUploader from './AvatarUploader.svelte';
 	import ProfileCard from './ProfileCard.svelte';
 	import { updateAvatarCrop } from './avatar/crop.json';
@@ -22,7 +23,7 @@
 	const saveToDB = async ({ crop }: { crop: CropValue }) => {
 		const { error: saveError, data: saveData } = await updatingAvatarCrop.send({ crop });
 		if (saveError) {
-			console.error(saveError);
+			logger.error(saveError);
 		} else {
 			updateAvatar(saveData.savedImg);
 			editAvatarOpen.set(false);
@@ -61,7 +62,7 @@
 	const handleDelete = async () => {
 		const { error: deleteError } = await deletingAvatar.send();
 		if (deleteError) {
-			console.error(deleteError);
+			logger.error(deleteError);
 		} else {
 			updateAvatar(null);
 			editAvatarOpen.set(false);

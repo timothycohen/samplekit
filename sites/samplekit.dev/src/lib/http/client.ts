@@ -1,6 +1,7 @@
 import { get, writable, type Writable } from 'svelte/store';
 import { browser } from '$app/environment';
 import { goto, invalidateAll } from '$app/navigation';
+import { logger } from '$lib/logging/client';
 import type { Result } from '$lib/utils/common';
 import type { Method } from './common';
 
@@ -46,7 +47,7 @@ const createFetcher =
 		try {
 			cleanBody = body ? JSON.stringify(body) : undefined;
 		} catch (err) {
-			console.error(err);
+			logger.error(err);
 			return { error: { status: 400, message: 'Unable to stringify body' } } as Result<ResponseData>;
 		}
 
@@ -67,7 +68,7 @@ const createFetcher =
 			if ((err instanceof DOMException && err.name === 'AbortError') || (err as { status: number })?.status === 499) {
 				return { error: { status: 499, message: 'The user aborted the request.' } } as Result<ResponseData>;
 			}
-			console.error(err);
+			logger.error(err);
 			return { error: { status: 500, message: 'Internal Error' } } as Result<ResponseData>;
 		}
 	};

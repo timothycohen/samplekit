@@ -1,7 +1,9 @@
+/* eslint-disable no-console */
+
 import pino, { levels } from 'pino';
 import { defaultPreparePayload, extractPayloadMeta } from 'pino-logflare';
 import pinoPretty, { type PrettyOptions } from 'pino-pretty';
-import { dev, building, version } from '$app/environment';
+import { dev, building, version, browser } from '$app/environment';
 import {
 	PUBLIC_LOGFLARE_ACCESS_TOKEN_SERVER,
 	PUBLIC_LOGFLARE_SOURCE_ID_SERVER,
@@ -56,6 +58,8 @@ export const logger = pino(
 	},
 	{
 		write: (msg: string) => {
+			if (browser) return;
+
 			let cleanMsg;
 			let o;
 			try {

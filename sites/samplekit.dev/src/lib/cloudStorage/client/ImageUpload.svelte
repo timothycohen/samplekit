@@ -10,6 +10,7 @@
 	import { tweened, type Tweened } from 'svelte/motion';
 	import { fade } from 'svelte/transition';
 	import { CropWindow, type CropValue, defaultOptions } from '$lib/image/client';
+	import { logger } from '$lib/logging/client';
 	import { assertUnreachable, type Result } from '$lib/utils/common';
 	import type { CroppedImg, ImgCrop } from '$lib/db/client';
 	import type { UploaderRes } from '.';
@@ -43,7 +44,7 @@
 			case 'error':
 				return;
 			case 'save_to_db':
-				console.error('Already saved to image storage. Uploading to db. Ignoring cancel.');
+				logger.error('Already saved to image storage. Uploading to db. Ignoring cancel.');
 				return;
 			case 'upload':
 				abort();

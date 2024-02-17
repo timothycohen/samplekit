@@ -37,7 +37,8 @@ module.exports = {
 			rules: { '@typescript-eslint/no-throw-literal': 'error' },
 		},
 		{
-			files: ['packages/**'],
+			files: ['packages/**', 'sites/*/src/**'],
+			excludedFiles: ['sites/*/**/*.js'],
 			rules: { 'no-console': 'error' },
 		},
 		{

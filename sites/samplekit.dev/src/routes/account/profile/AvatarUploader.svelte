@@ -3,6 +3,7 @@
 	import { uploadToCloudStorage, ImageUpload } from '$lib/cloudStorage/client';
 	import { FileInput } from '$lib/components';
 	import { ImageCrop, fileToDataUrl, humanReadableFileSize } from '$lib/image/client';
+	import { logger } from '$lib/logging/client';
 	import { assertUnreachable } from '$lib/utils/common';
 	import {
 		MAX_UPLOAD_SIZE,
@@ -86,7 +87,7 @@
 			if (uri) {
 				inMemoryFileURI = uri;
 			} else {
-				console.error('Error reading file');
+				logger.error('Error reading file');
 				file = null;
 				inMemoryFileURI = null;
 			}
@@ -128,7 +129,7 @@
 		useCropWindow
 		bind:cancel={triggerUploadCancel}
 		onError={(error) => {
-			console.error(error);
+			logger.error(error);
 			const state = error.state;
 
 			switch (state) {

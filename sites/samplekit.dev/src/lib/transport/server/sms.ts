@@ -9,6 +9,7 @@ const from = TWILIO_NUMBER;
 type Props = { phoneNumber: string; body: string };
 
 const log = ({ phoneNumber, body }: Props) => {
+	// eslint-disable-next-line no-console
 	console.info(`
 From: ${from}
 To: ${phoneNumber}
