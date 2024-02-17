@@ -29,6 +29,7 @@ type Props = {
 };
 
 const log = ({ from, to, dynamicTemplateData }: Props) => {
+	// eslint-disable-next-line no-console
 	console.info(`
 From: SampleKit <${from ?? EMAIL_DEFAULT_SENDER}>
 To: ${to}

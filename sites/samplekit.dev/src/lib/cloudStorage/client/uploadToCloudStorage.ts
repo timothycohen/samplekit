@@ -1,3 +1,4 @@
+import { logger } from '$lib/logging/client';
 import type { Result } from '$lib/utils/common';
 import type { Tweened } from 'svelte/motion';
 
@@ -34,7 +35,7 @@ export const uploadToCloudStorage: Uploader = ({ method, uploadUrl, data, upload
 				} else if (req.status === 0) {
 					resolve({ error: { status: 499, message: 'Upload aborted' } });
 				} else {
-					console.error('Error uploading file. Status:', req.status, 'Response:', req.responseText);
+					logger.error(`Error uploading file. Status: ${req.status}. Response: ${req.responseText}`);
 					resolve({ error: { status: req.status, message: 'Error uploading file' } });
 				}
 			}
