@@ -10,5 +10,17 @@ export const load: LayoutLoad = async ({ url, data: serverData }) => {
 		...serverData.article,
 		demos: merge({ code: serverData.article.demos, components: processedComponentsMap[slug] }),
 	};
+
+	const meta: App.PageData['meta'] = {
+		title: article.title,
+		description: article.description,
+		ogType: 'article',
+	};
+
+	if (article.imgLg) {
+		meta.ogImage = article.imgLg;
+		meta.twitterImage = article.imgLg;
+	}
+
 	return { article };
 };

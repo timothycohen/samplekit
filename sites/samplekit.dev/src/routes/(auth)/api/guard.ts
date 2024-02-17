@@ -1,0 +1,67 @@
+import pino from 'pino';
+import { z } from 'zod';
+import { createDeviceLimiter } from '$lib/botProtection/rateLimit/server';
+import { jsonFail, jsonOk } from '$lib/http/server';
+import { createPersistentTransport, createPrettyTransport } from '$lib/logging/server';
+import type { RequestEvent } from '@sveltejs/kit';
+
+const postReq = z.object({ cron_api_key: z.string().length(63) });
+
+const fileLogger = pino(
+	{ timestamp: pino.stdTimeFunctions.isoTime },
+	pino.transport({
+		targets: [
+			createPersistentTransport({ level: 'trace', logKey: 'guardApi' }),
+			createPersistentTransport({ level: 'error', logKey: 'error' }),
+		],
+	}),
+);
+
+const consoleLogger = pino({ transport: createPrettyTransport({ level: 'trace' }) });
+
+const log = (method: 'info' | 'error', log: { address: string; id: string; err_code?: string }) => {
+	fileLogger[method](log);
+	consoleLogger[method](log, 'guardApi');
+};
+
+export const guardApiKey = async ({
+	id,
+	event,
+	limiter,
+	expectedKey,
+	ipWhitelist,
+	protectedFn,
+}: {
+	id: string;
+	event: RequestEvent;
+	limiter: ReturnType<typeof createDeviceLimiter>;
+	expectedKey: string;
+	ipWhitelist: string[];
+	/** Return loggables */
+	protectedFn: () => Promise<Record<string, unknown> | void | null | undefined>;
+}) => {
+	const { request, getClientAddress } = event;
+	const req = postReq.safeParse(await request.json().catch(() => ({})));
+
+	const openWhitelist = ipWhitelist.length === 1 && ipWhitelist[0]! === '*';
+
+	let err: null | { err_code: string; status: 400 | 403 | 429 } = null;
+	if (!req.success) {
+		err = { err_code: req.error.issues[0]?.code ?? 'bad_request', status: 400 };
+	} else if ((await limiter.check(event)).limited) {
+		err = { err_code: 'rate_limited', status: 429 };
+	} else if (expectedKey === '' || expectedKey !== req.data.cron_api_key) {
+		err = { err_code: 'incorrect_key', status: 403 };
+	} else if (!openWhitelist && !ipWhitelist.includes(getClientAddress())) {
+		err = { err_code: 'incorrect_ip', status: 403 };
+	}
+
+	if (err) {
+		log('error', { id, address: getClientAddress(), err_code: err.err_code });
+		return jsonFail(err.status);
+	} else {
+		const loggables = (await protectedFn()) ?? {};
+		log('info', { id, address: getClientAddress(), ...loggables });
+		return jsonOk();
+	}
+};

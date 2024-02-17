@@ -4,7 +4,7 @@
 		Check,
 		Eraser,
 		Fingerprint,
-		MessageCircle,
+		// MessageCircle,
 		Pencil,
 		ShieldEllipsis,
 		Trash2,
@@ -23,7 +23,7 @@
 	$: authMethods = [
 		{ AuthIcon: Fingerprint, enabled: mfasEnabled.passkeys, next: 'passkeys' as DB.MFAs.Kind },
 		{ AuthIcon: ShieldEllipsis, enabled: mfasEnabled.authenticator, next: 'authenticator' as DB.MFAs.Kind },
-		{ AuthIcon: MessageCircle, enabled: mfasEnabled.sms, next: 'sms' as DB.MFAs.Kind },
+		// { AuthIcon: MessageCircle, enabled: mfasEnabled.sms, next: 'sms' as DB.MFAs.Kind },
 	];
 
 	let signingOut: 'current' | 'all' | false = false;
