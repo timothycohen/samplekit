@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { Minus, Plus } from 'lucide-svelte';
 	import { LoadingDots } from '$lib/components';
+	import { logger } from '$lib/logging/client';
 	import { useCartService } from '$routes/shop/services';
 	import type { CartItem } from '$lib/shop';
 
@@ -29,7 +30,7 @@
 			.then((res) => {
 				localPending = false;
 				if (props.handle) return props.handle(res);
-				if (res.error) return console.error(res.error);
+				if (res.error) return logger.error(res.error);
 				cart.refresh();
 			});
 	}}

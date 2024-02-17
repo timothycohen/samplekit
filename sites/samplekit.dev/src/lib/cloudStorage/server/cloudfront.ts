@@ -5,12 +5,13 @@ import {
 	IAM_ACCESS_KEY_ID,
 	IAM_SECRET_ACCESS_KEY,
 } from '$env/static/private';
-import { logger } from '$lib/logging/server';
+import { logger, setupLogger } from '$lib/logging/server';
 
 const cloudfront = new CloudFrontClient({
 	region: AWS_SERVICE_REGION,
 	credentials: { accessKeyId: IAM_ACCESS_KEY_ID, secretAccessKey: IAM_SECRET_ACCESS_KEY },
 });
+setupLogger.info('CloudFrontClient created.');
 
 export const invalidateCloudfront = async ({ keys }: { keys: string[] }): Promise<boolean> => {
 	const command = new CreateInvalidationCommand({

@@ -8,13 +8,14 @@ import {
 	IAM_SECRET_ACCESS_KEY,
 	S3_BUCKET_NAME,
 } from '$env/static/private';
-import { logger } from '$lib/logging/server';
+import { logger, setupLogger } from '$lib/logging/server';
 import { urlTransforms } from './utils';
 
 const s3 = new S3Client({
 	region: AWS_SERVICE_REGION,
 	credentials: { accessKeyId: IAM_ACCESS_KEY_ID, secretAccessKey: IAM_SECRET_ACCESS_KEY },
 });
+setupLogger.info('S3Client created.');
 
 /**
  * Generates a presigned URL and POST policy for uploading files to an S3 bucket.
