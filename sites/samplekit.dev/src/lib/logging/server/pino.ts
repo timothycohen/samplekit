@@ -1,7 +1,6 @@
 /* eslint-disable no-console */
 
 import pino, { levels } from 'pino';
-import { defaultPreparePayload, extractPayloadMeta } from 'pino-logflare';
 import pinoPretty, { type PrettyOptions } from 'pino-pretty';
 import { dev, building, version, browser } from '$app/environment';
 import {
@@ -10,6 +9,7 @@ import {
 	PUBLIC_LOGLEVEL_CONSOLE_SERVER,
 	PUBLIC_LOGLEVEL_LOGFLARE_SERVER,
 } from '$env/static/public';
+import { defaultPreparePayload, extractPayloadMeta } from '../common/pino-logflare';
 
 const createPinoPretty = (options?: PrettyOptions) =>
 	pinoPretty({
@@ -66,6 +66,7 @@ export const logger = pino(
 				// This is grotesque for a reason
 				// This isn't using pino v7+ transports because globalThis.__bundlerPathsOverrides hacks to rectify module resolution errors caused by adapter-vercel were too unsavory.
 				// This isn't using pino.multiStream because pino-logflare.createWriteStream had undici errors (UND_ERR_CONNECT_TIMEOUT)
+				// This is using a custom version of pino-logflare because that package exported client and server code together and therefore required polyfills for functions that weren't even being used.
 				const parsed = JSON.parse(msg);
 				o = defaultPreparePayload(parsed, extractPayloadMeta(parsed));
 				cleanMsg = JSON.stringify(o);
@@ -74,7 +75,7 @@ export const logger = pino(
 			}
 			if (!cleanMsg || !o) return console.error(new Error('Unable to stringify logger body'));
 
-			const wordLevel = o['metadata']['level'];
+			const wordLevel = o['metadata']['level']!;
 			const level = levels.values[wordLevel];
 
 			if (typeof level === 'number' && level >= consoleLevel) pretty.write(msg);

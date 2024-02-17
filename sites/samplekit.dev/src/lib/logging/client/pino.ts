@@ -2,7 +2,6 @@
 
 import { captureException } from '@sentry/sveltekit';
 import pino, { levels } from 'pino';
-import { createPinoBrowserSend } from 'pino-logflare';
 import { browser } from '$app/environment';
 import {
 	PUBLIC_LOGFLARE_ACCESS_TOKEN_BROWSER,
@@ -10,6 +9,7 @@ import {
 	PUBLIC_LOGLEVEL_CONSOLE_BROWSER,
 	PUBLIC_LOGLEVEL_LOGFLARE_BROWSER,
 } from '$env/static/public';
+import { createPinoBrowserSend } from '../common/pino-logflare';
 
 const sendLogflare = createPinoBrowserSend({
 	apiKey: PUBLIC_LOGFLARE_ACCESS_TOKEN_BROWSER,
