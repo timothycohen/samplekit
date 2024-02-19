@@ -27,7 +27,7 @@ export const detectModerationLabels = async ({
 			return { error: { message: `Image may contain inappropriate content: ${labels[0]?.Name}.` } };
 		}
 	} catch (err) {
-		logger.error(`Error detecting moderation labels for ${s3Key}:\n`, err);
+		logger.error({ msg: `Error detecting moderation labels for ${s3Key}:\n`, error: err });
 		return { error: { message: 'Error detecting moderation labels' } };
 	}
 
