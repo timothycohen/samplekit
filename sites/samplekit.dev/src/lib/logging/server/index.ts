@@ -1,2 +1,2 @@
-export * from './pino';
+export * from './logger';
 export * from './sentry';
