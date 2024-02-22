@@ -2,7 +2,7 @@ import { drizzle, type NodePgDatabase } from 'drizzle-orm/node-postgres';
 import pg from 'pg';
 import { browser } from '$app/environment';
 import { DB_NAME, PG_CONNECTION_STRING } from '$env/static/private';
-import { logger } from '$lib/logging/server';
+import { setupLogger } from '$lib/logging/server';
 import * as schema from './schema';
 
 let savedDb: NodePgDatabase<typeof schema> | null = null;
@@ -16,10 +16,10 @@ export const initDB = async () => {
 		savedDb = drizzle(pgPool, { schema });
 		const client = await pgPool.connect();
 		client.release();
-		logger.info(`[SETUP] DB: Connected to ${DB_NAME}`);
+		setupLogger.info(`Connected to DB ${DB_NAME}`);
 	} catch (err) {
-		logger.fatal(
-			`[SETUP] Connection to db DB_NAME=\`${DB_NAME}\` failed using PG_CONNECTION_STRING. If you are using docker, is it running? (look at package.json db: scripts)`,
+		setupLogger.fatal(
+			`Connection to db DB_NAME=\`${DB_NAME}\` failed using PG_CONNECTION_STRING with message ${(err as Error)['message']}. If you are using docker, is it running? (look at package.json db: scripts)`,
 		);
 		process.exit(1);
 	}

@@ -48,3 +48,5 @@ export const logger = new Logger({
 		}
 	},
 });
+
+export const setupLogger = logger.child({ base: '[SETUP] ' });
