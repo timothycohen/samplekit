@@ -7,7 +7,7 @@ import type { RequestEvent } from '@sveltejs/kit';
 
 const deleteExpiredTokensLimiter = createDeviceLimiter({ id: 'deleteExpiredTokens', rate: [2, '6h'] });
 
-// curl -X POST http://localhost:5173/api/expire-tokens.json -H 'Content-Type: application/json' -d '{"cron_api_key":"..."}'
+// curl -X POST http://localhost:5173/api/expire-tokens.json -H 'Content-Type: application/json' -d '{"cron_api_key":"...", "expected_db_name":"..."}'
 const deleteExpiredTokens = async (event: RequestEvent) =>
 	guardApiKey({
 		id: 'deleteExpiredTokens',
