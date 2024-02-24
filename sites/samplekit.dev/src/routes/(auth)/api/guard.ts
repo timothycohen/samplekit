@@ -1,10 +1,11 @@
 import { z } from 'zod';
+import { DB_NAME } from '$env/static/private';
 import { createDeviceLimiter } from '$lib/botProtection/rateLimit/server';
 import { jsonFail, jsonOk } from '$lib/http/server';
 import { logger } from '$lib/logging/server';
 import type { RequestEvent } from '@sveltejs/kit';
 
-const postReq = z.object({ cron_api_key: z.string().length(63) });
+const postReq = z.object({ cron_api_key: z.string().length(63), expected_db_name: z.string() });
 
 const log = (method: 'info' | 'error', log: { id: string; address: string; err_code?: string }) => {
 	logger[method](log);
@@ -34,6 +35,8 @@ export const guardApiKey = async ({
 	let err: null | { err_code: string; status: 400 | 403 | 429 } = null;
 	if (!req.success) {
 		err = { err_code: req.error.issues[0]?.code ?? 'bad_request', status: 400 };
+	} else if (req.data.expected_db_name !== DB_NAME) {
+		err = { err_code: 'incorrect_env', status: 403 };
 	} else if ((await limiter.check(event)).limited) {
 		err = { err_code: 'rate_limited', status: 429 };
 	} else if (expectedKey === '' || expectedKey !== req.data.cron_api_key) {
