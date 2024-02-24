@@ -1,8 +1,7 @@
 import { superValidate } from 'sveltekit-superforms/server';
-import { CLOUDFRONT_URL } from '$env/static/private';
 import { auth } from '$lib/auth/server';
 import { transports } from '$lib/auth/server';
-import { deleteS3Object, invalidateCloudfront, urlTransforms } from '$lib/cloudStorage/server';
+import { deleteS3Object, invalidateCloudfront, keyController } from '$lib/cloudStorage/server';
 import { checkedRedirect } from '$lib/http/server';
 import { pluralize } from '$lib/utils/common';
 import { confirmPassSchema, sendSMSTokenSchema, verifyOTPSchema } from '$routes/(auth)/validators';
@@ -63,9 +62,12 @@ const deleteUserWithSeshConf: Action = async ({ locals }) => {
 	const timeRemaining = auth.session.getTempConf({ session });
 	if (timeRemaining === null) return checkedRedirect('/account/delete');
 
-	if (user.avatar?.url.startsWith(CLOUDFRONT_URL)) {
-		const key = urlTransforms.cloudfrontUrlToKey(user.avatar.url);
-		await Promise.all([deleteS3Object({ key }), invalidateCloudfront({ keys: [key] })]);
+	if (keyController.is.cloudfrontUrl(user.avatar?.url)) {
+		const key = keyController.transform.cloudfrontUrlToKey(user.avatar.url);
+		await Promise.all([
+			deleteS3Object({ key, guard: () => keyController.guard.root({ key }) }),
+			invalidateCloudfront({ keys: [key] }),
+		]);
 	}
 
 	await Promise.all([auth.user.delete({ userId: user.id }), transports.sendEmail.delete({ email: user.email })]);
