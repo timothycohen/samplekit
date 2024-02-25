@@ -1,8 +1,10 @@
+import fs from 'fs';
 import { drizzle, type NodePgDatabase } from 'drizzle-orm/node-postgres';
 import { migrate } from 'drizzle-orm/node-postgres/migrator';
 import pg from 'pg';
 import { DB_NAME, PG_CONNECTION_STRING } from '$env/static/private';
 import { setupLogger } from '$lib/logging/server';
+import { joinRoot } from '$lib/utils/server';
 import * as schema from './schema';
 
 export const getDb = (() => {
@@ -33,7 +35,13 @@ export const testDb = async () => {
 	}
 };
 
+// use abs path. relative path has issues when running with build/index.js
 export const migrateDb = async () => {
-	await migrate(getDb().db, { migrationsFolder: './generated/db-migrations' });
-	setupLogger.info('Migrated DB if needed.');
+	const migrationsFolder = joinRoot('generated', 'db-migrations');
+	if (fs.existsSync(migrationsFolder)) {
+		await migrate(getDb().db, { migrationsFolder });
+		setupLogger.info('Migrated DB if needed.');
+	} else {
+		setupLogger.warn(`No migrations found at ${migrationsFolder}. Skipping.`);
+	}
 };
