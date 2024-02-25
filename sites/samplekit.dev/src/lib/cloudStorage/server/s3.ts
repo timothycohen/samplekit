@@ -9,11 +9,23 @@ import {
 } from '$env/static/private';
 import { logger, setupLogger } from '$lib/logging/server';
 
-const s3 = new S3Client({
-	region: AWS_SERVICE_REGION,
-	credentials: { accessKeyId: IAM_ACCESS_KEY_ID, secretAccessKey: IAM_SECRET_ACCESS_KEY },
-});
-setupLogger.info('S3Client created.');
+export const getS3 = (() => {
+	let s3: S3Client | null = null;
+
+	const get = () => {
+		if (s3) return s3;
+
+		s3 = new S3Client({
+			region: AWS_SERVICE_REGION,
+			credentials: { accessKeyId: IAM_ACCESS_KEY_ID, secretAccessKey: IAM_SECRET_ACCESS_KEY },
+		});
+
+		setupLogger.info('S3Client created.');
+		return s3;
+	};
+
+	return get;
+})();
 
 /**
  * Generates a presigned URL and POST policy for uploading files to an S3 bucket.
@@ -24,7 +36,7 @@ setupLogger.info('S3Client created.');
  */
 export const generateS3UploadPost = async (a: { key: string; maxContentLength?: number; expireSeconds?: number }) => {
 	try {
-		const res = await createPresignedPost(s3, {
+		const res = await createPresignedPost(getS3(), {
 			Bucket: S3_BUCKET_NAME,
 			Key: a.key,
 			Expires: a?.expireSeconds ?? 60,
@@ -52,7 +64,7 @@ export const deleteS3Object = async ({
 
 	try {
 		const deletecommand = new DeleteObjectCommand({ Bucket: S3_BUCKET_NAME, Key: key });
-		await s3.send(deletecommand);
+		await getS3().send(deletecommand);
 		return true;
 	} catch (err) {
 		logger.error(err);
@@ -64,7 +76,11 @@ export const clearBucket = async () => {
 	const objects = await (async () => {
 		try {
 			const listObjectsCommand = new ListObjectsCommand({ Bucket: S3_BUCKET_NAME, Prefix: DB_NAME });
-			return (await s3.send(listObjectsCommand).then((o) => o.Contents?.map((o) => ({ Key: o.Key })))) ?? false;
+			return (
+				(await getS3()
+					.send(listObjectsCommand)
+					.then((o) => o.Contents?.map((o) => ({ Key: o.Key })))) ?? false
+			);
 		} catch (err) {
 			logger.error(err);
 			return false;
@@ -79,7 +95,7 @@ export const clearBucket = async () => {
 			Delete: { Objects: objects },
 		});
 
-		return { deletedCount: (await s3.send(deleteObjectsCommand)).Deleted?.length ?? 0 };
+		return { deletedCount: (await getS3().send(deleteObjectsCommand)).Deleted?.length ?? 0 };
 	} catch (err) {
 		logger.error(err);
 		return { deletedCount: 0 };

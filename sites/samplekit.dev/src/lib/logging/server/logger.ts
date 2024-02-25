@@ -6,7 +6,7 @@ import {
 	PUBLIC_LOGLEVEL_CONSOLE_SERVER,
 	PUBLIC_LOGLEVEL_LOGFLARE_SERVER,
 } from '$env/static/public';
-import { createLogflareHttpClient, formatLogflare } from '../common/logflare';
+import { createLogflareHttpClient, formatLogflare, type LogflareClient } from '../common/logflare';
 import { Logger } from '../common/logger';
 import { createPinoPretty } from '../common/pretty';
 
@@ -14,10 +14,22 @@ const consoleLevel = Logger.lvlStrToNum(PUBLIC_LOGLEVEL_CONSOLE_SERVER);
 const logflareLevel = Logger.lvlStrToNum(PUBLIC_LOGLEVEL_LOGFLARE_SERVER);
 const sentryLevel = 50;
 
-const logflareClient = createLogflareHttpClient({
-	accessToken: PUBLIC_LOGFLARE_ACCESS_TOKEN_SERVER,
-	sourceId: PUBLIC_LOGFLARE_SOURCE_ID_SERVER,
-});
+export const getServerLogflare = (() => {
+	let logflareClient: null | LogflareClient = null;
+
+	const get = () => {
+		if (logflareClient) return logflareClient;
+
+		logflareClient = createLogflareHttpClient({
+			accessToken: PUBLIC_LOGFLARE_ACCESS_TOKEN_SERVER,
+			sourceId: PUBLIC_LOGFLARE_SOURCE_ID_SERVER,
+		});
+
+		return logflareClient;
+	};
+
+	return get;
+})();
 
 const pretty = createPinoPretty({ ignore: 'context,status' });
 
@@ -43,7 +55,7 @@ export const logger = new Logger({
 				});
 				pretty.write(json);
 			}
-			if (lvl >= logflareLevel) logflareClient.addLog(formatted);
+			if (lvl >= logflareLevel) getServerLogflare().addLog(formatted);
 			if (lvl >= sentryLevel) sentry.captureException(raw.error ?? formatted);
 		}
 	},

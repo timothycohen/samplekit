@@ -1,7 +1,6 @@
 import { getDb } from './connect';
 
-const db = await getDb();
-export { db };
+export const { db } = getDb();
 
 export * from './schema';
 export * from './controllers';
