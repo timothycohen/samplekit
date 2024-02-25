@@ -55,7 +55,14 @@ const populateLocals: Handle = async ({ event, resolve }) => {
 	return await resolve(event);
 };
 
-export const handle = sequence(sentryHandle(), populateLocals, handleAccountRedirects);
+// https://github.com/sveltejs/kit/issues/8549
+const deleteLinkHeaders: Handle = async ({ event, resolve }) => {
+	const response = await resolve(event);
+	response.headers.delete('link');
+	return response;
+};
+
+export const handle = sequence(sentryHandle(), populateLocals, handleAccountRedirects, deleteLinkHeaders);
 
 export const handleError: HandleServerError = handleErrorWithSentry(async ({ error, event, status, message }) => {
 	const errorId = crypto.randomUUID();
