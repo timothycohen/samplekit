@@ -1,6 +1,6 @@
 {
 	"name": "@samplekit/auth",
-	"version": "0.0.1",
+	"version": "1.0.0",
 	"description": "Auth helpers for SvelteKit",
 	"private": true,
 	"type": "module",
