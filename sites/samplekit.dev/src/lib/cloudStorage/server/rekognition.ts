@@ -1,6 +1,6 @@
 import { DetectModerationLabelsCommand, RekognitionClient } from '@aws-sdk/client-rekognition';
 import { AWS_SERVICE_REGION, IAM_ACCESS_KEY_ID, IAM_SECRET_ACCESS_KEY, S3_BUCKET_NAME } from '$env/static/private';
-import { logger, setupLogger } from '$lib/logging/server';
+import { logger } from '$lib/logging/server';
 
 export const getRekognition = (() => {
 	let rekognition: RekognitionClient | null = null;
@@ -13,7 +13,6 @@ export const getRekognition = (() => {
 			credentials: { accessKeyId: IAM_ACCESS_KEY_ID, secretAccessKey: IAM_SECRET_ACCESS_KEY },
 		});
 
-		setupLogger.info('RekognitionClient created.');
 		return rekognition;
 	};
 

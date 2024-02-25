@@ -1,18 +1,23 @@
 import twilio, { type Twilio } from 'twilio';
 import { TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_NUMBER } from '$env/static/private';
-import { logger, setupLogger } from '$lib/logging/server';
+import { logger } from '$lib/logging/server';
 import { INTERCEPT_TRANSPORTS } from './consts';
 
 export const getTwilio = (() => {
 	let twilioClient: Twilio | null = null;
+	let disabled = false;
 
 	const get = () => {
 		if (twilioClient) return twilioClient;
+		if (disabled) return;
 
-		twilioClient = twilio(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN);
-
-		setupLogger.info('TwilioClient created.');
-		return twilioClient;
+		try {
+			twilioClient = twilio(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN);
+			return twilioClient;
+		} catch (err) {
+			disabled = true;
+			return;
+		}
 	};
 
 	return get;
@@ -33,7 +38,7 @@ Body: ${body}
 
 const safeSend = async ({ phoneNumber, body }: Props): Promise<{ transportErr: boolean }> => {
 	try {
-		await getTwilio().messages.create({ body, from, to: phoneNumber });
+		await getTwilio()?.messages.create({ body, from, to: phoneNumber });
 		return { transportErr: false };
 	} catch (err) {
 		logger.error(err);
@@ -50,11 +55,11 @@ export const sendSms = async ({ phoneNumber, body }: Props): Promise<{ transport
 };
 
 export const lookupPhoneNumber = async (phoneNumber: string): Promise<string | null> =>
-	await getTwilio()
-		.lookups.v2.phoneNumbers(phoneNumber)
+	(await getTwilio()
+		?.lookups.v2.phoneNumbers(phoneNumber)
 		.fetch()
 		.then((res) => {
 			if (res.valid) return res.phoneNumber;
 			return null;
 		})
-		.catch(() => null);
+		.catch(() => null)) ?? null;

@@ -7,7 +7,7 @@ import {
 	IAM_SECRET_ACCESS_KEY,
 	S3_BUCKET_NAME,
 } from '$env/static/private';
-import { logger, setupLogger } from '$lib/logging/server';
+import { logger } from '$lib/logging/server';
 
 export const getS3 = (() => {
 	let s3: S3Client | null = null;
@@ -20,7 +20,6 @@ export const getS3 = (() => {
 			credentials: { accessKeyId: IAM_ACCESS_KEY_ID, secretAccessKey: IAM_SECRET_ACCESS_KEY },
 		});
 
-		setupLogger.info('S3Client created.');
 		return s3;
 	};
 
