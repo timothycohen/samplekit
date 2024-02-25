@@ -1,6 +1,5 @@
 import * as _sentry from '@sentry/sveltekit';
 import { PUBLIC_SENTRY_DSN } from '$env/static/public';
-import { logger, setupLogger } from '.';
 
 /**
  * Very annoyingly, `@sentry/sveltekit` exports * from client, vite, and server, as well as adds some additional packages, but doesn't export the modules separately.
@@ -11,30 +10,31 @@ import { logger, setupLogger } from '.';
  */
 export const getSentry = (() => {
 	let sentry: null | typeof _sentry = null;
+	let disabled = false;
 
 	const get = () => {
 		if (sentry) return sentry;
+		if (disabled) return;
 
 		if (!PUBLIC_SENTRY_DSN) {
-			setupLogger.fatal(`Sentry DSN not found. Please add PUBLIC_SENTRY_DSN to your .env file.`);
-			process.exit(1);
+			disabled = true;
+			return;
 		}
 
 		catchStdErr({
 			trappedFn: () => {
 				_sentry.init({ dsn: PUBLIC_SENTRY_DSN, tracesSampleRate: 1 });
+				if (disabled) return;
 				sentry = _sentry;
 			},
-			tmpWrite: (_str: string) => {
-				if (_str.startsWith('Invalid')) {
-					logger.fatal(_str);
-					process.exit(1);
+			tmpWrite: (str: string) => {
+				if (str.startsWith('Invalid')) {
+					disabled = true;
 				}
 				return true;
 			},
 		});
 
-		setupLogger.info('Sentry initialized on server.');
 		return sentry!;
 	};
 

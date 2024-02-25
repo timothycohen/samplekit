@@ -5,7 +5,7 @@ import {
 	IAM_ACCESS_KEY_ID,
 	IAM_SECRET_ACCESS_KEY,
 } from '$env/static/private';
-import { logger, setupLogger } from '$lib/logging/server';
+import { logger } from '$lib/logging/server';
 
 export const getCloudfront = (() => {
 	let cloudfront: CloudFrontClient | null = null;
@@ -18,7 +18,6 @@ export const getCloudfront = (() => {
 			credentials: { accessKeyId: IAM_ACCESS_KEY_ID, secretAccessKey: IAM_SECRET_ACCESS_KEY },
 		});
 
-		setupLogger.info('CloudFrontClient created.');
 		return cloudfront;
 	};
 

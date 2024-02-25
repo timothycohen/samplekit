@@ -6,7 +6,7 @@ import {
 	IAM_SECRET_ACCESS_KEY,
 } from '$env/static/private';
 import { PUBLIC_ORIGIN } from '$env/static/public';
-import { logger, setupLogger } from '$lib/logging/server';
+import { logger } from '$lib/logging/server';
 import { INTERCEPT_TRANSPORTS } from './consts';
 
 export const getSES = (() => {
@@ -20,7 +20,6 @@ export const getSES = (() => {
 			credentials: { accessKeyId: IAM_ACCESS_KEY_ID, secretAccessKey: IAM_SECRET_ACCESS_KEY },
 		});
 
-		setupLogger.info('SESClient created.');
 		return ses;
 	};
 

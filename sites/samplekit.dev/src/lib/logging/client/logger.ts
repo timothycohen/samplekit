@@ -15,16 +15,21 @@ const sentryLevel = 50;
 
 export const getBrowserLogflare = (() => {
 	let logflareClient: null | LogflareClient = null;
+	let disabled = false;
 
 	const get = () => {
 		if (logflareClient) return logflareClient;
+		if (disabled) return;
 
-		logflareClient = createLogflareHttpClient({
-			accessToken: PUBLIC_LOGFLARE_ACCESS_TOKEN_BROWSER,
-			sourceId: PUBLIC_LOGFLARE_SOURCE_ID_BROWSER,
-		});
-
-		return logflareClient;
+		try {
+			logflareClient = createLogflareHttpClient({
+				accessToken: PUBLIC_LOGFLARE_ACCESS_TOKEN_BROWSER,
+				sourceId: PUBLIC_LOGFLARE_SOURCE_ID_BROWSER,
+			});
+			return logflareClient;
+		} catch {
+			disabled = true;
+		}
 	};
 
 	return get;
@@ -38,7 +43,7 @@ export const logger = new Logger({
 
 		if (lvl >= Math.min(logflareLevel, sentryLevel)) {
 			const { formatted, raw } = formatLogflare({ lvl, mut_log: log });
-			if (lvl >= logflareLevel) getBrowserLogflare().addLog(formatted);
+			if (lvl >= logflareLevel) getBrowserLogflare()?.addLog(formatted);
 			if (lvl >= sentryLevel) sentry.captureException(raw.error ?? formatted);
 		}
 	},

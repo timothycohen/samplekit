@@ -16,16 +16,21 @@ const sentryLevel = 50;
 
 export const getServerLogflare = (() => {
 	let logflareClient: null | LogflareClient = null;
+	let disabled = false;
 
 	const get = () => {
 		if (logflareClient) return logflareClient;
+		if (disabled) return;
 
-		logflareClient = createLogflareHttpClient({
-			accessToken: PUBLIC_LOGFLARE_ACCESS_TOKEN_SERVER,
-			sourceId: PUBLIC_LOGFLARE_SOURCE_ID_SERVER,
-		});
-
-		return logflareClient;
+		try {
+			logflareClient = createLogflareHttpClient({
+				accessToken: PUBLIC_LOGFLARE_ACCESS_TOKEN_SERVER,
+				sourceId: PUBLIC_LOGFLARE_SOURCE_ID_SERVER,
+			});
+			return logflareClient;
+		} catch {
+			disabled = true;
+		}
 	};
 
 	return get;
@@ -55,7 +60,7 @@ export const logger = new Logger({
 				});
 				pretty.write(json);
 			}
-			if (lvl >= logflareLevel) getServerLogflare().addLog(formatted);
+			if (lvl >= logflareLevel) getServerLogflare()?.addLog(formatted);
 			if (lvl >= sentryLevel) sentry.captureException(raw.error ?? formatted);
 		}
 	},
