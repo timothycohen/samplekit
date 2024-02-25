@@ -6,17 +6,29 @@ import {
 	PUBLIC_LOGLEVEL_CONSOLE_BROWSER,
 	PUBLIC_LOGLEVEL_LOGFLARE_BROWSER,
 } from '$env/static/public';
-import { createLogflareHttpClient, formatLogflare } from '../common/logflare';
+import { createLogflareHttpClient, formatLogflare, type LogflareClient } from '../common/logflare';
 import { Logger } from '../common/logger';
 
 const consoleLevel = Logger.lvlStrToNum(PUBLIC_LOGLEVEL_CONSOLE_BROWSER);
 const logflareLevel = Logger.lvlStrToNum(PUBLIC_LOGLEVEL_LOGFLARE_BROWSER);
 const sentryLevel = 50;
 
-const logflareClient = createLogflareHttpClient({
-	accessToken: PUBLIC_LOGFLARE_ACCESS_TOKEN_BROWSER,
-	sourceId: PUBLIC_LOGFLARE_SOURCE_ID_BROWSER,
-});
+export const getBrowserLogflare = (() => {
+	let logflareClient: null | LogflareClient = null;
+
+	const get = () => {
+		if (logflareClient) return logflareClient;
+
+		logflareClient = createLogflareHttpClient({
+			accessToken: PUBLIC_LOGFLARE_ACCESS_TOKEN_BROWSER,
+			sourceId: PUBLIC_LOGFLARE_SOURCE_ID_BROWSER,
+		});
+
+		return logflareClient;
+	};
+
+	return get;
+})();
 
 export const logger = new Logger({
 	write: ({ log, lvl }) => {
@@ -26,7 +38,7 @@ export const logger = new Logger({
 
 		if (lvl >= Math.min(logflareLevel, sentryLevel)) {
 			const { formatted, raw } = formatLogflare({ lvl, mut_log: log });
-			if (lvl >= logflareLevel) logflareClient.addLog(formatted);
+			if (lvl >= logflareLevel) getBrowserLogflare().addLog(formatted);
 			if (lvl >= sentryLevel) sentry.captureException(raw.error ?? formatted);
 		}
 	},

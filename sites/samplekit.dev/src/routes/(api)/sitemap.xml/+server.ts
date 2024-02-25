@@ -2,8 +2,6 @@ import { PUBLIC_ORIGIN } from '$env/static/public';
 import { getCollections, getProducts } from '$lib/shop';
 import { allPostData } from '../../../lib/articles/load';
 
-export const prerender = true;
-
 /** https://www.sitemaps.org/protocol.html */
 type SiteMapUrl = {
 	loc: string;

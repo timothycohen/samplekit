@@ -1,5 +1,5 @@
 import { getCollectionProductsQuery, getProductQuery, getProductRecommendationsQuery, getProductsQuery } from '../gql';
-import { publicStorefront } from '../storefront';
+import { getStorefront } from '../storefront';
 import type { ProductFilter } from '$generated/shopify-graphql-types/storefront.types';
 import type { Product, SearchQuery, SortKey } from '../../types';
 
@@ -35,7 +35,7 @@ export async function getCollectionProducts(
 	if (availability !== undefined) productFilter.push({ available: availability });
 	if (price) productFilter.push({ price });
 
-	const res = await publicStorefront.request(getCollectionProductsQuery, {
+	const res = await getStorefront().request(getCollectionProductsQuery, {
 		variables: {
 			handle: collectionHandle,
 			reverse,
@@ -64,7 +64,7 @@ export async function getCollectionProducts(
 }
 
 export async function getProduct({ handle }: { handle: string }): Promise<Product | undefined> {
-	const res = await publicStorefront.request(getProductQuery, { variables: { handle } });
+	const res = await getStorefront().request(getProductQuery, { variables: { handle } });
 	const product = res.data?.product;
 	if (!product) return undefined;
 	else {
@@ -75,7 +75,7 @@ export async function getProduct({ handle }: { handle: string }): Promise<Produc
 
 /** @throws Error */
 export async function getProductRecommendations(productId: string): Promise<Product[]> {
-	const res = await publicStorefront.request(getProductRecommendationsQuery, {
+	const res = await getStorefront().request(getProductRecommendationsQuery, {
 		variables: { productId },
 	});
 
@@ -117,7 +117,7 @@ export async function getProducts({
 	query,
 	price,
 }: Partial<SearchQuery> & { first?: number } = {}): Promise<Product[]> {
-	const res = await publicStorefront.request(getProductsQuery, {
+	const res = await getStorefront().request(getProductsQuery, {
 		variables: {
 			first: first ?? 100,
 			reverse,

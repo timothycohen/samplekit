@@ -2,11 +2,23 @@ import { DetectModerationLabelsCommand, RekognitionClient } from '@aws-sdk/clien
 import { AWS_SERVICE_REGION, IAM_ACCESS_KEY_ID, IAM_SECRET_ACCESS_KEY, S3_BUCKET_NAME } from '$env/static/private';
 import { logger, setupLogger } from '$lib/logging/server';
 
-const rekognition = new RekognitionClient({
-	region: AWS_SERVICE_REGION,
-	credentials: { accessKeyId: IAM_ACCESS_KEY_ID, secretAccessKey: IAM_SECRET_ACCESS_KEY },
-});
-setupLogger.info('RekognitionClient created.');
+export const getRekognition = (() => {
+	let rekognition: RekognitionClient | null = null;
+
+	const get = () => {
+		if (rekognition) return rekognition;
+
+		rekognition = new RekognitionClient({
+			region: AWS_SERVICE_REGION,
+			credentials: { accessKeyId: IAM_ACCESS_KEY_ID, secretAccessKey: IAM_SECRET_ACCESS_KEY },
+		});
+
+		setupLogger.info('RekognitionClient created.');
+		return rekognition;
+	};
+
+	return get;
+})();
 
 export const detectModerationLabels = async ({
 	s3Key,
@@ -20,7 +32,7 @@ export const detectModerationLabels = async ({
 		MinConfidence: confidence,
 	});
 	try {
-		const res = (await rekognition.send(labelCommand)) as {
+		const res = (await getRekognition().send(labelCommand)) as {
 			ModerationLabels: { Confidence: number; Name: string; ParentName: string }[];
 		};
 		const labels = res.ModerationLabels;
