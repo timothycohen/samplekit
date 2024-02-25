@@ -1,0 +1,13 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main, staging]
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v3
+      - run: pnpm install && pnpm --recursive build:dependencies && grep -o '^[^#]\+=' sites/samplekit.dev/.env.example > sites/samplekit.dev/.env && pnpm clean
