@@ -1,0 +1,58 @@
+##################### 🚧 WARNING: ENV VARS ARE BAKED INTO THE IMAGE 🚧 #####################
+# Do not make resulting images public.
+#
+# Even though the .env file created from ENV_FILE is not copied into the final image, the
+# build process moves env vars that are used by $env/static directly into the build output.
+# Anyone could sh in and grep for secrets.
+#
+# Do not make resulting images public.
+##################### 🚧 WARNING: ENV VARS ARE BAKED INTO THE IMAGE 🚧 #####################
+
+# Expected args coming from gh actions:
+# `ENV_FILE`: full contents of .env
+# `MODE`: staging or production
+
+FROM node:20.11-alpine AS BUILD
+WORKDIR /usr/src/app
+ARG ROOT=/usr/src/app
+ARG REPO=/usr/src/app/sites/samplekit.dev
+ARG TZ=America/New_York
+RUN apk --no-cache add curl tzdata
+RUN cp /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
+COPY . $ROOT
+
+# The GitHub Actions secret ends up compressed onto one line. The sed cmd breaks it up.
+ARG ENV_FILE
+ARG MODE
+RUN echo $ENV_FILE >> $REPO/.env.$MODE
+RUN sed -i 's/ /\'$'\n/g' $REPO/.env.$MODE
+
+RUN npm i -g pnpm
+RUN pnpm install
+RUN echo $MODE | pnpm --filter samplekit.dev build
+
+FROM node:20.11-alpine
+WORKDIR /usr/src/app
+ARG ROOT=/usr/src/app
+ARG REPO=/usr/src/app/sites/samplekit.dev
+ARG TZ=America/New_York
+RUN apk --no-cache add curl tzdata
+RUN cp /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
+# Config files
+COPY --from=BUILD $ROOT/package.json $ROOT/package.json
+COPY --from=BUILD $ROOT/pnpm-lock.yaml $ROOT/pnpm-lock.yaml
+COPY --from=BUILD $ROOT/pnpm-workspace.yaml $ROOT/pnpm-workspace.yaml
+COPY --from=BUILD $ROOT/.npmrc $ROOT/.npmrc
+COPY --from=BUILD $REPO/package.json $REPO/package.json
+
+# Adapter node doesn't bundle modules
+COPY --from=BUILD $ROOT/node_modules $ROOT/node_modules
+COPY --from=BUILD $REPO/node_modules $REPO/node_modules
+
+COPY --from=BUILD $REPO/generated/db-migrations $REPO/generated/db-migrations
+COPY --from=BUILD $REPO/build $REPO/build
+
+EXPOSE 3000
+CMD ["node", "/usr/src/app/sites/samplekit.dev/build/index.js"]
