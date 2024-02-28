@@ -1,0 +1,7 @@
+#!/bin/sh
+
+/usr/bin/env curl -X POST \
+	-H "Content-Type: application/json" \
+	-H "x-real-ip: $(hostname -i)" \
+	-d "{\"cron_api_key\": \"$RESET_DB_DELETE_EXPIRED_TOKENS_KEY\", \"expected_db_name\": \"$RESET_DB_EXPECTED_DB_NAME\"}" \
+	"http://srv-captain--$RESET_DB_APP_NAME:3000/api/reset-db.json"
