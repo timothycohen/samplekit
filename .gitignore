@@ -16,3 +16,4 @@ vite.config.ts.timestamp-*
 logs
 wip
 .sentryclirc
+*.secret
