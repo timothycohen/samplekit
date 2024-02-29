@@ -1,0 +1,40 @@
+##################### 🚧 WARNING: ENV VARS ARE BAKED INTO THE IMAGE 🚧 #####################
+# Do not make resulting images public.
+#
+# Read Dockerfile.samplekit.preview for information.
+#
+# Do not make resulting images public.
+##################### 🚧 WARNING: ENV VARS ARE BAKED INTO THE IMAGE 🚧 #####################
+
+# Expects:
+# `./sites/samplekit.dev/.env.local_preview' to exist
+
+version: '3.8'
+
+name: sk
+
+services:
+  web:
+    container_name: sk-preview-web
+    depends_on:
+      - db
+    build:
+      dockerfile: Dockerfile.samplekit.preview
+    restart: unless-stopped
+    ports:
+      - '3000:3000'
+
+  db:
+    image: postgres:latest
+    container_name: sk-preview-db
+    restart: unless-stopped
+    volumes:
+      - preview-db:/var/lib/postgresql/data
+    env_file:
+      - sites/samplekit.dev/.env._preview
+    ports:
+      - '5432:5432'
+
+volumes:
+  preview-db:
+    driver: local
