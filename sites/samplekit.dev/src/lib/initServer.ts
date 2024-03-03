@@ -6,6 +6,7 @@ import { INTERCEPT_TRANSPORTS } from '$lib/transport/server/consts';
 import { getCloudfront } from './cloudStorage/server/cloudfront';
 import { getRekognition } from './cloudStorage/server/rekognition';
 import { getS3 } from './cloudStorage/server/s3';
+import { kv } from './kv/server';
 import { getBrowserLogflare } from './logging/client/logger';
 import { getStorefront } from './shop/shopify/storefront';
 import { getSES } from './transport/server/email';
@@ -36,6 +37,7 @@ getSES() && setupLogger.info('(unverified) SESClient created.');
 // fatal
 await testDb();
 await migrateDb();
+await kv.connectOrExit();
 
 try {
 	getStorefront();
