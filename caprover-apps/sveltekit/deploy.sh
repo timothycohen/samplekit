@@ -24,6 +24,11 @@ done
 
 register_data=$(printf '{ "appName": "%s", "hasPersistentData": false }' "$CR_APP_NAME")
 
+redirect_domain="$APP_CUSTOM_DOMAIN"
+if [ "$INCLUDE_WWW" = "true" ]; then
+	redirect_domain="www.$APP_CUSTOM_DOMAIN"
+fi
+
 update_data=$(printf '{
  	"appName": "%s",
  	"instanceCount": 1,
@@ -44,8 +49,8 @@ update_data=$(printf '{
     "enabled": true
   },
  	"tags": [],
-  "redirectDomain": "www.%s"
- }' "$CR_APP_NAME" "$APP_CUSTOM_DOMAIN")
+  "redirectDomain": "%s"
+ }' "$CR_APP_NAME" "$redirect_domain")
 
 echo *** Registering app...
 pnpm caprover --caproverUrl https://captain.$CR_ROOT_DOMAIN --caproverPassword $CR_PW api --method POST --path /user/apps/appDefinitions/register --data "$register_data"
