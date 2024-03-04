@@ -64,6 +64,7 @@ echo *** Registering app...
 pnpm caprover --caproverUrl https://captain.$CR_ROOT_DOMAIN --caproverPassword $CR_PW api --method POST --path /user/apps/appDefinitions/register --data "$register_data"
 echo *** Configuring app...
 pnpm caprover --caproverUrl https://captain.$CR_ROOT_DOMAIN --caproverPassword $CR_PW api --method POST --path /user/apps/appDefinitions/update --data "$update_data"
+pnpm caprover --caproverUrl https://captain.$CR_ROOT_DOMAIN --caproverPassword $CR_PW api --method POST --path /user/apps/appData/$CR_APP_NAME --data '{ "captainDefinitionContent": "{\"schemaVersion\":2,\"imageName\":\"postgres:latest\"}", "gitHash": "" }'
 echo *** Finished!
 echo The app is available on the docker network as \`srv-captain--$CR_APP_NAME:5432\`
 echo Example \(from within the docker network\): psql \""postgres://$PG_USER:$PG_PASSWORD@srv-captain--$CR_APP_NAME:5432/$PG_DB$PG_INITDB_ARGS"\" -c \'"SELECT now();"\'
