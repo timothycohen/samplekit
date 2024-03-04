@@ -52,6 +52,7 @@ echo *** Registering app...
 pnpm caprover --caproverUrl https://captain.$CR_ROOT_DOMAIN --caproverPassword $CR_PW api --method POST --path /user/apps/appDefinitions/register --data "$register_data"
 echo *** Configuring app...
 pnpm caprover --caproverUrl https://captain.$CR_ROOT_DOMAIN --caproverPassword $CR_PW api --method POST --path /user/apps/appDefinitions/update --data "$update_data"
+pnpm caprover --caproverUrl https://captain.$CR_ROOT_DOMAIN --caproverPassword $CR_PW api --method POST --path /user/apps/appData/$CR_APP_NAME --data '{ "captainDefinitionContent": "{\"schemaVersion\":2,\"imageName\":\"redis:latest\"}", "gitHash": "" }'
 echo *** Finished!
 echo The app is available on the docker network as \`srv-captain--$CR_APP_NAME:6379\`
 echo "Example (from within the docker network): redis-cli -h srv-captain--$CR_APP_NAME -p 6379 -a $REDIS_PASSWORD keys *"
