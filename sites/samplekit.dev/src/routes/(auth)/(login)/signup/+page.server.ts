@@ -3,7 +3,7 @@ import platform from 'platform';
 import { message, superValidate } from 'sveltekit-superforms/server';
 import { auth } from '$lib/auth/server';
 import { transports } from '$lib/auth/server';
-import { createDeviceLimiter } from '$lib/botProtection/rateLimit/server';
+import { createLimiter } from '$lib/botProtection/rateLimit/server';
 import { turnstileFormInputName } from '$lib/botProtection/turnstile/common';
 import { validateTurnstile } from '$lib/botProtection/turnstile/server';
 import { checkedRedirect } from '$lib/http/server';
@@ -12,7 +12,7 @@ import { signupSchema } from '$routes/(auth)/validators';
 import type { Actions, PageServerLoad } from './$types';
 import type { Action } from '@sveltejs/kit';
 
-const signupLimiter = createDeviceLimiter({ id: 'signupWithPassword', rate: [3, 'd'] });
+const signupLimiter = createLimiter({ id: 'signupWithPassword', limiters: [{ kind: 'ipUa', rate: [3, 'd'] }] });
 
 export const load: PageServerLoad = async ({ locals }) => {
 	const seshUser = await locals.seshHandler.getSessionUser();
@@ -52,6 +52,10 @@ const signupWithPassword: Action = async (event) => {
 	}
 
 	const rateCheck = await signupLimiter.check(event, { log: { email: signupForm.data.email } });
+	if (rateCheck.forbidden) {
+		signupForm.data.password = '';
+		return message(signupForm, { fail: `Forbidden` }, { status: 403 });
+	}
 	if (rateCheck.limited) {
 		signupForm.data.password = '';
 		return message(

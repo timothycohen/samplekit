@@ -1,11 +1,14 @@
 import { DELETE_EXPIRED_TOKENS_KEY, DELETE_EXPIRED_TOKENS_IP_WHITELIST } from '$env/static/private';
 import { auth } from '$lib/auth/server';
-import { createDeviceLimiter } from '$lib/botProtection/rateLimit/server';
+import { createLimiter } from '$lib/botProtection/rateLimit/server';
 import { guardApiKey } from '../guard';
 import type { RequestHandler } from './$types';
 import type { RequestEvent } from '@sveltejs/kit';
 
-const deleteExpiredTokensLimiter = createDeviceLimiter({ id: 'deleteExpiredTokens', rate: [2, '6h'] });
+const deleteExpiredTokensLimiter = createLimiter({
+	id: 'deleteExpiredTokens',
+	limiters: [{ kind: 'ipUa', rate: [2, '6h'] }],
+});
 
 // curl -X POST http://localhost:5173/api/expire-tokens.json -H 'Content-Type: application/json' -d '{"cron_api_key":"...", "expected_db_name":"..."}'
 const deleteExpiredTokens = async (event: RequestEvent) =>
