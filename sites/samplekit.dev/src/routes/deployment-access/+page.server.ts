@@ -6,7 +6,7 @@ import type { Actions } from './$types';
 const signinLimiter = createLimiter({ id: 'deployment-access-signin', limiters: [{ kind: 'ipUa', rate: [5, '5m'] }] });
 
 export const load = async ({ cookies }) => {
-	return { authorized: await deploymentAccessController.isAuthenticated({ cookies }) };
+	return { deploymentAuth: await deploymentAccessController.countAuthenticatedSessions({ cookies }) };
 };
 
 const signin: App.CommonServerAction = async (event) => {
@@ -32,8 +32,12 @@ const signin: App.CommonServerAction = async (event) => {
 
 const signout: App.CommonServerAction = async ({ cookies }) => {
 	await deploymentAccessController.deleteSession({ cookies });
-
 	return { success: 'true' };
 };
 
-export const actions: Actions = { signin, signout };
+const signoutAll: App.CommonServerAction = async ({ cookies }) => {
+	await deploymentAccessController.deleteAllSessions({ cookies });
+	return { success: 'true' };
+};
+
+export const actions: Actions = { signin, signout, signoutAll };
