@@ -2,7 +2,7 @@ import { error } from '@sveltejs/kit';
 import { message, superValidate } from 'sveltekit-superforms/server';
 import { auth } from '$lib/auth/server';
 import { transports } from '$lib/auth/server';
-import { createDeviceLimiter } from '$lib/botProtection/rateLimit/server';
+import { createLimiter } from '$lib/botProtection/rateLimit/server';
 import { turnstileFormInputName } from '$lib/botProtection/turnstile/common';
 import { validateTurnstile } from '$lib/botProtection/turnstile/server';
 import { emailPassResetSchema } from '$routes/(auth)/validators';
@@ -13,7 +13,7 @@ export const load: PageServerLoad = async () => {
 	error(404);
 };
 
-const resetPassLimiter = createDeviceLimiter({ id: 'emailPassReset', rate: [3, '6h'] });
+const resetPassLimiter = createLimiter({ id: 'emailPassReset', limiters: [{ kind: 'ipUa', rate: [3, '6h'] }] });
 
 const emailPassReset: Action = async (event) => {
 	const { request } = event;
@@ -44,6 +44,9 @@ const emailPassReset: Action = async (event) => {
 	}
 
 	const rateCheck = await resetPassLimiter.check(event, { log: { email: emailPassResetForm.data.email } });
+	if (rateCheck.forbidden) {
+		return message(emailPassResetForm, { fail: 'Forbidden.' }, { status: 403 });
+	}
 	if (rateCheck.limited) {
 		return message(
 			emailPassResetForm,

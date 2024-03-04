@@ -224,9 +224,6 @@ importers:
       svelte-check:
         specifier: ^3.6.3
         version: 3.6.3(@babel/core@7.23.9)(postcss@8.4.34)(svelte@4.2.10)
-      sveltekit-rate-limiter:
-        specifier: ^0.4.3
-        version: 0.4.3(@sveltejs/kit@2.5.0)
       sveltekit-superforms:
         specifier: ^1.13.4
         version: 1.13.4(@sveltejs/kit@2.5.0)(svelte@4.2.10)(zod@3.22.4)
@@ -3399,11 +3396,6 @@ packages:
       strip-ansi-cjs: /strip-ansi@6.0.1
       wrap-ansi: 8.1.0
       wrap-ansi-cjs: /wrap-ansi@7.0.0
-    dev: true
-
-  /@isaacs/ttlcache@1.4.1:
-    resolution: {integrity: sha512-RQgQ4uQ+pLbqXfOmieB91ejmLwvSgv9nLx6sT6sD83s7umBypgg+OIBOBbEUiJXrfpnp9j0mRhYYdzp9uqq3lA==}
-    engines: {node: '>=12'}
     dev: true
 
   /@jridgewell/gen-mapping@0.3.3:
@@ -10605,15 +10597,6 @@ packages:
       locate-character: 3.0.0
       magic-string: 0.30.5
       periscopic: 3.1.0
-
-  /sveltekit-rate-limiter@0.4.3(@sveltejs/kit@2.5.0):
-    resolution: {integrity: sha512-BKkD2tvgyz5j4Fn1vt0y7FLF0zZ01f9thjWPGDb6fyX3tBXyMrtZ8ISK8M7zjz9Cik/2KrkvFtmldhXF6/hjqw==}
-    peerDependencies:
-      '@sveltejs/kit': 1.x || 2.x
-    dependencies:
-      '@isaacs/ttlcache': 1.4.1
-      '@sveltejs/kit': 2.5.0(@sveltejs/vite-plugin-svelte@3.0.2)(svelte@4.2.10)(vite@5.0.12)
-    dev: true
 
   /sveltekit-superforms@1.13.4(@sveltejs/kit@2.5.0)(svelte@4.2.10)(zod@3.22.4):
     resolution: {integrity: sha512-rM2+Ictaw7OAIorCLmvg82orci/mtO9ZouI4emtx8SyYngx9aED+eNZlHPLufgB6D7geL2a+hMSFtM3zmMQixQ==}

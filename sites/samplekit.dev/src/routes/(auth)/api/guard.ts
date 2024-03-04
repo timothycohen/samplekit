@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { DB_NAME } from '$env/static/private';
-import { createDeviceLimiter } from '$lib/botProtection/rateLimit/server';
+import { createLimiter } from '$lib/botProtection/rateLimit/server';
 import { jsonFail, jsonOk } from '$lib/http/server';
 import { logger } from '$lib/logging/server';
 import type { RequestEvent } from '@sveltejs/kit';
@@ -35,7 +35,7 @@ export const guardApiKey = async ({
 }: {
 	id: string;
 	event: RequestEvent;
-	limiter: ReturnType<typeof createDeviceLimiter>;
+	limiter: ReturnType<typeof createLimiter>;
 	expectedKey: string;
 	ipWhitelist: string[];
 	/** Return loggables */
@@ -52,7 +52,7 @@ export const guardApiKey = async ({
 		err = { err_code: req.error.issues[0]?.code ?? 'bad_request', status: 400 };
 	} else if (req.data.expected_db_name !== DB_NAME) {
 		err = { err_code: 'incorrect_env', status: 403 };
-	} else if ((await limiter.check(event)).limited) {
+	} else if (await limiter.check(event).then((r) => r.forbidden || r.limited)) {
 		err = { err_code: 'rate_limited', status: 429 };
 	} else if (expectedKey === '' || expectedKey !== req.data.cron_api_key) {
 		err = { err_code: 'incorrect_key', status: 403 };

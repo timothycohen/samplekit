@@ -1,5 +1,5 @@
 import { eq } from 'drizzle-orm';
-import { createUserIdLimiter } from '$lib/botProtection/rateLimit/server';
+import { createLimiter } from '$lib/botProtection/rateLimit/server';
 import { deleteS3Object, generateS3UploadPost, invalidateCloudfront, keyController } from '$lib/cloudStorage/server';
 import { detectModerationLabels } from '$lib/cloudStorage/server';
 import { db, presigned, users } from '$lib/db/server';
@@ -9,11 +9,18 @@ import type { RequestHandler } from './$types';
 import type { RequestEvent } from '@sveltejs/kit';
 
 // generateS3UploadPost enforces max upload size and denies any upload that we don't sign
-// uploadLimiter limits the userId to 2 uploads per 15 minutes
+// uploadLimiter rate limits the number of uploads a user can do
 // presigned ensures we don't have to trust the client to tell us what the uploaded objectUrl is after the upload
 // detectModerationLabels prevents explicit content
 
-const uploadLimiter = createUserIdLimiter({ id: 'checkAndSaveUploadedAvatar', rate: [2, '15m'] });
+const uploadLimiter = createLimiter({
+	id: 'checkAndSaveUploadedAvatar',
+	limiters: [
+		{ kind: 'global', rate: [300, 'd'] },
+		{ kind: 'userId', rate: [2, '15m'] },
+		{ kind: 'ipUa', rate: [3, '15m'] },
+	],
+});
 
 const getSignedAvatarUploadUrl = async ({ locals }: RequestEvent) => {
 	const { user } = await locals.seshHandler.userOrRedirect();
@@ -39,9 +46,10 @@ const checkAndSaveUploadedAvatar = async (event: RequestEvent) => {
 	if (!parsed.success) return jsonFail(400);
 
 	const rateCheck = await uploadLimiter.check(event, { log: { userId: user.id } });
-	if (rateCheck.limited) {
-		return jsonFail(429, `Please wait ${rateCheck.humanTryAfter} and try again.`);
-	}
+	if (rateCheck.limiterKind === 'global')
+		return jsonFail(429, `This demo has hit its 24h max. Please wait ${rateCheck.humanTryAfter} and try again.`);
+	if (rateCheck.forbidden) return jsonFail(403);
+	if (rateCheck.limited) return jsonFail(429, `Please wait ${rateCheck.humanTryAfter} and try again.`);
 
 	const presignedObjectUrl = await presigned.get({ userId: user.id });
 	if (!presignedObjectUrl) return jsonFail(400);
