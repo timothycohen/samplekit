@@ -318,7 +318,7 @@ export const createUnweightedSlidingWindow = (a: {
 			}
 		}
 
-		if (!res.limited) return { limited: false, attemptsRemaining };
+		if (!res.limited) return { limited: false, attemptsRemaining: attemptsRemaining - 1 };
 		return res;
 	};
 
