@@ -4,6 +4,7 @@ import { deleteS3Object, generateS3UploadPost, invalidateCloudfront, keyControll
 import { detectModerationLabels } from '$lib/cloudStorage/server';
 import { db, presigned, users } from '$lib/db/server';
 import { jsonFail, jsonOk } from '$lib/http/server';
+import { toHumanReadableTime } from '$lib/utils/common';
 import { MAX_UPLOAD_SIZE, putReqSchema, type GetRes, type PutRes } from '.';
 import type { RequestHandler } from './$types';
 import type { RequestEvent } from '@sveltejs/kit';
@@ -46,10 +47,13 @@ const checkAndSaveUploadedAvatar = async (event: RequestEvent) => {
 	if (!parsed.success) return jsonFail(400);
 
 	const rateCheck = await uploadLimiter.check(event, { log: { userId: user.id } });
-	if (rateCheck.limiterKind === 'global')
-		return jsonFail(429, `This demo has hit its 24h max. Please wait ${rateCheck.humanTryAfter} and try again.`);
 	if (rateCheck.forbidden) return jsonFail(403);
-	if (rateCheck.limited) return jsonFail(429, `Please wait ${rateCheck.humanTryAfter} and try again.`);
+	if (rateCheck.limiterKind === 'global')
+		return jsonFail(
+			429,
+			`This demo has hit its 24h max. Please try again in ${toHumanReadableTime(rateCheck.retryAfterSec)}`,
+		);
+	if (rateCheck.limited) return jsonFail(429, rateCheck.humanTryAfter('uploads'));
 
 	const presignedObjectUrl = await presigned.get({ userId: user.id });
 	if (!presignedObjectUrl) return jsonFail(400);

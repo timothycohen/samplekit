@@ -48,11 +48,7 @@ const emailPassReset: Action = async (event) => {
 		return message(emailPassResetForm, { fail: 'Forbidden.' }, { status: 403 });
 	}
 	if (rateCheck.limited) {
-		return message(
-			emailPassResetForm,
-			{ fail: `Please wait ${rateCheck.humanTryAfter} and try again.` },
-			{ status: 429 },
-		);
+		return message(emailPassResetForm, { fail: rateCheck.humanTryAfter('requests') }, { status: 429 });
 	}
 
 	const storedUser = await auth.user.get({ email: emailPassResetForm.data.email });
