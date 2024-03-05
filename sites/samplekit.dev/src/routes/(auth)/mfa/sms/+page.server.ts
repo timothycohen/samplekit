@@ -44,11 +44,7 @@ const sendSMSVeri: Action = async (event) => {
 		return message(sendSMSTokenForm, { fail: 'Forbidden.' }, { status: 403 });
 	}
 	if (rateCheck.limited) {
-		return message(
-			sendSMSTokenForm,
-			{ fail: `Please wait ${rateCheck.humanTryAfter} and try again.` },
-			{ status: 429 },
-		);
+		return message(sendSMSTokenForm, { fail: rateCheck.humanTryAfter('attempts') }, { status: 429 });
 	}
 
 	const { transportErr } = await transports.sms.send.Otp({ phoneNumber, otp });
