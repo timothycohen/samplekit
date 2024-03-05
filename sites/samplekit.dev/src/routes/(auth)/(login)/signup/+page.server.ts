@@ -51,20 +51,6 @@ const signupWithPassword: Action = async (event) => {
 		);
 	}
 
-	const rateCheck = await signupLimiter.check(event, { log: { email: signupForm.data.email } });
-	if (rateCheck.forbidden) {
-		signupForm.data.password = '';
-		return message(signupForm, { fail: `Forbidden` }, { status: 403 });
-	}
-	if (rateCheck.limited) {
-		signupForm.data.password = '';
-		return message(
-			signupForm,
-			{ fail: `Too many new accounts. Please wait ${rateCheck.humanTryAfter} and try again.` },
-			{ status: 429 },
-		);
-	}
-
 	const { user, error } = await auth.user.createEmailPass({
 		email: signupForm.data.email,
 		givenName: signupForm.data.given_name,
@@ -75,6 +61,16 @@ const signupWithPassword: Action = async (event) => {
 	if (error) {
 		signupForm.data.password = '';
 		return message(signupForm, { fail: 'Account taken.' }, { status: 403 });
+	}
+
+	const rateCheck = await signupLimiter.check(event, { log: { email: signupForm.data.email } });
+	if (rateCheck.forbidden) {
+		signupForm.data.password = '';
+		return message(signupForm, { fail: `Forbidden` }, { status: 403 });
+	}
+	if (rateCheck.limited) {
+		signupForm.data.password = '';
+		return message(signupForm, { fail: rateCheck.humanTryAfter('new accounts') }, { status: 429 });
 	}
 
 	const pf = platform.parse(request.headers.get('user-agent') ?? undefined);
