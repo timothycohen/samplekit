@@ -1,13 +1,23 @@
 import { fail as formFail, redirect } from '@sveltejs/kit';
 import { message, superValidate } from 'sveltekit-superforms/server';
 import { auth } from '$lib/auth/server';
+import { createLimiter } from '$lib/botProtection/rateLimit/server';
 import { checkedRedirect } from '$lib/http/server';
 import { sanitizeRedirectUrl } from '$lib/http/server';
 import { confirmPassSchema, verifyOTPSchema } from '$routes/(auth)/validators';
 import type { Actions } from './$types';
 import type { Action } from '@sveltejs/kit';
 
-const seshConfFromPassword: Action = async ({ request, locals }) => {
+const seshConfLimiter = createLimiter({
+	id: 'seshConfFromPassword',
+	limiters: [
+		{ kind: 'ipUa', rate: [5, '30m'] },
+		{ kind: 'userId', rate: [5, '30m'] },
+	],
+});
+
+const seshConfFromPassword: Action = async (event) => {
+	const { request, locals } = event;
 	const { user, session } = await locals.seshHandler.userOrRedirect();
 
 	const confirmPassForm = await superValidate(request, confirmPassSchema);
@@ -19,12 +29,19 @@ const seshConfFromPassword: Action = async ({ request, locals }) => {
 	if (authDetails.mfaCount > 0)
 		return message(confirmPassForm, { fail: 'Please authenticate with MFA.' }, { status: 403 });
 
-	const password = confirmPassForm.data.password;
+	const rateCheck = await seshConfLimiter.check(event);
+	if (rateCheck.forbidden) return formFail(403, { fail: 'Forbidden.' });
+	if (rateCheck.limited)
+		return message(confirmPassForm, { fail: rateCheck.humanTryAfter('requests') }, { status: 429 });
 
-	const provider = await auth.provider.pass.email.get({ email: user.email, pass: password });
-	if (!provider) return message(confirmPassForm, { fail: 'Invalid password.' }, { status: 403 });
+	const provider = await auth.provider.pass.email.get({ email: user.email, pass: confirmPassForm.data.password });
+	if (!provider)
+		return message(confirmPassForm, { fail: `Invalid password. ${rateCheck.humanAttemptsRemaining}` }, { status: 403 });
 
-	await auth.session.addTempConf({ sessionId: session.id }).then(() => locals.seshHandler.invalidateCache());
+	await Promise.all([
+		auth.session.addTempConf({ sessionId: session.id }).then(() => locals.seshHandler.invalidateCache()),
+		seshConfLimiter.clear(event),
+	]);
 
 	if (sanitizedPath) return redirect(302, sanitizedPath);
 };

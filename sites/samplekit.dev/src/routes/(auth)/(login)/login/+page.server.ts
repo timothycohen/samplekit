@@ -2,12 +2,15 @@ import { fail as formFail } from '@sveltejs/kit';
 import platform from 'platform';
 import { message, superValidate } from 'sveltekit-superforms/server';
 import { auth } from '$lib/auth/server';
+import { createLimiter } from '$lib/botProtection/rateLimit/server';
 import { turnstileFormInputName } from '$lib/botProtection/turnstile/common';
 import { validateTurnstile } from '$lib/botProtection/turnstile/server';
 import { checkedRedirect } from '$lib/http/server';
 import { emailPassResetSchema, signinSchema } from '$routes/(auth)/validators';
 import type { Actions, PageServerLoad } from './$types';
 import type { Action } from '@sveltejs/kit';
+
+const signinLimiter = createLimiter({ id: 'signinWithPassword', limiters: [{ kind: 'ipUa', rate: [5, '15m'] }] });
 
 export const load: PageServerLoad = async ({ locals }) => {
 	const seshUser = await locals.seshHandler.getSessionUser();
@@ -31,7 +34,8 @@ export const load: PageServerLoad = async ({ locals }) => {
 	};
 };
 
-const loginWithPassword: Action = async ({ request, locals, getClientAddress }) => {
+const loginWithPassword: Action = async (event) => {
+	const { request, locals, getClientAddress } = event;
 	const formData = await request.formData();
 	const clientToken = formData.get(turnstileFormInputName);
 	const signinForm = await superValidate(formData, signinSchema);
@@ -55,14 +59,24 @@ const loginWithPassword: Action = async ({ request, locals, getClientAddress }) 
 
 	let sanitizedPath: '/account/profile' | '/email-verification' | '/login/verify-mfa' = '/account/profile';
 
+	const rateCheck = await signinLimiter.check(event);
+	if (rateCheck.forbidden) return formFail(403, { fail: 'Forbidden.' });
+	if (rateCheck.limited) return message(signinForm, { fail: rateCheck.humanTryAfter('requests') }, { status: 429 });
+
 	const provider = await auth.provider.pass.email.get({
 		email: signinForm.data.email,
 		pass: signinForm.data.password,
 	});
 	if (!provider) {
 		signinForm.data.password = '';
-		return message(signinForm, { fail: 'Invalid email or password.' }, { status: 403 });
+		return message(
+			signinForm,
+			{ fail: `Invalid email or password. ${rateCheck.humanAttemptsRemaining}` },
+			{ status: 403 },
+		);
 	}
+
+	await signinLimiter.clear(event);
 
 	const awaitingMFA = auth.provider.pass.MFA.countMFAs(auth.provider.pass.MFA.calcMFAsEnabled(provider)) > 0;
 	const awaitingEmailVeri = !provider.emailVerified;
