@@ -4,7 +4,7 @@ import Redis from 'ioredis';
 import { auth } from '$lib/auth/server';
 import { kv } from '$lib/kv/server';
 import { logger } from '$lib/logging/server';
-import { assertUnreachable, toHumanReadableTime } from '$lib/utils/common';
+import { assertUnreachable, pluralize, toHumanReadableTime } from '$lib/utils/common';
 import type { RequestEvent } from '@sveltejs/kit';
 
 /**
@@ -209,9 +209,9 @@ export function parseRateOrThrow(rate: Rate): { maxAllowed: number; windowSizeMs
 interface RateLimiter {
 	// prettier-ignore
 	check: (event: RequestEvent, opts?: { skipHeader?: true; log?: Record<string, unknown> | null }) => Promise<
-		| { limited: false;  forbidden?: never; limiterKind?: never;                     attemptsRemaining: number; retryAfterSec?: never; humanTryAfter?: never }
-		| { limited: true;   forbidden?: never; limiterKind: ConsumerIdentifier['kind']; attemptsRemaining?: never; retryAfterSec: number; humanTryAfter: string }
-		| { limited?: never; forbidden: true;   limiterKind: ConsumerIdentifier['kind']; attemptsRemaining?: never; retryAfterSec?: never; humanTryAfter?: never }
+		| { limited: false;  forbidden?: never; limiterKind?: never;                     attemptsRemaining: number; humanAttemptsRemaining: string; retryAfterSec?: never; humanTryAfter?: never }
+		| { limited: true;   forbidden?: never; limiterKind: ConsumerIdentifier['kind']; attemptsRemaining?: never; humanAttemptsRemaining?: never; retryAfterSec: number; humanTryAfter: (tooManyWord: string) => string }
+		| { limited?: never; forbidden: true;   limiterKind: ConsumerIdentifier['kind']; attemptsRemaining?: never; humanAttemptsRemaining?: never; retryAfterSec?: never; humanTryAfter?: never }
 	>;
 	clear: (event: RequestEvent) => Promise<void>;
 }
@@ -342,7 +342,10 @@ export const createUnweightedSlidingWindow = (a: {
 
 		if (!checkedMethods.limited) {
 			await a.store.add(keyAndRates.map((l) => ({ key: l.storageKey, ttlMs: l.windowSizeMs })));
-			return checkedMethods;
+			return {
+				...checkedMethods,
+				humanAttemptsRemaining: `${checkedMethods.attemptsRemaining} ${pluralize('attempt', checkedMethods.attemptsRemaining)} remaining.`,
+			};
 		}
 
 		const { limitedKey, timeToUnlimitMs, limiterKind } = checkedMethods;
@@ -352,7 +355,13 @@ export const createUnweightedSlidingWindow = (a: {
 		if (opts.log) {
 			logger.info({ code: 'rate-limit', limitedKey, id: a.id, ...a.logBase, ...opts.log });
 		}
-		return { limited: true, limiterKind, retryAfterSec, humanTryAfter: toHumanReadableTime(retryAfterSec) };
+		return {
+			limited: true,
+			limiterKind,
+			retryAfterSec,
+			humanTryAfter: (tooManyWord: string) =>
+				`Too many ${tooManyWord}. Please try again in ${toHumanReadableTime(retryAfterSec)}.`,
+		};
 	};
 
 	const clear: RateLimiter['clear'] = async (event) => {

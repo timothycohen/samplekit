@@ -1,8 +1,8 @@
 import { z } from 'zod';
 import { DB_NAME } from '$env/static/private';
-import { createLimiter } from '$lib/botProtection/rateLimit/server';
 import { jsonFail, jsonOk } from '$lib/http/server';
 import { logger } from '$lib/logging/server';
+import type { createLimiter } from '$lib/botProtection/rateLimit/server';
 import type { RequestEvent } from '@sveltejs/kit';
 
 const postReq = z.object({ cron_api_key: z.string().length(63), expected_db_name: z.string() });
