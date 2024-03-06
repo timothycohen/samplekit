@@ -67,6 +67,7 @@ export default {
 			res['app'] = {
 				bg: 'hsl(var(--app-bg) / <alpha-value>)',
 			};
+
 			for (const theme of THEMES) {
 				res['app'][`bg-${theme.name}`] = `hsl(var(--app-bg-${theme.name}) / <alpha-value>)`;
 			}
@@ -75,11 +76,14 @@ export default {
 				const baseColors = [...Array(12).keys()].reduce<Record<string, string>>((acc, i) => {
 					return { ...acc, [`${i + 1}`]: `hsl(var(--${color}-${i + 1}) / <alpha-value>)` };
 				}, {});
-				const alphaColors = [...Array(12).keys()].reduce<Record<string, string>>((acc, i) => {
-					return { ...acc, [`a${i + 1}`]: `var(--${color}-a${i + 1})` };
-				}, {});
-				if (isGrayish(color)) res[color] = { ...baseColors, ...alphaColors };
-				else res[color] = { ...baseColors, '9-contrast': `hsl(var(--${color}-9-contrast) / <alpha-value>)` };
+				if (isGrayish(color)) {
+					const alphaColors = [...Array(12).keys()].reduce<Record<string, string>>((acc, i) => {
+						return { ...acc, [`a${i + 1}`]: `var(--${color}-a${i + 1})` };
+					}, {});
+					res[color] = { ...baseColors, ...alphaColors };
+				} else {
+					res[color] = { ...baseColors, '9-contrast': `hsl(var(--${color}-9-contrast) / <alpha-value>)` };
+				}
 			}
 			return res;
 		})(),
@@ -194,6 +198,9 @@ export default {
 							pre: false,
 							code: false,
 							'pre code': false,
+							a: {
+								'@apply no-underline link': '',
+							},
 						},
 					},
 					radix: {
