@@ -25,7 +25,7 @@
 	let articleContentWrapper: HTMLDivElement;
 </script>
 
-<div id="use-toc" class="page">
+<div class="page">
 	{#key article.title}
 		<article>
 			<div class="mb-6-9">
@@ -74,7 +74,11 @@
 			</div>
 
 			<div class="flex gap-[clamp(2.5rem,8vw,4rem)]">
-				<div class="prose prose-radix prose-lg min-w-0 max-w-none flex-1" bind:this={articleContentWrapper}>
+				<div
+					class="prose prose-radix prose-lg min-w-0 max-w-none flex-1"
+					bind:this={articleContentWrapper}
+					id="use-toc"
+				>
 					<slot />
 				</div>
 
