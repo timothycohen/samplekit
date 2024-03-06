@@ -9,7 +9,7 @@ export const isMdLang = (lang?: string): lang is MdLang => mdLanguages.includes(
 const escapePreprocessor = (code: string) => {
 	return code.replace(/&tripgrave;|&tripslash;|&triptilde;/g, (match) => {
 		return {
-			'&tripgrave;': '&grave;&grave;&grave;',
+			'&tripgrave;': '```',
 			'&tripslash;': '///',
 			'&triptilde;': '~~~',
 		}[match]!;
