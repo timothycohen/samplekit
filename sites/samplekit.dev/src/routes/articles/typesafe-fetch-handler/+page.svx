@@ -16,21 +16,21 @@
 				<td><span class="text-sm font-light">0.1</span> </td>
 				<td>Component Initialization</td>
 				<td>
-					<a target="_blank" class="not-prose link" href="https://kit.svelte.dev/docs/load">Load Functions</a>
+					<a target="_blank" href="https://kit.svelte.dev/docs/load">Load Functions</a>
 				</td>
 			</tr>
 			<tr>
 				<td><span class="text-sm font-light">0.2</span> </td>
 				<td>Form Submissions</td>
 				<td>
-					<a target="_blank" class="not-prose link" href="https://kit.svelte.dev/docs/form-actions">Form Actions</a>
+					<a target="_blank" href="https://kit.svelte.dev/docs/form-actions">Form Actions</a>
 				</td>
 			</tr>
 			<tr>
 				<td><span class="text-sm font-light">0.3</span></td>
 				<td>HTTP Requests</td>
 				<td>
-					<a target="_blank" class="not-prose link" href="https://kit.svelte.dev/docs/routing#server">
+					<a target="_blank" href="https://kit.svelte.dev/docs/routing#server">
 						Request Handlers
 					</a>
 				</td>
@@ -76,7 +76,7 @@ export const load: PageServerLoad = async () => {
 
 <p>
 	There are also packages which expand on this with more features and the ability to easily handle multiple forms on a
-	single page. My favorite is <a target="_blank" class="link" href="https://superforms.rocks/">SuperForms</a>.
+	single page. My favorite is <a target="_blank" href="https://superforms.rocks/">SuperForms</a>.
 </p>
 
 ```ts
@@ -92,7 +92,7 @@ if (!verifySMSTokenForm.valid) {
 <p>By now you probably already know the answer to our little quiz.</p>
 
 <button
-	class="rounded-badge border-accent-5 not-prose relative h-52 w-52 overflow-hidden border"
+	class="rounded-badge border-accent-5 relative h-52 w-52 overflow-hidden border"
 	on:click={() => (showQuizAnswer = !showQuizAnswer)}
 >
 	<div class="bg-accent-3 absolute inset-0 grid h-full w-full place-content-center {showQuizAnswer ? 'hidden' : ''}">
