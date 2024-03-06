@@ -760,7 +760,7 @@ const isGrayish = (color: string): color is Grayish => ['gray', 'mauve', 'sand']
 
 export default {
 	darkMode: ['class'],
-	content: ['./src/**/*.{html,svelte,js,ts,svx}'],
+	content: ['./src/**/*.{html,svelte,js,ts}'],
 	theme: {
 		...
 		colors: (() => {
@@ -769,14 +769,6 @@ export default {
 				black: 'hsl(0deg 0% 0% / <alpha-value>)',
 				white: 'hsl(0deg 0% 100% / <alpha-value>)',
 			};
-
-			res['app'] = {
-				bg: 'hsl(var(--app-bg) / <alpha-value>)',
-			};
-
-			for (const theme of THEMES) {
-				res['app'][`bg-${theme.name}`] = `hsl(var(--app-bg-${theme.name}) / <alpha-value>)`;
-			}
 
 			for (const color of colors) {
 				const baseColors = [...Array(12).keys()].reduce<Record<string, string>>((acc, i) => {
