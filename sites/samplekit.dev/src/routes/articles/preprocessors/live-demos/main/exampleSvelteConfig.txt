@@ -1,0 +1,18 @@
+import { preprocessCodeblock, preprocessTable } from '@samplekit/markdown';
+import adapter from '@sveltejs/adapter-auto';
+import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
+
+/** @type {import('@sveltejs/kit').Config} */
+const config = {
+	extensions: ['.svelte', '.svx'],
+	preprocess: [
+		preprocessCodeblock({ logger: console, include: (filename) => filename.endsWith('.svx') }),
+		preprocessTable({ logger: console, include: (filename) => filename.endsWith('.svx') }),
+		vitePreprocess(),
+	],
+	kit: {
+		adapter: adapter(),
+	},
+};
+
+export default config;

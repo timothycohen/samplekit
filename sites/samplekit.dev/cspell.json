@@ -1,4 +1,20 @@
 {
-	"words": ["fouc", "lucide", "postcss", "supabase", "superforms", "uswds"],
+	"words": [
+		"fouc",
+		"ltscript",
+		"lucide",
+		"mdsvex",
+		"postcss",
+		"rehype",
+		"samplekit",
+		"shiki",
+		"supabase",
+		"superforms",
+		"tripgrave",
+		"tripslash",
+		"triptilde",
+		"uswds",
+		"vite"
+	],
 	"dictionaries": ["html", "typescript", "svelte", "sql", "node"]
 }
