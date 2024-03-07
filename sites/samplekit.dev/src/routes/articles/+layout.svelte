@@ -26,78 +26,72 @@
 </script>
 
 <div class="page">
-	{#key article.title}
-		<article>
-			<div class="mb-6-9">
-				{#if article.imgLg && !data.article.demos?.main}
-					<img
-						class="rounded-card mb-6 aspect-video h-auto w-full object-cover object-top"
-						src={article.imgLg}
-						alt={article.title}
-					/>
-				{/if}
+	<article>
+		<div class="mb-6-9">
+			{#if article.imgLg && !article.demos?.main}
+				<img
+					class="rounded-card mb-6 aspect-video h-auto w-full object-cover object-top"
+					src={article.imgLg}
+					alt={article.title}
+				/>
+			{/if}
 
-				<hgroup>
-					<h1 class="t-h2 pb-6 font-bold tracking-wide">
-						{article.title}
-					</h1>
-					{#if article.tags?.length}
-						<ul class="text-gray-11 mb-6 flex flex-wrap items-start justify-start gap-2">
-							{#each article.tags as tag}
-								<li class="bg-gray-4 rounded-badge inline-flex items-center px-2.5 py-0.5 text-xs font-medium">
-									{tag}
-								</li>
-							{/each}
-						</ul>
-					{/if}
-					<p class="text-gray-11 text-xs font-bold uppercase tracking-wider">
-						<span class="uppercase">{readingTime} min read</span>
-						<span class="mx-2" aria-hidden="true">•</span>
-						<span class="uppercase">{wordCount} {pluralize('word', wordCount)}</span>
-					</p>
-				</hgroup>
-
-				{#if data.article.demos?.main}
-					<span class="prose prose-radix prose-lg">
-						<h2 class="my-4" id="interactive-demo" data-auto-slug-anchor-position="prepend" data-auto-slug="">
-							<a href="#interactive-demo" aria-hidden="true" tabindex="-1" data-auto-slug-anchor="">#</a>
-							Interactive Demo
-						</h2>
-					</span>
-					<TabPanels files={data.article.demos.main} />
+			<hgroup>
+				<h1 class="t-h2 pb-6 font-bold tracking-wide">
+					{article.title}
+				</h1>
+				{#if article.tags?.length}
+					<ul class="text-gray-11 mb-6 flex flex-wrap items-start justify-start gap-2">
+						{#each article.tags as tag}
+							<li class="bg-gray-4 rounded-badge inline-flex items-center px-2.5 py-0.5 text-xs font-medium">
+								{tag}
+							</li>
+						{/each}
+					</ul>
 				{/if}
+				<p class="text-gray-11 text-xs font-bold uppercase tracking-wider">
+					<span class="uppercase">{readingTime} min read</span>
+					<span class="mx-2" aria-hidden="true">•</span>
+					<span class="uppercase">{wordCount} {pluralize('word', wordCount)}</span>
+				</p>
+			</hgroup>
+
+			{#if article.demos?.main}
+				<span class="prose prose-radix prose-lg">
+					<h2 class="my-4" id="interactive-demo" data-auto-slug-anchor-position="prepend" data-auto-slug="">
+						<a href="#interactive-demo" aria-hidden="true" tabindex="-1" data-auto-slug-anchor="">#</a>
+						Interactive Demo
+					</h2>
+				</span>
+				<TabPanels files={article.demos.main} />
+			{/if}
+		</div>
+
+		<div class="mb-6-9 flex flex-col gap-8 lg:hidden">
+			<Series series={article.series} />
+			<TOC />
+		</div>
+
+		<div class="flex gap-[clamp(2.5rem,8vw,4rem)]">
+			<div class="prose prose-radix prose-lg min-w-0 max-w-none flex-1" bind:this={articleContentWrapper} id="use-toc">
+				<slot />
 			</div>
 
-			<div class="mb-6-9 flex flex-col gap-8 lg:hidden">
+			<div class="hidden flex-col gap-8 lg:flex">
 				<Series series={article.series} />
-				<TOC />
-			</div>
 
-			<div class="flex gap-[clamp(2.5rem,8vw,4rem)]">
-				<div
-					class="prose prose-radix prose-lg min-w-0 max-w-none flex-1"
-					bind:this={articleContentWrapper}
-					id="use-toc"
-				>
-					<slot />
-				</div>
-
-				<div class="hidden flex-col gap-8 lg:flex">
-					<Series series={article.series} />
-
-					<div class="flex-1">
-						<div class="sticky top-[calc(var(--nav-height)_+_2rem)] overflow-y-auto">
-							<div class="max-h-[calc(98vh-calc(var(--nav-height)_+_2rem))] py-2">
-								<TOC />
-							</div>
+				<div class="flex-1">
+					<div class="sticky top-[calc(var(--nav-height)_+_2rem)] overflow-y-auto">
+						<div class="max-h-[calc(98vh-calc(var(--nav-height)_+_2rem))] py-2">
+							<TOC />
 						</div>
 					</div>
-
-					<PrevNext prev={article.prev} next={article.next} />
 				</div>
+
+				<PrevNext prev={article.prev} next={article.next} />
 			</div>
-		</article>
-	{/key}
+		</div>
+	</article>
 
 	<footer class="mt-12 md:mt-24">
 		<div class="mb-8">
