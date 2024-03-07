@@ -1,0 +1,649 @@
+<script lang="ts">
+	import { CodeTopper } from '$lib/articles/components';
+	import { TabPanelItem } from '$lib/components';
+
+	export let data;
+</script>
+
+<p>When creating this website, I had a few DX requirements:</p>
+
+<ul>
+	<li class="list-disc">easily embed Svelte components within the article</li>
+	<li class="list-disc">write code blocks and tables in Markdown</li>
+	<li class="list-disc">style code blocks with my personal VS Code theme</li>
+	<li class="list-disc">transform everything on the server (no client-side highlighting)</li>
+	<li class="list-disc">easily customize and extends features</li>
+	<li class="list-disc">not have to wait for compatibility when Svelte 5 is released</li>
+</ul>
+
+<h2>Evaluating the Options</h2>
+
+<h3>0.1: Unified</h3>
+
+<p>
+	Unified is an ecosystem of packages that all accept a standardized abstract syntax tree (AST). The uniformity means you can convert your language into an AST, run a pipeline of transformations, and then transform it into some other language.
+	Originally, I thought of using the unified ecosystem to convert Markdown to an AST, use <code>rehypePrettyCode</code> in the middle for styling, and then convert it to HTML.
+	This is a great solution for technical and non-technical users alike because of how easy Markdown is to write.
+</p>
+
+<p>Something like this would work:</p>
+
+<CodeTopper title="Markdown Parser">
+```ts
+// https://github.com/syntax-tree/unist#list-of-utilities unified AST utilities
+// https://github.com/syntax-tree/mdast#list-of-utilities markdown AST utilities
+// https://github.com/syntax-tree/hast#list-of-utilities html AST utilities
+// https://github.com/remarkjs/remark/blob/main/doc/plugins.md remark: markdown AST plugins
+// https://github.com/rehypejs/rehype/blob/main/doc/plugins.md rehype: html AST plugins
+
+import matter from 'gray-matter';
+import { rehypeAddCopyBtnToCodeTitle, remarkReadingTime, type RemarkReadingTimeData } from './plugins.js';
+import fs from 'fs/promises';
+import path from 'path';
+import rehypeCodeTitles from 'rehype-code-titles';
+import { default as rehypePrettyCode, type Theme } from 'rehype-pretty-code';
+import rehypeSlug from 'rehype-slug';
+import rehypeStringify from 'rehype-stringify';
+import remarkGfm from 'remark-gfm';
+import remarkParse from 'remark-parse';
+import remarkRehype from 'remark-rehype';
+import remarkSmartypants from 'remark-smartypants';
+import remarkTableOfContents from 'remark-toc';
+import { unified } from 'unified';
+import { darker } from './code-themes/darker.js';
+import type { Parsed } from './types.js';
+
+type PluginData = RemarkReadingTimeData;
+
+/** @throws Error */
+export const mdToHTML = async <T extends object>(markdown: string) => {
+	const split = matter(markdown);
+	const rawMd = split.content;
+	const frontMatter = split.data as T;
+
+	const result = await unified()
+		.use(remarkParse) // Convert Markdown string to Markdown AST
+		.use(remarkGfm) // Use GitHub flavored Markdown
+		.use(remarkSmartypants) // Convert ASCII to Unicode punctuation: “ ” – — …
+		.use([[remarkTableOfContents, { tight: true }]]) // Generate TOC list from headings (tight removes <p> from <li> when nested)
+		.use(remarkReadingTime) // Add reading time to result.data
+		.use(remarkRehype) // Convert Markdown AST to HTML AST
+		.use(rehypeSlug) // Add IDs to headings
+		.use(rehypeCodeTitles) // Add titles to code blocks
+		.use(rehypePrettyCode, { theme: { light: 'rose-pine-dawn', dark: darker as unknown as Theme } }) // Add code syntax, line/word highlighting, line numbers
+		.use(rehypeAddCopyBtnToCodeTitle) // Add copy button to code blocks
+		.use(rehypeStringify) // Convert HTML AST to HTML string
+		.process(rawMd);
+
+	const pluginData = result.data as PluginData;
+	const readingTime = Math.ceil(pluginData.readingTime.minutes);
+
+	return {
+		rawHTML: result.value as string,
+		data: { ...frontMatter, readingTime },
+	};
+};
+
+/** @throws Error if the file could not be read or parsed */
+export async function parsePath<T extends object>(mdPath: { slug: string; path: string }): Promise<Parsed<T>> {
+	const rawMdContent = await fs.readFile(mdPath.path, 'utf-8').catch((_err) => {
+		throw new Error(`Unable to readFile ${mdPath.path}`);
+	});
+	return await mdToHTML<T>(rawMdContent).catch((_err) => {
+		throw new Error(`Unable to parse ${mdPath.slug}`);
+	});
+}
+
+/** @throws fs.readdir Error */
+export async function parseDir<T extends object>(inDir: string): Promise<Parsed<T>[]> {
+	const mdPaths = (await fs.readdir(inDir, { withFileTypes: true })).map((dirent) => ({
+		slug: dirent.name,
+		path: path.join(dirent.path, dirent.name, `${dirent.name}.md`),
+	}));
+
+	const res = await Promise.all(
+		mdPaths.map(async (p) => {
+			try {
+				return await parsePath<T>(p);
+			} catch (err) {
+				console.error(`\n${(err as Error).message}`);
+				return null;
+			}
+		}),
+	);
+	return res.filter((r) => r !== null) as Parsed<T>[];
+}
+```
+</CodeTopper>
+
+<p>
+	However, this makes inlining Svelte components cumbersome. Would we write multiple md files, import/process them
+	separately, and put the Svelte components in-between? Would we have some special syntax to inject the Svelte
+	components where needed?
+</p>
+
+<h3>0.2: MDsveX</h3>
+<p>
+	<a href="https://MDsveX.pngwn.io/docs/">MDsveX</a> – a Markdown preprocessor for Svelte – solves the embedded Svelte
+	problem.
+	<a href="https://kit.svelte.dev/docs/integrations#preprocessors">Preprocessors</a> transform the input files before passing
+	them to the Svelte compiler, and this particular preprocessor enables writing Markdown and Svelte in the same file.
+</p>
+
+<p>
+	The biggest concern at the time of my decision was that it hadn't been updated in 7 months with over 150+ open issues.
+	It didn't inspire confidence that it would support Svelte 5 upon its release, which was a large consideration of which
+	method to use. The second reason was that MDsveX was overkill for my needs. I want to keep my code as close to HTML as
+	possible because it's more expressive and simpler; every step away from HTML is another build process.
+</p>
+
+<p>
+	I really only want Markdown for two things: tables and code blocks. The general idea of a preprocessor, however, is
+	very appealing.
+</p>
+
+<h3>0.3: Preprocessors</h3>
+
+<p>
+	We can easily customize our supported functionality by writing simple preprocessors for each feature we want to add.
+	There are plenty of packages which could handle our desired functionality so we only need to write functions that wrap
+	a dedicated package and call it when some special syntax is detected.
+</p>
+
+<h2>Integrating Preprocessors</h2>
+
+<h3>Setup</h3>
+
+<p>
+	First, we'll want a different file extension so that we can instruct our preprocessors to not waste time on regular
+	<code>.svelte</code> files. It will also make it easier to write invalid Svelte syntax without triggering lint errors.
+	<a href="https://github.com/sveltejs/svelte/issues/9039#issuecomment-1650599142">
+		(&lt;script> tags in HTML are especially troublesome.)
+	</a>
+	Using <code>.svx</code> (the extension used by MDsveX) is natural because our preprocessor syntax will be trivially
+	different from a subset of their syntax and would allow us to switch easily if desired. It also comes with the benefit
+	of a (limited)
+	<a href="https://marketplace.visualstudio.com/items?itemName=sebsojeda.vscode-svx">
+		VS Code syntax highlighting extension
+	</a>.
+</p>
+
+<p>Now that we've chosen the file extension, we'll need to configure vite to look for it.</p>
+
+<CodeTopper title="vite.config.ts">
+```ts
+import type { UserConfig } from 'vite';
+
+export default {
+	...,
+	assetsInclude: '**/*.svx',
+} satisfies UserConfig;
+```
+</CodeTopper>
+
+<p>We'll add types to our <code>app.d.ts</code> file to remove the lint errors.</p>
+
+<CodeTopper title="app.d.ts">
+```ts
+declare global {
+	...
+
+	module '*.svx' {
+		const component: import('svelte').ComponentType<import('svelte').SvelteComponent>;
+		export default component;
+	}
+}
+export {};
+```
+</CodeTopper>
+
+<p>And finally we add the preprocessors.</p>
+
+<CodeTopper title="svelte.config.js">
+```js
+import { preprocessCodeblock, preprocessTable } from '@samplekit/markdown';
+import adapter from '@sveltejs/adapter-auto';
+import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
+
+/** @type {import('@sveltejs/kit').Config} */
+const config = {
+	extensions: ['.svelte', '.svx'],
+	preprocess: [
+		preprocessCodeblock({ logger: console, include: (filename) => filename.endsWith('.svx') }),
+		preprocessTable({ logger: console, include: (filename) => filename.endsWith('.svx') }),
+		vitePreprocess(),
+	],
+	kit: {
+		adapter: adapter(),
+	},
+};
+
+export default config;
+```
+</CodeTopper>
+
+<p>
+	<code>vitePreprocess</code> from <code>vite-plugin-svelte</code> handles the regular transformations like
+	<code>&ltscript lang="ts"&gt</code>.
+</p>
+
+<div class="alert-wrapper alert-wrapper-info pb-2">
+		<p class="font-bold">Tip</p>
+		<p>Add emmet completions for <code>.svx</code> files in VS Code for your sanity!</p>
+<CodeTopper title=".vscode/settings.json" />
+```json
+{
+	"emmet.includeLanguages": { ..., "svx": "html" }
+}
+```
+</div>
+
+<h3>Table Preprocessor</h3>
+
+<h4>Transformation Pipeline</h4>
+
+<p>We want to write:</p>
+
+```md
+<!-- table-start -->
+| Heading 1 | Heading 2 | Heading 3 |
+| --------- | --------- | --------- |
+| cell 1    | cell 2    | cell 3    |
+| cell 4    | cell 5    | cell 6    |
+<!-- table-end -->
+```
+
+<p>process to (sans whitespace):</p>
+
+```html
+<div class="table-wrapper">
+	<table>
+		<thead>
+			<tr>
+				<th>Heading 1</th>
+				<th>Heading 2</th>
+				<th>Heading 3</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>cell 1</td>
+				<td>cell 2</td>
+				<td>cell 3</td>
+			</tr>
+			<tr>
+				<td>cell 4</td>
+				<td>cell 5</td>
+				<td>cell 6</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+```
+
+<p>and render as:</p>
+<!-- table-start -->
+| Heading 1 | Heading 2 | Heading 3 |
+| --------- | --------- | --------- |
+| cell 1    | cell 2    | cell 3    |
+| cell 4    | cell 5    | cell 6    |
+<!-- table-end -->
+
+<div class="alert-wrapper alert-wrapper-info">
+	<p class="font-bold">Hint</p>
+	<p>Styles via <a href="https://tailwindcss.com/docs/typography-plugin">Tailwind Typography</a>.</p>
+</div>
+
+<p>
+	We <span class="italic">could</span> write some complicated logic to parse the file and determine where a table might start
+	or end, but let's just make it very simple and use a start and end tag.
+</p>
+
+<p>
+	Comment syntax is nice because it disappears if changing to MDsveX, has a bound keyboard shortcut, and has noticeable
+	syntax highlighting.
+</p>
+
+```md
+<!-- table-start -->
+| Header 1 | Header 2 |
+| -------- | -------- |
+| Cell 1-1 | Cell 1-2 |
+| Cell 2-1 | Cell 2-2 |
+<!-- table-end -->
+```
+
+<h4>Writing the Preprocessor</h4>
+
+<p>
+	We know what we want, so let's write a simple preprocessor that wraps a dedicated package. There are multiple packages
+	we could use to handle the heavy lifting of converting a Markdown table into HTML. We'll use
+	<a href="https://marked.js.org/">marked</a>.
+</p>
+
+<p>We loop over the content, pull out anything between the start and end delimiters, process it, and put it back in.</p>
+
+<CodeTopper title="/scripts/markdown/table.js">
+	<TabPanelItem panel={{ rawHTML: data.article.demos?.main?.find((e) => e.title === 'tablePreprocessor.ts')?.rawHTML }} />
+</CodeTopper>
+
+<p>Easy and already halfway there!</p>
+
+<h3>Codeblock Preprocessor</h3>
+
+<h4>Transformation Pipeline</h4>
+
+<p>For this one, we want to write:</p>
+
+```md
+&tripgrave;ts
+&tripslash;highlight:2
+console.log('hello world');
+const highlightedLine = true;
+&tripgrave;
+```
+
+<p>process to (sans whitespace):</p>
+
+```html
+<div class="code-wrapper">
+  <pre style="--h-darker: #d4d4d4; --h-rose-pine-dawn: #575279; --h-darker-bg: #000; --h-rose-pine-dawn-bg: #faf4ed">
+    <code>
+      <span data-line="1" >
+        <span style="--h-darker: #9CDCFE; --h-rose-pine-dawn: #575279; --h-darker-font-style: inherit; --h-rose-pine-dawn-font-style: italic;">console</span>
+        <span style="--h-darker: #D4D4D4; --h-rose-pine-dawn: #286983;">.</span>
+        <span style="--h-darker: #DCDCAA; --h-rose-pine-dawn: #D7827E;">log</span>
+        <span style="--h-darker: #D4D4D4; --h-rose-pine-dawn: #575279;">(</span>
+        <span style="--h-darker: #CE9178; --h-rose-pine-dawn: #EA9D34;">'hello world'</span>
+        <span style="--h-darker: #D4D4D4; --h-rose-pine-dawn: #575279;">)</span>
+        <span style="--h-darker: #D4D4D4; --h-rose-pine-dawn: #797593;">;</span>
+      </span>
+      <span data-line="2" data-line-highlighted="" >
+        <span style="--h-darker: #569CD6; --h-rose-pine-dawn: #286983; --h-darker-font-style: italic; --h-rose-pine-dawn-font-style: inherit;">const</span>
+         <span style="--h-darker: #4FC1FF; --h-rose-pine-dawn: #575279; --h-darker-font-style: inherit; --h-rose-pine-dawn-font-style: italic;"> highlightedLine</span>
+         <span style="--h-darker: #D4D4D4; --h-rose-pine-dawn: #286983;"> =</span>
+         <span style="--h-darker: #569CD6; --h-rose-pine-dawn: #D7827E; --h-darker-font-style: italic; --h-rose-pine-dawn-font-style: inherit;"> true</span>
+         <span style="--h-darker: #D4D4D4; --h-rose-pine-dawn: #797593;">;</span>
+        </span>
+    </code>
+  </pre>
+</div>
+```
+
+<p>and render as:</p>
+
+```ts
+///highlight:2
+console.log('hello world');
+const highlightedLine = true;
+```
+
+<h4>Writing the Preprocessor</h4>
+
+<p>Again, no need to reinvent the wheel. Let's use <a href="https://github.com/shikijs/shiki">shiki</a>.</p>
+
+<p>First, let's decide on the languages we want to load.</p>
+
+```ts
+const mdLanguages = ['json', 'sh', 'html', 'css', 'md', 'js', 'ts', 'svelte', 'diff']
+```
+
+<p>Let's make sure to escape Svelte characters too.</p>
+
+```ts
+const escapeSvelte = (code: string) => {
+	return code.replace(/[{}`]/g, (match) => {
+		return {
+			'{': '&lbrace;',
+			'}': '&rbrace;',
+			'`': '&grave;',
+		}[match]!;
+	});
+};
+```
+
+<p>
+	We know we want to be able to highlight lines, so we'll check for a custom <code>///highlight:</code> syntax, extract the
+	line data, and remove the syntax from the output.
+</p>
+
+```ts
+const getHighlightLines = (rawCode: string) => {
+	const highlightLines: number[] = [];
+	const strippedCode = rawCode.replaceAll('\t', '  ').replace(/^\/\/\/\s*highlight:(.*)\s*\n/m, (_, group) => {
+		group
+			.trim()
+			.split(',')
+			.forEach((lineStr: string) => {
+				lineStr = lineStr.trim().replace(/[^0-9-]/g, '');
+				if (lineStr.includes('-')) {
+					const [start, end] = lineStr.split('-');
+					if (start && end) {
+						for (let lineNum = Number(start.trim()); lineNum <= Number(end.trim()); lineNum++) {
+							highlightLines.push(lineNum);
+						}
+					}
+				} else {
+					highlightLines.push(Number(lineStr));
+				}
+			});
+		return '';
+	});
+
+	return { strippedCode, highlightLines };
+};
+```
+
+<p>
+	Next we'll need to choose a light and dark theme to create our highlighter. I'll use
+	<code>
+		<a href="https://textmate-grammars-themes.netlify.app/?theme=rose-pine-dawn&grammar=typescript">rose-pine-dawn</a>
+	</code>
+	for the light theme and
+	<code><a href="https://github.com/timothycohen/samplekit/blob/main/packages/markdown/src/darker.ts">darker</a></code>
+	– my own modified version of VS Code <code>dark+</code> – for the dark theme.
+</p>
+
+```ts
+import { getHighlighter } from 'shiki';
+import darkerJSON from './darker.js';
+
+const highlighter = await getHighlighter({
+	themes: [darkerJSON, 'rose-pine-dawn'],
+	langs: mdLanguages,
+});
+```
+
+<p>Now we can use it to render some HTML!</p>
+
+```ts
+const createThemedCodeHtml = ({
+	code,
+	lang,
+	highlightLines,
+}: {
+	code: string;
+	lang: MdLang;
+	highlightLines: number[];
+}) => {
+	let lineNum = 1;
+
+	return highlighter.codeToHtml(code.trim(), {
+		lang,
+		themes: { darker: 'darker', 'rose-pine-dawn': 'rose-pine-dawn' },
+		defaultColor: false,
+		cssVariablePrefix: '--h-',
+		transformers: [
+			{
+				pre(el: Element) {
+					delete el.properties['class'];
+					delete el.properties['tabindex'];
+					return el;
+				},
+				line(el: Element) {
+					delete el.properties['class'];
+					el.properties['data-line'] = lineNum;
+					if (highlightLines?.includes(lineNum)) el.properties['data-line-highlighted'] = '';
+					lineNum++;
+					return el;
+				},
+			},
+		],
+	});
+};
+
+export const mdCodeBlockToRawHtml = ({ rawCode, lang }: { rawCode: string; lang: MdLang }) => {
+	try {
+		const { strippedCode: code, highlightLines } = getHighlightLines(rawCode);
+		return {
+			data:
+				`<div class="code-wrapper">` + escapeSvelte(createThemedCodeHtml({ code, lang, highlightLines })) + '</div>',
+		};
+	} catch (err) {
+		if (err instanceof Error) return { error: err };
+		return { error: new Error(`Unable to highlight`) };
+	}
+};
+```
+
+<p>
+	Our preprocessor code will give us the raw markup, including the <code>```</code> or <code>~~~</code> markdown code block
+	delimiter, so let's write a function to parse and remove the wrapper from the raw input.
+</p>
+
+```ts
+const parseAndRemoveWrapper = (
+	rawMarkdown: string,
+): { rawCode: string; lang: MdLang; error?: never } | { rawCode?: never; lang?: never; error: Error } => {
+	rawMarkdown = rawMarkdown.trim();
+	const lines = rawMarkdown.split('\n');
+	const firstLine = lines[0];
+	if (!firstLine) return { error: new Error('Markdown file is empty') };
+
+	const startsWith = firstLine.startsWith('&tripgrave;') ? '&tripgrave;' : firstLine.startsWith('&triptilde;') ? '&triptilde;' : null;
+	if (!startsWith) return { error: new Error('Markdown file is not a codeblock') };
+
+	let lang: string;
+	if (startsWith === '&tripgrave;') {
+		lang = firstLine.replace('&tripgrave;', '').trim();
+		lines.splice(0, 1);
+	} else {
+		lang = firstLine.replace('&triptilde;', '').trim();
+		lines.splice(0, 1);
+	}
+	if (!isMdLang(lang)) return { error: new Error(`Language ${lang} not loaded.`) };
+
+	while (lines.length) {
+		const lastLine = lines[lines.length - 1]!.trim();
+		if (lastLine === '' || lastLine === startsWith) lines.pop();
+		else break;
+	}
+
+	const rawCode = lines.join('\n');
+	return { rawCode, lang };
+};
+```
+
+<p>
+	We have everything needed to write our processor, so let's get to it. We'll use the same loop and replace method as
+	<code>preprocessTable</code>.
+</p>
+
+<CodeTopper title="codeblock.ts">
+```ts
+export function preprocessCodeblock({
+	include,
+	logger,
+}: {
+	logger?: { error: (s: string) => void; debug: (s: string) => void; warn: (s: string) => void };
+	include?: (filename: string) => boolean;
+} = {}) {
+	return {
+		markup({ content, filename }: { content: string; filename: string }): { code: string } | null {
+			if (include && !include(filename)) return null;
+			const slug = (() => {
+				const a = filename.split('/');
+				return a[a.length - 2];
+			})();
+
+			const delimiters = [
+				{ startRegex: new RegExp('&tripgrave;(' + mdLanguages.join('|') + ')'), endMarker: '&tripgrave;' },
+				{ startRegex: new RegExp('&triptilde;(' + mdLanguages.join('|') + ')'), endMarker: '&triptilde;' },
+			];
+
+			let resultContent = content;
+			let { startRegex, endMarker } = delimiters.pop()!;
+			let startMatch = startRegex.exec(resultContent);
+
+			let count = 0;
+
+			while (startMatch || delimiters.length) {
+				if (!startMatch) {
+					({ startRegex, endMarker } = delimiters.pop()!);
+					startMatch = startRegex.exec(resultContent);
+					continue;
+				}
+
+				count++;
+
+				const startIdx = startMatch.index;
+				const endIdx = resultContent.indexOf(endMarker, startIdx + startMatch[0].length);
+
+				if (endIdx === -1) {
+					logger?.error(
+						`[PREPROCESS] | ${slug} | Codeblock | Error | Incomplete md at start ${startIdx} (count: ${count}). Aborting.`,
+					);
+					return { code: resultContent };
+				}
+
+				const before = resultContent.substring(0, startIdx);
+				const extractedContentWithWrapper = resultContent.substring(startIdx, endIdx + endMarker.length);
+				const after = resultContent.substring(endIdx + endMarker.length);
+				let processedContent = '';
+
+				const { rawCode, lang, error: codeProcessError } = parseAndRemoveWrapper(extractedContentWithWrapper);
+				let highlightError;
+				if (rawCode && lang) {
+					const { data, error } = mdCodeBlockToRawHtml({ rawCode, lang });
+					if (data) processedContent = data;
+					else if (error) highlightError = error;
+				}
+
+				if (codeProcessError || highlightError) {
+					logger?.warn(
+						`[PREPROCESS] | ${slug} | Codeblock | Warning | Unable to process at start ${startIdx} count ${count}. Skipping.`,
+					);
+				}
+
+				resultContent = before + processedContent + after;
+				startMatch = startRegex.exec(resultContent);
+			}
+
+			logger?.debug(`[PREPROCESS] | ${slug} | Codeblock | Success | { count: ${count} } }`);
+
+			return { code: resultContent };
+		},
+	};
+}
+```
+</CodeTopper>
+
+<p>And finally, we add a touch of css:</p>
+
+<CodeTopper title="code-block.css">
+	<TabPanelItem panel={{ rawHTML: data.codeBlockCss }} />
+</CodeTopper>
+
+<h2>Conclusion</h2>
+
+<p>
+	Svelte preprocessors are powerful even with a painless setup like we've implemented here. I'm grateful to
+	<a href="https://github.com/pngwn/MDsveX">MDsveX</a>,
+	<a href="https://github.com/vnphanquang/svelte-put">svelte-put</a>, and
+	<a href="https://melt-ui.com/docs/preprocessor">Melt UI</a>
+	for introducing them to me, and I hope this article helps you get started with your own preprocessors. If you have a question
+	or want to share your preprocessor, share it in the
+	<a target="_blank" href="https://github.com/timothycohen/samplekit/discussions">GitHub discussions</a>!
+</p>
+
+<p>Happy coding!</p>
