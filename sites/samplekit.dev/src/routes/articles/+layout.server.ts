@@ -4,8 +4,8 @@ import { processedCodeMap, resolveMainPromise } from '$lib/articles/load/demos/s
 import { type ServerFrontMatter } from '$lib/articles/schema';
 import type { LayoutServerLoad } from './$types';
 
-export const load: LayoutServerLoad = async ({ url }) => {
-	const slug = url.pathname.split('/').pop()! as ArticleSlug;
+export const load: LayoutServerLoad = async ({ route }) => {
+	const slug = route.id.split('/').pop()! as ArticleSlug;
 
 	const frontMatter = allPostData.find((p) => p.articleSlug === slug);
 	if (!frontMatter) return error(404, `Article not found`);

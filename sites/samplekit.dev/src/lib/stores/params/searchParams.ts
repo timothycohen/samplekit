@@ -1,15 +1,12 @@
-import { derived, get } from 'svelte/store';
+import { derived, get, type Readable } from 'svelte/store';
 import { browser } from '$app/environment';
 import { goto } from '$app/navigation';
 import { page } from '$app/stores';
 import { assertUnreachable } from '$lib/utils/common';
 
-/** `false` if the value is not changed, `Promise<false>` if called on the server, and `Promise<true>` if the value and url change */
-type Changed = false | Promise<boolean>;
+type GoOpts = { absolute?: string };
 
-export const cloneParams = () => new URLSearchParams(get(page).url.search);
-
-export const go = async (searchParams: URLSearchParams, opts?: { absolute?: string }) => {
+const go = async (searchParams: URLSearchParams, opts?: GoOpts) => {
 	if (browser) {
 		return goto(`${opts?.absolute ?? ''}?${searchParams}`, {
 			keepFocus: true,
@@ -21,11 +18,27 @@ export const go = async (searchParams: URLSearchParams, opts?: { absolute?: stri
 	}
 };
 
+/** `false` if the value is not changed, `Promise<false>` if called on the server, and `Promise<true>` if the value and url change */
+type Changed = false | Promise<boolean>;
+
+const cloneParams = () => new URLSearchParams(get(page).url.search);
+
+interface SearchParamController {
+	subscribe: Readable<string | null>['subscribe'];
+	mutateSearchParams: (a: {
+		value?: { cleaned?: never; unclean?: string | null } | { cleaned?: string | null; unclean?: never };
+		mutSearchParams: URLSearchParams;
+	}) => false | URLSearchParams;
+	pushStateToParams: (a: { mutSearchParams: URLSearchParams }) => false | URLSearchParams;
+	set: (unclean: string | null, opts?: GoOpts) => Changed;
+	toggle: (unclean: string, opts?: GoOpts) => Changed;
+}
+
 /**`$store` is equivalent to $page.url.searchParams.get(param) */
 export const searchParam = (
 	name: string,
 	{ clean, skipInitGoto }: { clean?: (value: string | null) => string | null; skipInitGoto?: true } = {},
-) => {
+): SearchParamController => {
 	const store = derived(page, ($page) => $page.url.searchParams.get(name));
 	const serialize = clean || ((v) => v || null);
 
@@ -35,13 +48,7 @@ export const searchParam = (
 	};
 
 	/** If mutSearchParams are updated, returns a reference to it. Otherwise returns false. */
-	const mutateSearchParams = ({
-		value,
-		mutSearchParams,
-	}: {
-		value?: { cleaned?: never; unclean?: string | null } | { cleaned?: string | null; unclean?: never };
-		mutSearchParams: URLSearchParams;
-	}): false | URLSearchParams => {
+	const mutateSearchParams: SearchParamController['mutateSearchParams'] = ({ value, mutSearchParams }) => {
 		const newValue = value?.cleaned ?? serialize(value?.unclean ?? null);
 		if (mutSearchParams.get(name) === newValue) {
 			return false;
@@ -51,16 +58,16 @@ export const searchParam = (
 		return mutSearchParams;
 	};
 
-	const pushStateToParams = ({ mutSearchParams }: { mutSearchParams: URLSearchParams }): false | URLSearchParams => {
+	const pushStateToParams: SearchParamController['pushStateToParams'] = ({ mutSearchParams }) => {
 		return mutateSearchParams({ mutSearchParams, value: { unclean: get(page).url.searchParams.get(name) } });
 	};
 
-	const set = (unclean?: string | null, opts?: { absolute?: string }): Changed => {
+	const set: SearchParamController['set'] = (unclean, opts) => {
 		const newParams = mutateSearchParams({ value: { unclean }, mutSearchParams: cloneParams() });
 		return newParams ? go(newParams, opts) : false;
 	};
 
-	const toggle = (unclean: string, opts?: { absolute?: string }): Changed => {
+	const toggle: SearchParamController['toggle'] = (unclean, opts) => {
 		const mutSearchParams = cloneParams();
 		const oldValue = mutSearchParams.get(name);
 		const newValue = serialize(unclean);
@@ -81,7 +88,20 @@ export const searchParam = (
 		toggle,
 	};
 };
-export type SearchParam = ReturnType<typeof searchParam>;
+export type SearchParam = SearchParamController;
+
+interface SearchParamsController {
+	subscribe: Readable<string[]>['subscribe'];
+	mutateSearchParams: (a: { unclean?: string[]; mutSearchParams: URLSearchParams }) => false | URLSearchParams;
+	pushStateToParams: (a: { mutSearchParams: URLSearchParams }) => false | URLSearchParams;
+	set: (values: string[], opts?: GoOpts) => false | Promise<boolean>;
+	updateOne: (value: string, action: 'add' | 'append' | 'remove' | 'toggle', opts?: GoOpts) => false | Promise<boolean>;
+	updateMany: (
+		values: string[],
+		action: 'add' | 'append' | 'remove' | 'toggle',
+		opts?: GoOpts,
+	) => false | Promise<boolean>;
+}
 
 /** `$store` is equivalent to $page.url.searchParams.getAll(`${param}`) */
 export const searchParams = (
@@ -97,13 +117,7 @@ export const searchParams = (
 	};
 
 	/** If mutSearchParams are updated, returns a reference to it. Otherwise returns false. */
-	const mutateSearchParams = ({
-		unclean,
-		mutSearchParams,
-	}: {
-		unclean?: string[];
-		mutSearchParams: URLSearchParams;
-	}): false | URLSearchParams => {
+	const mutateSearchParams: SearchParamsController['mutateSearchParams'] = ({ unclean, mutSearchParams }) => {
 		const preMutatedParams = new URLSearchParams(mutSearchParams);
 		mutSearchParams.delete(param);
 		unclean?.forEach((v) => {
@@ -114,20 +128,16 @@ export const searchParams = (
 		return false;
 	};
 
-	const pushStateToParams = ({ mutSearchParams }: { mutSearchParams: URLSearchParams }): false | URLSearchParams => {
+	const pushStateToParams: SearchParamsController['pushStateToParams'] = ({ mutSearchParams }) => {
 		return mutateSearchParams({ mutSearchParams, unclean: get(page).url.searchParams.getAll(param) });
 	};
 
-	const set = (unclean?: string[], opts?: { absolute?: string }): Changed => {
+	const set: SearchParamsController['set'] = (unclean, opts) => {
 		const newParams = mutateSearchParams({ unclean, mutSearchParams: cloneParams() });
 		return newParams ? go(newParams, opts) : false;
 	};
 
-	const updateOne = (
-		unclean: string,
-		action: 'add' | 'append' | 'remove' | 'toggle',
-		opts?: { absolute?: string },
-	): Changed => {
+	const updateOne: SearchParamsController['updateOne'] = (unclean, action, opts) => {
 		const value = serialize(unclean);
 		if (value === null) return false;
 		const mutSearchParams = cloneParams();
@@ -153,11 +163,7 @@ export const searchParams = (
 		}
 	};
 
-	const updateMany = (
-		unclean: string[],
-		action: 'add' | 'append' | 'remove' | 'toggle',
-		opts?: { absolute?: string },
-	): Changed => {
+	const updateMany: SearchParamsController['updateMany'] = (unclean, action, opts) => {
 		const values = unclean.map(serialize).filter((v) => v !== null) as string[];
 		if (!values.length) return false;
 
@@ -233,9 +239,9 @@ export const searchParams = (
 		updateMany,
 	};
 };
-export type SearchParams = ReturnType<typeof searchParams>;
+export type SearchParams = SearchParamsController;
 
-export const initMany = (params: Array<ReturnType<typeof searchParam | typeof searchParams>>): Changed => {
+export const initMany = (params: Array<SearchParamController | SearchParamsController>): Changed => {
 	const mutSearchParams = cloneParams();
 
 	const changed = params.reduce<boolean>((acc, curr) => {
