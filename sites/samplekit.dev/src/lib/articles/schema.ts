@@ -51,8 +51,8 @@ export const loadedFrontMatter = rawFrontMatterSchema.extend({
 
 export const processedFrontMatter = loadedFrontMatter.extend({
 	series: expandedSeries.optional(),
-	prev: z.object({ slug: z.string(), title: z.string() }).nullable(),
-	next: z.object({ slug: z.string(), title: z.string() }).nullable(),
+	prev: loadedFrontMatter.optional(),
+	next: loadedFrontMatter.optional(),
 });
 
 export type RawFrontMatter = z.infer<typeof rawFrontMatterSchema>;

@@ -23,7 +23,8 @@
 			<div class="bg-app-bg-amethyst aspect-video w-full">
 				<img
 					src={feature.imgSm}
-					class="rounded-card h-full w-full group-hover:hidden"
+					draggable="false"
+					class="rounded-card h-full w-full select-none group-hover:hidden"
 					alt=""
 					loading={preview ? 'eager' : 'lazy'}
 				/>
@@ -34,7 +35,8 @@
 			<div class="bg-app-bg-amethyst aspect-video w-full">
 				<img
 					src={feature.imgSm || feature.imgSmGif}
-					class="rounded-card border-gray-6 aspect-video h-full w-full scale-95 transition-transform duration-500 group-hover:scale-100 group-hover:border-none group-hover:duration-200"
+					draggable="false"
+					class="rounded-card border-gray-6 aspect-video h-full w-full scale-95 select-none transition-transform duration-500 group-hover:scale-100 group-hover:border-none group-hover:duration-200"
 					alt=""
 					loading={preview ? 'eager' : 'lazy'}
 				/>

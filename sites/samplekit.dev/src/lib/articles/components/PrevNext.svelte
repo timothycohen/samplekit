@@ -1,29 +1,31 @@
 <script lang="ts">
-	import { ArrowBigDown, ArrowBigUp } from 'lucide-svelte';
+	import { FeatureCard, FeatureSwapCard } from '.';
+	import type { LoadedFrontMatter } from '../schema';
 
-	export let prev: { slug: string; title: string } | null;
-	export let next: { slug: string; title: string } | null;
+	export let prev: LoadedFrontMatter | undefined;
+	export let next: LoadedFrontMatter | undefined;
 </script>
 
-{#if prev || next}
-	<div class="w-full font-medium">
-		{#if prev && next}
-			<dl>
-				<dt class="flex items-center"><ArrowBigUp />Previous post</dt>
-				<a class="link" href="/articles/{prev.slug}">{prev.title}</a>
-				<dt class="flex items-center"><ArrowBigDown />Next post</dt>
-				<a class="link" href="/articles/{next.slug}">{next.title}</a>
-			</dl>
-		{:else if prev}
-			<dl>
-				<dt class="flex items-center"><ArrowBigUp />Previous post</dt>
-				<a class="link" href="/articles/{prev.slug}">{prev.title}</a>
-			</dl>
-		{:else if next}
-			<dl>
-				<dt class="flex items-center"><ArrowBigDown />Next post</dt>
-				<a class="link" href="/articles/{next.slug}">{next.title}</a>
-			</dl>
+{#if prev}
+	<div class="mx-auto w-full lg:w-80">
+		<h2 class="t-h4 my-4">Previous Article</h2>
+		{#if !(prev.imgSmGif ?? prev.imgSm)}
+			<FeatureCard feature={prev} />
+		{:else}
+			<div class="block md:hidden"><FeatureSwapCard feature={prev} /></div>
+			<div class="hidden md:block"><FeatureCard feature={prev} /></div>
+		{/if}
+	</div>
+{/if}
+
+{#if next}
+	<div class="mx-auto w-full lg:w-80">
+		<h2 class="t-h4 my-4">Next Article</h2>
+		{#if !(next.imgSmGif ?? next.imgSm)}
+			<FeatureCard feature={next} />
+		{:else}
+			<div class="block md:hidden"><FeatureSwapCard feature={next} /></div>
+			<div class="hidden md:block"><FeatureCard feature={next} /></div>
 		{/if}
 	</div>
 {/if}
