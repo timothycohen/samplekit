@@ -17,7 +17,9 @@
 </script>
 
 <div class="lg:w-80">
-	<h2 class="text-accent-12 t-h3 font-bold">Table of Contents</h2>
+	<slot>
+		<h2 class="text-accent-12 t-h3 font-bold">Table of Contents</h2>
+	</slot>
 	<div class="bg-gray-9 mb-6 h-px w-full"></div>
 	<nav>
 		<TOCTree tree={$headingsTree} activeHeadingIdxs={$activeHeadingIdxs} {item} />
