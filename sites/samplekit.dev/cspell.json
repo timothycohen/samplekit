@@ -4,6 +4,7 @@
 		"ltscript",
 		"lucide",
 		"mdsvex",
+		"nogo",
 		"postcss",
 		"rehype",
 		"samplekit",
@@ -14,6 +15,7 @@
 		"tripslash",
 		"triptilde",
 		"uswds",
+		"vals",
 		"vite"
 	],
 	"dictionaries": ["html", "typescript", "svelte", "sql", "node"]
