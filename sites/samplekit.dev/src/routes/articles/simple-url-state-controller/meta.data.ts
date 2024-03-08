@@ -11,4 +11,5 @@ export default {
 	imgSm: '/articles/simple-url-state-controller-thumbnail.png',
 	tags: ['url', 'state management'],
 	featured: true,
+	series: { name: 'URL State Controller', position: 1 },
 } satisfies RawFrontMatter;

@@ -704,7 +704,10 @@ export const searchParams = (
 	construction as a tradeoff to receive an infallible, generic store.
 </p>
 
-<p>In a future article, we'll make another variation which will have the following benefits:</p>
+<p>
+	In <a href="/articles/generic-url-state-controller">part 2</a>, we'll make another variation which will have the
+	following benefits:
+</p>
 
 <ul>
 	<li>The store can never be "unclean".</li>
@@ -714,6 +717,6 @@ export const searchParams = (
 
 <p>
 	Have any questions or comments? Share it in the
-	<a target="_blank" href="https://github.com/timothycohen/samplekit/discussions">GitHub discussions</a>
-	! Thanks for reading and see you in the next one!
+	<a target="_blank" href="https://github.com/timothycohen/samplekit/discussions">GitHub discussions</a>! Thanks for
+	reading and see you in the <a href="/articles/generic-url-state-controller">next one</a>!
 </p>
