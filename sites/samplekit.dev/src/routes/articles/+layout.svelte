@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { Changelog, DateLine, PrevNext, Series, TOC } from '$lib/articles/components';
+	import { Changelog, DateLine, FeatureCard, FeatureSwapCard, Series, TOC } from '$lib/articles/components';
 	import { TabPanels } from '$lib/components';
 	import { pluralize } from '$lib/utils/common';
 
@@ -25,7 +25,7 @@
 	let articleContentWrapper: HTMLDivElement;
 </script>
 
-<div class="page">
+<div class="page" style="max-width: 1440px; padding: clamp(1rem, -0.6rem + 4vw, 3rem);">
 	<article>
 		<div class="mb-6-9">
 			{#if article.imgLg && !article.demos?.main}
@@ -88,7 +88,29 @@
 					</div>
 				</div>
 
-				<PrevNext prev={article.prev} next={article.next} />
+				<div class="space-y-12">
+					{#if article.prev}
+						<div class="w-80">
+							<h2 class="text-accent-12 t-h3 mb-4 font-bold">Previous Article</h2>
+							{#if !(article.prev.imgSmGif ?? article.prev.imgSm)}
+								<FeatureCard feature={article.prev} />
+							{:else}
+								<FeatureCard feature={article.prev} />
+							{/if}
+						</div>
+					{/if}
+
+					{#if article.next}
+						<div class="w-80">
+							<h2 class="text-accent-12 t-h3 mb-4 font-bold">Next Article</h2>
+							{#if !(article.next.imgSmGif ?? article.next.imgSm)}
+								<FeatureCard feature={article.next} />
+							{:else}
+								<FeatureCard feature={article.next} />
+							{/if}
+						</div>
+					{/if}
+				</div>
 			</div>
 		</div>
 	</article>
@@ -98,9 +120,35 @@
 			<DateLine lastUpdate={article.updates?.[article.updates.length - 1]} publishedAt={article.publishedAt} />
 		</div>
 
+		<div class="mb-6-9 flex flex-col gap-8 md:flex-row lg:hidden">
+			{#if article.prev}
+				<div class="w-full md:max-w-md">
+					<div class="prose prose-lg prose-radix mb-4"><h2>Previous Article</h2></div>
+					{#if !(article.prev.imgSmGif ?? article.prev.imgSm)}
+						<FeatureCard feature={article.prev} />
+					{:else}
+						<div class="block md:hidden"><FeatureSwapCard feature={article.prev} /></div>
+						<div class="hidden md:block"><FeatureCard feature={article.prev} /></div>
+					{/if}
+				</div>
+			{/if}
+
+			{#if article.next}
+				<div class="w-full md:max-w-md">
+					<div class="prose prose-lg prose-radix mb-4"><h2>Next Article</h2></div>
+					{#if !(article.next.imgSmGif ?? article.next.imgSm)}
+						<FeatureCard feature={article.next} />
+					{:else}
+						<div class="block md:hidden"><FeatureSwapCard feature={article.next} /></div>
+						<div class="hidden md:block"><FeatureCard feature={article.next} /></div>
+					{/if}
+				</div>
+			{/if}
+		</div>
+
 		<div class="prose prose-lg prose-radix">
-			<p>Have a suggestion? File an <a href="https://github.com/timothycohen/samplekit/issues">issue</a>.</p>
 			<Changelog updates={article.updates} />
+			<p>Have a suggestion? File an <a href="https://github.com/timothycohen/samplekit/issues">issue</a>.</p>
 		</div>
 	</footer>
 </div>

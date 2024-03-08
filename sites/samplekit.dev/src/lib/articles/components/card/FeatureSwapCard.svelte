@@ -73,7 +73,7 @@
 
 			<img
 				src={feature.imgSmGif ?? feature.imgSm}
-				class="bg-app-bg-amethyst h-full w-full object-contain object-center"
+				class="bg-app-bg-amethyst h-full w-full select-none object-contain object-center"
 				alt=""
 				loading={preview ? 'eager' : 'lazy'}
 				draggable="false"
