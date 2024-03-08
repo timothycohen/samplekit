@@ -1,5 +1,7 @@
 <script lang="ts">
+	import { ArrowRight, PanelRightDashed } from 'lucide-svelte';
 	import { onMount } from 'svelte';
+	import { fly } from 'svelte/transition';
 	import { Changelog, DateLine, FeatureCard, FeatureSwapCard, Series, TOC } from '$lib/articles/components';
 	import { TabPanels } from '$lib/components';
 	import { pluralize } from '$lib/utils/common';
@@ -23,6 +25,7 @@
 	});
 
 	let articleContentWrapper: HTMLDivElement;
+	let sidebarOpen = true;
 </script>
 
 <div class="page" style="max-width: 1440px; padding: clamp(1rem, -0.6rem + 4vw, 3rem);">
@@ -77,41 +80,61 @@
 				<slot />
 			</div>
 
-			<div class="hidden flex-col gap-8 lg:flex">
-				<Series series={article.series} />
+			{#if sidebarOpen}
+				<div class="hidden flex-col gap-8 lg:flex">
+					<Series series={article.series} />
 
-				<div class="flex-1">
-					<div class="sticky top-[calc(var(--nav-height)_+_2rem)] overflow-y-auto">
-						<div class="max-h-[calc(98vh-calc(var(--nav-height)_+_2rem))] py-2">
-							<TOC />
+					<div class="flex-1">
+						<div class="sticky top-[calc(var(--nav-height)_+_2rem)] overflow-y-auto">
+							<div class="max-h-[calc(98vh-calc(var(--nav-height)_+_2rem))] py-2">
+								<TOC>
+									<div class="flex w-full items-center justify-between">
+										<h2 class="text-accent-12 t-h3 font-bold">Table of Contents</h2>
+										<button
+											class="btn btn-ghost rounded-badge mr-1 px-2 py-1"
+											on:click={() => (sidebarOpen = !sidebarOpen)}
+										>
+											<ArrowRight class="h-5 w-5" />
+										</button>
+									</div>
+								</TOC>
+							</div>
 						</div>
 					</div>
-				</div>
 
-				<div class="space-y-12">
-					{#if article.prev}
-						<div class="w-80">
-							<h2 class="text-accent-12 t-h3 mb-4 font-bold">Previous Article</h2>
-							{#if !(article.prev.imgSmGif ?? article.prev.imgSm)}
-								<FeatureCard feature={article.prev} />
-							{:else}
-								<FeatureCard feature={article.prev} />
-							{/if}
-						</div>
-					{/if}
+					<div class="space-y-12">
+						{#if article.prev}
+							<div class="w-80">
+								<h2 class="text-accent-12 t-h3 mb-4 font-bold">Previous Article</h2>
+								{#if !(article.prev.imgSmGif ?? article.prev.imgSm)}
+									<FeatureCard feature={article.prev} />
+								{:else}
+									<FeatureCard feature={article.prev} />
+								{/if}
+							</div>
+						{/if}
 
-					{#if article.next}
-						<div class="w-80">
-							<h2 class="text-accent-12 t-h3 mb-4 font-bold">Next Article</h2>
-							{#if !(article.next.imgSmGif ?? article.next.imgSm)}
-								<FeatureCard feature={article.next} />
-							{:else}
-								<FeatureCard feature={article.next} />
-							{/if}
-						</div>
-					{/if}
+						{#if article.next}
+							<div class="w-80">
+								<h2 class="text-accent-12 t-h3 mb-4 font-bold">Next Article</h2>
+								{#if !(article.next.imgSmGif ?? article.next.imgSm)}
+									<FeatureCard feature={article.next} />
+								{:else}
+									<FeatureCard feature={article.next} />
+								{/if}
+							</div>
+						{/if}
+					</div>
 				</div>
-			</div>
+			{:else}
+				<button
+					in:fly={{ x: 40, y: 40 }}
+					class="bg-app-bg/75 border-gray-5 text-gray-11 fixed bottom-4 right-4 hidden h-12 w-12 items-center justify-center rounded-full border backdrop-blur-md lg:flex"
+					on:click={() => (sidebarOpen = !sidebarOpen)}
+				>
+					<PanelRightDashed class="h-6 w-6" />
+				</button>
+			{/if}
 		</div>
 	</article>
 
@@ -120,7 +143,7 @@
 			<DateLine lastUpdate={article.updates?.[article.updates.length - 1]} publishedAt={article.publishedAt} />
 		</div>
 
-		<div class="mb-6-9 flex flex-col gap-8 md:flex-row lg:hidden">
+		<div class="mb-6-9 flex flex-col gap-8 md:flex-row {sidebarOpen ? 'lg:hidden' : ''}">
 			{#if article.prev}
 				<div class="w-full md:max-w-md">
 					<div class="prose prose-lg prose-radix mb-4"><h2>Previous Article</h2></div>
