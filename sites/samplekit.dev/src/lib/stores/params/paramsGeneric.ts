@@ -1,36 +1,29 @@
-import { get, writable, type Writable } from 'svelte/store';
+import { get, writable, type Readable } from 'svelte/store';
 import { browser } from '$app/environment';
 import { goto } from '$app/navigation';
 import { page } from '$app/stores';
-
-// createParam<s>Base require the consumer to update by passing in the param value (setParam) or a validated value of the store type (setCleaned)
-// the non-base versions of these functions require a clean function and extend functionality with .set, .update, and .clean methods
 
 type Changed = { changed: boolean };
 type GoOpts = { root?: string; deleteOtherParams?: true };
 type MaybeGoOpts = { nogo: true; root?: never; deleteOtherParams?: never } | ({ nogo?: never } & GoOpts);
 
-interface Base<T, ParamVal, StoreVal> {
-	serialize: (cleanVal: T) => string | null;
-	validateAndDeserialize: (uncleanParamVals: ParamVal) => StoreVal;
-	subscribe: Writable<StoreVal>['subscribe'];
-	getParam: () => ParamVal;
-	pushToUrl: (mutUrl: URL) => URL;
-	isSynced: (a?: { paramVal?: ParamVal; val?: StoreVal }) => boolean;
-	setCleaned: (cleaned: StoreVal, opts?: MaybeGoOpts) => Changed;
-	setParam: (param: ParamVal, opts?: MaybeGoOpts) => Changed;
-	pullFromUrl: () => void;
-	initiallyOutOfSync: boolean;
-}
+type ParamVal = string | null;
 
-interface ParamBase<T, ParamName extends string> extends Base<T, string | null, T> {
+interface ParamGeneric<Val, ParamName extends string> {
 	paramName: ParamName;
-}
-
-interface ParamsBase<T, ParamName extends string>
-	extends Base<T, Partial<Record<ParamName, string | null>>, Record<ParamName, T>> {
-	paramNameMap: Record<ParamName, string>;
-	paramKeys: ParamName[];
+	getParam: () => ParamVal;
+	subscribe: Readable<Val>['subscribe'];
+	serialize: (cleanVal: Val) => ParamVal;
+	deserialize: (uncleanParamVal: ParamVal) => Val;
+	clean: (uncleanVal: Val) => Val;
+	pushToUrl: (mutUrl: URL) => URL;
+	pullFromUrl: () => void;
+	setParam: (paramVal: ParamVal, opts?: MaybeGoOpts) => Changed;
+	set: (uncleanVal: Val, opts?: MaybeGoOpts) => Changed;
+	update: (cb: (old: Val) => Val) => void;
+	setCleaned: (cleaned: Val, opts?: MaybeGoOpts) => Changed;
+	isSynced: (a?: { paramVal?: ParamVal; val?: Val }) => boolean;
+	initiallyOutOfSync: boolean;
 }
 
 const createUrl = ({ root, deleteOtherParams }: GoOpts = {}): URL => {
@@ -40,19 +33,21 @@ const createUrl = ({ root, deleteOtherParams }: GoOpts = {}): URL => {
 	return url;
 };
 
-export const createParamBase = <V, K extends string = string>(a: {
-	paramName: K;
-	defaultValue: V;
-	validateAndDeserialize: (uncleanParamVal?: string | null) => V;
-	/** only called on validated values – does not need to validate */
-	serialize: (cleanVal: V) => string | null;
+export const createParam = <Val, ParamName extends string = string>({
+	paramName,
+	defaultValue,
+	skipInitGoto,
+	serialize,
+	deserialize,
+	clean,
+}: Pick<ParamGeneric<Val, ParamName>, 'clean' | 'serialize' | 'deserialize'> & {
+	paramName: ParamName;
+	defaultValue: Val;
 	skipInitGoto?: true;
-}): ParamBase<V, K> => {
-	type Res = ParamBase<V, K>;
+}): ParamGeneric<Val, ParamName> => {
+	type Res = ParamGeneric<Val, ParamName>;
 
-	const { paramName, defaultValue, validateAndDeserialize, serialize, skipInitGoto } = a;
-
-	const store = writable<V>(defaultValue);
+	const store = writable<Val>(defaultValue);
 
 	const getParam: Res['getParam'] = () => {
 		return get(page).url.searchParams.get(paramName);
@@ -66,23 +61,23 @@ export const createParamBase = <V, K extends string = string>(a: {
 		return mutUrl;
 	};
 
-	const isSynced: Res['isSynced'] = (a) => {
-		const paramVal = a?.paramVal ?? getParam();
-		const val = a?.val ?? get(store);
-		return paramVal === serialize(val);
-	};
-
 	const goImmediate = (opts?: GoOpts): void => {
 		goto(pushToUrl(createUrl(opts)), { keepFocus: true, noScroll: true, replaceState: true });
 	};
 
 	const go = (() => {
-		let timer: NodeJS.Timeout;
+		let timer: ReturnType<typeof setTimeout>;
 		return (opts?: GoOpts) => {
 			clearTimeout(timer);
 			timer = setTimeout(() => goImmediate(opts), 50);
 		};
 	})();
+
+	const isSynced: Res['isSynced'] = (a) => {
+		const paramVal = a?.paramVal ?? getParam();
+		const val = a?.val ?? get(store);
+		return paramVal === serialize(val);
+	};
 
 	const setCleaned: Res['setCleaned'] = (cleaned, opts) => {
 		store.set(cleaned);
@@ -91,8 +86,12 @@ export const createParamBase = <V, K extends string = string>(a: {
 		return { changed };
 	};
 
+	const set: Res['set'] = (unclean, opts) => setCleaned(clean(unclean), opts);
+
+	const update: Res['update'] = (cb) => set(cb(get(store)));
+
 	const setParam: Res['setParam'] = (param, opts) => {
-		return setCleaned(validateAndDeserialize(param), opts);
+		return setCleaned(deserialize(param), opts);
 	};
 
 	const pullFromUrl: Res['pullFromUrl'] = () => {
@@ -101,7 +100,7 @@ export const createParamBase = <V, K extends string = string>(a: {
 
 	const init = (): boolean => {
 		const paramVals = getParam();
-		store.set(validateAndDeserialize(paramVals));
+		store.set(deserialize(paramVals));
 		const changed = !isSynced();
 		if (changed && browser && !skipInitGoto) {
 			goImmediate();
@@ -111,56 +110,79 @@ export const createParamBase = <V, K extends string = string>(a: {
 
 	return {
 		paramName,
-		serialize,
-		validateAndDeserialize,
-		subscribe: store.subscribe,
 		getParam,
+		subscribe: store.subscribe,
+		serialize,
+		clean,
 		pushToUrl,
-		isSynced,
-		setCleaned,
-		setParam,
 		pullFromUrl,
+		setParam,
+		set,
+		update,
+		deserialize,
+		setCleaned,
+		isSynced,
 		initiallyOutOfSync: init(),
-	} satisfies Res;
+	};
 };
 
-export const createParamsBase = <V, K extends string = string>(a: {
-	/** Key is the field and Value is the URL param.
-	 *
-	 * For example { foo: 'f', bar: 'b' } will expect an object { foo: V, bar: V } and the url params will be 'f' and 'b' */
-	paramNameMap: Record<K, string>;
-	defaultValue: Record<K, V>;
-	validateAndDeserialize: (a: {
-		old: Record<K, V>;
-		uncleanParamVals: Partial<Record<K, string | null>>;
-	}) => Record<K, V>;
-	/** only called on validated values – does not need to validate */
-	serialize: (cleanVal: V) => string | null;
+interface ParamsGeneric<
+	Val,
+	ParamName extends string,
+	Params = Record<ParamName, ParamVal>,
+	Store = Record<ParamName, Val>,
+> {
+	paramNameMap: Record<ParamName, string>;
+	paramKeys: ParamName[];
+	getParams: () => Partial<Params>;
+	subscribe: Readable<Store>['subscribe'];
+	serializeOne: (cleanVal: Val) => ParamVal;
+	deserialize: (uncleanParamVals: Partial<Params>) => Store;
+	clean: (unclean: Partial<Store>) => Store;
+	pushToUrl: (mutUrl: URL) => URL;
+	pullFromUrl: () => void;
+	setParams: (param: Partial<Params>, opts?: MaybeGoOpts) => Changed;
+	set: (unclean: Partial<Store>, opts?: MaybeGoOpts) => Changed;
+	update: (cb: (old: Store) => Store) => void;
+	setCleaned: (cleaned: Store, opts?: MaybeGoOpts) => Changed;
+	isSynced: (a?: { paramVal?: Partial<Params>; val?: Store }) => boolean;
+	initiallyOutOfSync: boolean;
+}
+
+export const createParams = <Val, ParamName extends string = string>({
+	clean,
+	defaultValue,
+	paramNameMap,
+	serializeOne,
+	deserialize: _deserialize,
+	skipInitGoto,
+}: Pick<ParamsGeneric<Val, ParamName>, 'serializeOne' | 'clean'> & {
+	paramNameMap: Record<ParamName, string>;
+	defaultValue: Record<ParamName, Val>;
 	skipInitGoto?: true;
-}): ParamsBase<V, K> => {
-	type Res = ParamsBase<V, K>;
+	deserialize: (a: {
+		old: Record<ParamName, Val>;
+		uncleanParamVals: Partial<Record<ParamName, ParamVal>>;
+	}) => Record<ParamName, Val>;
+}): ParamsGeneric<Val, ParamName> => {
+	type Res = ParamsGeneric<Val, ParamName>;
 
-	const { paramNameMap, serialize, defaultValue, skipInitGoto } = a;
+	const deserialize = (uncleanParamVals: Partial<Record<ParamName, ParamVal>>) =>
+		_deserialize({ old: get(store), uncleanParamVals });
 
-	const validateAndDeserialize: Res['validateAndDeserialize'] = (uncleanParamVals) =>
-		a.validateAndDeserialize({ old: get(store), uncleanParamVals });
+	const paramKeys: Res['paramKeys'] = Object.keys(paramNameMap) as ParamName[];
 
-	const paramKeys: Res['paramKeys'] = Object.keys(paramNameMap) as K[];
+	const store = writable<Record<ParamName, Val>>(defaultValue);
 
-	const store = writable<Record<K, V>>(defaultValue);
-
-	const getParam: Res['getParam'] = () => {
+	const getParams: Res['getParams'] = () => {
 		const url = get(page).url;
-		return paramKeys.reduce<Partial<Record<K, string | null>>>(
-			(total, key) => ({ ...total, [key]: url.searchParams.get(paramNameMap[key]) }),
-			{},
-		);
+		return paramKeys.reduce((total, key) => ({ ...total, [key]: url.searchParams.get(paramNameMap[key]) }), {});
 	};
 
 	const pushToUrl: Res['pushToUrl'] = (mutUrl) => {
 		const currentVal = get(store);
 		paramKeys.forEach((key) => {
-			const currentParam = serialize(currentVal[key]);
+			const currentParam = serializeOne(currentVal[key]);
 			const paramName = paramNameMap[key];
 			if (currentParam === null) mutUrl.searchParams.delete(paramName);
 			else mutUrl.searchParams.set(paramName, currentParam);
@@ -169,9 +191,9 @@ export const createParamsBase = <V, K extends string = string>(a: {
 	};
 
 	const isSynced: Res['isSynced'] = (a = {}) => {
-		const paramVal = a.paramVal ?? getParam();
+		const paramVal = a.paramVal ?? getParams();
 		const val = a.val ?? get(store);
-		return paramKeys.every((key) => paramVal[key] === serialize(val[key]));
+		return paramKeys.every((key) => paramVal[key] === serializeOne(val[key]));
 	};
 
 	const goImmediate = (opts?: GoOpts): void => {
@@ -179,7 +201,7 @@ export const createParamsBase = <V, K extends string = string>(a: {
 	};
 
 	const go = (() => {
-		let timer: NodeJS.Timeout;
+		let timer: ReturnType<typeof setTimeout>;
 		return (opts?: GoOpts) => {
 			clearTimeout(timer);
 			timer = setTimeout(() => goImmediate(opts), 50);
@@ -193,17 +215,21 @@ export const createParamsBase = <V, K extends string = string>(a: {
 		return { changed };
 	};
 
-	const setParam: Res['setParam'] = (param, opts) => {
-		return setCleaned(validateAndDeserialize(param), opts);
+	const set: Res['set'] = (unclean, opts) => setCleaned(clean(unclean), opts);
+
+	const update: Res['update'] = (cb) => set(cb(get(store)));
+
+	const setParams: Res['setParams'] = (param, opts) => {
+		return setCleaned(deserialize(param), opts);
 	};
 
 	const pullFromUrl: Res['pullFromUrl'] = () => {
-		setParam(getParam());
+		setParams(getParams());
 	};
 
 	const init = (): boolean => {
-		const paramVals = getParam();
-		store.set(validateAndDeserialize(paramVals));
+		const paramVals = getParams();
+		store.set(deserialize(paramVals));
 		const changed = !isSynced();
 		if (changed && browser && !skipInitGoto) {
 			goImmediate();
@@ -214,47 +240,18 @@ export const createParamsBase = <V, K extends string = string>(a: {
 	return {
 		paramNameMap,
 		paramKeys,
-		serialize,
-		validateAndDeserialize,
+		getParams,
 		subscribe: store.subscribe,
-		getParam,
+		serializeOne,
+		deserialize,
+		clean,
 		pushToUrl,
-		isSynced,
-		setCleaned,
-		setParam,
 		pullFromUrl,
+		setParams,
+		set,
+		update,
+		setCleaned,
+		isSynced,
 		initiallyOutOfSync: init(),
 	};
-};
-
-interface Param<T, ParamName extends string> extends ParamBase<T, ParamName> {
-	clean: (unclean: T) => T;
-	set: (unclean: T, opts?: MaybeGoOpts) => Changed;
-	update: (cb: (old: T) => T) => void;
-}
-
-interface Params<T, ParamName extends string> extends ParamsBase<T, ParamName> {
-	clean: (unclean: Partial<Record<ParamName, T>>) => Record<ParamName, T>;
-	set: (unclean: Partial<Record<ParamName, T>>, opts?: MaybeGoOpts) => Changed;
-	update: (cb: (old: Record<ParamName, T>) => Record<ParamName, T>) => void;
-}
-
-export const createParam = <V, K extends string = string>(
-	a: Parameters<typeof createParamBase<V, K>>[0] & { clean: (uncleanVal: V) => V },
-): Param<V, K> => {
-	const param = createParamBase(a) as Param<V, K>;
-	param.clean = a.clean;
-	param.set = (unclean, opts) => param.setCleaned(param.clean(unclean), opts);
-	param.update = (cb) => param.set(cb(get(param)));
-	return param;
-};
-
-export const createParams = <V, K extends string = string>(
-	a: Parameters<typeof createParamsBase<V, K>>[0] & { clean: (unclean: Partial<Record<K, V>>) => Record<K, V> },
-): Params<V, K> => {
-	const param = createParamsBase(a) as Params<V, K>;
-	param.clean = a.clean;
-	param.set = (unclean, opts) => param.setCleaned(param.clean(unclean), opts);
-	param.update = (cb) => param.set(cb(get(param)));
-	return param;
 };
