@@ -32,6 +32,7 @@ export const getS3 = (() => {
  * @param {number} [options.maxContentLength=5242880] - (default 1024 * 1024 * 5: 5MB).
  * @param {number} [options.expireSeconds=60] - (default 60: 60sec).
  *
+ * To use, convert `formDataFields` to a `FormData` object, append `('file', file)`, and `POST` to `bucketUrl`.
  */
 export const generateS3UploadPost = async (a: { key: string; maxContentLength?: number; expireSeconds?: number }) => {
 	try {
@@ -43,8 +44,8 @@ export const generateS3UploadPost = async (a: { key: string; maxContentLength?: 
 		});
 
 		return {
-			uploadUrl: res.url,
-			fields: res.fields,
+			bucketUrl: res.url,
+			formDataFields: res.fields,
 		};
 	} catch (err) {
 		logger.error(err);
