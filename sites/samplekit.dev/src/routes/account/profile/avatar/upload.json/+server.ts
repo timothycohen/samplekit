@@ -1,6 +1,12 @@
 import { eq } from 'drizzle-orm';
 import { createLimiter } from '$lib/botProtection/rateLimit/server';
-import { deleteS3Object, generateS3UploadPost, invalidateCloudfront, keyController } from '$lib/cloudStorage/server';
+import {
+	createUnsavedUploadCleaner,
+	deleteS3Object,
+	generateS3UploadPost,
+	invalidateCloudfront,
+	keyController,
+} from '$lib/cloudStorage/server';
 import { detectModerationLabels } from '$lib/cloudStorage/server';
 import { db, presigned, users } from '$lib/db/server';
 import { jsonFail, jsonOk } from '$lib/http/server';
@@ -12,7 +18,10 @@ import type { RequestEvent } from '@sveltejs/kit';
 // generateS3UploadPost enforces max upload size and denies any upload that we don't sign
 // uploadLimiter rate limits the number of uploads a user can do
 // presigned ensures we don't have to trust the client to tell us what the uploaded objectUrl is after the upload
+// unsavedUploadCleaner ensures that we don't miss cleaning up an object in S3 if the user doesn't notify us of the upload
 // detectModerationLabels prevents explicit content
+
+const EXPIRE_SECONDS = 60;
 
 const uploadLimiter = createLimiter({
 	id: 'checkAndSaveUploadedAvatar',
@@ -21,6 +30,12 @@ const uploadLimiter = createLimiter({
 		{ kind: 'userId', rate: [2, '15m'] },
 		{ kind: 'ipUa', rate: [3, '15m'] },
 	],
+});
+
+const unsavedUploadCleaner = createUnsavedUploadCleaner({
+	jobDelaySeconds: EXPIRE_SECONDS,
+	getStoredUrl: async ({ userId }) =>
+		(await db.select().from(users).where(eq(users.id, userId)).limit(1))[0]?.avatar?.url,
 });
 
 const getSignedAvatarUploadUrl = async (event: RequestEvent) => {
@@ -40,10 +55,14 @@ const getSignedAvatarUploadUrl = async (event: RequestEvent) => {
 	const res = await generateS3UploadPost({
 		key,
 		maxContentLength: MAX_UPLOAD_SIZE,
-		expireSeconds: 60,
+		expireSeconds: EXPIRE_SECONDS,
 	});
 	if (!res) return jsonFail(500, 'Failed to generate upload URL');
 	await presigned.insert({ bucketUrl: keyController.transform.keyToS3Url(key), userId: user.id, key });
+	unsavedUploadCleaner.addDelayedJob({
+		cloudfrontUrl: keyController.transform.keyToCloudfrontUrl(key),
+		userId: user.id,
+	});
 
 	return jsonOk<GetRes>({ bucketUrl: res.bucketUrl, formDataFields: res.formDataFields, objectKey: key });
 };
@@ -56,26 +75,14 @@ const checkAndSaveUploadedAvatar = async (event: RequestEvent) => {
 	const parsed = putReqSchema.safeParse(body);
 	if (!parsed.success) return jsonFail(400);
 
-	const rateCheck = await uploadLimiter.check(event, { log: { userId: user.id } });
-	if (rateCheck.forbidden) return jsonFail(403);
-	if (rateCheck.limiterKind === 'global')
-		return jsonFail(
-			429,
-			`This demo has hit its 24h max. Please try again in ${toHumanReadableTime(rateCheck.retryAfterSec)}`,
-		);
-	if (rateCheck.limited) return jsonFail(429, rateCheck.humanTryAfter('uploads'));
-
 	const presignedObjectUrl = await presigned.get({ userId: user.id });
 	if (!presignedObjectUrl) return jsonFail(400);
-	if (presignedObjectUrl.created.getTime() < Date.now() - 1000 * 60) {
-		await presigned.delete({ userId: user.id });
-		return jsonFail(400);
-	}
 
 	const cloudfrontUrl = keyController.transform.s3UrlToCloudfrontUrl(presignedObjectUrl.bucketUrl);
 	const imageExists = await fetch(cloudfrontUrl, { method: 'HEAD' }).then((res) => res.ok);
 	if (!imageExists) {
 		await presigned.delete({ userId: user.id });
+		unsavedUploadCleaner.removeJob({ cloudfrontUrl });
 		return jsonFail(400);
 	}
 
@@ -86,6 +93,7 @@ const checkAndSaveUploadedAvatar = async (event: RequestEvent) => {
 	const { error: moderationError } = await detectModerationLabels({ s3Key: newKey });
 
 	if (moderationError) {
+		unsavedUploadCleaner.removeJob({ cloudfrontUrl });
 		await Promise.all([deleteS3Object({ key: newKey, guard: null }), presigned.delete({ userId: user.id })]);
 		return jsonFail(422, moderationError.message);
 	}
@@ -98,6 +106,7 @@ const checkAndSaveUploadedAvatar = async (event: RequestEvent) => {
 		]);
 	}
 
+	unsavedUploadCleaner.removeJob({ cloudfrontUrl });
 	await Promise.all([
 		presigned.delete({ userId: user.id }),
 		db.update(users).set({ avatar: newAvatar }).where(eq(users.id, user.id)),
