@@ -8,7 +8,11 @@ import type { CropValue } from 'svelte-crop-window';
 
 //#region States
 // static
-export type Err = { state: 'error'; uri: string | null; errorMsgs: [string, string] | [string, null] };
+export type Err = {
+	state: 'error';
+	img: { url: string | null; crop: CropValue | null };
+	errorMsgs: [string, string] | [string, null];
+};
 export type Canceled = { state: 'canceled' };
 export type Completed = { state: 'completed'; savedImg: CroppedImg | null };
 
@@ -143,13 +147,17 @@ export class CropImgUploadController {
 		const file = files[0];
 
 		if (!file) {
-			return this.state.set({ state: 'error', uri: null, errorMsgs: ['No file selected', null] });
+			return this.state.set({
+				state: 'error',
+				img: { url: null, crop: null },
+				errorMsgs: ['No file selected', null],
+			});
 		}
 
 		if (file.size > MAX_UPLOAD_SIZE) {
 			return this.state.set({
 				state: 'error',
-				uri: null,
+				img: { url: null, crop: null },
 				errorMsgs: [
 					`File size (${humanReadableFileSize(file.size)}) must be less than ${humanReadableFileSize(MAX_UPLOAD_SIZE)}`,
 					null,
@@ -162,7 +170,12 @@ export class CropImgUploadController {
 
 		const { uri } = await uriPromise;
 		if (this.isCanceled()) return;
-		if (!uri) return this.state.set({ state: 'error', uri: null, errorMsgs: ['Error reading file', null] });
+		if (!uri)
+			return this.state.set({
+				state: 'error',
+				img: { url: null, crop: null },
+				errorMsgs: ['Error reading file', null],
+			});
 		this.state.set({ state: 'uri_loaded', file, uri });
 	}
 
@@ -212,7 +225,11 @@ export class CropImgUploadController {
 		if (this.isCanceled()) return;
 
 		if (getUploadArgsPromised.error)
-			return this.state.set({ state: 'error', uri, errorMsgs: [getUploadArgsPromised.error.message, null] });
+			return this.state.set({
+				state: 'error',
+				img: { url: uri, crop },
+				errorMsgs: [getUploadArgsPromised.error.message, null],
+			});
 
 		uploadProgress.set(10);
 
@@ -243,7 +260,11 @@ export class CropImgUploadController {
 		const imageUploadPromised = await imageUploadPromise;
 		if (this.isCanceled()) return;
 		if (imageUploadPromised.error)
-			return this.state.set({ state: 'error', uri, errorMsgs: [imageUploadPromised.error.message, null] });
+			return this.state.set({
+				state: 'error',
+				img: { url: uri, crop },
+				errorMsgs: [imageUploadPromised.error.message, null],
+			});
 
 		/** Save url to db (progress 90-100%) */
 		const interval = setInterval(() => {
@@ -269,7 +290,11 @@ export class CropImgUploadController {
 		if (this.isCanceled()) return;
 
 		if (saveToDbPromised.error)
-			return this.state.set({ state: 'error', uri, errorMsgs: [saveToDbPromised.error.message, null] });
+			return this.state.set({
+				state: 'error',
+				img: { url: uri, crop },
+				errorMsgs: [saveToDbPromised.error.message, null],
+			});
 
 		clearInterval(interval);
 		uploadProgress.set(100);
@@ -303,7 +328,7 @@ export class CropImgUploadController {
 		this.state.set({ state: 'db_updating_preexisting', updateDbPromise, crop, url });
 		const { data, error } = await updateDbPromise;
 		if (this.isCanceled()) return;
-		if (error) return this.state.set({ state: 'error', uri: null, errorMsgs: [error.message, null] });
+		if (error) return this.state.set({ state: 'error', img: { url, crop }, errorMsgs: [error.message, null] });
 		this.state.set({ state: 'completed', savedImg: data.savedImg });
 		return data.savedImg;
 	}
@@ -319,7 +344,7 @@ export class CropImgUploadController {
 		const { error } = await deletePreexistingImgPromise;
 		if (this.isCanceled()) return;
 
-		if (error) return this.state.set({ state: 'error', uri: null, errorMsgs: [error.message, null] });
+		if (error) return this.state.set({ state: 'error', img: { url, crop }, errorMsgs: [error.message, null] });
 		this.state.set({ state: 'completed', savedImg: null });
 		return null;
 	}
