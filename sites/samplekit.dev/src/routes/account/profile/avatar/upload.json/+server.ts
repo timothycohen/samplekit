@@ -23,8 +23,18 @@ const uploadLimiter = createLimiter({
 	],
 });
 
-const getSignedAvatarUploadUrl = async ({ locals }: RequestEvent) => {
+const getSignedAvatarUploadUrl = async (event: RequestEvent) => {
+	const { locals } = event;
 	const { user } = await locals.seshHandler.userOrRedirect();
+
+	const rateCheck = await uploadLimiter.check(event, { log: { userId: user.id } });
+	if (rateCheck.forbidden) return jsonFail(403);
+	if (rateCheck.limiterKind === 'global')
+		return jsonFail(
+			429,
+			`This demo has hit its 24h max. Please try again in ${toHumanReadableTime(rateCheck.retryAfterSec)}`,
+		);
+	if (rateCheck.limited) return jsonFail(429, rateCheck.humanTryAfter('uploads'));
 
 	const key = keyController.create.user.avatar({ userId: user.id });
 	const res = await generateS3UploadPost({
@@ -33,9 +43,9 @@ const getSignedAvatarUploadUrl = async ({ locals }: RequestEvent) => {
 		expireSeconds: 60,
 	});
 	if (!res) return jsonFail(500, 'Failed to generate upload URL');
-	await presigned.insert({ objectUrl: keyController.transform.keyToS3Url(key), userId: user.id });
+	await presigned.insert({ bucketUrl: keyController.transform.keyToS3Url(key), userId: user.id, key });
 
-	return jsonOk<GetRes>(res);
+	return jsonOk<GetRes>({ bucketUrl: res.bucketUrl, formDataFields: res.formDataFields, objectKey: key });
 };
 
 const checkAndSaveUploadedAvatar = async (event: RequestEvent) => {
@@ -62,7 +72,7 @@ const checkAndSaveUploadedAvatar = async (event: RequestEvent) => {
 		return jsonFail(400);
 	}
 
-	const cloudfrontUrl = keyController.transform.s3UrlToCloudfrontUrl(presignedObjectUrl.objectUrl);
+	const cloudfrontUrl = keyController.transform.s3UrlToCloudfrontUrl(presignedObjectUrl.bucketUrl);
 	const imageExists = await fetch(cloudfrontUrl, { method: 'HEAD' }).then((res) => res.ok);
 	if (!imageExists) {
 		await presigned.delete({ userId: user.id });
@@ -71,7 +81,7 @@ const checkAndSaveUploadedAvatar = async (event: RequestEvent) => {
 
 	const newAvatar = { crop: parsed.data.crop, url: cloudfrontUrl };
 	const oldAvatar = user.avatar;
-	const newKey = keyController.transform.s3UrlToKey(presignedObjectUrl.objectUrl);
+	const newKey = keyController.transform.s3UrlToKey(presignedObjectUrl.bucketUrl);
 
 	const { error: moderationError } = await detectModerationLabels({ s3Key: newKey });
 

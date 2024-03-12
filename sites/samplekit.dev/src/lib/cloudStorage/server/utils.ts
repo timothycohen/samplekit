@@ -8,6 +8,11 @@ const createId = ({ length }: { length: number } = { length: 16 }) =>
 		.slice(0, length);
 
 export const keyController = (() => {
+	const keys = {
+		user: 'user',
+		avatar: 'avatar',
+	};
+
 	const transform = {
 		keyToS3Url: (key: string) => `${S3_BUCKET_URL}/${key}`,
 		keyToCloudfrontUrl: (key: string) => `${CLOUDFRONT_URL}/${key}`,
@@ -25,7 +30,7 @@ export const keyController = (() => {
 	const create = {
 		root: () => `${DB_NAME}/`,
 		user: {
-			avatar: ({ userId }: { userId: string }) => `${DB_NAME}/user/${userId}/avatar/${createId()}`,
+			avatar: ({ userId }: { userId: string }) => `${DB_NAME}/${keys.user}/${userId}/${keys.avatar}/${createId()}`,
 		},
 	};
 
@@ -37,8 +42,9 @@ export const keyController = (() => {
 		},
 		user: {
 			avatar: (key: string) => {
-				const [dbName, _user, userId, _avatar, id] = key.split('/');
-				if (!dbName || _user !== 'user' || !userId || _avatar !== 'avatar' || !id) return null;
+				const [dbName, userKey, userId, avatarKey, id] = key.split('/');
+				if (!dbName || !userId || !id) return null;
+				if (userKey !== keys.user || avatarKey !== keys.avatar) return null;
 				return { userId, id, dbName };
 			},
 		},
@@ -54,10 +60,7 @@ export const keyController = (() => {
 			avatar: ({ key, ownerId }: { key: string; ownerId: string }): boolean => {
 				const parsed = parse.user.avatar(key);
 				if (!parsed) return false;
-				const { dbName, userId } = parsed;
-				if (ownerId !== userId) return false;
-				if (dbName !== DB_NAME) return false;
-				return true;
+				return parsed.dbName === DB_NAME && parsed.userId === ownerId;
 			},
 		},
 	};

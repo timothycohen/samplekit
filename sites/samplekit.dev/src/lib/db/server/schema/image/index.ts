@@ -16,6 +16,7 @@ export const croppedImgSchema = z.object({
 
 export const presignedUrls = pgTable('presigned_url', {
 	...uniqueUserReference({ onDelete: 'cascade' }),
-	objectUrl: varchar('url').primaryKey(),
+	bucketUrl: varchar('url').notNull(),
+	key: varchar('key').primaryKey(),
 	created: timestamp('created', { mode: 'date' }).notNull(),
 });
