@@ -3,11 +3,11 @@ import { db } from '..';
 import { presignedUrls } from '../schema/image/index';
 
 export const presigned = {
-	insert: ({ userId, objectUrl }: { userId: string; objectUrl: string }) =>
+	insert: ({ userId, bucketUrl, key }: { userId: string; bucketUrl: string; key: string }) =>
 		db
 			.insert(presignedUrls)
-			.values({ userId, objectUrl, created: new Date() })
-			.onConflictDoUpdate({ target: presignedUrls.userId, set: { created: new Date(), objectUrl } }),
+			.values({ userId, bucketUrl, key, created: new Date() })
+			.onConflictDoUpdate({ target: presignedUrls.userId, set: { created: new Date(), bucketUrl, key } }),
 
 	get: ({ userId }: { userId: string }) =>
 		db
