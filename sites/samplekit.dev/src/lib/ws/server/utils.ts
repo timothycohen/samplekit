@@ -1,19 +1,17 @@
-import { default as WebSocketBase, type MessageEvent } from 'ws';
-import { getWebSocketServer } from '../../../../scripts/ws/utils';
-import { SocketManager } from './connections';
+import { httpCodeMap } from '$lib/http/common';
+import { getIo, type ServerSocket } from './init';
+import type { EventName } from '../client/events';
 
-export type WSCtx = {
-	socketId: string;
-} & ({ userId: null; sessionId: null } | { userId: string; sessionId: string });
-
-export declare class WS extends WebSocketBase {
-	ctx: WSCtx;
+export function wsFail(eventName: EventName, socketId: string, status: 400 | 401 | 403 | 404 | 429 | 500): boolean;
+export function wsFail(eventName: EventName, socketId: string, status: number, message: string): boolean;
+export function wsFail(eventName: EventName, socketId: string, status: number, message?: string): boolean {
+	let e: { error: App.JSONError };
+	if (message) e = { error: { message, status } };
+	else e = { error: { message: httpCodeMap[status] ?? 'Unknown Error', status } };
+	return getIo().to(socketId).emit(eventName, e);
 }
 
-export interface WSS extends WebSocketBase.Server<typeof WS> {
-	connections: SocketManager;
-}
-
-export type { MessageEvent };
-
-export const getWss = getWebSocketServer as () => WSS;
+export const bounce = (ws: ServerSocket, eventName: EventName) =>
+	getIo()
+		.to(ws.id)
+		.emit(eventName, { error: { message: 'Unprocessable Content', status: 422 } });

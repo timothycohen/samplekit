@@ -1,5 +1,7 @@
 <script lang="ts">
-	import { useWsService, onServer, toServer } from '$lib/ws/client';
+	import { useWsService } from '$lib/ws/client/init';
+	import type { Result } from '$lib/utils/common';
+	import type { PizzaRes } from './ws.client';
 
 	const { ws } = useWsService();
 
@@ -8,18 +10,18 @@
 	let pizzaCount: number | null = 0;
 	let party = false;
 
-	onServer('pizza', ({ pizzas }) => {
-		pizzaOrders = [...pizzaOrders, pizzas];
-	});
+	const onPizza = ({ data, error }: Result<PizzaRes>) => {
+		if (data) {
+			pizzaOrders = [...pizzaOrders, data.pizza];
+		} else if (error) {
+			warning = error.message;
+		}
+	};
 
-	onServer('error', ({ eventId, message }) => {
-		if (eventId !== 'pizza') return;
-		warning = message;
-	});
+	$: if ($ws) $ws.on('pizza', onPizza);
 
 	const getPizza = () => {
-		if (pizzaCount === null) return;
-		toServer('pizza', { count: pizzaCount, party });
+		$ws?.emit('pizza', { count: pizzaCount ?? 0, party });
 		pizzaCount = 0;
 	};
 

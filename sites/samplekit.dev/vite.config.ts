@@ -1,7 +1,7 @@
 import { sentrySvelteKit } from '@sentry/sveltekit';
 import { enhancedImages } from '@sveltejs/enhanced-img';
 import { sveltekit } from '@sveltejs/kit/vite';
-import { createWebSocketServer, onHttpServerUpgrade, resetWebSocketServer } from './scripts/ws/utils';
+import { createWebSocketServer, resetWebSocketServer } from './scripts/ws/utils';
 import type { UserConfig } from 'vite';
 
 export default {
@@ -20,18 +20,14 @@ export default {
 		{
 			name: 'integratedWebSocketServer',
 			configureServer(server) {
-				createWebSocketServer();
-				server.httpServer?.on('upgrade', onHttpServerUpgrade);
+				createWebSocketServer(server.httpServer);
 
 				server.watcher.on('change', () => {
-					server.httpServer?.off('upgrade', onHttpServerUpgrade);
 					resetWebSocketServer();
-					server.httpServer?.on('upgrade', onHttpServerUpgrade);
 				});
 			},
 			configurePreviewServer(server) {
-				createWebSocketServer();
-				server.httpServer?.on('upgrade', onHttpServerUpgrade);
+				createWebSocketServer(server.httpServer);
 			},
 		},
 	],
