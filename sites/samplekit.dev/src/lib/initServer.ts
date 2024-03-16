@@ -3,6 +3,7 @@ import { migrateDb, testDb } from '$lib/db/server/connect';
 import { getServerLogflare, setupLogger } from '$lib/logging/server/logger';
 import { getSentry } from '$lib/logging/server/sentry';
 import { INTERCEPT_TRANSPORTS } from '$lib/transport/server/consts';
+import { initializeWss } from '$lib/ws/server';
 import { getCloudfront } from './cloudStorage/server/cloudfront';
 import { getRekognition } from './cloudStorage/server/rekognition';
 import { getS3 } from './cloudStorage/server/s3';
@@ -38,6 +39,8 @@ getSES() && setupLogger.info('(unverified) SESClient created.');
 await testDb();
 await migrateDb();
 await kv.connectOrExit();
+
+initializeWss();
 
 try {
 	getStorefront();

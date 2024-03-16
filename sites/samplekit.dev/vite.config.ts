@@ -1,6 +1,7 @@
 import { sentrySvelteKit } from '@sentry/sveltekit';
 import { enhancedImages } from '@sveltejs/enhanced-img';
 import { sveltekit } from '@sveltejs/kit/vite';
+import { createWebSocketServer, onHttpServerUpgrade, resetWebSocketServer } from './scripts/ws/utils';
 import type { UserConfig } from 'vite';
 
 export default {
@@ -16,6 +17,23 @@ export default {
 		}),
 		enhancedImages(),
 		sveltekit(),
+		{
+			name: 'integratedWebSocketServer',
+			configureServer(server) {
+				createWebSocketServer();
+				server.httpServer?.on('upgrade', onHttpServerUpgrade);
+
+				server.watcher.on('change', () => {
+					server.httpServer?.off('upgrade', onHttpServerUpgrade);
+					resetWebSocketServer();
+					server.httpServer?.on('upgrade', onHttpServerUpgrade);
+				});
+			},
+			configurePreviewServer(server) {
+				createWebSocketServer();
+				server.httpServer?.on('upgrade', onHttpServerUpgrade);
+			},
+		},
 	],
 	assetsInclude: '**/*.svx',
 	// https://github.com/sveltejs/kit/issues/11658 – Make sure to check Safari
@@ -24,7 +42,4 @@ export default {
 			'top-level-await': true,
 		},
 	},
-	// build: {
-	// 	target: 'ES2022',
-	// },
 } satisfies UserConfig;

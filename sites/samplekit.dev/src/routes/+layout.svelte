@@ -4,11 +4,14 @@
 	import { page } from '$app/stores';
 	import { Header, SEO } from '$lib/components';
 	import { themeController } from '$lib/styles';
+	import { createWSService } from '$lib/ws/client';
 
 	onMount(() => {
 		const { destroy } = themeController.listen('light-dark-system');
 		return destroy;
 	});
+
+	createWSService();
 </script>
 
 <SEO meta={$page.data.meta} />
