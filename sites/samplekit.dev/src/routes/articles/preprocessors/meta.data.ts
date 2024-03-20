@@ -10,4 +10,5 @@ export default {
 	imgSm: '/articles/preprocessors-thumbnail.png',
 	tags: ['preprocessors', 'blog', 'markdown', 'code highlighting', 'DX'],
 	featured: true,
+	updates: [{ at: new Date('2024-03-20'), descriptions: ['Expand processor syntax beyond highlighting.'] }],
 } satisfies RawFrontMatter;
