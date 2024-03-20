@@ -7,11 +7,12 @@ export type MdLang = (typeof mdLanguages)[number];
 export const isMdLang = (lang?: string): lang is MdLang => mdLanguages.includes(lang as MdLang);
 
 const escapePreprocessor = (code: string) => {
-	return code.replace(/&tripgrave;|&tripslash;|&triptilde;/g, (match) => {
+	return code.replace(/&tripgrave;|&tripslash;|&triptilde;|&brackbang;/g, (match) => {
 		return {
 			'&tripgrave;': '```',
 			'&tripslash;': '///',
 			'&triptilde;': '~~~',
+			'&brackbang;': '[!',
 		}[match]!;
 	});
 };
@@ -26,9 +27,9 @@ const escapeSvelte = (code: string) => {
 	});
 };
 
-const getHighlightLines = (rawCode: string) => {
-	const highlightLines: number[] = [];
-	const strippedCode = rawCode.replaceAll('\t', '  ').replace(/^\/\/\/\s*highlight:(.*)\s*\n/m, (_, group) => {
+const extractGlobalRegex = ({ rawCode, regex }: { rawCode: string; regex: RegExp }) => {
+	const lines: number[] = [];
+	const strippedCode = rawCode.replace(regex, (_, group) => {
 		group
 			.trim()
 			.split(',')
@@ -38,17 +39,76 @@ const getHighlightLines = (rawCode: string) => {
 					const [start, end] = lineStr.split('-');
 					if (start && end) {
 						for (let lineNum = Number(start.trim()); lineNum <= Number(end.trim()); lineNum++) {
-							highlightLines.push(lineNum);
+							lines.push(lineNum);
 						}
 					}
 				} else {
-					highlightLines.push(Number(lineStr));
+					lines.push(Number(lineStr));
 				}
 			});
 		return '';
 	});
 
-	return { strippedCode, highlightLines };
+	return { strippedCode, lines };
+};
+
+const propToGlobalRegex = [
+	['highlighted', /^\/\/\/\s*highlight:(.*)\s*\n/m, ' // [!highlight]'],
+	['hidden', /^\/\/\/\s*hide:(.*)\s*\n/m, ' // [!hide'],
+	['diff-added', /^\/\/\/\s*diff-add:(.*)\s*\n/m, ' // [!diff-add'],
+	['diff-removed', /^\/\/\/\s*diff-remove:(.*)\s*\n/m, ' // [!diff-remove'],
+] as const;
+
+const lineRegexMatchToProp = {
+	highlight: 'highlighted',
+	hide: 'hidden',
+	'diff-add': 'diff-added',
+	'diff-remove': 'diff-removed',
+} as const;
+
+const lineRegex = /\/\/\s*\[!(highlight|hide|diff-add|diff-remove)\]/g;
+
+const getLineProps = (rawCode: string) => {
+	let code = rawCode.replaceAll('\t', '  ');
+	const lineProps: Record<number, `data-line-${(typeof propToGlobalRegex)[number][0]}`[]> = {};
+	const hasProperty = propToGlobalRegex.reduce(
+		(acc, [propName]) => ({ ...acc, [propName]: false }),
+		{} as Record<(typeof propToGlobalRegex)[number][0], boolean>,
+	);
+
+	for (const [propertyName, globalRegex] of propToGlobalRegex) {
+		const { strippedCode, lines } = extractGlobalRegex({ rawCode: code, regex: globalRegex });
+		code = strippedCode;
+		if (lines.length) hasProperty[propertyName] = true;
+		for (const line of lines) {
+			if (lineProps[line]) lineProps[line]!.push(`data-line-${propertyName}`);
+			else lineProps[line] = [`data-line-${propertyName}`];
+		}
+	}
+
+	code = code
+		.split('\n')
+		.map((lineStr, index) => {
+			let match;
+			const lineNum = index + 1;
+
+			while ((match = lineRegex.exec(lineStr)) !== null) {
+				const key = match[1] as keyof typeof lineRegexMatchToProp;
+				const propName = lineRegexMatchToProp[key];
+				if (lineProps[lineNum]) lineProps[lineNum]!.push(`data-line-${propName}`);
+				else lineProps[lineNum] = [`data-line-${propName}`];
+			}
+
+			return lineStr.replace(lineRegex, '');
+		})
+		.join('\n');
+
+	const preProps = Object.entries(hasProperty).reduce((acc, [key, value]) => {
+		if (value) acc.push(`data-has-${key}`);
+		return acc;
+	}, [] as string[]);
+
+	return { strippedCode: code, lineProps, preProps };
 };
 
 const highlighter = await getHighlighter({ themes: [darkerJSON, 'rose-pine-dawn'], langs: mdLanguages });
@@ -56,11 +116,13 @@ const highlighter = await getHighlighter({ themes: [darkerJSON, 'rose-pine-dawn'
 const createThemedCodeHtml = ({
 	code,
 	lang,
-	highlightLines,
+	lineProps,
+	preProps,
 }: {
 	code: string;
 	lang: MdLang;
-	highlightLines: number[];
+	lineProps: Record<number, string[]>;
+	preProps: string[];
 }) => {
 	let lineNum = 1;
 
@@ -71,16 +133,38 @@ const createThemedCodeHtml = ({
 		cssVariablePrefix: '--h-',
 		transformers: [
 			{
-				pre(el: Element) {
-					delete el.properties['class'];
-					delete el.properties['tabindex'];
-					return el;
-				},
 				line(el: Element) {
 					delete el.properties['class'];
 					el.properties['data-line'] = lineNum;
-					if (highlightLines?.includes(lineNum)) el.properties['data-line-highlighted'] = '';
+					const properties = lineProps[lineNum];
+					if (properties?.length) properties.forEach((property) => (el.properties[property] = ''));
 					lineNum++;
+					return el;
+				},
+				code(el: Element) {
+					// remove hidden lines and collapse the resulting whitespace
+					// doing it this way after highlighting means we can still highlight things like class methods without declaring the entire class
+					const newChildren = [];
+					for (let i = 0; i < el.children.length; i++) {
+						const child = el.children[i]!;
+						if (child.type !== 'element') {
+							newChildren.push(child);
+						} else if (!Object.keys(child.properties).includes('data-line-hidden')) {
+							newChildren.push(child);
+						} else {
+							const next = el.children[i + 1];
+							if (next?.type === 'text') {
+								next.value = next.value.replace(/^\n/, '');
+							}
+						}
+					}
+					el.children = newChildren;
+					return el;
+				},
+				pre(el: Element) {
+					delete el.properties['class'];
+					delete el.properties['tabindex'];
+					preProps.forEach((property) => (el.properties[property] = ''));
 					return el;
 				},
 			},
@@ -109,11 +193,11 @@ const createThemedCodeHtml = ({
  */
 export const mdCodeBlockToRawHtml = ({ rawCode, lang }: { rawCode: string; lang: MdLang }) => {
 	try {
-		const { strippedCode: code, highlightLines } = getHighlightLines(rawCode);
+		const { strippedCode, lineProps, preProps } = getLineProps(rawCode);
 		return {
 			data:
 				`<div class="code-wrapper">` +
-				escapeSvelte(createThemedCodeHtml({ code: escapePreprocessor(code), lang, highlightLines })) +
+				escapeSvelte(createThemedCodeHtml({ code: escapePreprocessor(strippedCode), lang, lineProps, preProps })) +
 				'</div>',
 		};
 	} catch (err) {
