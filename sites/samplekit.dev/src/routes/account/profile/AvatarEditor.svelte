@@ -60,7 +60,7 @@
 </script>
 
 {#if $s.state === 'file_selecting'}
-	<FileInput onSelect={onFileSelected} />
+	<FileInput onSelect={onFileSelected} accept="image/jpeg, image/png" />
 {:else}
 	<div class="relative aspect-square h-80 w-80 sm:h-[32rem] sm:w-[32rem]">
 		{#if $s.state === 'error'}
