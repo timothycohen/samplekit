@@ -5,7 +5,7 @@ export default {
 	schema: 'https://shopify.dev/admin-graphql-direct-proxy/2023-10',
 	documents: ['./lib/**/*.{js,ts,jsx,tsx}'],
 	projects: {
-		// To produce variable / return types for Admin API operations
+		// To produce variable / return types for Shopify Storefront API operations
 		default: shopifyApiProject({
 			apiType: ApiType.Storefront,
 			apiVersion: '2023-10',

@@ -512,12 +512,12 @@ initMany([easter, egg]);
 </p>
 
 <!-- table-start -->
-| Action | Example | Result |
-| ------ | ------- | ------ |
-| add    | <code>tags.updateOne('baz', 'add')</code> | <code>?tags=foo&tags=bar&tags=baz</code> |
-| remove | <code>tags.updateOne('bar', 'remove')</code> | <code>?tags=foo</code> |
+| Action | Example                                      | Result                                   |
+| ------ | -------------------------------------------- | ---------------------------------------- |
+| add    | <code>tags.updateOne('baz', 'add')</code>    | <code>?tags=foo&tags=bar&tags=baz</code> |
+| remove | <code>tags.updateOne('bar', 'remove')</code> | <code>?tags=foo</code>                   |
 | append | <code>tags.updateOne('bar', 'append')</code> | <code>?tags=foo&tags=bar&tags=bar</code> |
-| toggle | <code>tags.updateOne('bar', 'toggle')</code> | <code>?tags=foo</code> |
+| toggle | <code>tags.updateOne('bar', 'toggle')</code> | <code>?tags=foo</code>                   |
 <!-- table-end -->
 
 <p>Likewise, we should be able to do the same thing for multiple values.</p>

@@ -189,24 +189,18 @@ if (!verifySMSTokenForm.valid) {
 	lambdas as a form of documentation.
 </p>
 
-<!-- <TabsTwo titles={["+server.ts", "index.ts"]}> -->
-<!-- <div slot="0"> -->
 <CodeTopper title="$routes/demos/name-list.json/+server.ts" />
 ```ts
 const addNameToList = async ({ locals, request }: RequestEvent) => { ... };
 export const PUT: RequestHandler = addNamesToList;
 ```
-<!-- </div> -->
 
-<!-- <div slot="1"> -->
 <CodeTopper title="$routes/demos/name-list.json/index.ts" />
 ```ts
 type PutReq = { name: string };
 export type PutRes = { allNames: string[] };
 export const addNamesToList = createClientFetch()
 ```
-<!-- </div> -->
-<!-- </TabsTwo> -->
 
 <h3>Hiding the route / method / types</h3>
 
