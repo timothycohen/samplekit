@@ -27,21 +27,10 @@ code {
 .code-topper {
 	font-size: 1rem;
 	z-index: 0;
-	font-family: theme('fontFamily.mono');
 	display: flex;
 	justify-content: space-between;
-	gap: 1rem;
-}
-.code-topper span {
-	overflow: auto;
-}
-.dark .code-topper {
-	color: var(--h-darker);
-	background-color: var(--h-darker-bg);
-}
-.light .code-topper {
-	color: var(--h-rose-pine-dawn);
-	background-color: var(--h-rose-pine-dawn-bg);
+	color: theme('colors.gray.12');
+	background-color: theme('colors.gray.4');
 }
 
 /* Borders ####################### */

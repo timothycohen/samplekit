@@ -46,24 +46,26 @@
 					class="group relative flex h-10 flex-1 cursor-pointer select-none items-center justify-center
 					rounded-none px-2 font-medium leading-6 -outline-offset-1 focus:relative focus-visible:z-10
 					{active ? '' : 'bg-gray-3 hover:bg-gray-4'}
+					{i === 0 && !triggerItem.icon ? 'pl-4' : ''}
 					{i === 0 ? 'rounded-tl-card' : ''}
 					"
 				>
 					<span
-						class="flex items-center gap-2 text-nowrap
+						class="flex items-center gap-2 text-nowrap text-base
 						{active ? 'text-gray-12' : 'text-gray-10 group-hover:text-gray-11'}"
 					>
 						{#if triggerItem.icon}
 							<Icon class="h-5 w-5" icon={triggerItem.icon} />
 						{/if}
 
-						{triggerItem.title}
+						<span class="relative">
+							{triggerItem.title}
+							<span class="group-hover:bg-accent-5 absolute -bottom-1 left-1/2 h-1 w-6 -translate-x-1/2 rounded-full" />
+							{#if $value === triggerItem.id}
+								<span class="bg-accent-9 absolute -bottom-1 left-1/2 h-1 w-6 -translate-x-1/2 rounded-full" />
+							{/if}
+						</span>
 					</span>
-
-					<div class="group-hover:bg-accent-5 absolute bottom-1 left-1/2 h-1 w-6 -translate-x-1/2 rounded-full" />
-					{#if $value === triggerItem.id}
-						<div class="bg-accent-9 absolute bottom-1 left-1/2 h-1 w-6 -translate-x-1/2 rounded-full" />
-					{/if}
 				</button>
 			{/each}
 		</div>
@@ -72,7 +74,7 @@
 
 		<button
 			on:click={() => (collapsed = !collapsed)}
-			class="text-gray-10 border-gray-9 dark:border-gray-5 bg-gray-3 hover:bg-gray-4 rounded-tr-card grid h-10 w-10 place-content-center border-l -outline-offset-1"
+			class="text-gray-10 border-gray-9 dark:border-gray-5 bg-gray-3 hover:bg-gray-4 rounded-tr-card grid min-h-10 w-10 shrink-0 place-content-center border-l -outline-offset-1"
 		>
 			<div class="transition-transform {collapsed ? 'rotate-180' : ''}">
 				<ChevronUp />
