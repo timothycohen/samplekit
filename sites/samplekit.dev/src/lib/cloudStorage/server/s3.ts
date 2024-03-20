@@ -1,12 +1,6 @@
-import { DeleteObjectCommand, DeleteObjectsCommand, ListObjectsCommand, S3Client } from '@aws-sdk/client-s3';
+import { DeleteObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import { createPresignedPost } from '@aws-sdk/s3-presigned-post';
-import {
-	AWS_SERVICE_REGION,
-	DB_NAME,
-	IAM_ACCESS_KEY_ID,
-	IAM_SECRET_ACCESS_KEY,
-	S3_BUCKET_NAME,
-} from '$env/static/private';
+import { AWS_SERVICE_REGION, IAM_ACCESS_KEY_ID, IAM_SECRET_ACCESS_KEY, S3_BUCKET_NAME } from '$env/static/private';
 import { logger } from '$lib/logging/server';
 
 export const getS3 = (() => {
@@ -69,35 +63,5 @@ export const deleteS3Object = async ({
 	} catch (err) {
 		logger.error(err);
 		return false;
-	}
-};
-
-export const clearBucket = async () => {
-	const objects = await (async () => {
-		try {
-			const listObjectsCommand = new ListObjectsCommand({ Bucket: S3_BUCKET_NAME, Prefix: DB_NAME });
-			return (
-				(await getS3()
-					.send(listObjectsCommand)
-					.then((o) => o.Contents?.map((o) => ({ Key: o.Key })))) ?? false
-			);
-		} catch (err) {
-			logger.error(err);
-			return false;
-		}
-	})();
-
-	if (!objects) return { deletedCount: 0 };
-
-	try {
-		const deleteObjectsCommand = new DeleteObjectsCommand({
-			Bucket: S3_BUCKET_NAME,
-			Delete: { Objects: objects },
-		});
-
-		return { deletedCount: (await getS3().send(deleteObjectsCommand)).Deleted?.length ?? 0 };
-	} catch (err) {
-		logger.error(err);
-		return { deletedCount: 0 };
 	}
 };
