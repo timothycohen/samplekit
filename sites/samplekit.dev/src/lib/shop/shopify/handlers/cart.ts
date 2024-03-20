@@ -5,7 +5,7 @@ import {
 	getCartQuery,
 	removeFromCartMutation,
 } from '../gql';
-import { getStorefront } from '../storefront';
+import { requestStorefront } from '../storefront';
 import type { GetCartQuery } from '$generated/shopify-graphql-types/storefront.generated';
 import type { Cart } from '../../types';
 
@@ -31,25 +31,43 @@ const reshapeCart = (cart: NonNullable<GetCartQuery['cart']>): Cart => {
 };
 
 /** @throws Error */
-export async function createCart(): Promise<Cart> {
-	const res = await getStorefront().request(createCartMutation);
+export async function createCart({ fetch }: { fetch: Fetch }): Promise<Cart> {
+	const res = await requestStorefront({ operation: createCartMutation, fetch });
 	const cart = res.data?.cartCreate?.cart;
 	if (!cart) throw new Error('createCart');
 	return reshapeCart(cart);
 }
 
 /** @throws Error */
-export async function addToCart(cartId: string, lines: { merchandiseId: string; quantity: number }[]): Promise<Cart> {
-	const res = await getStorefront().request(addToCartMutation, { variables: { cartId, lines } });
+export async function addToCart({
+	cartId,
+	lines,
+	fetch,
+}: {
+	cartId: string;
+	lines: { merchandiseId: string; quantity: number }[];
+	fetch: Fetch;
+}): Promise<Cart> {
+	const res = await requestStorefront({ operation: addToCartMutation, variables: { cartId, lines }, fetch });
 	const cart = res.data?.cartLinesAdd?.cart;
 	if (!cart) throw new Error('addToCart');
 	return reshapeCart(cart);
 }
 
 /** @throws Error */
-export async function removeFromCart(cartId: string, lineIds: string[]): Promise<Cart> {
-	const res = await getStorefront().request(removeFromCartMutation, {
+export async function removeFromCart({
+	cartId,
+	lineIds,
+	fetch,
+}: {
+	cartId: string;
+	lineIds: string[];
+	fetch: Fetch;
+}): Promise<Cart> {
+	const res = await requestStorefront({
+		operation: removeFromCartMutation,
 		variables: { cartId, lineIds },
+		fetch,
 	});
 	const cart = res.data?.cartLinesRemove?.cart;
 	if (!cart) throw new Error('removeFromCart');
@@ -57,20 +75,27 @@ export async function removeFromCart(cartId: string, lineIds: string[]): Promise
 }
 
 /** @throws Error */
-export async function updateCart(
-	cartId: string,
-	lines: { id: string; merchandiseId: string; quantity: number }[],
-): Promise<Cart> {
-	const res = await getStorefront().request(editCartItemsMutation, {
+export async function updateCart({
+	cartId,
+	lines,
+	fetch,
+}: {
+	cartId: string;
+	lines: { id: string; merchandiseId: string; quantity: number }[];
+	fetch: Fetch;
+}): Promise<Cart> {
+	const res = await requestStorefront({
+		operation: editCartItemsMutation,
 		variables: { cartId, lines },
+		fetch,
 	});
 	const cart = res.data?.cartLinesUpdate?.cart;
 	if (!cart) throw new Error('updateCart');
 	return reshapeCart(cart);
 }
 
-export async function getCart(cartId: string): Promise<Cart | undefined> {
-	const res = await getStorefront().request(getCartQuery, { variables: { cartId } });
+export async function getCart({ cartId, fetch }: { cartId: string; fetch: Fetch }): Promise<Cart | undefined> {
+	const res = await requestStorefront({ operation: getCartQuery, variables: { cartId }, fetch });
 	const cart = res.data?.cart;
 	if (!cart) return undefined;
 	else return reshapeCart(cart);
