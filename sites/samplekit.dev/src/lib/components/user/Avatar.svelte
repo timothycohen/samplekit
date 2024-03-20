@@ -22,7 +22,7 @@
 		style="height:{size}px; width:{(avatar?.crop?.aspect ?? 1) * size}px;"
 	>
 		{#if avatar}
-			<img style={imgStyles} src={avatar.url} alt="" />
+			<img style={imgStyles} src={avatar.url} alt="" referrerpolicy="no-referrer" />
 		{:else}
 			<div class="h-full w-full bg-black/10"></div>
 		{/if}
@@ -37,7 +37,7 @@
 		style="height:{size}px; width:{(avatar?.crop?.aspect ?? 1) * size}px;"
 	>
 		{#if avatar}
-			<img style={imgStyles} src={avatar.url} alt="" />
+			<img style={imgStyles} src={avatar.url} alt="" referrerpolicy="no-referrer" />
 		{:else}
 			<div class="h-full w-full bg-black/10"></div>
 		{/if}

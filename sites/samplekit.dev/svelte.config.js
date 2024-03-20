@@ -2,7 +2,7 @@ import { sequence, preprocessMeltUI } from '@melt-ui/pp';
 import { preprocessCodeblock, preprocessTable } from '@samplekit/markdown';
 // @ts-expect-error – missing types
 import autoSlug from '@svelte-put/preprocess-auto-slug';
-import adapter from '@sveltejs/adapter-auto';
+import adapter from '@sveltejs/adapter-node';
 import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
 
 /** @type {import('@sveltejs/kit').Config} */
@@ -16,7 +16,11 @@ const config = {
 		autoSlug(() => ({
 			tags: ['h2', 'h3', 'h4', 'h5', 'h6'],
 			/** @param {{ filename: string, content: string }} param0 */
-			files: ({ filename }) => filename.endsWith('.svx'),
+			files: ({ filename }) => {
+				return (
+					filename.includes('src/routes/articles/') && (filename.endsWith('.svx') || filename.endsWith('+page.svelte'))
+				);
+			},
 			anchor: { content: '#', position: 'prepend' },
 		})),
 		preprocessMeltUI(),

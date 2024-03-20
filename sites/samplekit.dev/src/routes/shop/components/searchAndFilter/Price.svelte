@@ -26,8 +26,8 @@
 						e.preventDefault();
 					}
 				}}
-				on:paste|preventDefault={(e) => price.setParam({ [paramKey]: e.clipboardData?.getData('text') ?? null })}
-				on:change={(e) => price.setParam({ [paramKey]: e.currentTarget.value })}
+				on:paste|preventDefault={(e) => price.setParams({ [paramKey]: e.clipboardData?.getData('text') ?? null })}
+				on:change={(e) => price.setParams({ [paramKey]: e.currentTarget.value })}
 			/>
 
 			{#if !i}

@@ -3,23 +3,17 @@ import type { Result } from '$lib/utils/common';
 import type { Tweened } from 'svelte/motion';
 
 export type UploaderArgs = {
-	uploadUrl: string;
-	data: File | FormData;
+	bucketUrl: string;
+	formData: FormData;
 	uploadProgress?: { scale?: number | undefined; tweened?: Tweened<number> | undefined } | undefined;
-	method: 'PUT' | 'POST';
 };
 export type UploaderRes = { promise: Promise<Result<{ status: number }>>; abort: () => void };
 
-/**
- * @aws-sdk/s3-request-presigner: uploadUrl: `${bucketUrl}/${objectKey}`, method: PUT, data: File
- *
- * @aws-sdk/s3-presigned-post: uploadUrl: bucketUrl, method: POST, data: FormData
- */
 export type Uploader = (a: UploaderArgs) => UploaderRes;
 
-export const uploadToCloudStorage: Uploader = ({ method, uploadUrl, data, uploadProgress }) => {
+export const uploadS3PresignedPost: Uploader = ({ bucketUrl, formData, uploadProgress }) => {
 	const req = new XMLHttpRequest();
-	req.open(method, uploadUrl);
+	req.open('POST', bucketUrl);
 
 	if (uploadProgress?.tweened) {
 		req.upload.addEventListener('progress', (e) =>
@@ -42,6 +36,6 @@ export const uploadToCloudStorage: Uploader = ({ method, uploadUrl, data, upload
 		};
 	});
 
-	req.send(data);
+	req.send(formData);
 	return { abort: req.abort.bind(req), promise };
 };

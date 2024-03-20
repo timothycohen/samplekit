@@ -92,20 +92,10 @@ const sort = <T extends { publishedAt: Date; series?: { name: string; position: 
 	});
 };
 
-function addPrevNextLinks<T extends { articleSlug: string; title: string }>(
+const addPrevNextLinks = <T extends { articleSlug: string; title: string }>(
 	parsed: T[],
-): (T & { prev: { slug: string; title: string } | null; next: { slug: string; title: string } | null })[] {
-	type Neighbor = { slug: string; title: string } | null;
-
-	return parsed.map((data, i) => {
-		const nextFM = parsed[i - 1];
-		const prevFM = parsed[i + 1];
-
-		const prev: Neighbor = prevFM ? { slug: prevFM.articleSlug, title: prevFM.title } : null;
-		const next: Neighbor = nextFM ? { slug: nextFM.articleSlug, title: nextFM.title } : null;
-		return { ...data, prev, next };
-	});
-}
+): (T & { prev: T | undefined; next: T | undefined })[] =>
+	parsed.map((data, i) => ({ ...data, prev: parsed[i - 1], next: parsed[i + 1] }));
 
 export const allPostData: ProcessedFrontMatter[] = await Promise.all(Object.values(postData))
 	.then(expandSeries)

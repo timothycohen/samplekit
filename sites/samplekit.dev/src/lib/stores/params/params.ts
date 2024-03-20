@@ -15,9 +15,9 @@ export const createStringParam = (a: BaseArgs<string | null>) => {
 	return createParam<string | null>({
 		defaultValue: null,
 		...a,
-		validateAndDeserialize: (paramVal) => paramVal || null,
-		serialize: (val) => val,
-		clean: (unclean) => (typeof unclean !== 'string' ? null : unclean || null),
+		serialize: (cleanVal) => cleanVal,
+		deserialize: (paramVal) => paramVal || null,
+		clean: (uncleanVal) => (typeof uncleanVal === 'string' ? uncleanVal || null : null),
 	});
 };
 
@@ -26,9 +26,9 @@ export const createNullableBoolParam = (a: BaseArgs<boolean | null>) => {
 	const param = createParam<boolean | null>({
 		defaultValue: null,
 		...a,
-		validateAndDeserialize: (paramVal) => (paramVal === 'true' ? true : paramVal === 'false' ? false : null),
-		serialize: (val) => (val === true ? 'true' : val === false ? 'false' : null),
-		clean: (unclean) => (typeof unclean !== 'boolean' ? null : unclean),
+		serialize: (cleanVal) => (cleanVal === true ? 'true' : cleanVal === false ? 'false' : null),
+		deserialize: (paramVal) => (paramVal === 'true' ? true : paramVal === 'false' ? false : null),
+		clean: (uncleanVal) => (typeof uncleanVal === 'boolean' ? uncleanVal : null),
 	}) as ReturnType<typeof createParam<boolean | null>> & {
 		toggle: () => void;
 		toggleNull: () => void;
@@ -45,9 +45,9 @@ export const createFlagParam = (a: BaseArgs<true | null>) => {
 	const param = createParam<true | null>({
 		defaultValue: null,
 		...a,
-		validateAndDeserialize: (paramVal) => (paramVal === 'true' ? true : null),
-		serialize: (val) => (val === true ? 'true' : null),
-		clean: (unclean) => (unclean === true ? true : null),
+		serialize: (cleanVal) => (cleanVal === true ? 'true' : null),
+		deserialize: (paramVal) => (paramVal === 'true' ? true : null),
+		clean: (uncleanVal) => (uncleanVal === true ? true : null),
 	}) as ReturnType<typeof createParam<true | null>> & {
 		toggle: () => void;
 	};
@@ -63,7 +63,7 @@ export const createNumParam = (
 ) => {
 	const { max, min, wrap } = opts;
 
-	const clean = (uncleanVal: number | null | undefined): number => {
+	const clean = (uncleanVal: number): number => {
 		if (typeof uncleanVal !== 'number' || isNaN(uncleanVal)) return min ?? 0;
 
 		if (wrap) {
@@ -77,15 +77,17 @@ export const createNumParam = (
 		return uncleanVal;
 	};
 
-	const cleanStr = (uncleanVal: string | null | undefined): number => {
-		return clean(typeof uncleanVal === 'string' ? parseInt(uncleanVal, 10) : uncleanVal);
+	const deserialize = (uncleanVal: string | null): number => {
+		if (typeof uncleanVal !== 'string') return min ?? 0;
+		const num = parseInt(uncleanVal, 10);
+		return clean(num);
 	};
 
 	const param = createParam<number>({
 		defaultValue: 0,
 		...a,
-		validateAndDeserialize: cleanStr,
 		serialize: (val) => (val === 0 ? null : val.toString()),
+		deserialize,
 		clean,
 	}) as ReturnType<typeof createParam<number>> & {
 		prev: () => void;
@@ -118,11 +120,11 @@ export const createSelectParam = <Value extends { paramName: string | null }>(
 	const param = createParam<SortItem>({
 		defaultValue,
 		...a,
-		validateAndDeserialize: (paramVal) => options.find((i) => i.value.paramName === paramVal) ?? defaultValue,
 		serialize: (val) => val.value.paramName,
-		clean: (unclean) => {
-			if (!hasParamName(unclean)) return defaultValue;
-			return options.find((i) => i.value.paramName === unclean.value.paramName) ?? defaultValue;
+		deserialize: (paramVal) => options.find((i) => i.value.paramName === paramVal) ?? defaultValue,
+		clean: (uncleanVal) => {
+			if (!hasParamName(uncleanVal)) return defaultValue;
+			return options.find((i) => i.value.paramName === uncleanVal.value.paramName) ?? defaultValue;
 		},
 	}) as ReturnType<typeof createParam<SortItem>> & {
 		items: SortItem[];
@@ -142,9 +144,17 @@ const strToNum = (s?: string | null): number | null => {
 	return num;
 };
 
-const withinBounds = (num: number | null, absMax?: number): number | null => {
+const withinBounds = ({
+	num,
+	absMax,
+	absMin,
+}: {
+	num: number | null;
+	absMax?: number;
+	absMin?: number;
+}): number | null => {
 	if (num === null) return null;
-	return Math.max(0, Math.min(absMax ?? Infinity, num));
+	return Math.max(absMin ?? 0, Math.min(absMax ?? Infinity, num));
 };
 
 export const cleanMinMax: (a: {
@@ -154,8 +164,8 @@ export const cleanMinMax: (a: {
 	newMax?: number | null;
 	newMin?: number | null;
 }) => { min: number | null; max: number | null } = ({ absMax, curMax, curMin, newMax, newMin }) => {
-	const cleanMin = withinBounds(newMin === undefined ? curMin ?? null : newMin, absMax);
-	const cleanMax = withinBounds(newMax === undefined ? curMax ?? null : newMax, absMax);
+	const cleanMin = withinBounds({ num: newMin === undefined ? curMin ?? null : newMin, absMax });
+	const cleanMax = withinBounds({ num: newMax === undefined ? curMax ?? null : newMax, absMax });
 
 	if (cleanMin === null || cleanMax === null || cleanMax >= cleanMin) {
 		return { min: cleanMin, max: cleanMax };
@@ -197,8 +207,8 @@ export const createMinMaxParams = (a: BaseArgsP<number | null, 'min' | 'max'>, {
 	const res = createParams<Value, Key>({
 		defaultValue: { min: null, max: null },
 		...a,
-		serialize: (a) => (a === null ? a : a.toString()),
-		validateAndDeserialize: ({ old, uncleanParamVals }) =>
+		serializeOne: (a) => (a === null ? a : a.toString()),
+		deserialize: ({ old, uncleanParamVals }) =>
 			cleanMinMaxStr({
 				curMin: old.min,
 				curMax: old.max,

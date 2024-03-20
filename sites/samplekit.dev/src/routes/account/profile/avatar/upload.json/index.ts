@@ -1,13 +1,13 @@
 import { z } from 'zod';
-import { cropSchema, type CroppedImg } from '$lib/db/client';
 import { createClientFetch } from '$lib/http/client';
+import { cropSchema, type CroppedImg } from '$lib/image/client';
 import type { Result } from '$lib/utils/common';
 import type { RouteId } from './$types';
 
 const routeId = '/account/profile/avatar/upload.json';
 export const MAX_UPLOAD_SIZE = 1024 * 1024 * 3; // 3MB
 
-export type GetRes = { uploadUrl: string; fields: Record<string, string> };
+export type GetRes = { bucketUrl: string; objectKey: string; formDataFields: Record<string, string> };
 
 export const putReqSchema = z.object({ crop: cropSchema });
 export type PutReq = z.infer<typeof putReqSchema>;
