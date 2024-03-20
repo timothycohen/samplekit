@@ -16,7 +16,11 @@ const config = {
 		autoSlug(() => ({
 			tags: ['h2', 'h3', 'h4', 'h5', 'h6'],
 			/** @param {{ filename: string, content: string }} param0 */
-			files: ({ filename }) => filename.endsWith('.svx'),
+			files: ({ filename }) => {
+				return (
+					filename.includes('src/routes/articles/') && (filename.endsWith('.svx') || filename.endsWith('+page.svelte'))
+				);
+			},
 			anchor: { content: '#', position: 'prepend' },
 		})),
 		preprocessMeltUI(),
