@@ -1,9 +1,10 @@
 <script lang="ts">
-	import { ArrowRight, PanelRightDashed } from 'lucide-svelte';
+	import { ArrowRight, PanelRightDashed, UnfoldVertical, FoldVertical } from 'lucide-svelte';
 	import { onMount } from 'svelte';
 	import { fly } from 'svelte/transition';
 	import { Changelog, DateLine, FeatureCard, FeatureSwapCard, Series, TOC } from '$lib/articles/components';
 	import { TabPanels } from '$lib/components';
+	import { createCollapsedService, useCollapsedService } from '$lib/components/collapsedService';
 	import { pluralize } from '$lib/utils/common';
 
 	export let data;
@@ -26,6 +27,15 @@
 
 	let articleContentWrapper: HTMLDivElement;
 	let sidebarOpen = true;
+
+	createCollapsedService();
+	const { triggerAll } = useCollapsedService();
+	let allOpen = false;
+
+	const toggleAllOpen = () => {
+		allOpen = !allOpen;
+		triggerAll(allOpen);
+	};
 </script>
 
 <div class="page" style="max-width: 1440px; padding: clamp(1rem, -0.6rem + 4vw, 3rem);">
@@ -129,12 +139,24 @@
 			{:else}
 				<button
 					in:fly={{ x: 40, y: 40 }}
-					class="bg-app-bg/75 border-gray-5 text-gray-11 fixed bottom-4 right-4 hidden h-12 w-12 items-center justify-center rounded-full border backdrop-blur-md lg:flex"
+					class="bg-app-bg/75 border-gray-5 text-gray-11 fixed bottom-20 right-4 hidden h-12 w-12 items-center justify-center rounded-full border backdrop-blur-md lg:flex"
 					on:click={() => (sidebarOpen = !sidebarOpen)}
 				>
 					<PanelRightDashed class="h-6 w-6" />
 				</button>
 			{/if}
+
+			<button
+				in:fly={{ x: 40, y: 40 }}
+				class="bg-app-bg/75 border-gray-5 text-gray-11 fixed bottom-4 right-4 z-10 flex h-12 w-12 items-center justify-center rounded-full border backdrop-blur-md"
+				on:click={() => toggleAllOpen()}
+			>
+				{#if allOpen}
+					<UnfoldVertical class="h-6 w-6" />
+				{:else}
+					<FoldVertical class="h-6 w-6" />
+				{/if}
+			</button>
 		</div>
 	</article>
 

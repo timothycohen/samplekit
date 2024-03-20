@@ -13,6 +13,7 @@
 <script lang="ts">
 	import { createTabs, melt } from '@melt-ui/svelte';
 	import { ChevronUp } from 'lucide-svelte';
+	import { useCollapsedService } from '$lib/components/collapsedService';
 	import Icon from './Icon.svelte';
 	import PatternWrapper from './PatternWrapper.svelte';
 	import TabPanelItem from './TabPanelItem.svelte';
@@ -31,6 +32,11 @@
 	});
 
 	let collapsed = false;
+
+	const service = useCollapsedService();
+	if (service) {
+		service.onTrigger((newState) => (collapsed = newState));
+	}
 </script>
 
 <div use:melt={$root}>
