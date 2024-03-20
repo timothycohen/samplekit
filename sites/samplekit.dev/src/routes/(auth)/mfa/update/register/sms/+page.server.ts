@@ -1,8 +1,8 @@
 import { fail as formFail, redirect } from '@sveltejs/kit';
 import { message, superValidate } from 'sveltekit-superforms/server';
+import { mfaLabels } from '$lib/auth/client';
 import { auth } from '$lib/auth/server';
 import { transports } from '$lib/auth/server';
-import { mfaLabels } from '$lib/db/client';
 import { checkedRedirect } from '$lib/http/server';
 import { phoneNumberSchema, verifyOTPSchema } from '$routes/(auth)/validators';
 import type { Actions, PageServerLoad } from './$types';

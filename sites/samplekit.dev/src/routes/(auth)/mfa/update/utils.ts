@@ -1,4 +1,4 @@
-import { mfaKinds } from '$lib/db/client';
+import { mfaKinds } from '$lib/auth/client';
 import { checkedRedirect } from '$lib/http/server';
 
 type Res = { action: 'register' | 'remove'; desiredMFA: DB.MFAs.Kind };

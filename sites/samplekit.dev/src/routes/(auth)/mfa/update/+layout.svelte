@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { mfaLabels } from '$lib/db/client';
+	import { mfaLabels } from '$lib/auth/client';
 	import { Verifier } from '$routes/(auth)/components';
 
 	export let data;

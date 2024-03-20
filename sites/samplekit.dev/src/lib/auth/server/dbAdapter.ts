@@ -2,7 +2,6 @@ import { and, eq, lt, ne } from 'drizzle-orm';
 import {
 	authProviderSchema,
 	authProviders,
-	croppedImgSchema,
 	db,
 	sessionSchema,
 	sessions,
@@ -11,6 +10,7 @@ import {
 	userSchema,
 	users,
 } from '$lib/db/server';
+import { croppedImgSchema } from '$lib/image/client';
 import { assertUnreachable } from '$lib/utils/common';
 import type {
 	Auth,
