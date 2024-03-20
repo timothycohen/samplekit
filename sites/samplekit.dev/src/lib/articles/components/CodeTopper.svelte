@@ -1,10 +1,16 @@
 <script lang="ts">
 	import { ChevronUp } from 'lucide-svelte';
+	import { useCollapsedService } from '$lib/components/collapsedService';
 	import Copy from './Copy.svelte';
 
 	export let title: string;
 	export let copy = true;
 	export let collapsed = false;
+
+	const service = useCollapsedService();
+	if (service) {
+		service.onTrigger((newState) => (collapsed = newState));
+	}
 </script>
 
 <div class="code-topper" style={collapsed ? 'border-bottom-width: 1px; margin: 0 0 1.5rem 0;' : ''}>
