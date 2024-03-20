@@ -1,6 +1,6 @@
+import { mfaLabels } from '$lib/auth/client';
 import { auth } from '$lib/auth/server';
 import { transports } from '$lib/auth/server';
-import { mfaLabels } from '$lib/db/client';
 import { checkedRedirect } from '$lib/http/server';
 import { jsonFail, jsonOk } from '$lib/http/server';
 import type { PostReq } from '.';
