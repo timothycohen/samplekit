@@ -1,6 +1,6 @@
+import { mfaKinds, mfaLabels } from '$lib/auth/client';
 import { auth } from '$lib/auth/server';
 import { transports } from '$lib/auth/server';
-import { mfaKinds, mfaLabels } from '$lib/db/client';
 import { checkedRedirect } from '$lib/http/server';
 import { jsonFail } from '$lib/http/server';
 import type { Actions, PageServerLoad } from './$types';

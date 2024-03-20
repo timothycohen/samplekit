@@ -2,16 +2,15 @@ import { circOut } from 'svelte/easing';
 import { tweened, type Tweened } from 'svelte/motion';
 import { get, type Writable } from 'svelte/store';
 import { defaultValue, fileToDataUrl, humanReadableFileSize } from '$lib/image/client';
-import type { CroppedImg, ImgCrop } from '$lib/db/client';
+import type { CroppedImg, CropValue } from '$lib/image/client';
 import type { Result } from '$lib/utils/common';
-import type { CropValue } from 'svelte-crop-window';
 
 //#region States
 // static
 export type Err = {
 	state: 'error';
 	img: { url: string | null; crop: CropValue | null };
-	errorMsgs: [string, string] | [string, null];
+	errorMsgs: [string, string] | [string, null]; // [title, body]
 };
 export type Canceled = { state: 'canceled' };
 export type Completed = { state: 'completed'; savedImg: CroppedImg | null };
@@ -92,9 +91,9 @@ type Upload = (a: {
 	formData: FormData;
 	uploadProgress: { tweened: Tweened<number>; scale: number };
 }) => { promise: Promise<Result<{ status: number }>>; abort: () => void };
-type SaveToDb = (a: { crop: ImgCrop }) => Promise<Result<{ savedImg: CroppedImg | null }>>;
+type SaveToDb = (a: { crop: CropValue }) => Promise<Result<{ savedImg: CroppedImg | null }>>;
 type DeletePreexistingImg = () => Promise<Result<Result.Success>>;
-type SaveCropToDb = (a: { crop: ImgCrop }) => Promise<Result<{ savedImg: CroppedImg | null }>>;
+type SaveCropToDb = (a: { crop: CropValue }) => Promise<Result<{ savedImg: CroppedImg | null }>>;
 //#endregion Types
 
 export class CropImgUploadController {
@@ -140,6 +139,60 @@ export class CropImgUploadController {
 		this.state.set({ state: 'file_selecting' });
 	}
 
+	/** States: 'uri_loaded' -> 'cropping' */
+	public startCrop(): void {
+		const { uri, file } = this.guard(['uri_loaded']);
+		this.state.set({ state: 'cropping', file, uri });
+	}
+
+	/** States: 'cropping' -> 'cropped' */
+	public loadCropValue({ crop }: { crop: CropValue }): void {
+		const { uri, file } = this.guard(['cropping']);
+		this.state.set({ state: 'cropped', crop, file, uri });
+	}
+
+	/** States: 'uri_loaded' -> 'cropped' */
+	public skipCrop({ crop }: { crop: CropValue } = { crop: defaultValue }): void {
+		const { uri, file } = this.guard(['uri_loaded']);
+		this.state.set({ state: 'cropped', crop, file, uri });
+	}
+
+	/** Update a preexisting image's crop value.
+	 * States: 'cropping_preexisting' -> 'db_updating_preexisting' -> 'completed'
+	 */
+	public async saveCropValToDb({
+		crop,
+		saveCropToDb,
+	}: {
+		crop: CropValue;
+		saveCropToDb: SaveCropToDb;
+	}): Promise<void | DB.User['avatar']> {
+		const { url } = this.guard(['cropping_preexisting']);
+		const updateDbPromise = saveCropToDb({ crop });
+		this.state.set({ state: 'db_updating_preexisting', updateDbPromise, crop, url });
+		const { data, error } = await updateDbPromise;
+		if (this.isCanceled()) return;
+		if (error) return this.state.set({ state: 'error', img: { url, crop }, errorMsgs: [error.message, null] });
+		this.state.set({ state: 'completed', savedImg: data.savedImg });
+		return data.savedImg;
+	}
+
+	/** Delete a preexisting image.
+	 * States: 'cropping_preexisting' -> 'deleting_preexisting' -> 'completed'
+	 */
+	public async deleteImg({ delImg }: { delImg: DeletePreexistingImg }): Promise<void | DB.User['avatar']> {
+		const { crop, url } = this.guard(['cropping_preexisting']);
+		const deletePreexistingImgPromise = delImg();
+
+		this.state.set({ state: 'deleting_preexisting', deletePreexistingImgPromise, crop, url });
+		const { error } = await deletePreexistingImgPromise;
+		if (this.isCanceled()) return;
+
+		if (error) return this.state.set({ state: 'error', img: { url, crop }, errorMsgs: [error.message, null] });
+		this.state.set({ state: 'completed', savedImg: null });
+		return null;
+	}
+
 	/** Convert a file into an in memory uri, guarding max file size.
 	 * States: any -> 'uri_loading' -> 'uri_loaded'
 	 * */
@@ -177,24 +230,6 @@ export class CropImgUploadController {
 				errorMsgs: ['Error reading file', null],
 			});
 		this.state.set({ state: 'uri_loaded', file, uri });
-	}
-
-	/** States: 'uri_loaded' -> 'cropping' */
-	public startCrop(): void {
-		const { uri, file } = this.guard(['uri_loaded']);
-		this.state.set({ state: 'cropping', file, uri });
-	}
-
-	/** States: 'cropping' -> 'cropped' */
-	public loadCropValue({ crop }: { crop: CropValue }): void {
-		const { uri, file } = this.guard(['cropping']);
-		this.state.set({ state: 'cropped', crop, file, uri });
-	}
-
-	/** States: 'uri_loaded' -> 'cropped' */
-	public skipCrop({ crop }: { crop: CropValue } = { crop: defaultValue }): void {
-		const { uri, file } = this.guard(['uri_loaded']);
-		this.state.set({ state: 'cropped', crop, file, uri });
 	}
 
 	/** Get the upload url, upload the file, and save it to the DB.
@@ -311,41 +346,5 @@ export class CropImgUploadController {
 	}): Promise<void | DB.User['avatar']> {
 		const { uri, file, crop } = this.guard(['cropped']);
 		return await this.uploadPipeline({ ...a, crop, file, uri });
-	}
-
-	/** Update a preexisting image's crop value.
-	 * States: 'cropping_preexisting' -> 'db_updating_preexisting' -> 'completed'
-	 */
-	public async saveCropValToDb({
-		crop,
-		saveCropToDb,
-	}: {
-		crop: CropValue;
-		saveCropToDb: SaveCropToDb;
-	}): Promise<void | DB.User['avatar']> {
-		const { url } = this.guard(['cropping_preexisting']);
-		const updateDbPromise = saveCropToDb({ crop });
-		this.state.set({ state: 'db_updating_preexisting', updateDbPromise, crop, url });
-		const { data, error } = await updateDbPromise;
-		if (this.isCanceled()) return;
-		if (error) return this.state.set({ state: 'error', img: { url, crop }, errorMsgs: [error.message, null] });
-		this.state.set({ state: 'completed', savedImg: data.savedImg });
-		return data.savedImg;
-	}
-
-	/** Delete a preexisting image.
-	 * States: 'cropping_preexisting' -> 'deleting_preexisting' -> 'completed'
-	 */
-	public async deleteImg({ delImg }: { delImg: DeletePreexistingImg }): Promise<void | DB.User['avatar']> {
-		const { crop, url } = this.guard(['cropping_preexisting']);
-		const deletePreexistingImgPromise = delImg();
-
-		this.state.set({ state: 'deleting_preexisting', deletePreexistingImgPromise, crop, url });
-		const { error } = await deletePreexistingImgPromise;
-		if (this.isCanceled()) return;
-
-		if (error) return this.state.set({ state: 'error', img: { url, crop }, errorMsgs: [error.message, null] });
-		this.state.set({ state: 'completed', savedImg: null });
-		return null;
 	}
 }

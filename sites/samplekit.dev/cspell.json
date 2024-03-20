@@ -1,7 +1,10 @@
 {
 	"words": [
 		"brackbang",
+		"btns",
+		"endregion",
 		"fouc",
+		"imagekit",
 		"ltscript",
 		"lucide",
 		"mdsvex",
@@ -9,15 +12,20 @@
 		"postcss",
 		"rehype",
 		"samplekit",
+		"sesh",
 		"shiki",
 		"supabase",
 		"superforms",
 		"tripgrave",
 		"tripslash",
 		"triptilde",
+		"ttlcache",
+		"typesafe",
 		"uswds",
 		"vals",
-		"vite"
+		"vite",
+		"webp",
+		"websockets"
 	],
 	"dictionaries": ["html", "typescript", "svelte", "sql", "node"]
 }
