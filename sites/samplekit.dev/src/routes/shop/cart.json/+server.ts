@@ -4,7 +4,7 @@ import { createCart, getCart, addToCart, removeFromCart, updateCart } from '$lib
 import { delSchema, postSchema, putSchema, type GetRes } from '.';
 import type { RequestHandler } from '@sveltejs/kit';
 
-const addCartItem: RequestHandler = async ({ request, cookies }) => {
+const addCartItem: RequestHandler = async ({ request, cookies, fetch }) => {
 	const res = postSchema.safeParse(await request.json().catch(() => ({})));
 	if (!res.success) return jsonFail(400);
 	const merchandiseId = res.data.id;
@@ -12,11 +12,11 @@ const addCartItem: RequestHandler = async ({ request, cookies }) => {
 	let cartId = cookies.get('cartId');
 	let cart;
 
-	if (cartId) cart = await getCart(cartId);
+	if (cartId) cart = await getCart({ cartId, fetch });
 
 	if (!cartId || !cart) {
 		try {
-			cart = await createCart();
+			cart = await createCart({ fetch });
 		} catch (err) {
 			return jsonFail(500, 'Could not create cart');
 		}
@@ -25,7 +25,7 @@ const addCartItem: RequestHandler = async ({ request, cookies }) => {
 	}
 
 	try {
-		await addToCart(cartId, [{ merchandiseId, quantity: 1 }]);
+		await addToCart({ cartId, lines: [{ merchandiseId, quantity: 1 }], fetch });
 	} catch (err) {
 		return jsonFail(500, 'Could not add to cart');
 	}
@@ -33,7 +33,7 @@ const addCartItem: RequestHandler = async ({ request, cookies }) => {
 	return jsonOk();
 };
 
-const removeCartItem: RequestHandler = async ({ request, cookies }) => {
+const removeCartItem: RequestHandler = async ({ request, cookies, fetch }) => {
 	const res = delSchema.safeParse(await request.json().catch(() => ({})));
 	if (!res.success) return jsonFail(400);
 	const { lineId } = res.data;
@@ -42,14 +42,14 @@ const removeCartItem: RequestHandler = async ({ request, cookies }) => {
 	if (!cartId) return jsonFail(400, 'Missing cart ID');
 
 	try {
-		await removeFromCart(cartId, [lineId]);
+		await removeFromCart({ cartId, lineIds: [lineId], fetch });
 		return jsonOk();
 	} catch (e) {
 		return jsonFail(500, 'Error removing item from cart');
 	}
 };
 
-const updateCartItemQty: RequestHandler = async ({ request, cookies }) => {
+const updateCartItemQty: RequestHandler = async ({ request, cookies, fetch }) => {
 	const res = putSchema.safeParse(await request.json().catch(() => ({})));
 	if (!res.success) return jsonFail(400);
 	const { lineId, quantity, variantId } = res.data;
@@ -59,9 +59,9 @@ const updateCartItemQty: RequestHandler = async ({ request, cookies }) => {
 
 	try {
 		if (quantity === 0) {
-			await removeFromCart(cartId, [lineId]);
+			await removeFromCart({ cartId, lineIds: [lineId], fetch });
 		} else {
-			await updateCart(cartId, [{ id: lineId, merchandiseId: variantId, quantity }]);
+			await updateCart({ cartId, lines: [{ id: lineId, merchandiseId: variantId, quantity }], fetch });
 		}
 		return jsonOk();
 	} catch (e) {
@@ -69,15 +69,15 @@ const updateCartItemQty: RequestHandler = async ({ request, cookies }) => {
 	}
 };
 
-const getCartItems: RequestHandler = async ({ cookies }) => {
+const getCartItems: RequestHandler = async ({ cookies, fetch }) => {
 	let cartId = cookies.get('cartId');
 	let cart;
 
-	if (cartId) cart = await getCart(cartId);
+	if (cartId) cart = await getCart({ cartId, fetch });
 
 	if (!cartId || !cart) {
 		try {
-			cart = await createCart();
+			cart = await createCart({ fetch });
 		} catch (err) {
 			return jsonFail(500, 'Could not create cart');
 		}

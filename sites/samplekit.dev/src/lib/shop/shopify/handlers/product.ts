@@ -1,5 +1,5 @@
 import { getCollectionProductsQuery, getProductQuery, getProductRecommendationsQuery, getProductsQuery } from '../gql';
-import { getStorefront } from '../storefront';
+import { requestStorefront } from '../storefront';
 import type { ProductFilter } from '$generated/shopify-graphql-types/storefront.types';
 import type { Product, SearchQuery, SortKey } from '../../types';
 
@@ -27,15 +27,22 @@ const sortKeyToProductSortKey = (sortKey?: SortKey): (typeof productSortKeys)[nu
 	}
 };
 
-export async function getCollectionProducts(
-	collectionHandle: string,
-	{ reverse, sortKey, availability, query, price }: Partial<SearchQuery> = {},
-): Promise<Product[] | null> {
+export async function getCollectionProducts({
+	filters,
+	collectionHandle,
+	fetch,
+}: {
+	filters: Partial<SearchQuery>;
+	collectionHandle: string;
+	fetch: Fetch;
+}): Promise<Product[] | null> {
+	const { reverse, sortKey, availability, query, price } = filters;
 	const productFilter: ProductFilter[] = [];
 	if (availability !== undefined) productFilter.push({ available: availability });
 	if (price) productFilter.push({ price });
 
-	const res = await getStorefront().request(getCollectionProductsQuery, {
+	const res = await requestStorefront({
+		operation: getCollectionProductsQuery,
 		variables: {
 			handle: collectionHandle,
 			reverse,
@@ -43,6 +50,7 @@ export async function getCollectionProducts(
 			// @ts-expect-error code-gen is generating enums in a d.ts file :(
 			sortKey: sortKeyToProductCollectionSortKey(sortKey),
 		},
+		fetch,
 	});
 
 	if (!res.data?.collection) {
@@ -63,8 +71,8 @@ export async function getCollectionProducts(
 	return products;
 }
 
-export async function getProduct({ handle }: { handle: string }): Promise<Product | undefined> {
-	const res = await getStorefront().request(getProductQuery, { variables: { handle } });
+export async function getProduct({ handle, fetch }: { handle: string; fetch: Fetch }): Promise<Product | undefined> {
+	const res = await requestStorefront({ operation: getProductQuery, variables: { handle }, fetch });
 	const product = res.data?.product;
 	if (!product) return undefined;
 	else {
@@ -74,9 +82,17 @@ export async function getProduct({ handle }: { handle: string }): Promise<Produc
 }
 
 /** @throws Error */
-export async function getProductRecommendations(productId: string): Promise<Product[]> {
-	const res = await getStorefront().request(getProductRecommendationsQuery, {
+export async function getProductRecommendations({
+	productId,
+	fetch,
+}: {
+	productId: string;
+	fetch: Fetch;
+}): Promise<Product[]> {
+	const res = await requestStorefront({
+		operation: getProductRecommendationsQuery,
 		variables: { productId },
+		fetch,
 	});
 
 	const productRecommendations = res?.data?.productRecommendations;
@@ -110,14 +126,15 @@ const queryBuilder = (
 
 /** @throws Error */
 export async function getProducts({
-	first,
-	reverse,
-	sortKey,
-	availability,
-	query,
-	price,
-}: Partial<SearchQuery> & { first?: number } = {}): Promise<Product[]> {
-	const res = await getStorefront().request(getProductsQuery, {
+	filters,
+	fetch,
+}: {
+	filters: Partial<SearchQuery> & { first?: number };
+	fetch: Fetch;
+}): Promise<Product[]> {
+	const { first, reverse, sortKey, availability, query, price } = filters;
+	const res = await requestStorefront({
+		operation: getProductsQuery,
 		variables: {
 			first: first ?? 100,
 			reverse,
@@ -125,6 +142,7 @@ export async function getProducts({
 			// @ts-expect-error code-gen is generating enums in a d.ts file :(
 			sortKey: sortKeyToProductSortKey(sortKey),
 		},
+		fetch,
 	});
 	if (!res.data?.products) throw new Error('getProducts');
 	return res.data.products.edges.map((e) => ({

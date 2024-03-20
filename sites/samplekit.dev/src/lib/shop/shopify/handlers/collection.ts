@@ -1,9 +1,15 @@
 import { getCollectionQuery, getCollectionsQuery } from '../gql';
-import { getStorefront } from '../storefront';
+import { requestStorefront } from '../storefront';
 import type { Collection } from '../../types';
 
-export async function getCollection(handle: string): Promise<Collection | undefined> {
-	const res = await getStorefront().request(getCollectionQuery, { variables: { handle } });
+export async function getCollection({
+	handle,
+	fetch,
+}: {
+	handle: string;
+	fetch: Fetch;
+}): Promise<Collection | undefined> {
+	const res = await requestStorefront({ operation: getCollectionQuery, variables: { handle }, fetch });
 	return res.data?.collection ?? undefined;
 }
 
@@ -12,8 +18,8 @@ export async function getCollection(handle: string): Promise<Collection | undefi
  *
  * Ignores 'frontpage'
  */
-export async function getCollections(): Promise<Collection[]> {
-	const res = await getStorefront().request(getCollectionsQuery);
+export async function getCollections({ fetch }: { fetch: Fetch }): Promise<Collection[]> {
+	const res = await requestStorefront({ operation: getCollectionsQuery, fetch });
 	if (!res.data?.collections) throw new Error('getCollections');
 	return res.data.collections.edges.reduce<Collection[]>((acc, { node: collection }) => {
 		if (collection.handle === 'frontpage') return acc;
