@@ -1,6 +1,6 @@
 import { z } from 'zod';
-import { cropSchema, type CroppedImg } from '$lib/db/client';
 import { createClientFetch } from '$lib/http/client';
+import { cropSchema, type CroppedImg } from '$lib/image/client';
 import type { Result } from '$lib/utils/common';
 import type { RouteId } from './$types';
 

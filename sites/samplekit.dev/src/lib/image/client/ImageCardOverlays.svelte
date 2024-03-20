@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { AlertTriangle, ImageIcon, Loader } from 'lucide-svelte';
-	import type { CropValue } from 'svelte-crop-window';
+	import type { CropValue } from '$lib/image/client';
 
 	export let img:
 		| { kind: 'overlay'; url: string | null | undefined; crop: CropValue | null; blur?: true }
