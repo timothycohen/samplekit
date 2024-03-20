@@ -13,8 +13,8 @@
 	} from 'lucide-svelte';
 	import { slide } from 'svelte/transition';
 	import { goto } from '$app/navigation';
+	import { mfaLabels } from '$lib/auth/client';
 	import { Icon } from '$lib/components';
-	import { mfaLabels } from '$lib/db/client';
 	import UpdatePassForm from './UpdatePassForm.svelte';
 
 	export let data;

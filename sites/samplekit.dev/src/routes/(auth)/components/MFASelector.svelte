@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { mfaLabels } from '$lib/db/client';
+	import { mfaLabels } from '$lib/auth/client';
 
 	export let mfasEnabled: DB.MFAs.Enabled;
 	export let selectedMFAMethod: DB.MFAs.Kind | '';
