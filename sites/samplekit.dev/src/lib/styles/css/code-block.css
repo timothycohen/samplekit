@@ -10,6 +10,8 @@ code {
 	--h-rose-pine-dawn-scroll-track: hsl(268.1, 21.5%, 75%);
 	--h-rose-pine-dawn-highlighted-line: hsla(248.6, 11.7%, 47.1%, 0.1);
 	--h-rose-pine-dawn-highlighted-char: hsla(248.6, 11.7%, 47.1%, 0.1);
+	--h-rose-pine-dawn-diff-added: hsla(120, 100%, 40%, 0.2);
+	--h-rose-pine-dawn-diff-removed: hsla(0, 100%, 40%, 0.2);
 
 	--h-darker: hsl(203.4, 70.9%, 59.6%);
 	--h-darker-bg: hsl(0, 0%, 0%);
@@ -17,6 +19,8 @@ code {
 	--h-darker-scroll-track: hsl(var(--gray-3));
 	--h-darker-highlighted-line: hsla(210, 100%, 65%, 0.2);
 	--h-darker-highlighted-char: hsla(210, 100%, 65%, 0.25);
+	--h-darker-diff-added: hsla(120, 100%, 40%, 0.2);
+	--h-darker-diff-removed: hsla(0, 100%, 40%, 0.2);
 }
 
 /* Title ####################### */
@@ -151,6 +155,24 @@ code {
 	color: theme('colors.gray.9');
 }
 
+.code-wrapper pre code > [data-line-diff-removed]::before {
+	content: '-';
+	display: inline-block;
+	width: 1rem;
+	margin-right: 1rem;
+	text-align: right;
+	color: hsl(var(--error-9));
+}
+
+.code-wrapper pre code > [data-line-diff-added]::before {
+	content: '+';
+	display: inline-block;
+	width: 1rem;
+	margin-right: 1rem;
+	text-align: right;
+	color: hsl(var(--success-9));
+}
+
 .no-lines .code-wrapper pre code > [data-line]::before {
 	display: none;
 }
@@ -165,17 +187,27 @@ code {
 .light [data-line-highlighted] {
 	background-color: var(--h-rose-pine-dawn-highlighted-line);
 }
-
 .light [data-chars-highlighted] {
 	background-color: var(--h-rose-pine-dawn-highlighted-char);
 	border: 1px solid var(--h-rose-pine-dawn-highlighted-char);
 }
-
 .dark [data-line-highlighted] {
 	background-color: var(--h-darker-highlighted-line);
 }
-
 .dark [data-chars-highlighted] {
 	border: 1px solid var(--h-darker-highlighted-char);
 	background-color: var(--h-darker-highlighted-char);
+}
+
+.light [data-line-diff-added] {
+	background-color: var(--h-rose-pine-dawn-diff-added);
+}
+.light [data-line-diff-removed] {
+	background-color: var(--h-rose-pine-dawn-diff-removed);
+}
+.dark [data-line-diff-removed] {
+	background-color: var(--h-darker-diff-removed);
+}
+.dark [data-line-diff-added] {
+	background-color: var(--h-darker-diff-added);
 }
