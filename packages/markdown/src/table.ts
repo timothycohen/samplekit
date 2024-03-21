@@ -43,17 +43,16 @@ import { marked } from 'marked';
 export function preprocessTable({
 	include,
 	logger,
+	formatLogFilename,
 }: {
 	logger?: { error: (s: string) => void; debug: (s: string) => void };
 	include?: (filename: string) => boolean;
+	formatLogFilename?: (filename: string) => string;
 } = {}) {
 	return {
 		markup({ content, filename }: { content: string; filename: string }): { code: string } | null {
 			if (include && !include(filename)) return null;
-			const slug = (() => {
-				const a = filename.split('/');
-				return a[a.length - 2];
-			})();
+			const format = formatLogFilename || ((filename: string) => filename);
 
 			const startMarker = '<!-- table-start -->';
 			const endMarker = '<!-- table-end -->';
@@ -70,7 +69,7 @@ export function preprocessTable({
 
 				if (endIdx === -1) {
 					logger?.error(
-						`[PREPROCESS] | ${slug} | Tables | Error | Incomplete md at start ${startIdx} (count: ${count}). Aborting.`,
+						`[PREPROCESS] | ${format(filename)} | Tables | Error | Incomplete md at start ${startIdx} (count: ${count}). Aborting.`,
 					);
 					return { code: resultContent };
 				}
@@ -86,7 +85,7 @@ export function preprocessTable({
 				startIdx = resultContent.indexOf(startMarker, startIdx + processedContent.length);
 			}
 
-			logger?.debug(`[PREPROCESS] | ${slug} | Tables | Success | { count: ${count} } }`);
+			logger?.debug(`[PREPROCESS] | ${format(filename)} | Tables | Success | { count: ${count} } }`);
 
 			return { code: resultContent };
 		},

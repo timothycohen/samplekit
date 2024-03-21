@@ -12,5 +12,6 @@ export default {
 	featured: true,
 	updates: [
 		{ at: new Date('Wed Mar 20 16:11:27 2024 -0400'), descriptions: ['Expand processor syntax beyond highlighting.'] },
+		{ at: new Date('Thu Mar 21 13:59:53 2024 -0400'), descriptions: ['Add formatLogFilename.'] },
 	],
 } satisfies RawFrontMatter;

@@ -279,17 +279,16 @@ const parseAndRemoveWrapper = (
 export function preprocessCodeblock({
 	include,
 	logger,
+	formatLogFilename,
 }: {
 	logger?: { error: (s: string) => void; debug: (s: string) => void; warn: (s: string) => void };
 	include?: (filename: string) => boolean;
+	formatLogFilename?: (filename: string) => string;
 } = {}) {
 	return {
 		markup({ content, filename }: { content: string; filename: string }): { code: string } | null {
 			if (include && !include(filename)) return null;
-			const slug = (() => {
-				const a = filename.split('/');
-				return a[a.length - 2];
-			})();
+			const format = formatLogFilename || ((filename: string) => filename);
 
 			const delimiters = [
 				{ startRegex: new RegExp('```(' + mdLanguages.join('|') + ')'), endMarker: '```' },
@@ -316,7 +315,7 @@ export function preprocessCodeblock({
 
 				if (endIdx === -1) {
 					logger?.error(
-						`[PREPROCESS] | ${slug} | Codeblock | Error | Incomplete md at start ${startIdx} (count: ${count}). Aborting.`,
+						`[PREPROCESS] | ${format(filename)} | Codeblock | Error | Incomplete md at start ${startIdx} (count: ${count}). Aborting.`,
 					);
 					return { code: resultContent };
 				}
@@ -336,7 +335,7 @@ export function preprocessCodeblock({
 
 				if (codeProcessError || highlightError) {
 					logger?.warn(
-						`[PREPROCESS] | ${slug} | Codeblock | Warning | Unable to process at start ${startIdx} count ${count}. Skipping.`,
+						`[PREPROCESS] | ${format(filename)} | Codeblock | Warning | Unable to process at start ${startIdx} count ${count}. Skipping.`,
 					);
 				}
 
@@ -344,7 +343,7 @@ export function preprocessCodeblock({
 				startMatch = startRegex.exec(resultContent);
 			}
 
-			logger?.debug(`[PREPROCESS] | ${slug} | Codeblock | Success | { count: ${count} } }`);
+			logger?.debug(`[PREPROCESS] | ${format(filename)} | Codeblock | Success | { count: ${count} } }`);
 
 			return { code: resultContent };
 		},

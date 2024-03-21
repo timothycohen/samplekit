@@ -200,26 +200,7 @@ export {};
 <p>And finally we add the preprocessors.</p>
 
 <CodeTopper title="svelte.config.js">
-```js
-import { preprocessCodeblock, preprocessTable } from '@samplekit/markdown';
-import adapter from '@sveltejs/adapter-auto';
-import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
-
-/** @type {import('@sveltejs/kit').Config} */
-const config = {
-	extensions: ['.svelte', '.svx'],
-	preprocess: [
-		preprocessCodeblock({ logger: console, include: (filename) => filename.endsWith('.svx') }),
-		preprocessTable({ logger: console, include: (filename) => filename.endsWith('.svx') }),
-		vitePreprocess(),
-	],
-	kit: {
-		adapter: adapter(),
-	},
-};
-
-export default config;
-```
+	<TabPanelItem panel={{ rawHTML: data.article.demos?.main?.find((e) => e.title === 'svelte.config.js')?.rawHTML }} />
 </CodeTopper>
 
 <p>
@@ -284,6 +265,7 @@ export default config;
 ```
 
 <p>and render as:</p>
+
 <!-- table-start -->
 | Heading 1 | Heading 2 | Heading 3 |
 | --------- | --------- | --------- |
@@ -305,15 +287,6 @@ export default config;
 	Comment syntax is nice because it disappears if changing to MDsveX, has a bound keyboard shortcut, and has noticeable
 	syntax highlighting.
 </p>
-
-```md
-<!-- table-start -->
-| Header 1 | Header 2 |
-| -------- | -------- |
-| Cell 1-1 | Cell 1-2 |
-| Cell 2-1 | Cell 2-2 |
-<!-- table-end -->
-```
 
 <h4>Writing the Preprocessor</h4>
 
@@ -344,6 +317,7 @@ export default config;
 
 <p>For this one, we want to write:</p>
 
+<CodeTopper title="Codeblock Example: Writing">
 ```md
 &tripgrave;ts
 &tripslash;diff-add:2-4
@@ -355,9 +329,11 @@ const deprecation = true; // &brackbang;diff-remove]
 const highlightedLine = true; // &brackbang;highlight]
 &tripgrave;
 ```
+</CodeTopper>
 
 <p>process to (sans whitespace):</p>
 
+<CodeTopper title="Codeblock Example: Processing">
 ```html
 <div class="code-wrapper">
 	<pre
@@ -436,9 +412,11 @@ const highlightedLine = true; // &brackbang;highlight]
 	</pre>
 </div>
 ```
+</CodeTopper>
 
 <p>and render as:</p>
 
+<CodeTopper title="Codeblock Example: Rendering">
 ```ts
 ///diff-add:2-4
 console.log('hello world');
@@ -448,6 +426,7 @@ const coolNewFeature = () => {
 const deprecation = true; // [!diff-remove]
 const highlightedLine = true; // [!highlight]
 ```
+</CodeTopper>
 
 <h4>Writing the Preprocessor</h4>
 
@@ -455,12 +434,19 @@ const highlightedLine = true; // [!highlight]
 
 <p>First, let's decide on the languages we want to load.</p>
 
+<CodeTopper title="codeblockPreprocessor.ts Part 1">
 ```ts
-const mdLanguages = ['json', 'sh', 'html', 'css', 'md', 'js', 'ts', 'svelte', 'diff']
+import { type BundledLanguage as ShikiLang } from 'shiki';
+
+export const mdLanguages = ['json', 'sh', 'html', 'css', 'md', 'js', 'ts', 'svelte', 'diff'] satisfies ShikiLang[];
+export type MdLang = (typeof mdLanguages)[number];
+export const isMdLang = (lang?: string): lang is MdLang => mdLanguages.includes(lang as MdLang);
 ```
+</CodeTopper>
 
 <p>Let's make sure to escape Svelte characters too.</p>
 
+<CodeTopper title="codeblockPreprocessor.ts Part 2">
 ```ts
 const escapeSvelte = (code: string) => {
 	return code.replace(/[{}`]/g, (match) => {
@@ -472,12 +458,14 @@ const escapeSvelte = (code: string) => {
 	});
 };
 ```
+</CodeTopper>
 
 <p>
 	We know we want to be detect things like line highlighting and diffing, so we'll check for a custom
 	<code>///highlight:</code> or <code>// [!highlight]</code> syntax, extract the line data, and remove the syntax from the output.
 </p>
 
+<CodeTopper title="codeblockPreprocessor.ts Part 3">
 ```ts
 const extractGlobalRegex = ({ rawCode, regex }: { rawCode: string; regex: RegExp }) => {
 	const lines: number[] = [];
@@ -563,6 +551,7 @@ const getLineProps = (rawCode: string) => {
 	return { strippedCode: code, lineProps, preProps };
 };
 ```
+</CodeTopper>
 
 <p>
 	Next we'll need to choose a light and dark theme to create our highlighter. I'll use
@@ -574,6 +563,7 @@ const getLineProps = (rawCode: string) => {
 	– my own modified version of VS Code <code>dark+</code> – for the dark theme.
 </p>
 
+<CodeTopper title="codeblockPreprocessor.ts Part 4">
 ```ts
 import { getHighlighter } from 'shiki';
 import darkerJSON from './darker.js';
@@ -583,10 +573,14 @@ const highlighter = await getHighlighter({
 	langs: mdLanguages,
 });
 ```
+</CodeTopper>
 
 <p>Now we can use it to render some HTML!</p>
 
+<CodeTopper title="codeblockPreprocessor.ts Part 5">
 ```ts
+import type { Element } from 'hast';
+
 const createThemedCodeHtml = ({
 	code,
 	lang,
@@ -648,12 +642,10 @@ const createThemedCodeHtml = ({
 
 export const mdCodeBlockToRawHtml = ({ rawCode, lang }: { rawCode: string; lang: MdLang }) => {
 	try {
-		const { strippedCode, lineProps, preProps } = getLineProps(rawCode);
+		const { strippedCode: code, lineProps, preProps } = getLineProps(rawCode);
 		return {
 			data:
-				`<div class="code-wrapper">` +
-				escapeSvelte(createThemedCodeHtml({ code: strippedCode, lang, lineProps, preProps })) +
-				'</div>',
+				`<div class="code-wrapper">` + escapeSvelte(createThemedCodeHtml({ code, lang, lineProps, preProps })) + '</div>',
 		};
 	} catch (err) {
 		if (err instanceof Error) return { error: err };
@@ -661,12 +653,14 @@ export const mdCodeBlockToRawHtml = ({ rawCode, lang }: { rawCode: string; lang:
 	}
 };
 ```
+</CodeTopper>
 
 <p>
 	Our preprocessor code will give us the raw markup, including the <code>```</code> or <code>~~~</code> markdown code block
 	delimiter, so let's write a function to parse and remove the wrapper from the raw input.
 </p>
 
+<CodeTopper title="codeblockPreprocessor.ts Part 6">
 ```ts
 const parseAndRemoveWrapper = (
 	rawMarkdown: string,
@@ -699,28 +693,28 @@ const parseAndRemoveWrapper = (
 	return { rawCode, lang };
 };
 ```
+</CodeTopper>
 
 <p>
 	We have everything needed to write our processor, so let's get to it. We'll use the same loop and replace method as
 	<code>preprocessTable</code>.
 </p>
 
-<CodeTopper title="codeblock.ts">
+<CodeTopper title="codeblockPreprocessor.ts Part 7">
 ```ts
 export function preprocessCodeblock({
 	include,
 	logger,
+	formatLogFilename,
 }: {
 	logger?: { error: (s: string) => void; debug: (s: string) => void; warn: (s: string) => void };
 	include?: (filename: string) => boolean;
+	formatLogFilename?: (filename: string) => string;
 } = {}) {
 	return {
 		markup({ content, filename }: { content: string; filename: string }): { code: string } | null {
 			if (include && !include(filename)) return null;
-			const slug = (() => {
-				const a = filename.split('/');
-				return a[a.length - 2];
-			})();
+			const format = formatLogFilename || ((filename: string) => filename);
 
 			const delimiters = [
 				{ startRegex: new RegExp('&tripgrave;(' + mdLanguages.join('|') + ')'), endMarker: '&tripgrave;' },
@@ -747,7 +741,7 @@ export function preprocessCodeblock({
 
 				if (endIdx === -1) {
 					logger?.error(
-						`[PREPROCESS] | ${slug} | Codeblock | Error | Incomplete md at start ${startIdx} (count: ${count}). Aborting.`,
+						`[PREPROCESS] | ${format(filename)} | Codeblock | Error | Incomplete md at start ${startIdx} (count: ${count}). Aborting.`,
 					);
 					return { code: resultContent };
 				}
@@ -767,7 +761,7 @@ export function preprocessCodeblock({
 
 				if (codeProcessError || highlightError) {
 					logger?.warn(
-						`[PREPROCESS] | ${slug} | Codeblock | Warning | Unable to process at start ${startIdx} count ${count}. Skipping.`,
+						`[PREPROCESS] | ${format(filename)} | Codeblock | Warning | Unable to process at start ${startIdx} count ${count}. Skipping.`,
 					);
 				}
 
@@ -775,13 +769,21 @@ export function preprocessCodeblock({
 				startMatch = startRegex.exec(resultContent);
 			}
 
-			logger?.debug(`[PREPROCESS] | ${slug} | Codeblock | Success | { count: ${count} } }`);
+			logger?.debug(`[PREPROCESS] | ${format(filename)} | Codeblock | Success | { count: ${count} } }`);
 
 			return { code: resultContent };
 		},
 	};
 }
 ```
+</CodeTopper>
+
+<p>We've finished the preprocessor. Full code below.</p>
+
+<CodeTopper title="codeblockPreprocessor.ts Full" collapsed>
+	<TabPanelItem
+		panel={{ rawHTML: data.article.demos?.main?.find((d) => d.title === 'codeblockPreprocessor.ts')?.rawHTML ?? '' }}
+	/>
 </CodeTopper>
 
 <p>And finally, we add a touch of css:</p>
