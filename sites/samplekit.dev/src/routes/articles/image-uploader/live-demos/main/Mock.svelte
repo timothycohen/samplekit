@@ -7,8 +7,8 @@
 	import { Avatar } from '$lib/components';
 	import { UploadProgress, ImageCardBtns, ImageCardOverlays } from '$lib/image/client';
 	import { CropWindow, defaultOptions } from '$lib/image/client';
-	import owl from './owl-400w.webp';
-	import smoky from './smoky-400w.webp';
+	import img_owl from '$routes/articles/image-uploader/assets/owl-400w.webp';
+	import img_smoky from '$routes/articles/image-uploader/assets/smoky-400w.webp';
 	import type { CropControllerState } from '$lib/cloudStorage/client';
 
 	let avatar: DB.User['avatar'] = null;
@@ -50,7 +50,7 @@
 		avatar = null;
 		s.set({
 			state: 'cropped',
-			uri: owl,
+			uri: img_owl,
 			crop: { position: { x: 0, y: 0 }, aspect: 1, rotation: $rotation, scale: $scale },
 			// @ts-expect-error – this is a mock
 			file: null,
@@ -67,7 +67,7 @@
 				s.set({
 					state: 'image_storage_uploading',
 					crop,
-					uri: owl,
+					uri: img_owl,
 					abortUpload: noop,
 					imageUploadPromise: new Promise(noop),
 					uploadProgress,
@@ -78,7 +78,7 @@
 
 		timeouts.push(
 			setTimeout(() => {
-				avatar = { crop, url: owl };
+				avatar = { crop, url: img_owl };
 				s.set({ state: 'completed', savedImg: avatar });
 			}, 3000),
 		);
@@ -91,7 +91,7 @@
 		avatar = null;
 		s.set({
 			state: 'cropped',
-			uri: smoky,
+			uri: img_smoky,
 			crop: { position: { x: 0, y: 0 }, aspect: 1, rotation: 0, scale: 1 },
 			// @ts-expect-error – this is a mock
 			file: null,
@@ -104,7 +104,7 @@
 				s.set({
 					state: 'image_storage_uploading',
 					crop: { position: { x: 0, y: 0 }, aspect: 1, rotation: 0, scale: 1 },
-					uri: smoky,
+					uri: img_smoky,
 					abortUpload: noop,
 					imageUploadPromise: new Promise(noop),
 					uploadProgress,
@@ -118,7 +118,7 @@
 				s.set({
 					state: 'error',
 					errorMsgs: ['Image may contain inappropriate content: Smoking.', null],
-					img: { url: smoky, crop: { position: { x: 0, y: 0 }, aspect: 1, rotation: 0, scale: 1 } },
+					img: { url: img_smoky, crop: { position: { x: 0, y: 0 }, aspect: 1, rotation: 0, scale: 1 } },
 				});
 			}, 2000),
 		);

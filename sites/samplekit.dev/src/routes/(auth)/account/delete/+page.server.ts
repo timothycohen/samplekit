@@ -53,7 +53,9 @@ export const load: PageServerLoad = async ({ locals }) => {
 		},
 	};
 
-	return { veri };
+	const meta: App.PageData['meta'] = { title: 'Delete Account | SampleKit' };
+
+	return { veri, meta };
 };
 
 const deleteUserWithSeshConf: Action = async ({ locals }) => {

@@ -12,7 +12,7 @@ export const load: LayoutLoad = async ({ route, data: serverData }) => {
 	};
 
 	const meta: App.PageData['meta'] = {
-		title: article.title,
+		title: `${article.title} | SampleKit`,
 		description: article.description,
 		ogType: 'article',
 	};
@@ -22,5 +22,5 @@ export const load: LayoutLoad = async ({ route, data: serverData }) => {
 		meta.twitterImage = article.imgLg;
 	}
 
-	return { article };
+	return { article, meta };
 };

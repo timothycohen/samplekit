@@ -1,6 +1,6 @@
 {
 	"name": "@samplekit/markdown",
-	"version": "1.1.0",
+	"version": "1.2.0",
 	"description": "Markdown utils and svelte preprocessors.",
 	"private": true,
 	"type": "module",

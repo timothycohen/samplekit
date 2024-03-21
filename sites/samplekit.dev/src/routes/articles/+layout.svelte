@@ -193,7 +193,10 @@
 
 		<div class="prose prose-lg prose-radix">
 			<Changelog updates={article.updates} />
-			<p>Have a suggestion? File an <a href="https://github.com/timothycohen/samplekit/issues">issue</a>.</p>
+			<p>
+				Have a suggestion? File an
+				<a href="https://github.com/timothycohen/samplekit/issues">issue</a>.
+			</p>
 		</div>
 	</footer>
 </div>

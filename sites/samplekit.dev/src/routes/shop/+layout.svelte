@@ -53,12 +53,7 @@
 			</div>
 
 			<div class="flex justify-end">
-				<a
-					href="https://demo.vercel.store"
-					target="_blank"
-					rel="noopener noreferrer"
-					class="btn-sizing link text-accent-12 group p-2"
-				>
+				<a href="https://demo.vercel.store" class="btn-sizing link text-accent-12 group p-2">
 					Layout from Vercel Commerce
 					<ArrowRight class="h-4 w-4 transition-transform group-hover:translate-x-1" />
 				</a>

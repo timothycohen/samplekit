@@ -10,3 +10,9 @@ export const toHumanReadableTime = (seconds: number) => {
 	if (seconds < 3600) return `${Math.floor(seconds / 60)} minutes`;
 	return `${Math.floor(seconds / 3600)} hours`;
 };
+
+export const kebabToTitleCase = (str: string) =>
+	str
+		.split('-')
+		.map((s) => s.charAt(0).toUpperCase() + s.slice(1))
+		.join(' ');

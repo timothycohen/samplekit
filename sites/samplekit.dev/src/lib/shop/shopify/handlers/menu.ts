@@ -1,8 +1,8 @@
 import { getMenuQuery } from '../gql';
-import { getStorefront } from '../storefront';
+import { requestStorefront } from '../storefront';
 import type { Menu } from '../../types';
 
-export async function getMenu(handle: string): Promise<Menu> {
-	const res = await getStorefront().request(getMenuQuery, { variables: { handle } });
+export async function getMenu({ handle, fetch }: { handle: string; fetch: Fetch }): Promise<Menu> {
+	const res = await requestStorefront({ operation: getMenuQuery, variables: { handle }, fetch });
 	return res.data?.menu?.items ?? [];
 }
