@@ -8,7 +8,10 @@ import type { Action } from '@sveltejs/kit';
 
 export const load: PageServerLoad = async ({ locals }) => {
 	const { user } = await locals.seshHandler.userOrRedirect();
-	return { user };
+
+	const meta: App.PageData['meta'] = { title: 'Remove MFA | SampleKit' };
+
+	return { user, meta };
 };
 
 const removeMFAWithSeshConf: Action<{ mfaKind: string }> = async ({ locals, params }) => {

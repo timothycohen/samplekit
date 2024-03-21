@@ -20,7 +20,9 @@ export const load: PageServerLoad = async ({ params }) => {
 	});
 	createNewPassForm.data.persistent = true;
 
-	return { createNewPassForm, email: user.email };
+	const meta: App.PageData['meta'] = { title: 'Create New Password | SampleKit' };
+
+	return { createNewPassForm, email: user.email, meta };
 };
 
 const createNewPassFromPwReset: Action<{ token: string }> = async ({ request, params, locals, getClientAddress }) => {
