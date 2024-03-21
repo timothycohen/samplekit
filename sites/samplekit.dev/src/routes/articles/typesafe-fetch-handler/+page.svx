@@ -16,21 +16,21 @@
 				<td><span class="text-sm font-light">0.1</span> </td>
 				<td>Component Initialization</td>
 				<td>
-					<a target="_blank" href="https://kit.svelte.dev/docs/load">Load Functions</a>
+					<a href="https://kit.svelte.dev/docs/load">Load Functions</a>
 				</td>
 			</tr>
 			<tr>
 				<td><span class="text-sm font-light">0.2</span> </td>
 				<td>Form Submissions</td>
 				<td>
-					<a target="_blank" href="https://kit.svelte.dev/docs/form-actions">Form Actions</a>
+					<a href="https://kit.svelte.dev/docs/form-actions">Form Actions</a>
 				</td>
 			</tr>
 			<tr>
 				<td><span class="text-sm font-light">0.3</span></td>
 				<td>HTTP Requests</td>
 				<td>
-					<a target="_blank" href="https://kit.svelte.dev/docs/routing#server">
+					<a href="https://kit.svelte.dev/docs/routing#server">
 						Request Handlers
 					</a>
 				</td>
@@ -76,7 +76,7 @@ export const load: PageServerLoad = async () => {
 
 <p>
 	There are also packages which expand on this with more features and the ability to easily handle multiple forms on a
-	single page. My favorite is <a target="_blank" href="https://superforms.rocks/">SuperForms</a>.
+	single page. My favorite is <a href="https://superforms.rocks/">SuperForms</a>.
 </p>
 
 ```ts
@@ -434,7 +434,7 @@ export const createDynClientFetch = <ResponseData, RequestData = void, URLProps 
 <p>
 	Superforms has a few nice features that are worth copying over to our fetch API. Currently, our function switches
 	<code>fetching</code> to <code>true</code> as soon as the request is sent.
-	<a target="_blank" href="https://superforms.rocks/concepts/timers#loading-indicators">As they explain</a>, it's often
+	<a href="https://superforms.rocks/concepts/timers#loading-indicators">As they explain</a>, it's often
 	better to wait a bit before showing the loading indicator. This is especially true for fast requests, where the
 	loading indicator can be more distracting than helpful. With that in mind, let's imitate their <code>delay</code> and
 	<code>timeout</code> stores.
@@ -574,5 +574,5 @@ export const createDynClientFetch = <ResponseData, RequestData = void, URLProps 
 	I really enjoy working with this API. With only around a hundred lines of code, loading states are baked in, errors
 	are accounted for, and type / route / method checks are all moved to compile time. Do you use something similar? Have
 	you found an even better way? Share it in the
-	<a target="_blank" href="https://github.com/timothycohen/samplekit/discussions">GitHub discussions</a>!
+	<a href="https://github.com/timothycohen/samplekit/discussions">GitHub discussions</a>!
 </p>

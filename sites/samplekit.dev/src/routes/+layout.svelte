@@ -27,9 +27,7 @@
 			<div class="flex justify-center gap-2">
 				<span>A project by <a class="link" href="mailto:contact@timcohen.dev">Timothy Cohen</a> </span>
 				|
-				<a class="link" href="https://github.com/timothycohen/samplekit/blob/main/LICENSE" target="_blank">
-					MIT License
-				</a>
+				<a class="link" href="https://github.com/timothycohen/samplekit/blob/main/LICENSE"> MIT License </a>
 			</div>
 		</footer>
 	{/if}

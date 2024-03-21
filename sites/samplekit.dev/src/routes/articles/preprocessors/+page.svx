@@ -227,15 +227,17 @@ export default config;
 	<code>&ltscript lang="ts"&gt</code>.
 </p>
 
-<div class="alert-wrapper alert-wrapper-info pb-2">
-		<p class="font-bold">Tip</p>
-		<p>Add emmet completions for <code>.svx</code> files in VS Code for your sanity!</p>
-<CodeTopper title=".vscode/settings.json" />
+<div class="alert-wrapper alert-wrapper-info pb-2 text-base">
+		<p class="alert-header my-0">Tip</p>
+		<p class="mt-2 mb-6">Add emmet completions for <code>.svx</code> files in VS Code for your sanity!</p>
+		<div class="text-lg">
+			<CodeTopper title=".vscode/settings.json" />
 ```json
 {
 	"emmet.includeLanguages": { ..., "svx": "html" }
 }
 ```
+		</div>
 </div>
 
 <h3>Table Preprocessor</h3>
@@ -289,11 +291,9 @@ export default config;
 | cell 4    | cell 5    | cell 6    |
 <!-- table-end -->
 
-<div class="not-prose">
-	<div class="alert-wrapper alert-wrapper-info">
-		<p class="font-bold alert-header">Hint</p>
-		<p>Styles via <a class="link" href="https://tailwindcss.com/docs/typography-plugin">Tailwind Typography</a>.</p>
-	</div>
+<div class="alert-wrapper alert-wrapper-info text-base">
+	<p class="alert-header my-0">Hint</p>
+	<p class="my-2">Styles via <a href="https://tailwindcss.com/docs/typography-plugin">Tailwind Typography</a>.</p>
 </div>
 
 <p>
@@ -799,7 +799,7 @@ export function preprocessCodeblock({
 	<a href="https://melt-ui.com/docs/preprocessor">Melt UI</a>
 	for introducing them to me, and I hope this article helps you get started with your own preprocessors. If you have a question
 	or want to share your preprocessor, share it in the
-	<a target="_blank" href="https://github.com/timothycohen/samplekit/discussions">GitHub discussions</a>!
+	<a href="https://github.com/timothycohen/samplekit/discussions">GitHub discussions</a>!
 </p>
 
 <p>Happy coding!</p>

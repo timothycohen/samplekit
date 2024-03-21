@@ -256,7 +256,7 @@ export const go = async (searchParams: URLSearchParams, opts?: GoOpts) => {
 	simply mutate the <code>searchParams</code>. It must be a new reference.
 </p>
 
-<div class="alert-wrapper alert-wrapper-warning not-prose mb-4">
+<div class="alert-wrapper alert-wrapper-warning mb-6 text-base">
 	<p class="alert-header">
 		<strong>Svelte 4 subscriptions are notified on assignment changes, not internal mutations.</strong>
 	</p>
@@ -688,7 +688,6 @@ export const searchParams = (
 	And that's it! We've created a simple wrapper around a derived store that syncs application state with the URL. This
 	is everything we need to write the demo at the top of the article.
 	<a
-		class="link"
 		href="https://github.com/timothycohen/samplekit/tree/main/sites/samplekit.dev/src/routes/articles/simple-url-state-controller/live-demos/main"
 	>
 		Full code here
@@ -717,6 +716,6 @@ export const searchParams = (
 
 <p>
 	Have any questions or comments? Share it in the
-	<a target="_blank" href="https://github.com/timothycohen/samplekit/discussions">GitHub discussions</a>! Thanks for
+	<a href="https://github.com/timothycohen/samplekit/discussions">GitHub discussions</a>! Thanks for
 	reading and see you in the <a href="/articles/generic-url-state-controller">next one</a>!
 </p>
