@@ -6,8 +6,16 @@ import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
 const config = {
 	extensions: ['.svelte', '.svx'],
 	preprocess: [
-		preprocessCodeblock({ logger: console, include: (filename) => filename.endsWith('.svx') }),
-		preprocessTable({ logger: console, include: (filename) => filename.endsWith('.svx') }),
+		preprocessCodeblock({
+			logger: console,
+			include: (filename) => filename.endsWith('.svx'),
+			formatLogFilename: (filename) => filename.replace(articleRoot, ''),
+		}),
+		preprocessTable({
+			logger: console,
+			include: (filename) => filename.endsWith('.svx'),
+			formatLogFilename: (filename) => filename.replace(articleRoot, ''),
+		}),
 		vitePreprocess(),
 	],
 	kit: {
