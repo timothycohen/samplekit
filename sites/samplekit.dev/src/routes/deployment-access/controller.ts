@@ -7,6 +7,8 @@ import type { Cookies } from '@sveltejs/kit';
 const generateToken = () =>
 	auth.config.randomString.generate({ size: 36, alphabet: auth.config.randomString.alphabet.default });
 
+const accessTokenHeaderName = 'x-deployment-access';
+
 const cookieSessionController = (() => {
 	const sessionCookKey = `deployment-session`;
 
@@ -178,7 +180,13 @@ const kvController = (() => {
 })();
 
 export const deploymentAccessController = (() => {
-	const isAuthenticated = async ({ cookies }: { cookies: Cookies }): Promise<boolean> => {
+	const hasHeader = async (headers: Headers) => {
+		const accessToken = headers.get(accessTokenHeaderName);
+		if (!accessToken) return false;
+		return !!(await kvController.accessToken.getOwnerId({ token: accessToken }));
+	};
+
+	const hasCookie = async (cookies: Cookies) => {
 		const clientSessionId = cookieSessionController.get({ cookies });
 		if (!clientSessionId) return false;
 
@@ -189,6 +197,19 @@ export const deploymentAccessController = (() => {
 		}
 
 		return true;
+	};
+
+	const isAuthenticated = async ({
+		cookies,
+		headers,
+	}:
+		| { cookies: Cookies; headers?: never }
+		| { cookies?: never; headers: Headers }
+		| { cookies: Cookies; headers: Headers }): Promise<boolean> => {
+		if (headers && cookies) return (await hasHeader(headers)) || (await hasCookie(cookies));
+		if (headers) return hasHeader(headers);
+		if (cookies) return hasCookie(cookies);
+		return false;
 	};
 
 	const countAuthenticatedSessions = async ({

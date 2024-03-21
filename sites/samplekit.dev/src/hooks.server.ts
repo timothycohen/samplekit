@@ -74,6 +74,8 @@ const protectStagingDeployments: Handle = async ({ event, resolve }) => {
 		dev ||
 		PUBLIC_ORIGIN.startsWith('http://localhost:') ||
 		event.url.pathname === '/deployment-access' ||
+		(event.route.id?.endsWith('.json') &&
+			(await deploymentAccessController.isAuthenticated({ headers: event.request.headers }))) ||
 		(await deploymentAccessController.isAuthenticated({ cookies: event.cookies }))
 	)
 		return resolve(event);
