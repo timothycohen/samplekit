@@ -59,9 +59,12 @@ export const load: LayoutServerLoad = async ({ locals, url }) => {
 		},
 	};
 
+	const meta: App.PageData['meta'] = { title: 'Update MFA | SampleKit' };
+
 	return {
 		veri,
 		desiredMFA,
 		action,
+		meta,
 	};
 };
