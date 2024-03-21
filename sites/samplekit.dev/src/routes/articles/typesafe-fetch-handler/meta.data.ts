@@ -7,8 +7,8 @@ export default {
 	description: 'A typesafe fetch handler that stores the route, method, res/req types, and fetch state.',
 	publishedAt: new Date('Tue Mar 5 20:39:38 2024 -0500'),
 	authors: [{ name: 'Tim Cohen', email: 'contact@timcohen.dev' }],
-	imgLg: '/articles/typesafe-fetch-handler.png',
-	imgSm: '/articles/typesafe-fetch-handler-thumbnail.png',
+	imgSm: '/articles/typesafe-fetch-handler-thumbnail-1200w.webp',
+	imgLg: '/articles/typesafe-fetch-handler-q30.webp',
 	tags: ['typescript', 'http', 'DX', 'client-server', 'request handlers', 'endpoints'],
 	featured: true,
 } satisfies RawFrontMatter;

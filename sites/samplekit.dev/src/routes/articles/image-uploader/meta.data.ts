@@ -9,7 +9,7 @@ export default {
 		'Select an image, upload it to an AWS S3 Bucket with a progress indicator, moderate it with Rekognition, save it to the DB, and serve it via AWS Cloudfront.',
 	publishedAt: new Date('Wed Mar 20 16:37:01 2024 -0400'),
 	authors: [{ name: 'Tim Cohen', email: 'contact@timcohen.dev' }],
-	imgSm: '/articles/image-uploader-thumbnail-850w.webp',
+	imgSm: '/articles/image-uploader-thumbnail-1200w.webp',
 	tags: ['state controller', 'image uploads', 'aws', 'db', 's3', 'cloudfront', 'rekognition', 'rate limiting'],
 	featured: true,
 } satisfies RawFrontMatter;
