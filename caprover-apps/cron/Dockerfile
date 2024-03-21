@@ -8,7 +8,7 @@
 
 FROM alpine:latest
 ARG TZ=America/New_York
-RUN apk add --no-cache tzdata && \
+RUN apk add --no-cache tzdata curl && \
 	cp /usr/share/zoneinfo/$TZ /etc/localtime && \
 	echo $TZ > /etc/timezone
 
