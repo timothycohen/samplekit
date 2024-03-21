@@ -7,7 +7,7 @@ export default {
 	description: 'Use preprocessors to format themed code blocks and Markdown tables alongside Svelte components.',
 	publishedAt: new Date('Wed Mar 6 16:16:15 2024 -0500'),
 	authors: [{ name: 'Tim Cohen', email: 'contact@timcohen.dev' }],
-	imgSm: '/articles/preprocessors-thumbnail.png',
+	imgSm: '/articles/preprocessors-thumbnail-1200w.webp',
 	tags: ['preprocessors', 'blog', 'markdown', 'code highlighting', 'DX'],
 	featured: true,
 	updates: [

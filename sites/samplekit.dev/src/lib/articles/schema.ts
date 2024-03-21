@@ -26,22 +26,22 @@ export const expandedSeries = z.object({
 export type ExpandedSeries = z.infer<typeof expandedSeries>;
 
 export const rawFrontMatterSchema = z.object({
+	title: z.string(),
 	/** Relative link on this website */
 	implementationSlug: z.string(),
 	/** GitHub */
 	srcCodeHref: z.string(),
-	title: z.string(),
 	description: z.string(),
 	publishedAt: z.date(),
 	authors: z.array(authorSchema),
 
-	tags: z.array(z.string()).optional().nullable(),
-	updates: z.array(z.object({ at: z.date(), descriptions: z.array(z.string()) })).optional(),
-	series: z.object({ name: z.string(), position: z.number() }).optional(),
 	imgSm: z.string().optional(),
 	imgSmGif: z.string().optional(),
 	imgLg: z.string().optional(),
+	tags: z.array(z.string()).optional().nullable(),
 	featured: z.boolean().optional(),
+	series: z.object({ name: z.string(), position: z.number() }).optional(),
+	updates: z.array(z.object({ at: z.date(), descriptions: z.array(z.string()) })).optional(),
 });
 
 export const loadedFrontMatter = rawFrontMatterSchema.extend({

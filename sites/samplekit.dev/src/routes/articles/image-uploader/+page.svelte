@@ -5,6 +5,7 @@
 	import CropImgUploadController from './CropImgUploadController.svx';
 	import IAM from './IAM.svx';
 	import Misc from './Misc.svx';
+	import img_uploaderFlow from './assets/image-uploader-flow-q30.webp';
 
 	export let data;
 </script>
@@ -223,7 +224,7 @@
 	(rate limiting and presigned url storage not shown):
 </p>
 
-<img src="/articles/image-uploader-flow-q30.webp" alt="Upload flow" />
+<img src={img_uploaderFlow} alt="Upload flow" />
 
 <p>
 	By focusing on client, AWS, and server separately, the flow become very easy to reason about. We'll begin with the
