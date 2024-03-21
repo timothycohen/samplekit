@@ -7,9 +7,7 @@
 
 	export let product: Product;
 
-	const optionKeys = product.options.map((o) => o.name.toLowerCase());
-
-	const getVariant = (searchParams: URLSearchParams) => {
+	const getVariant = ({ searchParams, optionKeys }: { searchParams: URLSearchParams; optionKeys: string[] }) => {
 		return Array.from(searchParams.entries()).reduce<Record<string, string>>((accumulator, [key, value]) => {
 			const cleanOption = key.toLowerCase();
 			if (!optionKeys.includes(cleanOption)) return accumulator;
@@ -17,7 +15,10 @@
 		}, {});
 	};
 
-	$: partialVariant = getVariant($page.url.searchParams);
+	$: partialVariant = getVariant({
+		searchParams: $page.url.searchParams,
+		optionKeys: product.options.map((o) => o.name.toLowerCase()),
+	});
 	$: selectedVariant =
 		product.variants.length === 1
 			? product.variants[0]
