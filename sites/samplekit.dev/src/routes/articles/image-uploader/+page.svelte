@@ -19,19 +19,19 @@
 	<li>
 		<p>Infrastructure</p>
 		<ul>
-			<li><a class="link" target="_blank" href="https://aws.amazon.com/s3">AWS S3</a> (image storage)</li>
+			<li><a href="https://aws.amazon.com/s3">AWS S3</a> (image storage)</li>
 			<li>
-				<a class="link" target="_blank" href="https://aws.amazon.com/cloudfront">AWS Cloudfront</a> (distribution)
+				<a href="https://aws.amazon.com/cloudfront">AWS Cloudfront</a> (distribution)
 			</li>
 			<li>
-				<a class="link" target="_blank" href="https://aws.amazon.com/rekognition">AWS Rekognition</a> (content moderation)
+				<a href="https://aws.amazon.com/rekognition">AWS Rekognition</a> (content moderation)
 			</li>
-			<li><a class="link" target="_blank" href="https://aws.amazon.com/iam">AWS IAM</a> (security)</li>
+			<li><a href="https://aws.amazon.com/iam">AWS IAM</a> (security)</li>
 			<li>
-				<a class="link" target="_blank" href="https://www.postgresql.org/">PostgreSQL</a> with
+				<a href="https://www.postgresql.org/">PostgreSQL</a> with
 				<a href="https://orm.drizzle.team/docs/overview">Drizzle ORM</a> (to store the user and their avatar)
 			</li>
-			<li><a class="link" target="_blank" href="https://redis.io/">Redis</a> (rate limiting)</li>
+			<li><a href="https://redis.io/">Redis</a> (rate limiting)</li>
 		</ul>
 	</li>
 	<li>
@@ -61,8 +61,7 @@
 
 <p>
 	Of course, there are many alternatives to each infrastructure choice. For example,
-	<a href="https://imagekit.io/" class="link">ImageKit</a> could be used as the image storage and CDN, an in-memory
-	cache such as
+	<a href="https://imagekit.io/">ImageKit</a> could be used as the image storage and CDN, an in-memory cache such as
 	<a href="https://www.npmjs.com/package/@isaacs/ttlcache">ttlcache</a> could be used as the kv store,
 	<a href="https://console.cloud.google.com/marketplace/product/google/vision.googleapis.com">Google Cloud Vision</a> could
 	be used for content moderation, and so on. To keep it simple, we'll use AWS for everything except the database and kv store,
@@ -243,8 +242,8 @@
 <p>
 	One of our requirements is that the user should be able to crop their image. We'll do a <code>CSS</code> crop so we
 	don't have to worry about modifying the image.
-	<a href="https://github.com/sabine/svelte-crop-window" class="link">svelte-crop-window</a> will handle the cropping logic
-	for us, and we'll simply store their data alongside the url.
+	<a href="https://github.com/sabine/svelte-crop-window">svelte-crop-window</a> will handle the cropping logic for us, and
+	we'll simply store their data alongside the url.
 </p>
 
 <CodeTopper title="$lib/image/client/schemas.ts">
@@ -301,7 +300,7 @@
 <p>
 	Of the five types, <code>GetUploadArgs</code>, <code>SaveToDb</code>, <code>DeletePreexistingImg</code>, and
 	<code>SaveCropToDb</code> are requests to our own server endpoints. They're implemented with the
-	<a class="link" href="/articles/typesafe-fetch-handler"> TypeSafe Fetch Handler we created in a previous article</a>.
+	<a href="/articles/typesafe-fetch-handler"> TypeSafe Fetch Handler we created in a previous article</a>.
 	<code>Upload</code>, however, is a request directly to AWS using the credentials the server sent the client along with
 	an <code>uploadProgress</code> object that will show the status of the user.
 </p>
@@ -389,9 +388,9 @@
 	avatar from the parent and passes the changes back up with <code>onCancel</code> and
 	<code>updateAvatar</code> callbacks. The <code>FileInput</code> <code>accept</code> property is restricted to what
 	Rekognition can handle. This component lives on a page behind an auth guard. SampleKit uses
-	<a class="link" href="https://github.com/timothycohen/samplekit/tree/staging/packages/auth">its own auth package</a>.
-	There are many other options. For example,
-	<a class="link" href="https://lucia-auth.com/">Lucia Auth</a>.
+	<a href="https://github.com/timothycohen/samplekit/tree/staging/packages/auth">its own auth package</a>. There are
+	many other options. For example,
+	<a href="https://lucia-auth.com/">Lucia Auth</a>.
 </p>
 
 <AvatarEditor part={2} />
@@ -427,8 +426,8 @@
 <h3>Client Endpoints</h3>
 
 <p>
-	These define the <a class="link" href="/articles/typesafe-fetch-handler">typesafe fetch handlers</a> that will
-	correspond to the <code>+server.ts</code> endpoints.
+	These define the <a href="/articles/typesafe-fetch-handler">typesafe fetch handlers</a> that will correspond to the
+	<code>+server.ts</code> endpoints.
 </p>
 <div class="not-prose">
 	<TabPanels
@@ -447,18 +446,19 @@
 </p>
 
 <p>
-	If you don't already have one, you will need to <a href="aws.amazon.com">set up account at aws.amazon.com</a>. We will
-	create four services. S3 will hold the images, Rekognition will moderate explicit content, CloudFront will serve the
-	images, and IAM will manage access.
+	If you don't already have one, you will need to <a href="https://aws.amazon.com/">
+		set up account at aws.amazon.com
+	</a>. We will create four services. S3 will hold the images, Rekognition will moderate explicit content, CloudFront
+	will serve the images, and IAM will manage access.
 </p>
 
 <div class="alert-wrapper alert-wrapper-warning text-base">
 	<p class="alert-header my-0">Pay Per Use</p>
 	<p class="my-2">These services are pay per use and cost cents to test.</p>
-	<p class="my-0">
+	<p class="my-2">
 		However, if they are not properly protected, a malicious user could use them to rack up a large bill.
 	</p>
-	<p class="my-2">Be sure to protect your keys, limit access methods, rate limit, and set up billing alerts.</p>
+	<p class="my-0">Be sure to protect your keys, limit access methods, rate limit, and set up billing alerts.</p>
 </div>
 
 <h3>Install AWS SDKs</h3>
@@ -616,13 +616,12 @@
 <p>
 	SampleKit uses its
 	<a
-		class="link"
 		href="https://github.com/timothycohen/samplekit/blob/staging/sites/samplekit.dev/src/lib/botProtection/rateLimit/server.ts"
 	>
 		own rate limiter
 	</a>
 	around a Redis client. A good in-memory rate limiter is
-	<a class="link" href="https://github.com/ciscoheat/sveltekit-rate-limiter/blob/main/src/lib/server/index.ts">
+	<a href="https://github.com/ciscoheat/sveltekit-rate-limiter/blob/main/src/lib/server/index.ts">
 		sveltekit-rate-limiter</a
 	>, a package created by the author of sveltekit-superforms.
 </p>
@@ -656,15 +655,14 @@
 	ideas for how to handle a state controller, and opens up the possibility of safely allowing users to upload images
 	directly to your S3 bucket. There are of course more features that could be added, such as using image transformations
 	so the client isn't loading a full size image for a tiny avatar. For that, there is an
-	<a href="https://aws.amazon.com/solutions/implementations/serverless-image-handler/" target="_blank">
+	<a href="https://aws.amazon.com/solutions/implementations/serverless-image-handler/">
 		AWS solution (Serverless Image Handler)
 	</a>
-	and a third party way <a href="https://imagekit.io/" target="_blank">(imagekit.io)</a>. No matter which service you
-	choose, the client and server code we've created could just as easily be applied there.
+	and a third party way <a href="https://imagekit.io/">(imagekit.io)</a>. No matter which service you choose, the client
+	and server code we've created could just as easily be applied there.
 </p>
 
 <p>
 	As always, please do share your thoughts over in the
-	<a target="_blank" href="https://github.com/timothycohen/samplekit/discussions">GitHub discussions</a>. Until next
-	time, happy coding!
+	<a href="https://github.com/timothycohen/samplekit/discussions">GitHub discussions</a>. Until next time, happy coding!
 </p>

@@ -39,9 +39,9 @@
 <h2>Drawbacks of the derived store</h2>
 
 <p>
-	We want to <a class="link" href="https://shopify.dev/docs/api/storefront/2023-10/objects/Product#query-products"
-		>query a shopify endpoint</a
-	>. The search and filter state should be stored in the url.
+	We want to <a href="https://shopify.dev/docs/api/storefront/2023-10/objects/Product#query-products">
+		query a shopify endpoint
+	</a>. The search and filter state should be stored in the url.
 	<code>?sort_by=latest-desc&availability=true&price.gte=10&price.lte=100&q=shirt</code> should be represented as:
 </p>
 
@@ -79,8 +79,8 @@
 			</li>
 			<li class="list-decimal">
 				We can't use any apis that require another type, so
-				<a class="link" href="https://melt-ui.com/docs/builders/select"> passing the store into melt-ui </a>, for
-				example, is impossible.
+				<a href="https://melt-ui.com/docs/builders/select"> passing the store into melt-ui </a>, for example, is
+				impossible.
 			</li>
 			<li class="list-decimal">
 				Logically linked states have no clean way of being stored together. For example,
@@ -98,10 +98,9 @@
 			Debouncing url changes becomes difficult because that requires debouncing the store update, overwriting user input
 			that arrives faster than the debounce period. By not using <code>$derived</code>, we can debounce and add effects
 			that are invalidated when the url changes. For example, if there was a <code>load</code> function that referenced
-			<code>url</code>, and the <code>searchParam</code> was on a number input, holding the up arrow would cause a
-			massive number of load function invalidations. By decoupling the store from the URL state, we can immediately
-			update the store and debounce the URL to ensure that the load function only runs when the user stops updating the
-			params.
+			<code>url</code>, and the <code>searchParam</code> was on a number input, holding the up arrow would cause a massive
+			number of load function invalidations. By decoupling the store from the URL state, we can immediately update the store
+			and debounce the URL to ensure that the load function only runs when the user stops updating the params.
 		</p>
 	</li>
 </ul>
@@ -127,9 +126,11 @@
 	else that will be presented to the user via a single input. Let's call that generic type <code>Val</code>.
 </p>
 
-<div class="alert-wrapper alert-wrapper-info my-8">
-	We'll consider objects that will be presented to the user with multiple inputs – think
-	<code>&lbrace; min, max &rbrace;</code> price – later.
+<div class="alert-wrapper alert-wrapper-info text-base my-8">
+	<p class="my-2">
+		We'll consider objects that will be presented to the user with multiple inputs – think
+		<code>&lbrace; min, max &rbrace;</code> price – later.
+	</p>
 </div>
 
 ```ts
@@ -597,5 +598,5 @@ export const createParams = <Val, ParamName extends string = string>({
 	together to create rich services like the one used in the demo. You can see it in action in the
 	<a href="/shop/collections/apparel">demo shop</a>. Hope the article has been useful for you! Have any questions,
 	comments, or want to share your own implementation? Reach out in the
-	<a target="_blank" href="https://github.com/timothycohen/samplekit/discussions">GitHub discussions</a>!
+	<a href="https://github.com/timothycohen/samplekit/discussions">GitHub discussions</a>!
 </p>

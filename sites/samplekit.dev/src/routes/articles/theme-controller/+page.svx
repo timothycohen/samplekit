@@ -5,7 +5,7 @@
 <p>
 	When given the opportunity, I nearly always switch to dark mode. From cursory Googling, it seems a majority of people
 	share that preference. For example, an
-	<a href="https://www.androidauthority.com/dark-mode-poll-results-1090716/" target="_blank">Android Authority poll</a>
+	<a href="https://www.androidauthority.com/dark-mode-poll-results-1090716/">Android Authority poll</a>
 	showed 81.9% of their users choose dark mode.
 </p>
 
@@ -25,10 +25,10 @@
 		<span class="text-gray-9">☐</span>
 		<span class="text-left">
 			Compatibility with design tokens from popular sources like
-			<a target="_blank" href="https://www.radix-ui.com/colors">Radix</a>,
-			<a target="_blank" href="https://designsystem.digital.gov/utilities/color/">USWDS</a>,
-			<a target="_blank" href="https://daisyui.com/docs/themes/">DaisyUI</a>, or
-			<a target="_blank" href="https://tailwindcss.com/docs/customizing-colors">TailwindCSS</a>
+			<a href="https://www.radix-ui.com/colors">Radix</a>,
+			<a href="https://designsystem.digital.gov/utilities/color/">USWDS</a>,
+			<a href="https://daisyui.com/docs/themes/">DaisyUI</a>, or
+			<a href="https://tailwindcss.com/docs/customizing-colors">TailwindCSS</a>
 		</span>
 	</div>
 	<div class="grid grid-cols-[48px_1fr]">
@@ -71,7 +71,7 @@
 <p>
 	This website shows one such implementation using the methods described here. The complete source code can be found at
 
-	<a href="https://github.com/timothycohen/samplekit/tree/main/sites/samplekit.dev/src/lib/styles" target="_blank">
+	<a href="https://github.com/timothycohen/samplekit/tree/main/sites/samplekit.dev/src/lib/styles">
 		$lib/styles
 	</a>
 </p>
@@ -89,7 +89,7 @@
 
 <h3>Two design token sets for each theme</h3>
 
-<p>First an example using <a href="https://github.com/radix-ui/colors" target="_blank">Radix UI Colors</a>:</p>
+<p>First an example using <a href="https://github.com/radix-ui/colors">Radix UI Colors</a>:</p>
 
 <CodeTopper title="adaptiveColorThemes.css" />
 ```css
@@ -867,6 +867,6 @@ export default {
 
 <p>
 	Do you have an even better way? I'd love it hear it! Share it in the
-	<a target="_blank" href="https://github.com/timothycohen/samplekit/discussions">GitHub discussions</a>
+	<a href="https://github.com/timothycohen/samplekit/discussions">GitHub discussions</a>
 	!
 </p>
