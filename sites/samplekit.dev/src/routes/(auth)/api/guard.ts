@@ -5,7 +5,7 @@ import { logger } from '$lib/logging/server';
 import type { createLimiter } from '$lib/botProtection/rateLimit/server';
 import type { RequestEvent } from '@sveltejs/kit';
 
-const postReq = z.object({ cron_api_key: z.string().length(63), expected_db_name: z.string() });
+const postReq = z.object({ cron_api_key: z.string(), expected_db_name: z.string() });
 
 const log = (method: 'info' | 'error', log: { id: string; address: string; err_code?: string }) => {
 	logger[method](log);
@@ -44,23 +44,37 @@ export const guardApiKey = async ({
 	const { request, getClientAddress } = event;
 	const req = postReq.safeParse(await request.json().catch(() => ({})));
 
-	const acceptsAnyIp = ipWhitelist.length === 1 && ipWhitelist[0]! === '*';
-	const acceptsOnlyInternalIp = ipWhitelist.length === 1 && ipWhitelist[0]! === 'internal';
+	const err: null | { err_code: string; status: 400 | 403 | 429 } = await (async () => {
+		if (!req.success) {
+			return { err_code: req.error.issues[0]?.code ?? 'bad_request', status: 400 };
+		}
+		if (req.data.expected_db_name !== DB_NAME) {
+			return { err_code: 'incorrect_env', status: 403 };
+		}
+		if (await limiter.check(event).then((r) => r.forbidden || r.limited)) {
+			return { err_code: 'rate_limited', status: 429 };
+		}
+		if (expectedKey === '' || expectedKey !== req.data.cron_api_key) {
+			return { err_code: 'incorrect_key', status: 403 };
+		}
 
-	let err: null | { err_code: string; status: 400 | 403 | 429 } = null;
-	if (!req.success) {
-		err = { err_code: req.error.issues[0]?.code ?? 'bad_request', status: 400 };
-	} else if (req.data.expected_db_name !== DB_NAME) {
-		err = { err_code: 'incorrect_env', status: 403 };
-	} else if (await limiter.check(event).then((r) => r.forbidden || r.limited)) {
-		err = { err_code: 'rate_limited', status: 429 };
-	} else if (expectedKey === '' || expectedKey !== req.data.cron_api_key) {
-		err = { err_code: 'incorrect_key', status: 403 };
-	} else if (!acceptsAnyIp) {
+		const acceptsAnyIp = ipWhitelist.length === 1 && ipWhitelist[0]! === '*';
+		if (acceptsAnyIp) return null;
+
 		const ip = getClientAddress();
-		if (acceptsOnlyInternalIp && !isInternalIpAddr(ip)) err = { err_code: 'incorrect_ip', status: 403 };
-		else if (!ipWhitelist.includes(ip)) err = { err_code: 'incorrect_ip', status: 403 };
-	}
+
+		const acceptsOnlyInternalIp = ipWhitelist.length === 1 && ipWhitelist[0]! === 'internal';
+		if (acceptsOnlyInternalIp) {
+			if (isInternalIpAddr(ip)) return null;
+			return { err_code: 'incorrect_ip', status: 403 };
+		}
+
+		if (!ipWhitelist.includes(ip)) {
+			return { err_code: 'incorrect_ip', status: 403 };
+		}
+
+		return null;
+	})();
 
 	if (err) {
 		log('error', { id, address: getClientAddress(), err_code: err.err_code });
