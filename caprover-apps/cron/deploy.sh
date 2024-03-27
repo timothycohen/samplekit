@@ -28,7 +28,7 @@ update_data=$(printf '{ "appName": "%s", "instanceCount": 1, "notExposeAsWebApp"
 
 echo *** Loading env vars into cron job scripts...
 cp $dirname/bin/reset_db.sh.example $dirname/bin/reset_db.sh.secret
-for key in "RESET_DB_APP_NAME" "RESET_DB_DELETE_EXPIRED_TOKENS_KEY" "RESET_DB_EXPECTED_DB_NAME"; do
+for key in "RESET_DB_APP_NAME" "RESET_DB_DELETE_EXPIRED_TOKENS_KEY" "RESET_DB_EXPECTED_DB_NAME" "X_DEPLOYMENT_ACCESS"; do
 	sed -i '' "s/\$$key/${!key}/g" $dirname/bin/reset_db.sh.secret
 done
 
