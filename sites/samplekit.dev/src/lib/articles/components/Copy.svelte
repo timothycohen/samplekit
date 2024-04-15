@@ -1,22 +1,21 @@
 <script lang="ts">
 	import { fade } from 'svelte/transition';
 
-	let btnEl: HTMLButtonElement;
+	export let getTextContent: () => string | null | undefined;
+
 	let copied = false;
 
 	function copyToClipboard() {
-		const codeTopperEl = btnEl.closest('.code-topper');
-		const codeFragment = codeTopperEl?.nextElementSibling;
-		if (!codeFragment?.textContent) return;
-		navigator.clipboard.writeText(codeFragment.textContent);
-
+		const textContent = getTextContent?.();
+		if (!textContent) return;
+		navigator.clipboard.writeText(textContent);
 		copied = true;
 		setTimeout(() => (copied = false), 1000);
 	}
 </script>
 
 <!-- lucide-svelte Clipboard -->
-<button class="grid h-full w-full place-content-center" bind:this={btnEl} on:click={copyToClipboard}>
+<button class="grid h-full w-full place-content-center" on:click={copyToClipboard}>
 	<span class="sr-only">{copied ? 'Copied' : 'Copy'}</span>
 	<svg
 		xmlns="http://www.w3.org/2000/svg"
