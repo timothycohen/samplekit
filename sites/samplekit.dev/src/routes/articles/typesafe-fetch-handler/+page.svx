@@ -189,18 +189,20 @@ if (!verifySMSTokenForm.valid) {
 	lambdas as a form of documentation.
 </p>
 
-<CodeTopper title="$routes/demos/name-list.json/+server.ts" />
+<CodeTopper title="$routes/demos/name-list.json/+server.ts">
 ```ts
 const addNameToList = async ({ locals, request }: RequestEvent) => { ... };
 export const PUT: RequestHandler = addNamesToList;
 ```
+</CodeTopper>
 
-<CodeTopper title="$routes/demos/name-list.json/index.ts" />
+<CodeTopper title="$routes/demos/name-list.json/index.ts">
 ```ts
 type PutReq = { name: string };
 export type PutRes = { allNames: string[] };
 export const addNamesToList = createClientFetch()
 ```
+</CodeTopper>
 
 <h3>Hiding the route / method / types</h3>
 
@@ -215,7 +217,7 @@ export const addNamesToList = createClientFetch()
 	Love ya SvelteKit!
 </p>
 
-<CodeTopper title="$routes/demos/name-list.json/index.ts" />
+<CodeTopper title="$routes/demos/name-list.json/index.ts">
 ```ts
 import type { RouteId } from './$types';
 
@@ -223,6 +225,7 @@ type PutReq = { name: string };
 export type PutRes = { allNames: string[] };
 export const addNamesToList = createClientFetch<RouteId, PutRes, PutReq>('PUT', '/demos/name-list.json');
 ```
+</CodeTopper>
 
 <h3>Enforce server / client type consistency</h3>
 
@@ -300,7 +303,7 @@ export function jsonFail(status: number, message?: string): Response {
 	Back in our endpoint, we can now use our types and functions to make the endpoint handler fully typed and consistent.
 </p>
 
-<CodeTopper title="$routes/demos/name-list.json/+server.ts" />
+<CodeTopper title="$routes/demos/name-list.json/+server.ts">
 ```ts
 const addNameToList = async ({ locals, request }: RequestEvent) => {
 	return jsonFail(403);
@@ -309,6 +312,7 @@ const addNameToList = async ({ locals, request }: RequestEvent) => {
 };
 export const PUT: RequestHandler = addNamesToList;
 ```
+</CodeTopper>
 
 <h3>Dynamic Routes</h3>
 
@@ -322,12 +326,13 @@ export const PUT: RequestHandler = addNamesToList;
 	<code>createDynClientFetch</code>.
 </p>
 
-<CodeTopper title="$routes/demos/[id]/name/index.ts" />
+<CodeTopper title="$routes/demos/[id]/name/index.ts">
 ```ts
 type PutReq = { name: string };
 export type PutRes = { allNames: string[] };
 export const addNamesToList = createDynClientFetch<PutRes, PutReq, { id: string }>('PUT', ({ id }) => `/demos/${id}/name.json`);
 ```
+</CodeTopper>
 
 <h2>Implementation</h2>
 

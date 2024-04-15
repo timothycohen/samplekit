@@ -212,12 +212,13 @@ export {};
 		<p class="alert-header my-0">Tip</p>
 		<p class="mt-2 mb-6">Add emmet completions for <code>.svx</code> files in VS Code for your sanity!</p>
 		<div class="text-lg">
-			<CodeTopper title=".vscode/settings.json" />
+			<CodeTopper title=".vscode/settings.json">
 ```json
 {
 	"emmet.includeLanguages": { ..., "svx": "html" }
 }
 ```
+			</CodeTopper>
 		</div>
 </div>
 
@@ -780,7 +781,7 @@ export function preprocessCodeblock({
 
 <p>We've finished the preprocessor. Full code below.</p>
 
-<CodeTopper title="codeblockPreprocessor.ts Full" collapsed>
+<CodeTopper title="codeblockPreprocessor.ts Full" initialCollapsed>
 	<TabPanelItem
 		panel={{ rawHTML: data.article.demos?.main?.find((d) => d.title === 'codeblockPreprocessor.ts')?.rawHTML ?? '' }}
 	/>

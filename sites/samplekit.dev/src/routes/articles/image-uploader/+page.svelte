@@ -352,7 +352,7 @@
 
 <p>We've finished the upload state controller! Full code below.</p>
 
-<CodeTopper title="$lib/cloudStorage/client/cropImgUploadController.ts Full" collapsed>
+<CodeTopper title="$lib/cloudStorage/client/cropImgUploadController.ts Full" initialCollapsed>
 	<TabPanelItem
 		panel={{ rawHTML: data.article.demos?.main?.find((d) => d.title === 'cropImgUploadController.ts')?.rawHTML ?? '' }}
 	/>
