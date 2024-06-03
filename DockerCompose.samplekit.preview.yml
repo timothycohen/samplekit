@@ -7,27 +7,17 @@
 ##################### 🚧 WARNING: ENV VARS ARE BAKED INTO THE IMAGE 🚧 #####################
 
 # Expects:
-# `./sites/samplekit.dev/.env.local_preview' to exist
+# `./sites/samplekit.dev/.env.preview' – vars will be baked into each image
 
-name: sk
+name: sk-preview
 
 services:
-  web:
-    container_name: sk-preview-web
-    depends_on:
-      - db
-    build:
-      dockerfile: Dockerfile.samplekit.preview
-    restart: unless-stopped
-    ports:
-      - '3000:3000'
-
   db:
     image: postgres:latest
     container_name: sk-preview-db
     restart: unless-stopped
     volumes:
-      - preview-db:/var/lib/postgresql/data
+      - db:/var/lib/postgresql/data
     env_file:
       - sites/samplekit.dev/.env._preview
     ports:
@@ -38,14 +28,29 @@ services:
     container_name: sk-preview-kv
     restart: unless-stopped
     volumes:
-      - preview-kv:/data/sk-preview-kv-redis-data
+      - kv:/data/sk-preview-kv-redis-data
     env_file:
       - sites/samplekit.dev/.env._preview
     ports:
       - '6379:6379'
+    command:
+      - /bin/sh
+      - -c
+      - redis-server --requirepass "$${REDIS_PASSWORD:?REDIS_PASSWORD variable is not set}"
+
+  web:
+    container_name: sk-preview-web
+    depends_on:
+      - db
+      - kv
+    build:
+      dockerfile: Dockerfile.samplekit.preview
+    restart: unless-stopped
+    ports:
+      - '3000:3000'
 
 volumes:
-  preview-db:
+  db:
     driver: local
-  preview-kv:
+  kv:
     driver: local
