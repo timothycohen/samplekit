@@ -9,8 +9,6 @@
 # Expects:
 # `./sites/samplekit.dev/.env.local_preview' to exist
 
-version: '3.8'
-
 name: sk
 
 services:
