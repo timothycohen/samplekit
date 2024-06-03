@@ -36,7 +36,7 @@
 		"@aws-sdk/s3-presigned-post": "^3.507.0",
 		"@samplekit/auth": "workspace:^",
 		"@samplekit/markdown": "workspace:^",
-		"@sentry/sveltekit": "^7.101.0",
+		"@sentry/sveltekit": "^8.7.0",
 		"@shopify/storefront-api-client": "^1.0.0",
 		"body-scroll-lock-upgrade": "^1.1.0",
 		"drizzle-orm": "^0.31.0",
