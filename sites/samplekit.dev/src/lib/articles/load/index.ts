@@ -11,7 +11,7 @@ export * from './demos/types';
 
 // Loading Process:
 // 1. Preprocessing:
-// The actual article page is a +page.svx file, which is preprocessed by transforming markdown code and tables into valid html – see svelte.config.js
+// The +page.svelte article wraps .svx files. .svx is preprocessed by transforming markdown code and tables into valid html – see svelte.config.js
 
 // 2. Frontmatter:
 // Frontmatter is loaded in articles/load/common/data.ts from all the meta.data.ts files in the articles/ folder, processed, and exported as allPostData: ProcessedFrontMatter[]
