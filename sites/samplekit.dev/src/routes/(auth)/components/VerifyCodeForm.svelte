@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { Loader2 } from 'lucide-svelte';
 	import { InputMessage, CodeInput } from '$lib/components';
+	import { Loader2 } from '$lib/styles/icons';
 	import { superForm, type SuperValidated } from '$lib/superforms/client';
 	import type { verifyOTPSchema } from '$routes/(auth)/validators';
 

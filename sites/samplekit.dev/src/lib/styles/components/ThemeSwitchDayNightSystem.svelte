@@ -1,8 +1,8 @@
 <script lang="ts">
 	// svg from https://toggles.dev/
-	import { Check, MonitorSmartphone, Moon, Sun } from 'lucide-svelte';
 	import { tick } from 'svelte';
 	import { clickOutside, keyboard, windowEscape } from '$lib/actions';
+	import { Check, MonitorSmartphone, Moon, Sun } from '$lib/styles/icons';
 
 	export let modeApplied: 'day' | 'night';
 	export let schemeSystem: 'dark' | 'light';

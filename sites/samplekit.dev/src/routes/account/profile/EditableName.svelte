@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { Eraser, Loader2, Pencil } from 'lucide-svelte';
 	import { slide } from 'svelte/transition';
+	import { Eraser, Loader2, Pencil } from '$lib/styles/icons';
 	import { superForm, zodClient } from '$lib/superforms/client';
 	import { nameSchema } from '$routes/(auth)/validators';
 	import type { SuperValidated } from '$lib/superforms/client';

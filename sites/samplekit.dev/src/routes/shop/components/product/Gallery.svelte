@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { ArrowLeftIcon, ArrowRightIcon } from 'lucide-svelte';
 	import { createNumParam } from '$lib/stores';
+	import { ArrowLeftIcon, ArrowRightIcon } from '$lib/styles/icons';
 	import { GridTileImage } from '..';
 	import type { Image } from '$lib/shop';
 

@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { Check, Loader2 } from 'lucide-svelte';
 	import { InputMessage } from '$lib/components';
+	import { Check, Loader2 } from '$lib/styles/icons';
 	import { superForm, type SuperValidated } from '$lib/superforms/client';
 	import type { sendSMSTokenSchema } from '$routes/(auth)/validators';
 

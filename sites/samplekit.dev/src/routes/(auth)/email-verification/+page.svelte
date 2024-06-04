@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { MailCheck } from 'lucide-svelte';
 	import { enhance } from '$app/forms';
 	import { InputMessage } from '$lib/components';
+	import { MailCheck } from '$lib/styles/icons';
 
 	export let form;
 	export let data;

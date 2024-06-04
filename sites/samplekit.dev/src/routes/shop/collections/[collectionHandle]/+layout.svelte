@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { SlidersHorizontal } from 'lucide-svelte';
 	import { onMount } from 'svelte';
+	import { SlidersHorizontal } from '$lib/styles/icons';
 	import { Available, SortBy, Price } from '$routes/shop/components';
 	import { useNavService, useSearchAndFilterService } from '$routes/shop/services';
 

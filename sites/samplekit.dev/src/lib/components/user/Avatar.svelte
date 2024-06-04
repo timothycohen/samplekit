@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Pencil } from 'lucide-svelte';
+	import { Pencil } from '$lib/styles/icons';
 
 	export let editable = false;
 	export let size: number;

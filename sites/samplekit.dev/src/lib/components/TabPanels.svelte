@@ -12,8 +12,8 @@
 
 <script lang="ts">
 	import { createTabs, melt } from '@melt-ui/svelte';
-	import { ChevronUp } from 'lucide-svelte';
 	import { useCollapsedService } from '$lib/components/collapsedService';
+	import { ChevronUp } from '$lib/styles/icons';
 	import Icon from './Icon.svelte';
 	import PatternWrapper from './PatternWrapper.svelte';
 	import TabPanelItem from './TabPanelItem.svelte';

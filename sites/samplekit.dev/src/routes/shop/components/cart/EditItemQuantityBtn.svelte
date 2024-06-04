@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { Minus, Plus } from 'lucide-svelte';
 	import { LoadingDots } from '$lib/components';
 	import { logger } from '$lib/logging/client';
+	import { Minus, Plus } from '$lib/styles/icons';
 	import { useCartService } from '$routes/shop/services';
 	import type { CartItem } from '$lib/shop';
 

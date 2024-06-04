@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { Loader2 } from 'lucide-svelte';
 	import { page } from '$app/stores';
 	import { Logo, InputMessage } from '$lib/components';
+	import { Loader2 } from '$lib/styles/icons';
 	import { superForm, zodClient } from '$lib/superforms/client';
 	import { PassInput } from '$routes/(auth)/components';
 	import { createNewPassSchema } from '$routes/(auth)/validators';

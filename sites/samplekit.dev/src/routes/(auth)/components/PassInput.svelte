@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Eye, EyeOff } from 'lucide-svelte';
+	import { Eye, EyeOff } from '$lib/styles/icons';
 	import type { HTMLInputAttributes } from 'svelte/elements';
 
 	export let name_id: 'password' | 'confirmation' | 'currentPassword';

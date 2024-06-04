@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { Check, Moon, Sun } from 'lucide-svelte';
 	import { fade } from 'svelte/transition';
+	import { Check, Moon, Sun } from '$lib/styles/icons';
 	import { debounce } from '$lib/utils/common';
 	import ThemeDemo from './ThemeDemo.svelte';
 

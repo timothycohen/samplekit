@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { AlertTriangle, Check, Info, Moon, X } from 'lucide-svelte';
+	import { AlertTriangle, Check, Info, Moon, X } from '$lib/styles/icons';
 
 	export let displayTheme: { name: string; scheme: 'light' | 'dark' };
 </script>

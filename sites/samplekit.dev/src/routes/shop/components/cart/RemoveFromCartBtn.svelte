@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { X } from 'lucide-svelte';
 	import { LoadingDots } from '$lib/components';
 	import { logger } from '$lib/logging/client';
+	import { X } from '$lib/styles/icons';
 	import { useCartService } from '$routes/shop/services';
 	import type { Result } from '$lib/utils/common';
 

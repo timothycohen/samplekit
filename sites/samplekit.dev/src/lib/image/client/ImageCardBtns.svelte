@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { BadgeCheck, ImagePlus, Loader, Trash2, XCircle } from 'lucide-svelte';
+	import { BadgeCheck, ImagePlus, Loader, Trash2, XCircle } from '$lib/styles/icons';
 
 	export let disabled = false;
 	export let loader = false;

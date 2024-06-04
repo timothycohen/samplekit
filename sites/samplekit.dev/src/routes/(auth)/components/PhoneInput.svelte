@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { Loader2 } from 'lucide-svelte';
 	import { InputMessage } from '$lib/components';
+	import { Loader2 } from '$lib/styles/icons';
 	import { superForm, zodClient, type SuperValidated } from '$lib/superforms/client';
 	import { phoneNumberSchema } from '$routes/(auth)/validators';
 

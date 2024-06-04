@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { ArrowRight } from 'lucide-svelte';
+	import { ArrowRight } from '$lib/styles/icons';
 	import { NoResults } from '$routes/shop/components';
 	import { useNavService } from '$routes/shop/services';
 	import { handleToPath } from '$routes/shop/utils';

@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { createDialog, melt } from '@melt-ui/svelte';
-	import { KeyRound, Loader2, X } from 'lucide-svelte';
 	import { useTurnstileService } from '$lib/botProtection/turnstile/client';
 	import { InputMessage } from '$lib/components';
+	import { KeyRound, Loader2, X } from '$lib/styles/icons';
 	import { superForm, zodClient } from '$lib/superforms/client.js';
 	import { GoogleFormButton, Or } from '$routes/(auth)/(login)/components';
 	import { PassInput } from '$routes/(auth)/components';

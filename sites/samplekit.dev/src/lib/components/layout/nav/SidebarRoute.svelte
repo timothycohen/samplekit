@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { ChevronUp } from 'lucide-svelte';
 	import { page } from '$app/stores';
 	import { keyboard } from '$lib/actions';
+	import { ChevronUp } from '$lib/styles/icons';
 	import type { RouteLeaf, RouteGroup } from './routes';
 
 	export let route: RouteLeaf | RouteGroup;

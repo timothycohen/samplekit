@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { BookOpenText, Boxes, Code } from 'lucide-svelte';
 	import { FeatureCard, FeatureSwapCard } from '$lib/articles/components';
 	import { allPostData } from '$lib/articles/load';
+	import { BookOpenText, Boxes, Code } from '$lib/styles/icons';
 </script>
 
 <section class="page">

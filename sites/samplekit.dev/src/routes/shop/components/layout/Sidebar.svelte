@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { melt } from '@melt-ui/svelte';
-	import { X } from 'lucide-svelte';
 	import { fade, fly } from 'svelte/transition';
 	import { page } from '$app/stores';
+	import { X } from '$lib/styles/icons';
 	import { Available, Price, SearchBar, SortBy } from '$routes/shop/components';
 	import { useNavService } from '$routes/shop/services';
 	import { handleToPath } from '$routes/shop/utils';

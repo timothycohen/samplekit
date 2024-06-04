@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { Loader2 } from 'lucide-svelte';
 	import { useTurnstileService } from '$lib/botProtection/turnstile/client';
 	import { InputMessage } from '$lib/components';
+	import { Loader2 } from '$lib/styles/icons';
 	import { superForm, zodClient } from '$lib/superforms/client';
 	import { GoogleFormButton, Or } from '$routes/(auth)/(login)/components';
 	import { PassInput } from '$routes/(auth)/components';

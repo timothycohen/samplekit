@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { Pause, Play } from 'lucide-svelte';
 	import { createSlider } from '$lib/components';
+	import { Pause, Play } from '$lib/styles/icons';
 
 	const items: Array<{ title: string; description: string; img: { src: string; alt: string } }> = [];
 

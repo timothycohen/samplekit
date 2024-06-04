@@ -1,5 +1,9 @@
 <script lang="ts">
 	import { createDialog, melt } from '@melt-ui/svelte';
+	import { slide } from 'svelte/transition';
+	import { goto } from '$app/navigation';
+	import { mfaLabels } from '$lib/auth/client';
+	import { Icon } from '$lib/components';
 	import {
 		Check,
 		Eraser,
@@ -10,11 +14,7 @@
 		Trash2,
 		KeySquare,
 		X,
-	} from 'lucide-svelte';
-	import { slide } from 'svelte/transition';
-	import { goto } from '$app/navigation';
-	import { mfaLabels } from '$lib/auth/client';
-	import { Icon } from '$lib/components';
+	} from '$lib/styles/icons';
 	import UpdatePassForm from './UpdatePassForm.svelte';
 
 	export let data;

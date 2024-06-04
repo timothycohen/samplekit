@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { BookOpenText, Boxes, Code } from 'lucide-svelte';
 	import { clickOn } from '$lib/actions';
+	import { BookOpenText, Boxes, Code } from '$lib/styles/icons';
 
 	export let feature: {
 		title: string;
