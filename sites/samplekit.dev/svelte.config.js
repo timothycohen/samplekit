@@ -15,14 +15,12 @@ const config = {
 	extensions: ['.svelte', '.svx'],
 	preprocess: sequence([
 		preprocessCodeblock({
-			logger: console,
+			logger: { formatFilename: (filename) => filename.replace(articleRoot, ''), ...console },
 			include: (filename) => filename.endsWith('.svx'),
-			formatLogFilename: (filename) => filename.replace(articleRoot, ''),
 		}),
 		preprocessTable({
-			logger: console,
+			logger: { formatFilename: (filename) => filename.replace(articleRoot, ''), ...console },
 			include: (filename) => filename.endsWith('.svx'),
-			formatLogFilename: (filename) => filename.replace(articleRoot, ''),
 		}),
 		vitePreprocess(),
 		preprocessExternalLinks({

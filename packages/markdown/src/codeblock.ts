@@ -1,5 +1,6 @@
 import { getHighlighter, type BundledLanguage as ShikiLang } from 'shiki';
 import darkerJSON from './darker.js';
+import type { PreprocessorGroup } from './types.js';
 import type { Element } from 'hast';
 
 export const mdLanguages = ['json', 'sh', 'html', 'css', 'md', 'js', 'ts', 'svelte', 'diff'] satisfies ShikiLang[];
@@ -279,17 +280,20 @@ const parseAndRemoveWrapper = (
 export function preprocessCodeblock({
 	include,
 	logger,
-	formatLogFilename,
 }: {
-	logger?: { error: (s: string) => void; debug: (s: string) => void; warn: (s: string) => void };
+	logger?: {
+		error: (s: string) => void;
+		warn: (s: string) => void;
+		debug: (s: string) => void;
+		formatFilename?: (filename: string) => string;
+	};
 	include?: (filename: string) => boolean;
-	formatLogFilename?: (filename: string) => string;
-} = {}) {
+} = {}): PreprocessorGroup {
 	return {
-		markup({ content, filename }: { content: string; filename: string }): { code: string } | null {
-			if (include && !include(filename)) return null;
-			const format = formatLogFilename || ((filename: string) => filename);
-
+		name: 'md-codeblock',
+		markup({ content, filename }) {
+			if (!filename) return;
+			if (include && !include(filename)) return;
 			const delimiters = [
 				{ startRegex: new RegExp('```(' + mdLanguages.join('|') + ')'), endMarker: '```' },
 				{ startRegex: new RegExp('~~~(' + mdLanguages.join('|') + ')'), endMarker: '~~~' },
@@ -315,7 +319,7 @@ export function preprocessCodeblock({
 
 				if (endIdx === -1) {
 					logger?.error(
-						`[PREPROCESS] | ${format(filename)} | Codeblock | Error | Incomplete md at start ${startIdx} (count: ${count}). Aborting.`,
+						`[PREPROCESS] | ${logger.formatFilename ? logger.formatFilename(filename) : filename} | Codeblock | Error | Incomplete md at start ${startIdx} (count: ${count}). Aborting.`,
 					);
 					return { code: resultContent };
 				}
@@ -335,7 +339,7 @@ export function preprocessCodeblock({
 
 				if (codeProcessError || highlightError) {
 					logger?.warn(
-						`[PREPROCESS] | ${format(filename)} | Codeblock | Warning | Unable to process at start ${startIdx} count ${count}. Skipping.`,
+						`[PREPROCESS] | ${logger.formatFilename ? logger.formatFilename(filename) : filename} | Codeblock | Warning | Unable to process at start ${startIdx} count ${count}. Skipping.`,
 					);
 				}
 
@@ -343,7 +347,9 @@ export function preprocessCodeblock({
 				startMatch = startRegex.exec(resultContent);
 			}
 
-			logger?.debug(`[PREPROCESS] | ${format(filename)} | Codeblock | Success | { count: ${count} } }`);
+			logger?.debug(
+				`[PREPROCESS] | ${logger.formatFilename ? logger.formatFilename(filename) : filename} | Codeblock | Success | { count: ${count} } }`,
+			);
 
 			return { code: resultContent };
 		},
