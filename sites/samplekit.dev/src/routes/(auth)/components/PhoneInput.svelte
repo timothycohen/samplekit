@@ -1,16 +1,14 @@
 <script lang="ts">
 	import { Loader2 } from 'lucide-svelte';
-	import { superForm } from 'sveltekit-superforms/client';
 	import { InputMessage } from '$lib/components';
+	import { superForm, zodClient, type SuperValidated } from '$lib/superforms/client';
 	import { phoneNumberSchema } from '$routes/(auth)/validators';
-	import type { SuperValidated } from 'sveltekit-superforms';
 
 	export let phoneNumberForm: SuperValidated<typeof phoneNumberSchema>;
 	export let action: App.Form.Action;
 
 	const { form, errors, enhance, submitting, message } = superForm(phoneNumberForm, {
-		taintedMessage: null,
-		validators: phoneNumberSchema,
+		validators: zodClient(phoneNumberSchema),
 	});
 </script>
 

@@ -1,11 +1,9 @@
 import { createAuth, type TokenErr } from '@samplekit/auth/server';
 import { fail as formFail } from '@sveltejs/kit';
-import { message } from 'sveltekit-superforms/server';
 import { jsonFail } from '$lib/http/server';
+import { message, type SuperValidated, type Schema } from '$lib/superforms/server';
 import { requiredConfig } from './config';
 import { authDbAdapter } from './dbAdapter';
-import type { SuperValidated, ZodValidation } from 'sveltekit-superforms';
-import type { AnyZodObject } from 'zod';
 
 const authLib = createAuth({ config: requiredConfig, dbAdapter: authDbAdapter });
 
@@ -20,7 +18,7 @@ const errMap: Record<TokenErr.All, { code: 403 | 429; msg: string }> = {
 const authTokenErrHandler = {
 	toFormFail: (err: TokenErr.All) => formFail(errMap[err].code, { fail: errMap[err].msg }),
 	toJsonFail: (err: TokenErr.All) => jsonFail(errMap[err].code, errMap[err].msg),
-	toMessage: <F extends SuperValidated<ZodValidation<AnyZodObject>>>(err: TokenErr.All, form: F) =>
+	toMessage: <S extends Schema>(err: TokenErr.All, form: SuperValidated<S>) =>
 		message(form, { fail: errMap[err].msg }, { status: errMap[err].code }),
 };
 

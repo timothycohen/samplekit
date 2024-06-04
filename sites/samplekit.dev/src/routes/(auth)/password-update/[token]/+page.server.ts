@@ -1,9 +1,9 @@
 import { fail as formFail } from '@sveltejs/kit';
 import platform from 'platform';
-import { message, superValidate } from 'sveltekit-superforms/server';
 import { auth } from '$lib/auth/server';
 import { transports } from '$lib/auth/server';
 import { checkedRedirect } from '$lib/http/server';
+import { message, superValidate, zod } from '$lib/superforms/server';
 import { createNewPassSchema } from '$routes/(auth)/validators';
 import type { Actions, PageServerLoad } from './$types';
 import type { Action } from '@sveltejs/kit';
@@ -15,7 +15,7 @@ export const load: PageServerLoad = async ({ params }) => {
 	const user = await auth.user.get({ userId });
 	if (!user) return checkedRedirect('/invalid-token');
 
-	const createNewPassForm = await superValidate(createNewPassSchema, {
+	const createNewPassForm = await superValidate(zod(createNewPassSchema), {
 		id: 'createNewPassForm_/password-update/[token]',
 	});
 	createNewPassForm.data.persistent = true;
@@ -26,7 +26,7 @@ export const load: PageServerLoad = async ({ params }) => {
 };
 
 const createNewPassFromPwReset: Action<{ token: string }> = async ({ request, params, locals, getClientAddress }) => {
-	const createNewPassForm = await superValidate(request, createNewPassSchema);
+	const createNewPassForm = await superValidate(request, zod(createNewPassSchema));
 	if (!createNewPassForm.valid) {
 		if (createNewPassForm.errors._errors) return formFail(403, { createNewPassForm: createNewPassForm }); // technically should be 400, but this way we can show an error without js
 		return formFail(400, { createNewPassForm });

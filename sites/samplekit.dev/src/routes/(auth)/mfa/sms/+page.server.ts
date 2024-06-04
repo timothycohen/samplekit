@@ -1,9 +1,9 @@
 import { error, redirect } from '@sveltejs/kit';
-import { message, superValidate } from 'sveltekit-superforms/server';
 import { auth } from '$lib/auth/server';
 import { transports } from '$lib/auth/server';
 import { createLimiter } from '$lib/botProtection/rateLimit/server';
 import { checkedRedirect, sanitizeRedirectUrl } from '$lib/http/server';
+import { message, superValidate, zod } from '$lib/superforms/server';
 import { sendSMSTokenSchema } from '$routes/(auth)/validators';
 import type { Actions, PageServerLoad } from './$types';
 import type { Action } from '@sveltejs/kit';
@@ -27,7 +27,7 @@ const sendSMSVeri: Action = async (event) => {
 	if (seshUser.session.awaitingEmailVeri) return checkedRedirect('/email-verification');
 
 	const [sendSMSTokenForm, { mfas }] = await Promise.all([
-		superValidate(request, sendSMSTokenSchema),
+		superValidate(request, zod(sendSMSTokenSchema)),
 		auth.provider.pass.MFA.getDetailsOrThrow(seshUser.user.id),
 	]);
 	const phoneNumber = mfas.sms;

@@ -80,7 +80,7 @@ export const load: PageServerLoad = async () => {
 </p>
 
 ```ts
-const verifySMSTokenForm = await superValidate(request, verifyOTPSchema);
+const verifySMSTokenForm = await superValidate(request, zod(verifyOTPSchema));
 
 if (!verifySMSTokenForm.valid) {
 	return message(verifySMSTokenForm, { fail: 'Invalid digits' }, { status: 400 });

@@ -1,10 +1,10 @@
 import { error } from '@sveltejs/kit';
-import { message, superValidate } from 'sveltekit-superforms/server';
 import { auth } from '$lib/auth/server';
 import { transports } from '$lib/auth/server';
 import { createLimiter } from '$lib/botProtection/rateLimit/server';
 import { turnstileFormInputName } from '$lib/botProtection/turnstile/common';
 import { validateTurnstile } from '$lib/botProtection/turnstile/server';
+import { message, superValidate, zod } from '$lib/superforms/server';
 import { emailPassResetSchema } from '$routes/(auth)/validators';
 import type { Actions, PageServerLoad } from './$types';
 import type { Action } from '@sveltejs/kit';
@@ -19,7 +19,7 @@ const emailPassReset: Action = async (event) => {
 	const { request } = event;
 	const formData = await request.formData();
 	const clientToken = formData.get(turnstileFormInputName);
-	const emailPassResetForm = await superValidate(formData, emailPassResetSchema);
+	const emailPassResetForm = await superValidate(formData, zod(emailPassResetSchema));
 
 	if (!emailPassResetForm.valid) return message(emailPassResetForm, { fail: 'Invalid email' });
 	if (clientToken === null || typeof clientToken !== 'string') {

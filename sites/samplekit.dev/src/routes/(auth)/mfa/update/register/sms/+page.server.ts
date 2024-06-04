@@ -1,9 +1,9 @@
 import { fail as formFail, redirect } from '@sveltejs/kit';
-import { message, superValidate } from 'sveltekit-superforms/server';
 import { mfaLabels } from '$lib/auth/client';
 import { auth } from '$lib/auth/server';
 import { transports } from '$lib/auth/server';
 import { checkedRedirect } from '$lib/http/server';
+import { message, superValidate, zod } from '$lib/superforms/server';
 import { phoneNumberSchema, verifyOTPSchema } from '$routes/(auth)/validators';
 import type { Actions, PageServerLoad } from './$types';
 import type { Action } from '@sveltejs/kit';
@@ -11,9 +11,9 @@ import type { Action } from '@sveltejs/kit';
 export const load: PageServerLoad = async ({ url }) => {
 	const phoneNumber = url.searchParams.get('phone');
 	const [phoneNumberForm, sanitizedPhone, verifySMSTokenForm] = await Promise.all([
-		superValidate(phoneNumberSchema, { id: 'phoneNumberForm_/mfa/update/register/sms' }),
+		superValidate(zod(phoneNumberSchema), { id: 'phoneNumberForm_/mfa/update/register/sms' }),
 		transports.sms.lookupPhoneNumber(phoneNumber ?? ''),
-		superValidate(verifyOTPSchema, { id: 'verifySMSTokenForm_/mfa/update/register/sms' }),
+		superValidate(zod(verifyOTPSchema), { id: 'verifySMSTokenForm_/mfa/update/register/sms' }),
 	]);
 
 	if (sanitizedPhone) phoneNumberForm.data.phone_number = sanitizedPhone;
@@ -32,7 +32,7 @@ export const load: PageServerLoad = async ({ url }) => {
 const SMSSetupFromSeshConf: Action = async ({ request, locals, url }) => {
 	const { user, session } = await locals.seshHandler.userOrRedirect();
 
-	const phoneNumberForm = await superValidate(request, phoneNumberSchema);
+	const phoneNumberForm = await superValidate(request, zod(phoneNumberSchema));
 	if (!phoneNumberForm.valid) return formFail(400, { phoneNumberForm });
 
 	const sanitizedPhone = await transports.sms.lookupPhoneNumber(phoneNumberForm.data.phone_number);
@@ -59,7 +59,7 @@ const SMSSetupFromSeshConf: Action = async ({ request, locals, url }) => {
 const registerMFA_SMS_WithSeshConfAndSetupSMS: Action = async ({ request, locals }) => {
 	const { user, session } = await locals.seshHandler.userOrRedirect();
 
-	const verifySMSTokenForm = await superValidate(request, verifyOTPSchema);
+	const verifySMSTokenForm = await superValidate(request, zod(verifyOTPSchema));
 	if (!verifySMSTokenForm.valid) return message(verifySMSTokenForm, { fail: 'Invalid digits' }, { status: 400 });
 	const smsToken = Object.values(verifySMSTokenForm.data).join('');
 

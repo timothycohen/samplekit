@@ -1,6 +1,6 @@
-import { superValidate } from 'sveltekit-superforms/server';
 import { auth } from '$lib/auth/server';
 import { checkedRedirect } from '$lib/http/server';
+import { superValidate, zod } from '$lib/superforms/server';
 import { pluralize } from '$lib/utils/common';
 import { confirmPassSchema, sendSMSTokenSchema, verifyOTPSchema } from '$routes/(auth)/validators';
 import { desiredParamsOrRedirect } from './utils';
@@ -32,14 +32,14 @@ export const load: LayoutServerLoad = async ({ locals, url }) => {
 	let expirationMsg = '';
 	if (timeRemaining) expirationMsg = `Verification expires in ${timeRemaining} ${pluralize('minute', timeRemaining)}`;
 
-	const confirmPassForm = await superValidate(confirmPassSchema, { id: 'confirmPassForm_/mfa/update(layout)' });
+	const confirmPassForm = await superValidate(zod(confirmPassSchema), { id: 'confirmPassForm_/mfa/update(layout)' });
 	confirmPassForm.data.redirect_path = redirectPath;
 
 	const phoneNumberLast4 = authDetails.mfas.sms?.slice(-4);
 	const [sendSMSTokenForm, verifySMSTokenForm, verifyAuthenticatorTokenForm] = await Promise.all([
-		superValidate(sendSMSTokenSchema, { id: 'sendSMSTokenForm_/mfa/update(layout)' }),
-		superValidate(verifyOTPSchema, { id: 'verifySMSTokenForm_/mfa/update(layout)' }),
-		superValidate(verifyOTPSchema, { id: 'verifyAuthenticatorTokenForm_/mfa/update(layout)' }),
+		superValidate(zod(sendSMSTokenSchema), { id: 'sendSMSTokenForm_/mfa/update(layout)' }),
+		superValidate(zod(verifyOTPSchema), { id: 'verifySMSTokenForm_/mfa/update(layout)' }),
+		superValidate(zod(verifyOTPSchema), { id: 'verifyAuthenticatorTokenForm_/mfa/update(layout)' }),
 	]);
 
 	verifySMSTokenForm.data.redirect_path = redirectPath;

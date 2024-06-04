@@ -1,9 +1,8 @@
 <script lang="ts">
 	import { Loader2 } from 'lucide-svelte';
-	import { superForm } from 'sveltekit-superforms/client';
 	import { InputMessage, CodeInput } from '$lib/components';
+	import { superForm, type SuperValidated } from '$lib/superforms/client';
 	import type { verifyOTPSchema } from '$routes/(auth)/validators';
-	import type { SuperValidated } from 'sveltekit-superforms';
 
 	export let action: App.Form.Action;
 	export let verifyOTPForm: SuperValidated<typeof verifyOTPSchema>;

@@ -1,6 +1,6 @@
 <script lang="ts" context="module">
+	import type { SuperValidated } from '$lib/superforms/client';
 	import type { confirmPassSchema, sendSMSTokenSchema, verifyOTPSchema } from '$routes/(auth)/validators';
-	import type { SuperValidated } from 'sveltekit-superforms';
 
 	export type VerifierProps = {
 		email: string;

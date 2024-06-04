@@ -1,8 +1,8 @@
-import { message, superValidate } from 'sveltekit-superforms/server';
 import { mfaLabels } from '$lib/auth/client';
 import { auth } from '$lib/auth/server';
 import { transports } from '$lib/auth/server';
 import { checkedRedirect } from '$lib/http/server';
+import { message, superValidate, zod } from '$lib/superforms/server';
 import { verifyOTPSchema } from '$routes/(auth)/validators';
 import type { Actions, PageServerLoad } from './$types';
 import type { Action } from '@sveltejs/kit';
@@ -11,7 +11,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 	const { user } = await locals.seshHandler.userOrRedirect();
 
 	const [verifyAuthenticatorTokenForm, { secret }] = await Promise.all([
-		superValidate(verifyOTPSchema, { id: 'verifyAuthenticatorTokenForm_/mfa/update/register/authenticator' }),
+		superValidate(zod(verifyOTPSchema), { id: 'verifyAuthenticatorTokenForm_/mfa/update/register/authenticator' }),
 		auth.token.setupAuthenticator.createOrRefresh({ userId: user.id }),
 	]);
 
@@ -33,7 +33,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 const registerMFA_Authenticator_WithSeshConf: Action = async ({ request, locals }) => {
 	const { user, session } = await locals.seshHandler.userOrRedirect();
 
-	const verifyAuthenticatorTokenForm = await superValidate(request, verifyOTPSchema);
+	const verifyAuthenticatorTokenForm = await superValidate(request, zod(verifyOTPSchema));
 	if (!verifyAuthenticatorTokenForm.valid)
 		return message(verifyAuthenticatorTokenForm, { fail: 'Invalid digits' }, { status: 400 });
 	const token = Object.values(verifyAuthenticatorTokenForm.data).join('');

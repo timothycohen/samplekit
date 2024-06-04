@@ -1,15 +1,16 @@
 <script lang="ts">
 	import { Eraser, Loader2, Pencil } from 'lucide-svelte';
 	import { slide } from 'svelte/transition';
-	import { superForm } from 'sveltekit-superforms/client';
+	import { superForm, zodClient } from '$lib/superforms/client';
 	import { nameSchema } from '$routes/(auth)/validators';
-	import type { SuperValidated } from 'sveltekit-superforms';
+	import type { SuperValidated } from '$lib/superforms/client';
 
 	export let user: DB.User;
 	export let nameForm: SuperValidated<typeof nameSchema>;
 
 	const { form, errors, constraints, enhance, message, submitting, tainted } = superForm(nameForm, {
-		validators: nameSchema,
+		taintedMessage: true,
+		validators: zodClient(nameSchema),
 	});
 
 	let editingName = false;

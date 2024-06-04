@@ -1,11 +1,11 @@
 import { fail as formFail } from '@sveltejs/kit';
 import platform from 'platform';
-import { message, superValidate } from 'sveltekit-superforms/server';
 import { auth } from '$lib/auth/server';
 import { createLimiter } from '$lib/botProtection/rateLimit/server';
 import { turnstileFormInputName } from '$lib/botProtection/turnstile/common';
 import { validateTurnstile } from '$lib/botProtection/turnstile/server';
 import { checkedRedirect } from '$lib/http/server';
+import { message, superValidate, zod } from '$lib/superforms/server';
 import { emailPassResetSchema, signinSchema } from '$routes/(auth)/validators';
 import type { Actions, PageServerLoad } from './$types';
 import type { Action } from '@sveltejs/kit';
@@ -21,8 +21,8 @@ export const load: PageServerLoad = async ({ locals }) => {
 	}
 
 	const [signinForm, emailPassResetForm] = await Promise.all([
-		superValidate(signinSchema, { id: 'signinForm_/login' }),
-		superValidate(emailPassResetSchema, { id: 'emailPassResetForm_/login' }),
+		superValidate(zod(signinSchema), { id: 'signinForm_/login' }),
+		superValidate(zod(emailPassResetSchema), { id: 'emailPassResetForm_/login' }),
 	]);
 
 	signinForm.data.persistent = true;
@@ -38,7 +38,7 @@ const loginWithPassword: Action = async (event) => {
 	const { request, locals, getClientAddress } = event;
 	const formData = await request.formData();
 	const clientToken = formData.get(turnstileFormInputName);
-	const signinForm = await superValidate(formData, signinSchema);
+	const signinForm = await superValidate(formData, zod(signinSchema));
 
 	if (!signinForm.valid) return formFail(400, { signinForm });
 	if (clientToken === null || typeof clientToken !== 'string') return formFail(400, { signinForm });

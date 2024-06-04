@@ -2,7 +2,7 @@
 	import { nameSchema } from '$routes/(auth)/validators';
 	import EditableAvatar from './EditableAvatar.svelte';
 	import EditableName from './EditableName.svelte';
-	import type { SuperValidated } from 'sveltekit-superforms';
+	import type { SuperValidated } from '$lib/superforms/client';
 
 	export let user: DB.User;
 	export let nameForm: SuperValidated<typeof nameSchema>;
