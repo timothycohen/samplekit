@@ -17,7 +17,7 @@ const addCartItem: RequestHandler = async ({ request, cookies, fetch }) => {
 	if (!cartId || !cart) {
 		try {
 			cart = await createCart({ fetch });
-		} catch (err) {
+		} catch {
 			return jsonFail(500, 'Could not create cart');
 		}
 		cartId = cart.id;
@@ -26,7 +26,7 @@ const addCartItem: RequestHandler = async ({ request, cookies, fetch }) => {
 
 	try {
 		await addToCart({ cartId, lines: [{ merchandiseId, quantity: 1 }], fetch });
-	} catch (err) {
+	} catch {
 		return jsonFail(500, 'Could not add to cart');
 	}
 
@@ -44,7 +44,7 @@ const removeCartItem: RequestHandler = async ({ request, cookies, fetch }) => {
 	try {
 		await removeFromCart({ cartId, lineIds: [lineId], fetch });
 		return jsonOk();
-	} catch (e) {
+	} catch {
 		return jsonFail(500, 'Error removing item from cart');
 	}
 };
@@ -64,7 +64,7 @@ const updateCartItemQty: RequestHandler = async ({ request, cookies, fetch }) =>
 			await updateCart({ cartId, lines: [{ id: lineId, merchandiseId: variantId, quantity }], fetch });
 		}
 		return jsonOk();
-	} catch (e) {
+	} catch {
 		return jsonFail(500, 'Error updating item quantity');
 	}
 };
@@ -78,7 +78,7 @@ const getCartItems: RequestHandler = async ({ cookies, fetch }) => {
 	if (!cartId || !cart) {
 		try {
 			cart = await createCart({ fetch });
-		} catch (err) {
+		} catch {
 			return jsonFail(500, 'Could not create cart');
 		}
 		cartId = cart.id;

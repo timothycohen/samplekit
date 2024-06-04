@@ -45,7 +45,7 @@ const createFetchOAuthAccessToken: CreateFetchOAuthAccessToken =
 			const tokens = await res.json();
 			if (!tokens?.access_token) return { success: false, error: 'no_access_token' };
 			return { success: true, accessToken: tokens.access_token };
-		} catch (e) {
+		} catch {
 			return { success: false, error: 'validation_failed' };
 		}
 	};

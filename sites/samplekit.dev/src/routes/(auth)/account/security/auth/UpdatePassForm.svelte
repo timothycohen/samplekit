@@ -12,7 +12,7 @@
 
 	const { form, errors, constraints, enhance, message, submitting } = superForm(updatePassForm, {});
 
-	$: $message?.success && onSuccess();
+	$: if ($message?.success) onSuccess();
 </script>
 
 <form action="/account/security/auth?/updatePassFromCurrPass" method="post" use:enhance>

@@ -6,7 +6,7 @@
 	export let email: string;
 	export let action: App.Form.Action;
 
-	$: submitted = false || !!$page.url.searchParams.get('success');
+	$: submitted = !!$page.url.searchParams.get('success');
 </script>
 
 <div class="alert-wrapper alert-wrapper-info">

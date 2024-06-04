@@ -82,7 +82,7 @@ export const createPasskey = <P, PWOP, PCtx>({
 				expectedOrigin: config.env.PUBLIC_ORIGIN,
 				expectedRPID: config.passkey.rpID,
 			});
-		} catch (error) {
+		} catch {
 			return { error: { status: 403, message: 'Verification failed.', code: 'registration_failed' } };
 		}
 
@@ -146,7 +146,7 @@ export const createPasskey = <P, PWOP, PCtx>({
 				requireUserVerification: true,
 				authenticator: intoAuthenticator(savedPasskey),
 			});
-		} catch (error) {
+		} catch {
 			return { error: { status: 403, message: 'Verification failed.', code: 'authentication_failed' } };
 		}
 

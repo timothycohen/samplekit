@@ -21,7 +21,7 @@ export const keyboard = (listenerNode: HTMLElement, keyCallbackMap: KeyFnMap) =>
 
 export const clickOn = (listenerNode: HTMLElement, keyCodes: KeyboardEvent['code'][]) => {
 	function cb(e: KeyboardEvent) {
-		e.currentTarget instanceof HTMLElement && e.currentTarget.click();
+		if (e.currentTarget instanceof HTMLElement) e.currentTarget.click();
 	}
 
 	const { destroy } = keyboard(
