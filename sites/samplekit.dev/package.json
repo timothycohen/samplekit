@@ -69,6 +69,7 @@
 		"cspell": "^8.8.4",
 		"drizzle-kit": "^0.22.1",
 		"env-cmd": "^10.1.0",
+		"estree-walker": "^3.0.3",
 		"ioredis": "^5.4.1",
 		"magic-string": "^0.30.10",
 		"postcss": "^8.4.38",

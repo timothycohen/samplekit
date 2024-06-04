@@ -209,6 +209,9 @@ importers:
       env-cmd:
         specifier: ^10.1.0
         version: 10.1.0
+      estree-walker:
+        specifier: ^3.0.3
+        version: 3.0.3
       ioredis:
         specifier: ^5.4.1
         version: 5.4.1

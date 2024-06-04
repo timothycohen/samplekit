@@ -27,9 +27,8 @@ const config = {
 		}),
 		vitePreprocess(),
 		preprocessExternalLinks({
-			logger: console,
+			logger: { formatFilename: (filename) => filename.replace(src, ''), ...console },
 			include: (filename) => !filename.includes('node_modules'),
-			formatLogFilename: (filename) => filename.replace(src, ''),
 		}),
 		// https://github.com/vnphanquang/svelte-put/blob/main/packages/preprocessors/auto-slug/src/auto-slug.types.ts
 		autoSlug(() => ({
