@@ -19,6 +19,6 @@
 		passkeyAction="login"
 		onPasskeyFinished={() => location.reload()}
 	>
-		<LoginAsDiffUserForm slot="right-of-header" />
+		<LoginAsDiffUserForm />
 	</VerifyMFAForm>
 </section>

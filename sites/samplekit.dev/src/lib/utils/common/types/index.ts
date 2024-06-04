@@ -1,7 +1,5 @@
-import type { ComponentType, SvelteComponent } from 'svelte';
+import type { Component } from 'svelte';
 
 export * from './result';
 
-export type NoPropComponent = ComponentType<
-	SvelteComponent<Record<string, never>, Record<string, never>, Record<string, never>>
->;
+export type NoPropComponent = Component;

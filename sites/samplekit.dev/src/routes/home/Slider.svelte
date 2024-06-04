@@ -26,7 +26,6 @@
 				class="rounded-card bg-app-bg/50 my-8 aspect-[3/2] flex-shrink-0 transition-all
 				       {$isSelected(i) ? 'shadow-4' : 'shadow-3'}"
 			>
-				<!-- svelte-ignore a11y-missing-attribute -->
 				<img
 					{...item.img}
 					loading={i === 0 ? 'eager' : 'lazy'}
