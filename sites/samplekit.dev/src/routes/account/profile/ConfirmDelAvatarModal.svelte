@@ -12,7 +12,7 @@
 
 <div use:melt={$portalled}>
 	{#if $open}
-		<div class="modal-overlay" use:melt={$overlay} />
+		<div class="modal-overlay" use:melt={$overlay}></div>
 		<div class="modal-content" use:melt={$content}>
 			<h2 class="modal-title" use:melt={$title}>Delete your avatar?</h2>
 			<p class="modal-description" use:melt={$description}>This cannot be undone.</p>

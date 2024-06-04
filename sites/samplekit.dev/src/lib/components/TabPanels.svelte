@@ -66,9 +66,10 @@
 
 						<span class="relative">
 							{triggerItem.title}
-							<span class="group-hover:bg-accent-5 absolute -bottom-1 left-1/2 h-1 w-6 -translate-x-1/2 rounded-full" />
+							<span class="group-hover:bg-accent-5 absolute -bottom-1 left-1/2 h-1 w-6 -translate-x-1/2 rounded-full">
+							</span>
 							{#if $value === triggerItem.id}
-								<span class="bg-accent-9 absolute -bottom-1 left-1/2 h-1 w-6 -translate-x-1/2 rounded-full" />
+								<span class="bg-accent-9 absolute -bottom-1 left-1/2 h-1 w-6 -translate-x-1/2 rounded-full"></span>
 							{/if}
 						</span>
 					</span>

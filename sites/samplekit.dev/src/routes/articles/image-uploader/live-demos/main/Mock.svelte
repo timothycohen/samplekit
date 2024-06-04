@@ -139,7 +139,7 @@
 
 <div use:melt={$portalled}>
 	{#if $editAvatarOpen}
-		<div use:melt={$overlay} class="modal-overlay" />
+		<div use:melt={$overlay} class="modal-overlay"></div>
 		<div class="modal-content-position rounded-card overflow-hidden" use:melt={$content}>
 			<div class="relative aspect-square h-80 w-80 sm:h-[32rem] sm:w-[32rem]">
 				{#if $s.state === 'error'}

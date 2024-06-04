@@ -5,13 +5,13 @@
 </script>
 
 <section class="page">
-	<div class="cross-dots absolute -top-[var(--nav-height)] bottom-0 left-0 right-0 -z-20 hidden dark:block" />
+	<div class="cross-dots absolute -top-[var(--nav-height)] bottom-0 left-0 right-0 -z-20 hidden dark:block"></div>
 	<div
 		class="from-app-bg/50 to-accent-3/50 absolute -top-[var(--nav-height)] left-0 right-0 -z-10 hidden h-96 w-full bg-gradient-to-t opacity-60 dark:block"
-	/>
+	></div>
 	<div
 		class="from-app-bg/30 via-app-bg/50 absolute -top-[var(--nav-height)] left-0 right-0 -z-10 hidden h-96 w-full bg-gradient-to-tr to-transparent dark:block"
-	/>
+	></div>
 
 	<div>
 		<h1

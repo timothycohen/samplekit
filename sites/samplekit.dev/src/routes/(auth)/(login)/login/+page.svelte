@@ -42,7 +42,7 @@
 
 <h1 class="text-h4 font-medium">Welcome to SampleKit!</h1>
 <p class="text-sm">New here? <a href="/signup" class="link">Create an account.</a></p>
-<div class="mb-6" />
+<div class="mb-6"></div>
 <GoogleFormButton persistent={$signinForm.persistent} />
 <Or />
 
@@ -105,7 +105,7 @@
 
 <div use:melt={$portalled}>
 	{#if $emailPassModal}
-		<div use:melt={$overlay} class="modal-overlay" />
+		<div use:melt={$overlay} class="modal-overlay"></div>
 		<div class="modal-content" use:melt={$content}>
 			<form
 				action="/password-reset?/emailPassReset"

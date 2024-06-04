@@ -31,7 +31,7 @@
 		<div class="absolute inset-0">
 			<img style={cropStyles} src={img.url} alt="" class={img.blur ? 'blur-md' : ''} referrerpolicy="no-referrer" />
 		</div>
-		<div class="absolute inset-0" style="background-color: rgb(11, 11, 11); opacity: 70%;" />
+		<div class="absolute inset-0" style="background-color: rgb(11, 11, 11); opacity: 70%;"></div>
 		<div class="border-gray-6 absolute inset-0 overflow-hidden rounded-full border">
 			<img style={cropStyles} src={img.url} alt="" class={img.blur ? 'blur-md' : ''} referrerpolicy="no-referrer" />
 		</div>
@@ -41,7 +41,7 @@
 		<img style={cropStyles} src={img.url} class={img.blur ? 'blur-md' : ''} alt="" referrerpolicy="no-referrer" />
 	</div>
 {:else if img?.kind === 'skeleton'}
-	<div class="bg-gray-3 absolute inset-0 animate-pulse" aria-label="Loading" />
+	<div class="bg-gray-3 absolute inset-0 animate-pulse" aria-label="Loading"></div>
 	<div class="absolute inset-0 grid place-items-center">
 		<div class="flex flex-wrap gap-4">
 			<Loader class="animate-spin-slow h-14 w-14" />
@@ -51,9 +51,9 @@
 {/if}
 
 {#if overlay?.pulsingWhite}
-	<div class="absolute inset-0 animate-pulse bg-white/20" />
+	<div class="absolute inset-0 animate-pulse bg-white/20"></div>
 {:else if overlay?.red}
-	<div class="bg-red-9/50 absolute inset-0" />
+	<div class="bg-red-9/50 absolute inset-0"></div>
 {/if}
 
 {#if errorMsgs}

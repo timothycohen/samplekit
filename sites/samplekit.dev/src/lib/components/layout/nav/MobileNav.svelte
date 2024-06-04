@@ -11,7 +11,11 @@
 	export let overlayClasses: string | null | undefined = undefined;
 </script>
 
-<div id="nav--mobile-overlay" class={overlayClasses ?? 'bg-app-bg'} style="--duration: {slideBg ? '150ms' : '0ms'}" />
+<div
+	id="nav--mobile-overlay"
+	class={overlayClasses ?? 'bg-app-bg'}
+	style="--duration: {slideBg ? '150ms' : '0ms'}"
+></div>
 
 <nav
 	id="nav--mobile"

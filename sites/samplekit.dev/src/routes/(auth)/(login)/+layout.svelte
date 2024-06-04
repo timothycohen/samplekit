@@ -17,7 +17,7 @@
 		</div>
 
 		<div class="rounded-card sm:shadow-4 relative flex w-full flex-col sm:p-12 sm:pb-3">
-			<div class="rounded-card absolute inset-0 backdrop-blur-sm" />
+			<div class="rounded-card absolute inset-0 backdrop-blur-sm"></div>
 
 			<div class="z-10">
 				<div class="mb-8 flex items-center justify-center overflow-hidden text-3xl">

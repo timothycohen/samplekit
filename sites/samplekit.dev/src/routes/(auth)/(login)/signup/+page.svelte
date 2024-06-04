@@ -18,7 +18,7 @@
 
 <h1 class="text-h4 font-medium">Sign up</h1>
 <p class="text-sm">Have an account? <a href="/login" class="link">Log in now.</a></p>
-<div class="mb-6" />
+<div class="mb-6"></div>
 <GoogleFormButton persistent={$form.persistent} />
 <Or />
 

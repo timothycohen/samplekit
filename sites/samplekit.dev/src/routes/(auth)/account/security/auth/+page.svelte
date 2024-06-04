@@ -220,7 +220,7 @@
 {#if mfaCount === 1}
 	<div use:melt={$delMFAPortalled}>
 		{#if $delMFAOpen}
-			<div class="modal-overlay" use:melt={$delMFAOverlay} />
+			<div class="modal-overlay" use:melt={$delMFAOverlay}></div>
 			<div class="modal-content" use:melt={$delMFAContent}>
 				<h2 class="modal-title" use:melt={$delMFATitle}>Delete MFA Method</h2>
 				<p class="modal-description" use:melt={$delMFADescription}>
@@ -248,7 +248,7 @@
 
 <div use:melt={$delAccountPortalled}>
 	{#if $delAccountOpen}
-		<div class="modal-overlay" use:melt={$delAccountOverlay} />
+		<div class="modal-overlay" use:melt={$delAccountOverlay}></div>
 		<div class="modal-content" use:melt={$delAccountContent}>
 			<h2 class="modal-title" use:melt={$delAccountTitle}>Delete Account</h2>
 			<p class="modal-description" use:melt={$delAccountDescription}>

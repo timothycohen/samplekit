@@ -18,7 +18,7 @@
 	aria-checked={state === true}
 	on:click={onClick}
 >
-	<span class="thumb {state ? 'bg-accent-9' : 'bg-accent-7'} block rounded-full transition" />
+	<span class="thumb {state ? 'bg-accent-9' : 'bg-accent-7'} block rounded-full transition"></span>
 </button>
 
 <input type="checkbox" checked={state === true} class="sr-only" aria-hidden="true" hidden={true} tabindex="-1" />

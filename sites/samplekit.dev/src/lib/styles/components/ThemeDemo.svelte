@@ -25,7 +25,7 @@
 				<div class="mt-[4%] grid h-[60%] grid-cols-3 gap-[2%]">
 					<div class="shadow-3 rounded-card col-start-1 col-end-3 h-full">
 						<div class="bg-accent-9/25 border-accent-9 mt-[5%] flex h-[20%] w-full items-center border-l-2">
-							<div class="bg-accent-9 ml-[10%] h-1/2 w-2/5 rounded-full" />
+							<div class="bg-accent-9 ml-[10%] h-1/2 w-2/5 rounded-full"></div>
 						</div>
 					</div>
 					<div class="shadow-3 rounded-card col-start-3 col-end-3 ml-[20%] grid h-[80%] p-[10%]">

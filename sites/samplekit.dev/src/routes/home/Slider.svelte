@@ -53,7 +53,7 @@
 						{...prog.attrs}
 						use:prog.action
 						class="progress-filled:bg-accent-7 progress-unfilled:bg-gray-4 mb-4 block h-0.5 w-full"
-					/>
+					></progress>
 
 					<span class="text-sm font-light">0{i + 1}.</span>
 

@@ -30,7 +30,7 @@
 				/>
 				<img src={feature.imgSmGif} class="rounded-card hidden h-full w-full group-hover:block" alt="" loading="lazy" />
 			</div>
-			<div class="bg-gray-5 my-2 h-px scale-x-90 transition-transform group-hover:scale-x-100" />
+			<div class="bg-gray-5 my-2 h-px scale-x-90 transition-transform group-hover:scale-x-100"></div>
 		{:else if feature.imgSm || feature.imgSmGif}
 			<div class="bg-app-bg-amethyst aspect-video w-full">
 				<img
@@ -40,7 +40,7 @@
 					alt=""
 					loading={preview ? 'eager' : 'lazy'}
 				/>
-				<div class="bg-gray-5 h-px scale-x-90 transition-transform group-hover:scale-x-100" />
+				<div class="bg-gray-5 h-px scale-x-90 transition-transform group-hover:scale-x-100"></div>
 			</div>
 		{/if}
 
