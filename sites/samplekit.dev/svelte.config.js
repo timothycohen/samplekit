@@ -1,11 +1,10 @@
 import { join } from 'path';
 import { sequence, preprocessMeltUI } from '@melt-ui/pp';
 import { preprocessCodeblock, preprocessTable } from '@samplekit/markdown';
-// @ts-expect-error – missing types
-import autoSlug from '@svelte-put/preprocess-auto-slug';
 import adapter from '@sveltejs/adapter-node';
 import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
 import { preprocessExternalLinks } from './scripts/preprocessors/anchor.js';
+import { addSlugsToHeaders } from './scripts/preprocessors/auto-slug.js';
 
 const root = join(new URL(import.meta.url).pathname, '..');
 const src = join(root, 'src');
@@ -30,17 +29,13 @@ const config = {
 			logger: { formatFilename: (filename) => filename.replace(src, ''), ...console },
 			include: (filename) => !filename.includes('node_modules'),
 		}),
-		// https://github.com/vnphanquang/svelte-put/blob/main/packages/preprocessors/auto-slug/src/auto-slug.types.ts
-		autoSlug(() => ({
+		// Inspired by https://github.com/vnphanquang/svelte-put/blob/main/packages/preprocessors/auto-slug/src/auto-slug.types.ts
+		addSlugsToHeaders({
+			logger: { formatFilename: (filename) => filename.replace(articleRoot, ''), ...console },
+			include: (filename) =>
+				filename.includes('src/routes/articles/') && (filename.endsWith('.svx') || filename.endsWith('+page.svelte')),
 			tags: ['h2', 'h3', 'h4', 'h5', 'h6'],
-			/** @param {{ filename: string, content: string }} param0 */
-			files: ({ filename }) => {
-				return (
-					filename.includes('src/routes/articles/') && (filename.endsWith('.svx') || filename.endsWith('+page.svelte'))
-				);
-			},
-			anchor: { content: '#', position: 'prepend' },
-		})),
+		}),
 		preprocessMeltUI(),
 	]),
 	kit: {
