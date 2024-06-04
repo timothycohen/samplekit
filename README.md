@@ -85,8 +85,7 @@ To run this repo you'll need to set up Redis and Postgres. The package.json scri
 cd sites/samplekit.dev
 cp .env.example .env._development
 pnpm install
-pnpm dev:db:create && pnpm dev:db:start
-pnpm dev:kv:create && pnpm dev:kv:start
+pnpm dev:up
 pnpm build:dependencies
 pnpm run dev
 

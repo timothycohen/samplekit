@@ -1,8 +1,8 @@
 import { fail as formFail, redirect } from '@sveltejs/kit';
-import { message, superValidate } from 'sveltekit-superforms/server';
 import { PUBLIC_GOOGLE_OAUTH_CLIENT_ID } from '$env/static/public';
 import { auth } from '$lib/auth/server';
 import { checkedRedirect } from '$lib/http/server';
+import { message, superValidate, zod } from '$lib/superforms/server';
 import { PUBLIC_GOOGLE_OAUTH_LINK_PATHNAME } from '$routes/(auth)/consts';
 import { confirmPassSchema } from '$routes/(auth)/validators';
 import type { Actions, PageServerLoad } from './$types';
@@ -15,7 +15,7 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 	const method = authDetails.method;
 	if (method === 'oauth') return checkedRedirect('/account/profile');
 
-	const confirmPassForm = await superValidate(confirmPassSchema, { id: 'confirmPassForm_/change-to-google' });
+	const confirmPassForm = await superValidate(zod(confirmPassSchema), { id: 'confirmPassForm_/change-to-google' });
 
 	const error = url.searchParams.get('error') as null | 'auth-failed' | 'email-mismatch';
 	let errMsg = null;
@@ -43,7 +43,7 @@ const passwordToLinkGoogle: Action = async ({ locals, request, cookies }) => {
 	if (authDetails.method === 'oauth') return checkedRedirect('/account/profile');
 	if (authDetails.mfaCount) return checkedRedirect('/account/profile');
 
-	const confirmPassForm = await superValidate(request, confirmPassSchema);
+	const confirmPassForm = await superValidate(request, zod(confirmPassSchema));
 
 	if (!confirmPassForm.valid) return formFail(400, { confirmPassForm });
 	const password = confirmPassForm.data.password;

@@ -1,10 +1,8 @@
 {
-  "id": "4e3f7948-aee1-40e4-98f3-682da6ae2d89",
-  "prevId": "a3ac1167-8ac8-465f-a7ca-e0121c564a42",
-  "version": "5",
-  "dialect": "pg",
+  "version": "7",
+  "dialect": "postgresql",
   "tables": {
-    "auth_provider": {
+    "public.auth_provider": {
       "name": "auth_provider",
       "schema": "",
       "columns": {
@@ -68,29 +66,29 @@
         "auth_provider_user_id_user_account_id_fk": {
           "name": "auth_provider_user_id_user_account_id_fk",
           "tableFrom": "auth_provider",
-          "tableTo": "user_account",
           "columnsFrom": [
             "user_id"
           ],
+          "tableTo": "user_account",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "cascade"
         }
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
         "auth_provider_user_id_unique": {
           "name": "auth_provider_user_id_unique",
-          "nullsNotDistinct": false,
           "columns": [
             "user_id"
-          ]
+          ],
+          "nullsNotDistinct": false
         }
       }
     },
-    "session": {
+    "public.session": {
       "name": "session",
       "schema": "",
       "columns": {
@@ -178,21 +176,21 @@
         "session_user_id_user_account_id_fk": {
           "name": "session_user_id_user_account_id_fk",
           "tableFrom": "session",
-          "tableTo": "user_account",
           "columnsFrom": [
             "user_id"
           ],
+          "tableTo": "user_account",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "cascade"
         }
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
-    "token_email_veri": {
+    "public.token_email_veri": {
       "name": "token_email_veri",
       "schema": "",
       "columns": {
@@ -232,36 +230,36 @@
         "token_email_veri_user_id_user_account_id_fk": {
           "name": "token_email_veri_user_id_user_account_id_fk",
           "tableFrom": "token_email_veri",
-          "tableTo": "user_account",
           "columnsFrom": [
             "user_id"
           ],
+          "tableTo": "user_account",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "cascade"
         }
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
         "token_email_veri_user_id_unique": {
           "name": "token_email_veri_user_id_unique",
-          "nullsNotDistinct": false,
           "columns": [
             "user_id"
-          ]
+          ],
+          "nullsNotDistinct": false
         },
         "token_email_veri_token_unique": {
           "name": "token_email_veri_token_unique",
-          "nullsNotDistinct": false,
           "columns": [
             "token"
-          ]
+          ],
+          "nullsNotDistinct": false
         }
       }
     },
-    "token_passkey_challenge": {
+    "public.token_passkey_challenge": {
       "name": "token_passkey_challenge",
       "schema": "",
       "columns": {
@@ -289,29 +287,29 @@
         "token_passkey_challenge_user_id_user_account_id_fk": {
           "name": "token_passkey_challenge_user_id_user_account_id_fk",
           "tableFrom": "token_passkey_challenge",
-          "tableTo": "user_account",
           "columnsFrom": [
             "user_id"
           ],
+          "tableTo": "user_account",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "cascade"
         }
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
         "token_passkey_challenge_user_id_unique": {
           "name": "token_passkey_challenge_user_id_unique",
-          "nullsNotDistinct": false,
           "columns": [
             "user_id"
-          ]
+          ],
+          "nullsNotDistinct": false
         }
       }
     },
-    "token_pw_reset": {
+    "public.token_pw_reset": {
       "name": "token_pw_reset",
       "schema": "",
       "columns": {
@@ -351,36 +349,36 @@
         "token_pw_reset_user_id_user_account_id_fk": {
           "name": "token_pw_reset_user_id_user_account_id_fk",
           "tableFrom": "token_pw_reset",
-          "tableTo": "user_account",
           "columnsFrom": [
             "user_id"
           ],
+          "tableTo": "user_account",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "cascade"
         }
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
         "token_pw_reset_user_id_unique": {
           "name": "token_pw_reset_user_id_unique",
-          "nullsNotDistinct": false,
           "columns": [
             "user_id"
-          ]
+          ],
+          "nullsNotDistinct": false
         },
         "token_pw_reset_token_unique": {
           "name": "token_pw_reset_token_unique",
-          "nullsNotDistinct": false,
           "columns": [
             "token"
-          ]
+          ],
+          "nullsNotDistinct": false
         }
       }
     },
-    "token_setup_authenticator": {
+    "public.token_setup_authenticator": {
       "name": "token_setup_authenticator",
       "schema": "",
       "columns": {
@@ -420,29 +418,29 @@
         "token_setup_authenticator_user_id_user_account_id_fk": {
           "name": "token_setup_authenticator_user_id_user_account_id_fk",
           "tableFrom": "token_setup_authenticator",
-          "tableTo": "user_account",
           "columnsFrom": [
             "user_id"
           ],
+          "tableTo": "user_account",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "cascade"
         }
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
         "token_setup_authenticator_user_id_unique": {
           "name": "token_setup_authenticator_user_id_unique",
-          "nullsNotDistinct": false,
           "columns": [
             "user_id"
-          ]
+          ],
+          "nullsNotDistinct": false
         }
       }
     },
-    "token_setup_sms_veri": {
+    "public.token_setup_sms_veri": {
       "name": "token_setup_sms_veri",
       "schema": "",
       "columns": {
@@ -500,29 +498,29 @@
         "token_setup_sms_veri_user_id_user_account_id_fk": {
           "name": "token_setup_sms_veri_user_id_user_account_id_fk",
           "tableFrom": "token_setup_sms_veri",
-          "tableTo": "user_account",
           "columnsFrom": [
             "user_id"
           ],
+          "tableTo": "user_account",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "cascade"
         }
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
         "token_setup_sms_veri_user_id_unique": {
           "name": "token_setup_sms_veri_user_id_unique",
-          "nullsNotDistinct": false,
           "columns": [
             "user_id"
-          ]
+          ],
+          "nullsNotDistinct": false
         }
       }
     },
-    "token_sms_veri": {
+    "public.token_sms_veri": {
       "name": "token_sms_veri",
       "schema": "",
       "columns": {
@@ -574,29 +572,29 @@
         "token_sms_veri_user_id_user_account_id_fk": {
           "name": "token_sms_veri_user_id_user_account_id_fk",
           "tableFrom": "token_sms_veri",
-          "tableTo": "user_account",
           "columnsFrom": [
             "user_id"
           ],
+          "tableTo": "user_account",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "cascade"
         }
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
         "token_sms_veri_user_id_unique": {
           "name": "token_sms_veri_user_id_unique",
-          "nullsNotDistinct": false,
           "columns": [
             "user_id"
-          ]
+          ],
+          "nullsNotDistinct": false
         }
       }
     },
-    "user_account": {
+    "public.user_account": {
       "name": "user_account",
       "schema": "",
       "columns": {
@@ -642,7 +640,7 @@
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
-    "presigned_url": {
+    "public.presigned_url": {
       "name": "presigned_url",
       "schema": "",
       "columns": {
@@ -676,25 +674,25 @@
         "presigned_url_user_id_user_account_id_fk": {
           "name": "presigned_url_user_id_user_account_id_fk",
           "tableFrom": "presigned_url",
-          "tableTo": "user_account",
           "columnsFrom": [
             "user_id"
           ],
+          "tableTo": "user_account",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "cascade"
         }
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
         "presigned_url_user_id_unique": {
           "name": "presigned_url_user_id_unique",
-          "nullsNotDistinct": false,
           "columns": [
             "user_id"
-          ]
+          ],
+          "nullsNotDistinct": false
         }
       }
     }
@@ -702,8 +700,10 @@
   "enums": {},
   "schemas": {},
   "_meta": {
-    "columns": {},
     "schemas": {},
-    "tables": {}
-  }
+    "tables": {},
+    "columns": {}
+  },
+  "id": "4e3f7948-aee1-40e4-98f3-682da6ae2d89",
+  "prevId": "a3ac1167-8ac8-465f-a7ca-e0121c564a42"
 }

@@ -1,9 +1,9 @@
 import { fail as formFail, redirect } from '@sveltejs/kit';
-import { message, superValidate } from 'sveltekit-superforms/server';
 import { auth } from '$lib/auth/server';
 import { createLimiter } from '$lib/botProtection/rateLimit/server';
 import { checkedRedirect } from '$lib/http/server';
 import { sanitizeRedirectUrl } from '$lib/http/server';
+import { message, superValidate, zod } from '$lib/superforms/server';
 import { confirmPassSchema, verifyOTPSchema } from '$routes/(auth)/validators';
 import type { Actions } from './$types';
 import type { Action } from '@sveltejs/kit';
@@ -20,7 +20,7 @@ const seshConfFromPassword: Action = async (event) => {
 	const { request, locals } = event;
 	const { user, session } = await locals.seshHandler.userOrRedirect();
 
-	const confirmPassForm = await superValidate(request, confirmPassSchema);
+	const confirmPassForm = await superValidate(request, zod(confirmPassSchema));
 	if (!confirmPassForm.valid) return formFail(400, { confirmPassForm });
 	const sanitizedPath = sanitizeRedirectUrl(confirmPassForm.data.redirect_path);
 
@@ -49,7 +49,7 @@ const seshConfFromPassword: Action = async (event) => {
 const seshConfFromSMS: Action = async ({ request, locals }) => {
 	const { user, session } = await locals.seshHandler.userOrRedirect();
 
-	const verifySMSTokenForm = await superValidate(request, verifyOTPSchema);
+	const verifySMSTokenForm = await superValidate(request, zod(verifyOTPSchema));
 	if (!verifySMSTokenForm.valid) return message(verifySMSTokenForm, { fail: 'Invalid digits' }, { status: 400 });
 
 	const tokens = Object.values(verifySMSTokenForm.data);
@@ -67,7 +67,7 @@ const seshConfFromSMS: Action = async ({ request, locals }) => {
 const seshConfFromAuthenticator: Action = async ({ request, locals }) => {
 	const { user, session } = await locals.seshHandler.userOrRedirect();
 
-	const verifyAuthenticatorTokenForm = await superValidate(request, verifyOTPSchema);
+	const verifyAuthenticatorTokenForm = await superValidate(request, zod(verifyOTPSchema));
 	if (!verifyAuthenticatorTokenForm.valid)
 		return message(verifyAuthenticatorTokenForm, { fail: 'Invalid digits' }, { status: 400 });
 

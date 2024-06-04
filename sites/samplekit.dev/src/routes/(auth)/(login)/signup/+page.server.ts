@@ -1,6 +1,5 @@
 import { fail as formFail } from '@sveltejs/kit';
 import platform from 'platform';
-import { message, superValidate } from 'sveltekit-superforms/server';
 import { auth } from '$lib/auth/server';
 import { transports } from '$lib/auth/server';
 import { createLimiter } from '$lib/botProtection/rateLimit/server';
@@ -8,6 +7,7 @@ import { turnstileFormInputName } from '$lib/botProtection/turnstile/common';
 import { validateTurnstile } from '$lib/botProtection/turnstile/server';
 import { checkedRedirect } from '$lib/http/server';
 import { logger } from '$lib/logging/server';
+import { message, superValidate, zod } from '$lib/superforms/server';
 import { signupSchema } from '$routes/(auth)/validators';
 import type { Actions, PageServerLoad } from './$types';
 import type { Action } from '@sveltejs/kit';
@@ -22,7 +22,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 		return checkedRedirect('/account/profile');
 	}
 
-	const signupForm = await superValidate(signupSchema, { id: 'signupForm_/signup' });
+	const signupForm = await superValidate(zod(signupSchema), { id: 'signupForm_/signup' });
 	signupForm.data.persistent = true;
 
 	return { signupForm, layout: { showFooter: false, showHeader: false } };
@@ -32,7 +32,7 @@ const signupWithPassword: Action = async (event) => {
 	const { request, locals, getClientAddress } = event;
 	const formData = await request.formData();
 	const clientToken = formData.get(turnstileFormInputName);
-	const signupForm = await superValidate(formData, signupSchema);
+	const signupForm = await superValidate(formData, zod(signupSchema));
 
 	if (!signupForm.valid) return formFail(400, { signupForm });
 	if (clientToken === null || typeof clientToken !== 'string') return formFail(400, { signupForm });

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { melt } from '@melt-ui/svelte';
-	import { MenuIcon } from 'lucide-svelte';
+	import { MenuIcon } from '$lib/styles/icons';
 	import { OpenCartBtn } from '$routes/shop/components';
 	import { useNavService } from '$routes/shop/services';
 

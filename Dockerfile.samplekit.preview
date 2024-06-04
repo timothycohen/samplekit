@@ -21,7 +21,7 @@ RUN cp /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 COPY . $ROOT
 
-RUN npm i -g pnpm
+RUN corepack enable pnpm
 RUN pnpm install
 RUN echo _preview | pnpm --filter samplekit.dev build
 

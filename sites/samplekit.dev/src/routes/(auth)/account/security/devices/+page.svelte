@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { Trash2, BadgeCheck, Loader2 } from 'lucide-svelte';
 	import { page } from '$app/stores';
+	import { Trash2, BadgeCheck, Loader2 } from '$lib/styles/icons';
 
 	export let data;
 

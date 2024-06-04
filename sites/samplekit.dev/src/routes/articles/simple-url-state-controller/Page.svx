@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { searchParam } from '$lib/stores';
-	import { ArrowUp, X, Check } from 'lucide-svelte';
+	import { ArrowUp, X, Check } from '$lib/styles/icons';
 	import { CodeTopper } from '$lib/articles/components';
 	import { page } from '$app/stores'
 

@@ -1,7 +1,7 @@
 import { error, fail as formFail, redirect } from '@sveltejs/kit';
-import { superValidate } from 'sveltekit-superforms/server';
 import { auth } from '$lib/auth/server';
 import { checkedRedirect } from '$lib/http/server';
+import { superValidate, zod } from '$lib/superforms/server';
 import { deleteSessionSchema } from '$routes/(auth)/validators';
 import type { Actions, PageServerLoad } from './$types';
 import type { Action } from '@sveltejs/kit';
@@ -22,7 +22,7 @@ const logoutSingle: Action = async ({ locals, request }) => {
 	const seshUser = await locals.seshHandler.getSessionUser();
 	if (!seshUser) return checkedRedirect('/login');
 
-	const deleteSessionForm = await superValidate(request, deleteSessionSchema);
+	const deleteSessionForm = await superValidate(request, zod(deleteSessionSchema));
 	if (!deleteSessionForm.valid) return formFail(400);
 
 	const allSessions = await auth.session.getAll({ userId: seshUser.user.id });

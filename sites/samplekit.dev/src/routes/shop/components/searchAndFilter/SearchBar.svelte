@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { Search } from 'lucide-svelte';
 	import { page } from '$app/stores';
+	import { Search } from '$lib/styles/icons';
 	import { useSearchAndFilterService } from '$routes/shop/services';
 
 	const {

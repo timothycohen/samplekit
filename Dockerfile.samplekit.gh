@@ -28,7 +28,7 @@ ARG MODE
 RUN echo $ENV_FILE >> $REPO/.env.$MODE
 RUN sed -i 's/ /\'$'\n/g' $REPO/.env.$MODE
 
-RUN npm i -g pnpm
+RUN corepack enable pnpm
 RUN pnpm install
 RUN echo $MODE | pnpm --filter samplekit.dev build
 

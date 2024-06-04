@@ -62,7 +62,7 @@ export const requestStorefront = async <Operation extends keyof Generated>({
 	let response: Response;
 	try {
 		response = await fetch(url, { method, headers, body });
-	} catch (err) {
+	} catch {
 		return { errors: { message: 'Unable to fetch storefront.' } };
 	}
 
@@ -74,7 +74,7 @@ export const requestStorefront = async <Operation extends keyof Generated>({
 	let clientResponse;
 	try {
 		clientResponse = await response.json();
-	} catch (err) {
+	} catch {
 		return { errors: { message: 'Failed to parse JSON response.' } };
 	}
 

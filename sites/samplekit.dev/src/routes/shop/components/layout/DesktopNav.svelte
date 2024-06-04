@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { melt } from '@melt-ui/svelte';
-	import { MenuIcon } from 'lucide-svelte';
 	import { page } from '$app/stores';
+	import { MenuIcon } from '$lib/styles/icons';
 	import { SearchBar, OpenCartBtn } from '$routes/shop/components';
 	import { useNavService } from '$routes/shop/services';
 	import { handleToPath, type MenuWithPath } from '$routes/shop/utils';

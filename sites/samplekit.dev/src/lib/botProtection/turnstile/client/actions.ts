@@ -1,12 +1,9 @@
 import { turnstileFormInputName } from '../common';
-import { turnstileRequired } from '.';
+import type { SuperForm } from '$lib/superforms/client';
 import type { TurnstileStore } from './stores';
 import type { Action } from 'svelte/action';
-import type { ZodValidation } from 'sveltekit-superforms';
-import type { superForm } from 'sveltekit-superforms/client';
-import type { ZodObject } from 'zod';
 
-export type TurnstileForm = ReturnType<typeof superForm<ZodValidation<ZodObject<typeof turnstileRequired>>>>['form'];
+export type TurnstileForm = SuperForm<{ 'turnstile-used': boolean }>['form'];
 
 /**
  * Adds $turnstile to a hidden turnstileFormInputName input.

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Loader2 } from 'lucide-svelte';
+	import { Loader2 } from '$lib/styles/icons';
 	import { Verifier } from '$routes/(auth)/components';
 
 	export let data;

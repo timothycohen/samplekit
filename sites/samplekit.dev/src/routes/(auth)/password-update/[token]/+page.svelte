@@ -1,16 +1,15 @@
 <script lang="ts">
-	import { Loader2 } from 'lucide-svelte';
-	import { superForm } from 'sveltekit-superforms/client';
 	import { page } from '$app/stores';
 	import { Logo, InputMessage } from '$lib/components';
+	import { Loader2 } from '$lib/styles/icons';
+	import { superForm, zodClient } from '$lib/superforms/client';
 	import { PassInput } from '$routes/(auth)/components';
 	import { createNewPassSchema } from '$routes/(auth)/validators';
 
 	export let data;
 
 	const { form, errors, constraints, enhance, message, submitting } = superForm(data.createNewPassForm, {
-		taintedMessage: null,
-		validators: createNewPassSchema,
+		validators: zodClient(createNewPassSchema),
 	});
 </script>
 

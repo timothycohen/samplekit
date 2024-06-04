@@ -1,6 +1,6 @@
 import { fail as formFail } from '@sveltejs/kit';
-import { message, superValidate } from 'sveltekit-superforms/server';
 import { auth } from '$lib/auth/server';
+import { message, superValidate, zod } from '$lib/superforms/server';
 import { updatePassSchema } from '$routes/(auth)/validators';
 import type { Actions, PageServerLoad } from './$types';
 import type { Action } from '@sveltejs/kit';
@@ -9,7 +9,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 	const { user } = await locals.seshHandler.userOrRedirect();
 	const [authDetails, updatePassForm] = await Promise.all([
 		auth.provider.pass.MFA.getDetailsOrThrow(user.id),
-		superValidate(updatePassSchema, { id: 'updatePassForm_/account/security/auth' }),
+		superValidate(zod(updatePassSchema), { id: 'updatePassForm_/account/security/auth' }),
 	]);
 
 	return {
@@ -25,7 +25,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 const updatePassFromCurrPass: Action = async ({ request, locals }) => {
 	const { user, session } = await locals.seshHandler.userOrRedirect();
 
-	const updatePassForm = await superValidate(request, updatePassSchema);
+	const updatePassForm = await superValidate(request, zod(updatePassSchema));
 	if (!updatePassForm.valid) {
 		if (updatePassForm.errors._errors) return formFail(403, { updatePassForm }); // technically should be 400, but this way we can show an error without js
 		return formFail(400, { updatePassForm });

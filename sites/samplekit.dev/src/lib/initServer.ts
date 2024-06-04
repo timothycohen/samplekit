@@ -29,10 +29,14 @@ else setupLogger.warn('Sentry for server init failure.');
 if (getTwilio()) setupLogger.info('TwilioClient created.');
 else setupLogger.error('TwilioClient init failure.');
 
-getCloudfront() && setupLogger.info('(unverified) CloudFrontClient created.');
-getRekognition() && setupLogger.info('(unverified) RekognitionClient created.');
-getS3() && setupLogger.info('(unverified) S3Client created.');
-getSES() && setupLogger.info('(unverified) SESClient created.');
+getCloudfront();
+setupLogger.info('(unverified) CloudFrontClient created.');
+getRekognition();
+setupLogger.info('(unverified) RekognitionClient created.');
+getS3();
+setupLogger.info('(unverified) S3Client created.');
+getSES();
+setupLogger.info('(unverified) SESClient created.');
 
 // fatal
 await testDb();

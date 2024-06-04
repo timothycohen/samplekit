@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { BadgeIcon } from 'lucide-svelte';
 	import { minMaxVal } from '$lib/actions';
+	import { BadgeIcon } from '$lib/styles/icons';
 	import type { SearchParam, SearchParams } from '$lib/stores';
 
 	export let authorNames: string[];

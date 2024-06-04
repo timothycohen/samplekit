@@ -1,8 +1,8 @@
 <script lang="ts">
-	import { ArrowLeft, ArrowRight } from 'lucide-svelte';
 	import { onMount } from 'svelte';
 	import { beforeNavigate, afterNavigate } from '$app/navigation';
 	import { page } from '$app/stores';
+	import { ArrowLeft, ArrowRight } from '$lib/styles/icons';
 	import { DesktopNav, Sidebar, MobileNav, Cart } from '$routes/shop/components';
 	import {
 		createSearchAndFilterService,

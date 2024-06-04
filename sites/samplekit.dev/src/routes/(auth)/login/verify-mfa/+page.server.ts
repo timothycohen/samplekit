@@ -1,6 +1,6 @@
-import { message, superValidate } from 'sveltekit-superforms/server';
 import { auth } from '$lib/auth/server';
 import { checkedRedirect } from '$lib/http/server';
+import { message, superValidate, zod } from '$lib/superforms/server';
 import { sendSMSTokenSchema, verifyOTPSchema } from '$routes/(auth)/validators';
 import type { Actions, PageServerLoad } from './$types';
 import type { Action } from '@sveltejs/kit';
@@ -17,9 +17,9 @@ export const load: PageServerLoad = async ({ locals }) => {
 
 	const phoneNumberLast4 = authDetails.mfas.sms?.slice(-4);
 	const [sendSMSTokenForm, verifySMSTokenForm, verifyAuthenticatorTokenForm] = await Promise.all([
-		superValidate(sendSMSTokenSchema, { id: 'sendSMSTokenForm_/login/verify-mfa' }),
-		superValidate(verifyOTPSchema, { id: 'verifySMSTokenForm_/login/verify-mfa' }),
-		superValidate(verifyOTPSchema, { id: 'verifyAuthenticatorTokenForm_/login/verify-mfa' }),
+		superValidate(zod(sendSMSTokenSchema), { id: 'sendSMSTokenForm_/login/verify-mfa' }),
+		superValidate(zod(verifyOTPSchema), { id: 'verifySMSTokenForm_/login/verify-mfa' }),
+		superValidate(zod(verifyOTPSchema), { id: 'verifyAuthenticatorTokenForm_/login/verify-mfa' }),
 	]);
 
 	verifySMSTokenForm.data.redirect_path = '/account/profile';
@@ -45,7 +45,7 @@ const loginWithSMS: Action = async ({ request, locals }) => {
 	if (seshUser.session.awaitingEmailVeri) return checkedRedirect('/email-verification');
 	if (!seshUser.session.awaitingMFA) return checkedRedirect('/account/profile');
 
-	const verifySMSTokenForm = await superValidate(request, verifyOTPSchema);
+	const verifySMSTokenForm = await superValidate(request, zod(verifyOTPSchema));
 	if (!verifySMSTokenForm.valid) return message(verifySMSTokenForm, { fail: 'Invalid digits' }, { status: 400 });
 	const smsToken = Object.values(verifySMSTokenForm.data).join('');
 
@@ -63,7 +63,7 @@ const loginWithAuthenticator: Action = async ({ request, locals }) => {
 	if (seshUser.session.awaitingEmailVeri) return checkedRedirect('/email-verification');
 	if (!seshUser.session.awaitingMFA) return checkedRedirect('/account/profile');
 
-	const verifyAuthenticatorTokenForm = await superValidate(request, verifyOTPSchema);
+	const verifyAuthenticatorTokenForm = await superValidate(request, zod(verifyOTPSchema));
 	if (!verifyAuthenticatorTokenForm.valid)
 		return message(verifyAuthenticatorTokenForm, { fail: 'Invalid digits' }, { status: 400 });
 	const token = Object.values(verifyAuthenticatorTokenForm.data).join('');

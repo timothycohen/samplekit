@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { AlertTriangle, ImageIcon, Loader } from 'lucide-svelte';
+	import { AlertTriangle, ImageIcon, Loader } from '$lib/styles/icons';
 	import type { CropValue } from '$lib/image/client';
 
 	export let img:

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { melt } from '@melt-ui/svelte';
-	import { ShoppingBag } from 'lucide-svelte';
+	import { ShoppingBag } from '$lib/styles/icons';
 	import { useCartService } from '$routes/shop/services';
 
 	const {

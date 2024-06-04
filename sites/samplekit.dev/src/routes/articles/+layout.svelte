@@ -1,10 +1,10 @@
 <script lang="ts">
-	import { ArrowRight, PanelRightDashed, UnfoldVertical, FoldVertical } from 'lucide-svelte';
 	import { onMount } from 'svelte';
 	import { fly } from 'svelte/transition';
 	import { Changelog, DateLine, FeatureCard, FeatureSwapCard, Series, TOC } from '$lib/articles/components';
 	import { TabPanels } from '$lib/components';
 	import { createCollapsedService, useCollapsedService } from '$lib/components/collapsedService';
+	import { ArrowRight, PanelRightDashed, UnfoldVertical, FoldVertical } from '$lib/styles/icons';
 	import { pluralize } from '$lib/utils/common';
 
 	export let data;

@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { Loader2 } from 'lucide-svelte';
 	import { Icon } from '$lib/components';
+	import { Loader2 } from '$lib/styles/icons';
 
 	export let submitGoogle = false;
 	export let persistent: boolean;

@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { ChevronUp } from 'lucide-svelte';
 	import { useCollapsedService } from '$lib/components/collapsedService';
+	import { ChevronUp } from '$lib/styles/icons';
 	import Copy from './Copy.svelte';
 
 	export let title: string;

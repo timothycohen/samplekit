@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { createDialog, melt } from '@melt-ui/svelte';
-	import { X } from 'lucide-svelte';
+	import { X } from '$lib/styles/icons';
 	import type { SvelteComponent } from 'svelte';
 
 	export let props: {

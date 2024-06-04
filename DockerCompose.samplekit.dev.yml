@@ -1,0 +1,40 @@
+##################### 🚧 WARNING: ENV VARS ARE BAKED INTO THE IMAGE 🚧 #####################
+
+# Expects:
+# `./sites/samplekit.dev/.env._development' – vars will be baked into each image
+# to make variables available in the compose file, create a `.env` file next to this file
+
+name: sk-dev
+
+services:
+  db:
+    image: postgres:latest
+    container_name: sk-dev-db
+    restart: unless-stopped
+    volumes:
+      - db:/var/lib/postgresql/data
+    env_file:
+      - sites/samplekit.dev/.env._development
+    ports:
+      - '5432:5432'
+
+  kv:
+    image: redis:latest
+    container_name: sk-dev-kv
+    restart: unless-stopped
+    volumes:
+      - kv:/data/sk-dev-kv-redis-data
+    env_file:
+      - sites/samplekit.dev/.env._development
+    ports:
+      - '6379:6379'
+    command:
+      - /bin/sh
+      - -c
+      - redis-server --requirepass "$${REDIS_PASSWORD:?REDIS_PASSWORD variable is not set}"
+
+volumes:
+  db:
+    driver: local
+  kv:
+    driver: local

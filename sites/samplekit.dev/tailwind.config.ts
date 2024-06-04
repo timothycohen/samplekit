@@ -201,6 +201,9 @@ export default {
 							a: {
 								'@apply no-underline link': '',
 							},
+							table: {
+								'@apply text-left': '',
+							},
 						},
 					},
 					radix: {

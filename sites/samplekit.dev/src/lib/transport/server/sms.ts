@@ -14,7 +14,7 @@ export const getTwilio = (() => {
 		try {
 			twilioClient = twilio(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN);
 			return twilioClient;
-		} catch (err) {
+		} catch {
 			disabled = true;
 			return;
 		}

@@ -1,9 +1,9 @@
 <script lang="ts">
-	import { Check, Loader2 } from 'lucide-svelte';
 	import { fly } from 'svelte/transition';
 	import { Switch } from '$lib/components';
 	import { LoadingDots } from '$lib/components';
 	import { createTempStore } from '$lib/stores';
+	import { Check, Loader2 } from '$lib/styles/icons';
 	import LangSelect from './LangSelect.svelte';
 	import { getRandomColor, type Lang } from '.';
 

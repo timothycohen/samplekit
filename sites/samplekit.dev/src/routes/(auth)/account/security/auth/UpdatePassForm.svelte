@@ -1,21 +1,18 @@
 <script lang="ts">
-	import { Loader2 } from 'lucide-svelte';
-	import { superForm } from 'sveltekit-superforms/client';
 	import { InputMessage } from '$lib/components';
+	import { Loader2 } from '$lib/styles/icons';
+	import { superForm, type SuperValidated } from '$lib/superforms/client';
 	import { PassInput } from '$routes/(auth)/components';
 	import type { updatePassSchema } from '$routes/(auth)/validators';
-	import type { SuperValidated } from 'sveltekit-superforms';
 
 	export let updatePassForm: SuperValidated<typeof updatePassSchema>;
 	export let email: string;
 	export let onCancel: () => void;
 	export let onSuccess: () => void;
 
-	const { form, errors, constraints, enhance, message, submitting } = superForm(updatePassForm, {
-		taintedMessage: null,
-	});
+	const { form, errors, constraints, enhance, message, submitting } = superForm(updatePassForm, {});
 
-	$: $message?.success && onSuccess();
+	$: if ($message?.success) onSuccess();
 </script>
 
 <form action="/account/security/auth?/updatePassFromCurrPass" method="post" use:enhance>

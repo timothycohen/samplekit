@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { melt } from '@melt-ui/svelte';
-	import { ShoppingCartIcon, X } from 'lucide-svelte';
 	import { fade, fly } from 'svelte/transition';
 	import { Notice } from '$lib/components';
+	import { ShoppingCartIcon, X } from '$lib/styles/icons';
 	import { RemoveFromCartBtn } from '$routes/shop/components';
 	import { useCartService } from '$routes/shop/services';
 	import { DEFAULT_SELECTED_OPTION, formatPrice } from '$routes/shop/utils';

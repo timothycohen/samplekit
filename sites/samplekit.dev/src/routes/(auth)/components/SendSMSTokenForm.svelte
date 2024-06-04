@@ -1,9 +1,8 @@
 <script lang="ts">
-	import { Check, Loader2 } from 'lucide-svelte';
-	import { superForm } from 'sveltekit-superforms/client';
 	import { InputMessage } from '$lib/components';
+	import { Check, Loader2 } from '$lib/styles/icons';
+	import { superForm, type SuperValidated } from '$lib/superforms/client';
 	import type { sendSMSTokenSchema } from '$routes/(auth)/validators';
-	import type { SuperValidated } from 'sveltekit-superforms';
 
 	export let sendSMSTokenForm: SuperValidated<typeof sendSMSTokenSchema>;
 

@@ -1,9 +1,8 @@
 <script lang="ts">
-	import { Loader2 } from 'lucide-svelte';
-	import { superForm } from 'sveltekit-superforms/client';
+	import { Loader2 } from '$lib/styles/icons';
+	import { superForm, zodClient, type SuperValidated } from '$lib/superforms/client';
 	import { confirmPassSchema } from '$routes/(auth)/validators';
 	import PassInput from './PassInput.svelte';
-	import type { SuperValidated } from 'sveltekit-superforms';
 
 	export let confirmPassForm: SuperValidated<typeof confirmPassSchema>;
 	export let action: App.Form.Action;
@@ -11,8 +10,7 @@
 	export let disabled = false;
 
 	const { form, errors, enhance, message, submitting } = superForm(confirmPassForm, {
-		taintedMessage: null,
-		validators: confirmPassSchema,
+		validators: zodClient(confirmPassSchema),
 	});
 
 	$: disabled = $submitting;
