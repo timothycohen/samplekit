@@ -2,6 +2,7 @@
 	import { onMount } from 'svelte';
 	import { beforeNavigate, afterNavigate } from '$app/navigation';
 	import { page } from '$app/stores';
+	page; // https://github.com/sveltejs/eslint-plugin-svelte/issues/652#issuecomment-2087008855
 	import { ArrowLeft, ArrowRight } from '$lib/styles/icons';
 	import { DesktopNav, Sidebar, MobileNav, Cart } from '$routes/shop/components';
 	import {

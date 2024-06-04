@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/stores';
+	page; // https://github.com/sveltejs/eslint-plugin-svelte/issues/652#issuecomment-2087008855
 	import { AddToCartBtn } from '$routes/shop/components';
 	import { formatPrice } from '$routes/shop/utils';
 	import VariantSelector from './VariantSelector.svelte';

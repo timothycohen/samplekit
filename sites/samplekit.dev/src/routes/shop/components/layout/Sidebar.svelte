@@ -2,6 +2,7 @@
 	import { melt } from '@melt-ui/svelte';
 	import { fade, fly } from 'svelte/transition';
 	import { page } from '$app/stores';
+	page; // https://github.com/sveltejs/eslint-plugin-svelte/issues/652#issuecomment-2087008855
 	import { X } from '$lib/styles/icons';
 	import { Available, Price, SearchBar, SortBy } from '$routes/shop/components';
 	import { useNavService } from '$routes/shop/services';

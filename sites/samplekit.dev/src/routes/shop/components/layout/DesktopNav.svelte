@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { melt } from '@melt-ui/svelte';
 	import { page } from '$app/stores';
+	page; // https://github.com/sveltejs/eslint-plugin-svelte/issues/652#issuecomment-2087008855
 	import { MenuIcon } from '$lib/styles/icons';
 	import { SearchBar, OpenCartBtn } from '$routes/shop/components';
 	import { useNavService } from '$routes/shop/services';
