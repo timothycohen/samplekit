@@ -10,7 +10,7 @@
 		<ul class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
 			{#each data.products as product}
 				<li class="animate-fade-in">
-					<a href={handleToPath({ handle: product.handle, kind: 'product' })} class="ring-accent-9 group">
+					<a href={handleToPath({ handle: product.handle, kind: 'product' })} class="group ring-accent-9">
 						<GridTileImage
 							alt={product.title}
 							label={{

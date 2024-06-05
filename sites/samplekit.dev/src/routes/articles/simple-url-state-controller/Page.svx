@@ -125,12 +125,12 @@ interface SearchParamController {
 				<input
 					type="radio"
 					name="set_switch"
-					id={`set_${switch_id}`}
+					id="set_{switch_id}"
 					value={switch_id}
 					checked={$setSwitch === switch_id}
 					on:click={() => setSwitch.set(switch_id)}
 				/>
-				<label for={`set_${switch_id}`}>{switch_id}</label>
+				<label for="set_{switch_id}">{switch_id}</label>
 			</div>
 		{/each}
 		<button class="btn btn-hollow" on:click={() => setSwitch.set(null)}>clear</button>
@@ -143,12 +143,12 @@ interface SearchParamController {
 				<input
 					type="radio"
 					name="toggle_switch"
-					id={`toggle_${switch_id}`}
+					id="toggle_{switch_id}"
 					value={switch_id}
 					checked={$toggleSwitch === switch_id}
 					on:click={() => toggleSwitch.toggle(switch_id)}
 				/>
-				<label for={`toggle_${switch_id}`}>{switch_id}</label>
+				<label for="toggle_{switch_id}">{switch_id}</label>
 			</div>
 		{/each}
 	</fieldset>

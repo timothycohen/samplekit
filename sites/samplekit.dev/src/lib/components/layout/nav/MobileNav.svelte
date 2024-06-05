@@ -19,7 +19,7 @@
 
 <nav
 	id="nav--mobile"
-	class="h-screen-nav fixed left-0 top-[var(--nav-height)] -z-40 w-full overflow-y-auto
+	class="fixed left-0 top-[var(--nav-height)] -z-40 h-screen-nav w-full overflow-y-auto
 		{position === 'center' ? 'place-items-center' : 'p-page'}"
 >
 	<ul aria-label="main navigation" class="flex flex-col space-y-6">
@@ -29,7 +29,7 @@
 
 				{#if route.groupText === 'Security'}
 					<form action="/logout?/logoutCurrent" method="post">
-						<button type="submit" class="btn btn-accent route-item">
+						<button type="submit" class="route-item btn btn-accent">
 							<small>{'Sign out'}</small>
 						</button>
 					</form>
@@ -37,7 +37,7 @@
 			</span>
 
 			{#if i !== routes.length - 1}
-				<div class="bg-gray-5/50 h-px w-full"></div>
+				<div class="h-px w-full bg-gray-5/50"></div>
 			{/if}
 		{/each}
 	</ul>

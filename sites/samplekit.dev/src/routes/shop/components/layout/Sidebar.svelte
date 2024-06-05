@@ -24,7 +24,7 @@
 
 		<div
 			use:melt={$content}
-			class="shadow-5 bg-app-bg fixed left-0 top-0 z-50 h-screen w-full max-w-sm overflow-y-auto p-6 focus:outline-none"
+			class="fixed left-0 top-0 z-50 h-screen w-full max-w-sm overflow-y-auto bg-app-bg p-6 shadow-5 focus:outline-none"
 			transition:fly={{ x: -350, duration: 300, opacity: 1 }}
 		>
 			<button
@@ -58,7 +58,7 @@
 									<a
 										href={collection.path}
 										data-selected={selected}
-										class="text-gray-11 hover:text-gray-12 data-[selected=true]:text-accent-9 under-a underline-offset-4 data-[selected=true]:underline"
+										class="under-a text-gray-11 underline-offset-4 hover:text-gray-12 data-[selected=true]:text-accent-9 data-[selected=true]:underline"
 									>
 										{collection.title}
 									</a>
@@ -99,7 +99,7 @@
 									<a
 										href={collection.path}
 										data-selected={selected}
-										class="text-gray-11 hover:text-gray-12 data-[selected=true]:text-accent-9 under-a underline-offset-4 data-[selected=true]:underline"
+										class="under-a text-gray-11 underline-offset-4 hover:text-gray-12 data-[selected=true]:text-accent-9 data-[selected=true]:underline"
 									>
 										{collection.title}
 									</a>

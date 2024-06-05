@@ -12,7 +12,7 @@
 	<h1 class="text-h4">Remembered Devices</h1>
 
 	{#each data.allSessions as session}
-		<div class="rounded-card shadow-3 relative space-y-4 p-8">
+		<div class="relative space-y-4 rounded-card p-8 shadow-3">
 			{#if session.current}
 				<div class="absolute right-4 top-4">
 					<div class="flex items-center justify-center gap-1"><BadgeCheck class="h-4 w-4" />This Device</div>

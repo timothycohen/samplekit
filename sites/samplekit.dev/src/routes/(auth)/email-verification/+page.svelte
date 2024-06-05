@@ -9,14 +9,14 @@
 
 <div class="flex min-h-[80vh] items-center justify-center">
 	<div class="relative w-full max-w-md">
-		<div class="rounded-card shadow-4 relative px-4">
+		<div class="relative rounded-card px-4 shadow-4">
 			<div class="flex-auto p-6">
 				<div class="mb-10 flex items-center justify-center overflow-hidden">
-					<MailCheck class="stroke-accent-9 h-12 w-12" />
+					<MailCheck class="h-12 w-12 stroke-accent-9" />
 				</div>
 
 				<h1 class="mb-2 text-xl font-medium">Verify {data.unverifiedEmail}</h1>
-				<p class="text-gray-11 mb-10">Your email verification link was sent to your email.</p>
+				<p class="mb-10 text-gray-11">Your email verification link was sent to your email.</p>
 
 				<form action="/email-verification?/resendEmailVeriToVerifyEmailLink" method="post" use:enhance>
 					<button

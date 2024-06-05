@@ -3,8 +3,8 @@
 		@apply mb-2 inline-block text-sm;
 	}
 	.input-text {
-		@apply rounded-btn border-gray-6 hover:border-gray-7 focus:border-gray-8 block h-10 w-full border px-3 text-sm transition-colors;
-		@apply disabled:bg-gray-1 disabled:text-gray-9 disabled:cursor-not-allowed disabled:opacity-70;
+		@apply block h-10 w-full rounded-btn border border-gray-6 px-3 text-sm transition-colors hover:border-gray-7 focus:border-gray-8;
+		@apply disabled:cursor-not-allowed disabled:bg-gray-1 disabled:text-gray-9 disabled:opacity-70;
 	}
 	.input-text-has-btn {
 		@apply pr-20;
@@ -13,7 +13,7 @@
 		@apply absolute inset-y-0 right-0 flex items-center;
 	}
 	.input-text-btn {
-		@apply rounded-r-btn hover:bg-accent-5 text-gray-11 hover:text-gray-12 h-full w-full px-5 -outline-offset-2;
+		@apply h-full w-full rounded-r-btn px-5 text-gray-11 -outline-offset-2 hover:bg-accent-5 hover:text-gray-12;
 	}
 	.input-invalid {
 		@apply border-error-9 hover:border-error-9 focus:border-error-9;

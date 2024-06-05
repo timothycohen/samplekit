@@ -53,7 +53,7 @@
 		name="email"
 		type="email"
 		id="email"
-		class="input-text peer"
+		class="peer input-text"
 		class:input-invalid={$signinErrors.email}
 		placeholder="Enter your email"
 		autocomplete="username"
@@ -85,7 +85,7 @@
 		<input type="checkbox" name="persistent" bind:checked={$signinForm.persistent} id="persistent" />
 		<label
 			for="persistent"
-			class="decoration-accent-6 select-none text-sm font-light underline-offset-2 group-hover:underline"
+			class="select-none text-sm font-light decoration-accent-6 underline-offset-2 group-hover:underline"
 		>
 			Remember me
 		</label>
@@ -126,7 +126,7 @@
 					name="email"
 					type="email"
 					id="reset-email"
-					class="input-text peer"
+					class="peer input-text"
 					class:input-invalid={$resetErrors.email}
 					placeholder="Enter your email"
 					autocomplete="username"

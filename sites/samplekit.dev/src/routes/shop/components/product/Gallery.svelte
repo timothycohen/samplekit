@@ -11,7 +11,7 @@
 	$: image = images[$imageIndex];
 </script>
 
-<div class="rounded-card relative aspect-square h-full max-h-[550px] w-full overflow-hidden">
+<div class="relative aspect-square h-full max-h-[550px] w-full overflow-hidden rounded-card">
 	{#if image}
 		<img
 			class="h-full w-full object-contain"
@@ -22,24 +22,24 @@
 	{/if}
 
 	{#if images.length > 1}
-		<div class="dark absolute bottom-[2%] flex w-full justify-center">
-			<div class="bg-gray-5/70 text-gray-11 mx-auto flex items-center overflow-hidden rounded-full backdrop-blur">
+		<div class="absolute bottom-[2%] flex w-full justify-center dark">
+			<div class="mx-auto flex items-center overflow-hidden rounded-full bg-gray-5/70 text-gray-11 backdrop-blur">
 				<button
 					class="group flex h-11 w-20 items-center justify-center"
 					aria-label="Previous product image"
 					on:click={imageIndex.prev}
 				>
-					<ArrowLeftIcon class="group-hover:text-gray-12 h-5 w-5 group-hover:h-6 group-hover:w-6" />
+					<ArrowLeftIcon class="h-5 w-5 group-hover:h-6 group-hover:w-6 group-hover:text-gray-12" />
 				</button>
 
-				<div class="bg-gray-7 mx-1 h-6 w-px"></div>
+				<div class="mx-1 h-6 w-px bg-gray-7"></div>
 
 				<button
 					class="group flex h-11 w-20 items-center justify-center"
 					aria-label="Next product image"
 					on:click={imageIndex.next}
 				>
-					<ArrowRightIcon class="group-hover:text-gray-12 h-5 w-5 group-hover:h-6 group-hover:w-6" />
+					<ArrowRightIcon class="h-5 w-5 group-hover:h-6 group-hover:w-6 group-hover:text-gray-12" />
 				</button>
 			</div>
 		</div>

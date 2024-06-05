@@ -32,7 +32,7 @@
 			<img style={cropStyles} src={img.url} alt="" class={img.blur ? 'blur-md' : ''} referrerpolicy="no-referrer" />
 		</div>
 		<div class="absolute inset-0" style="background-color: rgb(11, 11, 11); opacity: 70%;"></div>
-		<div class="border-gray-6 absolute inset-0 overflow-hidden rounded-full border">
+		<div class="absolute inset-0 overflow-hidden rounded-full border border-gray-6">
 			<img style={cropStyles} src={img.url} alt="" class={img.blur ? 'blur-md' : ''} referrerpolicy="no-referrer" />
 		</div>
 	</div>
@@ -41,10 +41,10 @@
 		<img style={cropStyles} src={img.url} class={img.blur ? 'blur-md' : ''} alt="" referrerpolicy="no-referrer" />
 	</div>
 {:else if img?.kind === 'skeleton'}
-	<div class="bg-gray-3 absolute inset-0 animate-pulse" aria-label="Loading"></div>
+	<div class="absolute inset-0 animate-pulse bg-gray-3" aria-label="Loading"></div>
 	<div class="absolute inset-0 grid place-items-center">
 		<div class="flex flex-wrap gap-4">
-			<Loader class="animate-spin-slow h-14 w-14" />
+			<Loader class="h-14 w-14 animate-spin-slow" />
 			<ImageIcon class="h-14 w-14" />
 		</div>
 	</div>
@@ -53,12 +53,12 @@
 {#if overlay?.pulsingWhite}
 	<div class="absolute inset-0 animate-pulse bg-white/20"></div>
 {:else if overlay?.red}
-	<div class="bg-red-9/50 absolute inset-0"></div>
+	<div class="absolute inset-0 bg-red-9/50"></div>
 {/if}
 
 {#if errorMsgs}
 	<div class="absolute inset-0 grid place-content-center text-center">
-		<div class="bg-gray-2 rounded-card text-gray-12 flex flex-col gap-1 p-4">
+		<div class="flex flex-col gap-1 rounded-card bg-gray-2 p-4 text-gray-12">
 			<p class="text-2xl font-bold">{errorMsgs[0]}</p>
 			<div class="flex justify-center"><AlertTriangle class="h-16 w-16" /></div>
 			{#if errorMsgs[1]}
@@ -69,8 +69,8 @@
 {/if}
 
 {#if onCancel}
-	<div class="rounded-tl-card absolute bottom-0 right-0 overflow-hidden">
-		<button class="btn btn-accent rounded-tl-card rounded-br-card w-full rounded-none" on:click={onCancel}>
+	<div class="absolute bottom-0 right-0 overflow-hidden rounded-tl-card">
+		<button class="btn btn-accent w-full rounded-none rounded-br-card rounded-tl-card" on:click={onCancel}>
 			Cancel
 		</button>
 	</div>

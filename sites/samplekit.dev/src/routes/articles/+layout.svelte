@@ -43,7 +43,7 @@
 		<div class="mb-6-9">
 			{#if article.imgLg && !article.demos?.main}
 				<img
-					class="rounded-card mb-6 aspect-video h-auto w-full object-cover object-top"
+					class="mb-6 aspect-video h-auto w-full rounded-card object-cover object-top"
 					src={article.imgLg}
 					alt={article.title}
 				/>
@@ -54,15 +54,15 @@
 					{article.title}
 				</h1>
 				{#if article.tags?.length}
-					<ul class="text-gray-11 mb-6 flex flex-wrap items-start justify-start gap-2">
+					<ul class="mb-6 flex flex-wrap items-start justify-start gap-2 text-gray-11">
 						{#each article.tags as tag}
-							<li class="bg-gray-4 rounded-badge inline-flex items-center px-2.5 py-0.5 text-xs font-medium">
+							<li class="inline-flex items-center rounded-badge bg-gray-4 px-2.5 py-0.5 text-xs font-medium">
 								{tag}
 							</li>
 						{/each}
 					</ul>
 				{/if}
-				<p class="text-gray-11 text-xs font-bold uppercase tracking-wider">
+				<p class="text-xs font-bold uppercase tracking-wider text-gray-11">
 					<span class="uppercase">{readingTime} min read</span>
 					<span class="mx-2" aria-hidden="true">•</span>
 					<span class="uppercase">{wordCount} {pluralize('word', wordCount)}</span>
@@ -70,7 +70,7 @@
 			</hgroup>
 
 			{#if article.demos?.main}
-				<span class="prose prose-radix prose-lg">
+				<span class="prose prose-lg prose-radix">
 					<h2 class="my-4" id="interactive-demo" data-auto-slug-anchor-position="prepend" data-auto-slug="">
 						<a href="#interactive-demo" aria-hidden="true" tabindex="-1" data-auto-slug-anchor="">#</a>
 						Interactive Demo
@@ -86,7 +86,7 @@
 		</div>
 
 		<div class="flex gap-[clamp(2.5rem,8vw,4rem)]">
-			<div class="prose prose-radix prose-lg min-w-0 max-w-none flex-1" bind:this={articleContentWrapper} id="use-toc">
+			<div class="prose prose-lg prose-radix min-w-0 max-w-none flex-1" bind:this={articleContentWrapper} id="use-toc">
 				<slot />
 			</div>
 
@@ -99,9 +99,9 @@
 							<div class="max-h-[calc(98vh-calc(var(--nav-height)_+_2rem))] py-2">
 								<TOC>
 									<div class="flex w-full items-center justify-between">
-										<h2 class="text-accent-12 t-h3 font-bold">Table of Contents</h2>
+										<h2 class="t-h3 font-bold text-accent-12">Table of Contents</h2>
 										<button
-											class="btn btn-ghost rounded-badge mr-1 px-2 py-1"
+											class="btn btn-ghost mr-1 rounded-badge px-2 py-1"
 											on:click={() => (sidebarOpen = !sidebarOpen)}
 										>
 											<ArrowRight class="h-5 w-5" />
@@ -115,7 +115,7 @@
 					<div class="space-y-12">
 						{#if article.prev}
 							<div class="w-80">
-								<h2 class="text-accent-12 t-h3 mb-4 font-bold">Previous Article</h2>
+								<h2 class="t-h3 mb-4 font-bold text-accent-12">Previous Article</h2>
 								{#if !(article.prev.imgSmGif ?? article.prev.imgSm)}
 									<FeatureCard feature={article.prev} />
 								{:else}
@@ -126,7 +126,7 @@
 
 						{#if article.next}
 							<div class="w-80">
-								<h2 class="text-accent-12 t-h3 mb-4 font-bold">Next Article</h2>
+								<h2 class="t-h3 mb-4 font-bold text-accent-12">Next Article</h2>
 								{#if !(article.next.imgSmGif ?? article.next.imgSm)}
 									<FeatureCard feature={article.next} />
 								{:else}
@@ -139,7 +139,7 @@
 			{:else}
 				<button
 					in:fly={{ x: 40, y: 40 }}
-					class="bg-app-bg/75 border-gray-5 text-gray-11 fixed bottom-20 right-4 hidden h-12 w-12 items-center justify-center rounded-full border backdrop-blur-md lg:flex"
+					class="fixed bottom-20 right-4 hidden h-12 w-12 items-center justify-center rounded-full border border-gray-5 bg-app-bg/75 text-gray-11 backdrop-blur-md lg:flex"
 					on:click={() => (sidebarOpen = !sidebarOpen)}
 				>
 					<PanelRightDashed class="h-6 w-6" />
@@ -148,7 +148,7 @@
 
 			<button
 				in:fly={{ x: 40, y: 40 }}
-				class="bg-app-bg/75 border-gray-5 text-gray-11 fixed bottom-4 right-4 z-10 flex h-12 w-12 items-center justify-center rounded-full border backdrop-blur-md"
+				class="fixed bottom-4 right-4 z-10 flex h-12 w-12 items-center justify-center rounded-full border border-gray-5 bg-app-bg/75 text-gray-11 backdrop-blur-md"
 				on:click={() => toggleAllOpen()}
 			>
 				{#if allOpen}

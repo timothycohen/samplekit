@@ -10,7 +10,7 @@
 	<input type="hidden" name="persistent" value={persistent} />
 	<button type="submit" class="btn btn-hollow h-10 w-full py-0" disabled={submitGoogle}>
 		{#if submitGoogle}
-			<Loader2 class="text-accent-9 h-6 w-6 animate-spin" />
+			<Loader2 class="h-6 w-6 animate-spin text-accent-9" />
 		{:else}
 			<Icon icon="google" />
 		{/if}

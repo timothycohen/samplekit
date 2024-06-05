@@ -2,7 +2,7 @@
 	export let title: string;
 </script>
 
-<span class="text-accent-12 font-serif text-3xl font-bold"><h2>{title}</h2></span>
+<span class="font-serif text-3xl font-bold text-accent-12"><h2>{title}</h2></span>
 
 <div class="lg:grid lg:grid-cols-2 lg:gap-8">
 	<div class="col-start-1 col-end-2 row-start-1 row-end-2">

@@ -20,27 +20,27 @@
 <div class="@container {borderWrapperClass}">
 	<div class="{innerClass} group flex flex-col">
 		{#if feature.imgSm && feature.imgSmGif}
-			<div class="bg-app-bg-amethyst aspect-video w-full">
+			<div class="aspect-video w-full bg-app-bg-amethyst">
 				<img
 					src={feature.imgSm}
 					draggable="false"
-					class="rounded-card h-full w-full select-none group-hover:hidden"
+					class="h-full w-full select-none rounded-card group-hover:hidden"
 					alt=""
 					loading={preview ? 'eager' : 'lazy'}
 				/>
-				<img src={feature.imgSmGif} class="rounded-card hidden h-full w-full group-hover:block" alt="" loading="lazy" />
+				<img src={feature.imgSmGif} class="hidden h-full w-full rounded-card group-hover:block" alt="" loading="lazy" />
 			</div>
-			<div class="bg-gray-5 my-2 h-px scale-x-90 transition-transform group-hover:scale-x-100"></div>
+			<div class="my-2 h-px scale-x-90 bg-gray-5 transition-transform group-hover:scale-x-100"></div>
 		{:else if feature.imgSm || feature.imgSmGif}
-			<div class="bg-app-bg-amethyst aspect-video w-full">
+			<div class="aspect-video w-full bg-app-bg-amethyst">
 				<img
 					src={feature.imgSm || feature.imgSmGif}
 					draggable="false"
-					class="rounded-card border-gray-6 aspect-video h-full w-full scale-95 select-none transition-transform duration-500 group-hover:scale-100 group-hover:border-none group-hover:duration-200"
+					class="aspect-video h-full w-full scale-95 select-none rounded-card border-gray-6 transition-transform duration-500 group-hover:scale-100 group-hover:border-none group-hover:duration-200"
 					alt=""
 					loading={preview ? 'eager' : 'lazy'}
 				/>
-				<div class="bg-gray-5 h-px scale-x-90 transition-transform group-hover:scale-x-100"></div>
+				<div class="h-px scale-x-90 bg-gray-5 transition-transform group-hover:scale-x-100"></div>
 			</div>
 		{/if}
 

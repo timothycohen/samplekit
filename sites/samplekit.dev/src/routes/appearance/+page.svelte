@@ -23,7 +23,7 @@
 						on:click={(e) => themeController.setMode(tsCast(e.currentTarget.value))}
 					/>
 					<label for={value}>
-						<span class={checked ? '' : 'text-gray-10 font-light'}>
+						<span class={checked ? '' : 'font-light text-gray-10'}>
 							{#if value === 'fixed_day'}Always use day theme
 							{:else if value === 'fixed_night'}Always use night theme
 							{:else}Sync with system (currently {$themeController.schemeSystem === 'dark' ? 'night' : 'day'})

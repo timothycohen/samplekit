@@ -73,7 +73,7 @@
 <div use:melt={$root} class="flex items-center gap-1" bind:this={rootEl}>
 	{#each Array.from({ length: codeLength }) as _, i}
 		<input
-			class="placeholder-gray-8 rounded-badge border-gray-7 h-16 w-9 border text-center {i === 2 ? 'mr-10' : ''}"
+			class="h-16 w-9 rounded-badge border border-gray-7 text-center placeholder-gray-8 {i === 2 ? 'mr-10' : ''}"
 			on:keydown={(e) => overrideUpAndDownArrow(e, i)}
 			use:melt={$input()}
 			inputmode="numeric"

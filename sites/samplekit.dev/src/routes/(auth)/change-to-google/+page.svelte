@@ -6,7 +6,7 @@
 	export let disabled = false;
 </script>
 
-<section class="h-screen-nav mx-auto w-full max-w-3xl space-y-8 p-8">
+<section class="mx-auto h-screen-nav w-full max-w-3xl space-y-8 p-8">
 	{#if data.errMsg}
 		<div class="alert-wrapper alert-wrapper-error">
 			<p class="alert-header">Error</p>
@@ -22,7 +22,7 @@
 		Sign in and multi-factor authentication will be managed by your Google account.
 	</div>
 
-	<div class="rounded-card shadow-3 space-y-8 p-8">
+	<div class="space-y-8 rounded-card p-8 shadow-3">
 		<h2 class="t-base-lg font-medium">Verify Password</h2>
 
 		{#if data.mfaCount}

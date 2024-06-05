@@ -51,7 +51,7 @@
 	>
 		<div class="absolute left-0 ml-4">
 			{#if $addingCartItem}
-				<LoadingDots class="bg-gray-12 mb-3" />
+				<LoadingDots class="mb-3 bg-gray-12" />
 			{:else}
 				<PlusIcon class="h-5" />
 			{/if}

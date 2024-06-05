@@ -19,7 +19,7 @@
 <div class="absolute bottom-0 right-0">
 	<button
 		{disabled}
-		class="btn btn-accent rounded-tl-card rounded-br-card w-full rounded-none"
+		class="btn btn-accent w-full rounded-none rounded-br-card rounded-tl-card"
 		on:click|stopPropagation={() => onSave(value)}
 	>
 		Save

@@ -11,7 +11,7 @@
 </script>
 
 <div class="alert-wrapper alert-wrapper-info">
-	Send a confirmation email to <strong class="text-accent-9 font-extrabold underline">{email}</strong>.
+	Send a confirmation email to <strong class="font-extrabold text-accent-9 underline">{email}</strong>.
 </div>
 <form {action} method="post" use:enhance on:submit={() => (submitted = true)}>
 	<button class="btn btn-accent {submitted ? 'font-semibold' : ''}" disabled={submitted} type="submit">

@@ -17,13 +17,13 @@
 			</h2>
 		</span>
 		<span class="hidden lg:block">
-			<h2 class="text-accent-12 t-h3 mb-2 w-80 font-bold">{series.name}</h2>
+			<h2 class="t-h3 mb-2 w-80 font-bold text-accent-12">{series.name}</h2>
 			<p class="text-gray-12">
 				Part {series.position} of {series.all.length} in the {series.name} series.
 			</p>
 		</span>
 
-		<div class="bg-gray-9 mb-6 h-px w-full"></div>
+		<div class="mb-6 h-px w-full bg-gray-9"></div>
 		<ul class="space-y-1">
 			{#each series.all as item}
 				{@const active = series.position === item.position}

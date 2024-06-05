@@ -48,11 +48,11 @@
 </script>
 
 <div class="mb-6 space-y-6">
-	<h2 class="text-accent-11 text-center">Simple Url State Controller Interactive Demo</h2>
+	<h2 class="text-center text-accent-11">Simple Url State Controller Interactive Demo</h2>
 
-	<div class="border-accent-9 bg-accent-9/25 mx-auto w-fit rounded-full border px-4 py-2 font-mono">
+	<div class="mx-auto w-fit rounded-full border border-accent-9 bg-accent-9/25 px-4 py-2 font-mono">
 		<span>$page.url.search: </span>
-		<span class="text-gray-11 break-all">{$page.url.search}</span>
+		<span class="break-all text-gray-11">{$page.url.search}</span>
 	</div>
 
 	<FilterInputs authorNames={data.authors} {authors} {content} {maxDaysOld} />

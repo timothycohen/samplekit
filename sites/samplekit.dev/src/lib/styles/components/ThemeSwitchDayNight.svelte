@@ -21,7 +21,7 @@
 />
 
 <label
-	class="text-sun-moon inline-block h-full w-full cursor-pointer peer-focus-visible:outline color-mode-toggle__{version}"
+	class="inline-block h-full w-full cursor-pointer text-sun-moon peer-focus-visible:outline color-mode-toggle__{version}"
 	style="--duration: {duration}ms;"
 	for="theme-switch-btn"
 >

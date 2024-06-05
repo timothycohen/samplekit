@@ -6,9 +6,14 @@
 	"type": "module",
 	"author": "Tim Cohen <contact@timcohen.dev>",
 	"scripts": {
+		"format": "prettier --ignore-path ../../.prettierignore --check .",
+		"format:fix": "prettier --ignore-path ../../.prettierignore --list-different --write .",
+		"lint": "pnpm -w run lint:markdown",
+		"lint:fix": "pnpm -w run lint:markdown:fix",
+		"check": "tsc --noEmit",
+		"validate": "pnpm install --frozen-lockfile && pnpm format && pnpm lint && pnpm check",
 		"clean": "rm -rf dist",
-		"build": "pnpm clean && tsc",
-		"check": "tsc --noEmit"
+		"build": "pnpm clean && tsc"
 	},
 	"dependencies": {
 		"marked": "^12.0.0",

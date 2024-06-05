@@ -20,9 +20,9 @@
 	<a
 		{href}
 		style="padding: 0 0 0 {1.5 + route.depth * 0.5}rem;"
-		class="rounded-r-btn flex h-10 w-full items-center border-l-4
+		class="flex h-10 w-full items-center rounded-r-btn border-l-4
 		   {!route.depth && !active
-			? 'hover:bg-info-3/80 dark:hover:bg-info-3/50 border-transparent'
+			? 'border-transparent hover:bg-info-3/80 dark:hover:bg-info-3/50'
 			: !route.depth && active
 				? 'border-info-9 bg-info-3'
 				: route.depth && !active
@@ -36,7 +36,7 @@
 		}}
 	>
 		<div
-			class="underline--hidden before:bg-info-9 before:bottom-[.25rem] before:h-[1px] group-hover:before:w-full before:group-[.active]:h-[2px] before:group-[.active]:w-full"
+			class="underline--hidden before:bottom-[.25rem] before:h-[1px] before:bg-info-9 group-hover:before:w-full before:group-[.active]:h-[2px] before:group-[.active]:w-full"
 		>
 			{text}
 		</div>
@@ -45,7 +45,7 @@
 		<input id="{route.groupPath}-menu" type="checkbox" class="peer hidden" checked={active} bind:this={inputEl} />
 		<label
 			for="{route.groupPath}-menu"
-			class="rounded-badge hover:bg-info-4 focus:bg-info-4 absolute right-0 top-0 h-10 w-10"
+			class="absolute right-0 top-0 h-10 w-10 rounded-badge hover:bg-info-4 focus:bg-info-4"
 		>
 		</label>
 		<span

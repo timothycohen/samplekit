@@ -27,7 +27,7 @@ select {
 	@apply bg-accent-9 text-accent-9-contrast;
 }
 * {
-	@apply outline-accent-7 outline-2 outline-offset-2 focus-visible:outline;
+	@apply outline-2 outline-offset-2 outline-accent-7 focus-visible:outline;
 }
 html {
 	@apply accent-accent-9;

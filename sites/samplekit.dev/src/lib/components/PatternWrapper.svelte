@@ -10,7 +10,7 @@
 
 <div
 	class="relative flex flex-col {opts?.noPadding ? '' : 'p-page'}
-	{opts?.noBorder ? '' : 'border-gray-9 rounded-b-card dark:border-gray-5 border'}"
+	{opts?.noBorder ? '' : 'rounded-b-card border border-gray-9 dark:border-gray-5'}"
 >
 	{#if opts?.bg}
 		<DiagonalLines

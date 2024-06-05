@@ -8,7 +8,7 @@
 	<h1 class="text-h4">Welcome {data.email}</h1>
 
 	<div>
-		<h2 class="text-gray-12 text-lg font-medium">This account uses multi factor authentication.</h2>
+		<h2 class="text-lg font-medium text-gray-12">This account uses multi factor authentication.</h2>
 		<p class="text-gray-11">Please select one of your enabled verification methods.</p>
 	</div>
 

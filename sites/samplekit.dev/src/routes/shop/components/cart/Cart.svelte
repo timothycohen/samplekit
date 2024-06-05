@@ -22,7 +22,7 @@
 
 		<div
 			use:melt={$content}
-			class="shadow-5 bg-app-bg sm:max-w-screen-xs fixed right-0 top-0 z-50 h-screen w-full p-6 focus:outline-none"
+			class="fixed right-0 top-0 z-50 h-screen w-full bg-app-bg p-6 shadow-5 focus:outline-none sm:max-w-screen-xs"
 			transition:fly={{ x: 350, duration: 300, opacity: 1 }}
 		>
 			<div class="flex h-full flex-col">
@@ -44,13 +44,13 @@
 							<ul class="w-full">
 								{#each $cart.lines as line, i (i)}
 									{@const image = line.merchandise.product.images[0]}
-									<li class="border-gray-6 flex w-full flex-col border-b">
+									<li class="flex w-full flex-col border-b border-gray-6">
 										<div class="relative flex w-full flex-row justify-between px-1 py-4">
 											<div class="absolute z-40 -mt-2 ml-14">
 												<RemoveFromCartBtn props={{ lineId: line.id }} />
 											</div>
 											<a href={line.path} on:click={() => open.set(false)} class="z-30 flex flex-row space-x-4">
-												<div class="border-gray-6 relative h-16 w-16 cursor-pointer overflow-hidden rounded-md border">
+												<div class="rounded-md relative h-16 w-16 cursor-pointer overflow-hidden border border-gray-6">
 													{#if image}
 														<img
 															class="h-full w-full object-cover"
@@ -78,7 +78,7 @@
 													{formatPrice(line.cost.totalAmount)}
 													{line.cost.totalAmount.currencyCode}
 												</p>
-												<div class="border-gray-6 ml-auto flex h-9 flex-row items-center rounded-full border">
+												<div class="ml-auto flex h-9 flex-row items-center rounded-full border border-gray-6">
 													<EditItemQuantityBtn props={{ item: line, type: 'minus' }} />
 													<p class="w-6 text-center">
 														<span class="w-full text-sm">{line.quantity}</span>
@@ -94,22 +94,22 @@
 					</div>
 
 					<div>
-						<div class="text-gray-11 py-4 text-sm">
-							<div class="border-gray-6 mb-3 flex items-center justify-between border-b pb-1 pt-1">
+						<div class="py-4 text-sm text-gray-11">
+							<div class="mb-3 flex items-center justify-between border-b border-gray-6 pb-1 pt-1">
 								<p>Taxes</p>
 
-								<p class="text-gray-12 text-right text-base">
+								<p class="text-right text-base text-gray-12">
 									{formatPrice($cart.cost.totalTaxAmount)}
 									{$cart.cost.totalTaxAmount.currencyCode}
 								</p>
 							</div>
-							<div class="border-gray-6 mb-3 flex items-center justify-between border-b pb-1 pt-1">
+							<div class="mb-3 flex items-center justify-between border-b border-gray-6 pb-1 pt-1">
 								<p>Shipping</p>
 								<p class="text-right">Calculated at checkout</p>
 							</div>
-							<div class="border-gray-6 mb-3 flex items-center justify-between border-b pb-1 pt-1">
+							<div class="mb-3 flex items-center justify-between border-b border-gray-6 pb-1 pt-1">
 								<p>Total</p>
-								<p class="text-gray-12 text-right text-base">
+								<p class="text-right text-base text-gray-12">
 									{formatPrice($cart.cost.totalAmount)}
 									{$cart.cost.totalAmount.currencyCode}
 								</p>

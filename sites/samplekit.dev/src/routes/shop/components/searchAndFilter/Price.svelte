@@ -31,7 +31,7 @@
 			/>
 
 			{#if !i}
-				<span class="text-gray-8 text-sm">–</span>
+				<span class="text-sm text-gray-8">–</span>
 			{/if}
 		{/each}
 	</div>

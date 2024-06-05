@@ -12,13 +12,13 @@
 </script>
 
 <nav
-	class="bg-app-bg border-gray-5 px-page sticky top-0 z-50 flex w-full items-center justify-between self-start overflow-hidden border-b p-2"
+	class="sticky top-0 z-50 flex w-full items-center justify-between self-start overflow-hidden border-b border-gray-5 bg-app-bg p-2 px-page"
 >
-	<button use:melt={$trigger} class="animate-fade-up-and-in btn-ghost btn p-2">
+	<button use:melt={$trigger} class="btn btn-ghost animate-fade-up-and-in p-2">
 		<MenuIcon />
 	</button>
 
-	<a href="/shop" aria-label="go to shop home page" class="text-logo text-lg font-black tracking-tight"> SampleKit </a>
+	<a href="/shop" aria-label="go to shop home page" class="text-lg font-black tracking-tight text-logo"> SampleKit </a>
 
 	<div class="flex justify-end gap-3">
 		<OpenCartBtn />

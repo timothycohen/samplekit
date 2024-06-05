@@ -5,4 +5,4 @@
 	export let uploadProgress: Tweened<number>;
 </script>
 
-<div class="bg-accent-9 absolute bottom-0 h-5" out:fade style="width: {$uploadProgress}%"></div>
+<div class="absolute bottom-0 h-5 bg-accent-9" out:fade style="width: {$uploadProgress}%"></div>

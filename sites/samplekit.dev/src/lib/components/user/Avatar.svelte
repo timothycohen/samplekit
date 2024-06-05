@@ -26,7 +26,7 @@
 		{:else}
 			<div class="h-full w-full bg-black/10"></div>
 		{/if}
-		<div class="ring-gray-6 absolute inset-0 rounded-full ring-1 ring-inset"></div>
+		<div class="absolute inset-0 rounded-full ring-1 ring-inset ring-gray-6"></div>
 	</div>
 {/if}
 
@@ -41,7 +41,7 @@
 		{:else}
 			<div class="h-full w-full bg-black/10"></div>
 		{/if}
-		<div class="ring-gray-6 absolute inset-0 rounded-full ring-1 ring-inset"></div>
+		<div class="absolute inset-0 rounded-full ring-1 ring-inset ring-gray-6"></div>
 
 		<span
 			class="absolute inset-0
@@ -52,7 +52,7 @@
 		</span>
 		{#if size > 50 && showEditButton}
 			<span
-				class="bg-accent-9 text-accent-9-contrast absolute bottom-0 left-0 right-0 text-center"
+				class="absolute bottom-0 left-0 right-0 bg-accent-9 text-center text-accent-9-contrast"
 				style={size > 100 ? 'padding: 5px 0' : ''}
 			>
 				Edit

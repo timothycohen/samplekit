@@ -23,14 +23,14 @@
 			<div
 				{...swiperItem.attrs}
 				use:swiperItem.action
-				class="rounded-card bg-app-bg/50 my-8 aspect-[3/2] flex-shrink-0 transition-all
+				class="my-8 aspect-[3/2] flex-shrink-0 rounded-card bg-app-bg/50 transition-all
 				       {$isSelected(i) ? 'shadow-4' : 'shadow-3'}"
 			>
 				<img
 					{...item.img}
 					loading={i === 0 ? 'eager' : 'lazy'}
 					draggable="false"
-					class="rounded-card h-full w-full select-none object-contain transition-opacity duration-[400ms]
+					class="h-full w-full select-none rounded-card object-contain transition-opacity duration-[400ms]
 						 {$isSelected(i) ? 'opacity-100' : 'opacity-0'}"
 				/>
 			</div>
@@ -46,12 +46,12 @@
 					{...trigger.attrs}
 					use:trigger.action
 					class="rounded-card p-6 text-left outline-offset-0 transition-all sm:max-w-96
-								 {$isSelected(i) ? 'text-gray-12 w-full' : 'text-gray-11 min-w-52'}"
+								 {$isSelected(i) ? 'w-full text-gray-12' : 'min-w-52 text-gray-11'}"
 				>
 					<progress
 						{...prog.attrs}
 						use:prog.action
-						class="progress-filled:bg-accent-7 progress-unfilled:bg-gray-4 mb-4 block h-0.5 w-full"
+						class="mb-4 block h-0.5 w-full progress-unfilled:bg-gray-4 progress-filled:bg-accent-7"
 					></progress>
 
 					<span class="text-sm font-light">0{i + 1}.</span>

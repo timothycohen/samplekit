@@ -1,10 +1,10 @@
 @layer components {
 	.btn-sizing {
-		@apply rounded-btn flex select-none items-center justify-center gap-2 text-center;
+		@apply flex select-none items-center justify-center gap-2 rounded-btn text-center;
 		@apply px-5 py-2;
 	}
 	.btn-disabled {
-		@apply !bg-gray-4 !text-gray-9 !cursor-not-allowed !border-transparent;
+		@apply !cursor-not-allowed !border-transparent !bg-gray-4 !text-gray-9;
 	}
 	.btn {
 		@apply btn-sizing disabled:btn-disabled;
@@ -21,16 +21,16 @@
 	}
 
 	.btn-border-accent {
-		@apply border-accent-5 hover:border-accent-6 focus:border-accent-6 border;
+		@apply border border-accent-5 hover:border-accent-6 focus:border-accent-6;
 	}
 	.btn-border-error {
-		@apply border-error-5 hover:border-error-6 focus:border-error-6 border;
+		@apply border border-error-5 hover:border-error-6 focus:border-error-6;
 	}
 	.btn-border-success {
-		@apply border-success-5 hover:border-success-6 focus:border-success-6 border;
+		@apply border border-success-5 hover:border-success-6 focus:border-success-6;
 	}
 	.btn-border-gray {
-		@apply border-gray-6 hover:border-gray-7 focus:border-gray-8 border;
+		@apply border border-gray-6 hover:border-gray-7 focus:border-gray-8;
 	}
 
 	.btn-accent {

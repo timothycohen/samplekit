@@ -16,7 +16,7 @@
 
 <div class="flex min-h-[80vh] items-center justify-center">
 	<div class="relative w-full max-w-md">
-		<div class="rounded-card shadow-4 relative px-4">
+		<div class="relative rounded-card px-4 shadow-4">
 			<div class="flex-auto p-6">
 				<div class="mb-10 flex items-center justify-center overflow-hidden text-2xl">
 					<Logo link />
@@ -64,7 +64,7 @@
 						<input type="checkbox" name="persistent" bind:checked={$form.persistent} id="persistent" />
 						<label
 							for="persistent"
-							class="decoration-accent-6 select-none text-sm font-light underline-offset-2 group-hover:underline"
+							class="select-none text-sm font-light decoration-accent-6 underline-offset-2 group-hover:underline"
 						>
 							Remember me
 						</label>

@@ -38,14 +38,14 @@
 
 <header
 	id="header"
-	class="bg-app-bg/80 dark:shadow-2 h-nav fixed left-0
-	top-0 z-30 flex w-full drop-shadow backdrop-blur-md dark:drop-shadow-none"
+	class="fixed left-0 top-0 z-30 flex
+	h-nav w-full bg-app-bg/80 drop-shadow backdrop-blur-md dark:shadow-2 dark:drop-shadow-none"
 >
-	<div class="px-page flex h-full items-center text-2xl">
+	<div class="flex h-full items-center px-page text-2xl">
 		<Logo link onAnchorClick={mobileNavController.close} />
 	</div>
 
-	<span class="px-page relative ml-auto flex flex-col justify-center">
+	<span class="relative ml-auto flex flex-col justify-center px-page">
 		<span class="flex h-full items-center justify-end gap-8">
 			<nav id="nav--desktop" class="hidden md:block">
 				<ul class="flex items-center gap-4 lg:gap-10" aria-label="main navigation">
@@ -67,7 +67,7 @@
 					<a
 						tabindex="-1"
 						href="/appearance"
-						class="hover:bg-gray-4 rounded-b-card focus-visible:bg-gray-4 text-gray-11 decoration-accent-6 flex items-center p-2 pl-4 text-xs font-light underline-offset-2 hover:underline"
+						class="flex items-center rounded-b-card p-2 pl-4 text-xs font-light text-gray-11 decoration-accent-6 underline-offset-2 hover:bg-gray-4 hover:underline focus-visible:bg-gray-4"
 						use:keyboard={{ ArrowUp: [prev], ArrowDown: [next] }}
 					>
 						Customize appearance

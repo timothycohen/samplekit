@@ -15,5 +15,5 @@
 			/>
 		</pattern>
 	</defs>
-	<rect width="800%" height="800%" transform="translate(0,0)" fill={`url(#${pattern.id})`} />
+	<rect width="800%" height="800%" transform="translate(0,0)" fill="url(#{pattern.id})" />
 </svg>

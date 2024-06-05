@@ -27,7 +27,7 @@
 <div use:melt={$portalled}>
 	{#if $editAvatarOpen}
 		<div use:melt={$overlay} class="modal-overlay"></div>
-		<div class="modal-content-position rounded-card overflow-hidden" use:melt={$content}>
+		<div class="modal-content-position overflow-hidden rounded-card" use:melt={$content}>
 			<AvatarEditor avatar={user.avatar} onCancel={() => editAvatarOpen.set(false)} {updateAvatar} />
 		</div>
 	{/if}
