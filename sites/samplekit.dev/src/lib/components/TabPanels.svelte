@@ -41,6 +41,9 @@
 	if (service) {
 		service.onTrigger((newState) => (collapsed = newState));
 	}
+
+	// todo svelte-5 melt-ui hack to get rid of "state_unsafe_mutation" error
+	files.forEach((_t, i) => $trigger(`tab-${i}`));
 </script>
 
 <div use:melt={$root}>
