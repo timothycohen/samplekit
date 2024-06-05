@@ -1,7 +1,11 @@
 <script lang="ts">
 	import { CodeTopper } from '$lib/articles/components';
 
-  export let part: number
+	interface Props {
+		part: number;
+	}
+
+  const { part }: Props = $props();
 </script>
 
 {#if part === 1}

@@ -2,7 +2,7 @@
 	import { Sparkles } from '$lib/styles/icons';
 	import { CodeTopper } from '$lib/articles/components';
 
-	let showQuizAnswer = false;
+	let showQuizAnswer = $state(false);
 </script>
 
 <h2>Data in SvelteKit</h2>

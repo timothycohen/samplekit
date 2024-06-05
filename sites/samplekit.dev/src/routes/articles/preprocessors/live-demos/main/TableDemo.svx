@@ -3,7 +3,7 @@
 </script>
 
 <Layout title="Preprocessing Tables">
-	<div slot="write">
+	{#snippet write()}
 ```md
 <!-- table-start -->
 | Heading 1 | Heading 2 | Heading 3 |
@@ -12,9 +12,9 @@
 | cell 4    | cell 5    | cell 6    |
 <!-- table-end -->
 ```
-	</div>
+	{/snippet}
 
-	<div slot="process">
+	{#snippet process()}
 ```html
 <div class="table-wrapper">
 	<table>
@@ -40,16 +40,18 @@
 	</table>
 </div>
 ```
-	</div>
+	{/snippet}
 
-	<div slot="render" class="prose prose-radix prose-lg">
-		<div class="code-wrapper px-8 [&_*]:!text-gray-12 [&_*]:!font-sans">
+	{#snippet render()}
+		<div class="prose prose-radix prose-lg">
+			<div class="code-wrapper px-8 [&_*]:!text-gray-12 [&_*]:!font-sans">
 <!-- table-start -->
 | Heading 1 | Heading 2 | Heading 3 |
 | --------- | --------- | --------- |
 | cell 1    | cell 2    | cell 3    |
 | cell 4    | cell 5    | cell 6    |
 <!-- table-end -->
+			</div>
 		</div>
-	</div>
+	{/snippet}
 </Layout>

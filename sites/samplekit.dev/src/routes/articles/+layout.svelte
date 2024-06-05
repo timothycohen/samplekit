@@ -76,7 +76,9 @@
 						Interactive Demo
 					</h2>
 				</span>
-				<TabPanels files={article.demos.main} />
+				<div class="main-demo">
+					<TabPanels files={article.demos.main} />
+				</div>
 			{/if}
 		</div>
 
@@ -225,5 +227,11 @@
 		width: calc(100% + 2rem);
 		text-decoration: none;
 		opacity: 0;
+	}
+
+	article .main-demo :global(.tabpanel > .code-wrapper) {
+		padding: 1rem 1.5rem;
+		margin: 0;
+		font-size: 0.9rem;
 	}
 </style>

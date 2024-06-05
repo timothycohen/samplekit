@@ -3,7 +3,7 @@
 </script>
 
 <Layout title="Preprocessing Code Blocks">
-	<div slot="write">
+	{#snippet write()}
 ~~~md
 &tripgrave;ts
 &tripslash;highlight:2
@@ -11,9 +11,9 @@ console.log('hello world');
 const highlightedLine = true;
 &tripgrave;
 ~~~
-	</div>
+  {/snippet}
 
-	<div slot="process">
+	{#snippet process()}
 ```html
 <div class="code-wrapper">
   <pre style="--h-darker: #d4d4d4; --h-rose-pine-dawn: #575279; --h-darker-bg: #000; --h-rose-pine-dawn-bg: #faf4ed">
@@ -38,13 +38,13 @@ const highlightedLine = true;
   </pre>
 </div>
 ```
-	</div>
+  {/snippet}
 
-	<div slot="render">
+	{#snippet render()}
 ```ts
 ///highlight:2
 console.log('hello world');
 const highlightedLine = true;
 ```
-</div>
+	{/snippet}
 </Layout>

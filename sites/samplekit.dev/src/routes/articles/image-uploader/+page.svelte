@@ -365,20 +365,18 @@
 	inside the file where the <code>CropImgUploadController</code> is instantiated.
 </p>
 
-<div class="not-prose">
-	<TabPanels
-		files={data.article.demos?.main?.filter((d) =>
-			[
-				'FileInput.svelte',
-				'ImageCrop.svelte',
-				'ImageCardBtns.svelte',
-				'ImageCardOverlays.svelte',
-				'UploadProgress.svelte',
-				'ConfirmDelAvatarModal.svelte',
-			].includes(d.title),
-		) ?? []}
-	/>
-</div>
+<TabPanels
+	files={data.article.demos?.main?.filter((d) =>
+		[
+			'FileInput.svelte',
+			'ImageCrop.svelte',
+			'ImageCardBtns.svelte',
+			'ImageCardOverlays.svelte',
+			'UploadProgress.svelte',
+			'ConfirmDelAvatarModal.svelte',
+		].includes(d.title),
+	) ?? []}
+/>
 
 <h3>Avatar Editor</h3>
 
@@ -429,12 +427,11 @@
 	These define the <a href="/articles/typesafe-fetch-handler">typesafe fetch handlers</a> that will correspond to the
 	<code>+server.ts</code> endpoints.
 </p>
-<div class="not-prose">
-	<TabPanels
-		files={data.article.demos?.main?.filter((d) => ['crop.json/index.ts', 'upload.json/index.ts'].includes(d.title)) ??
-			[]}
-	/>
-</div>
+
+<TabPanels
+	files={data.article.demos?.main?.filter((d) => ['crop.json/index.ts', 'upload.json/index.ts'].includes(d.title)) ??
+		[]}
+/>
 
 <p>We've finished our client code, but these two fetch handlers route to unimplemented server endpoints.</p>
 
@@ -556,12 +553,9 @@
 	so they are not created during the app build.
 </p>
 
-<div class="not-prose">
-	<TabPanels
-		files={data.article.demos?.main?.filter((d) => ['s3.ts', 'cloudfront.ts', 'rekognition.ts'].includes(d.title)) ??
-			[]}
-	/>
-</div>
+<TabPanels
+	files={data.article.demos?.main?.filter((d) => ['s3.ts', 'cloudfront.ts', 'rekognition.ts'].includes(d.title)) ?? []}
+/>
 
 <h4>Helpers</h4>
 
@@ -630,13 +624,11 @@
 
 <p>The presigned urls are stored in the database.</p>
 
-<div class="not-prose">
-	<TabPanels
-		files={data.article.demos?.main?.filter((d) =>
-			['presignedUrls.ts', 'presignedUrlsController.ts'].includes(d.title),
-		) ?? []}
-	/>
-</div>
+<TabPanels
+	files={data.article.demos?.main?.filter((d) =>
+		['presignedUrls.ts', 'presignedUrlsController.ts'].includes(d.title),
+	) ?? []}
+/>
 
 <h4>Endpoint</h4>
 

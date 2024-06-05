@@ -107,12 +107,7 @@
 </div>
 
 <style lang="postcss">
-	:global(.tabpanel > .code-wrapper) {
+	.tabpanel :global(> .code-wrapper) {
 		border-radius: 0 0 var(--radius-card) var(--radius-card);
-		margin: 0;
-	}
-	:global(.tabpanel pre) {
-		padding: 1rem 1.5rem;
-		font-size: 0.9rem;
 	}
 </style>
