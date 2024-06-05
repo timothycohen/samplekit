@@ -5,9 +5,13 @@
 	import type { ProductOption, ProductVariant } from '$lib/shop';
 	import type { ProductOptionWithAvailableForSale } from '$routes/shop/utils';
 
-	interface Props { options: ProductOption[], variants: ProductVariant[], partialVariant: Record<string, string> }
+	interface Props {
+		options: ProductOption[];
+		variants: ProductVariant[];
+		partialVariant: Record<string, string>;
+	}
 
-	let { options, variants, partialVariant }: Props = $props();
+	const { options, variants, partialVariant }: Props = $props();
 
 	type Combination = { id: string; availableForSale: boolean; variant: Record<string, string> };
 
@@ -70,9 +74,11 @@
 		}));
 	});
 
-	let hasNoOptionsOrJustOneOption = $derived(!options.length || (options.length === 1 && options[0]?.values.length === 1));
+	const hasNoOptionsOrJustOneOption = $derived(
+		!options.length || (options.length === 1 && options[0]?.values.length === 1),
+	);
 
-	let loadedOptions = $derived(loadOptions({ current: partialVariant, options, combinations }));
+	const loadedOptions = $derived(loadOptions({ current: partialVariant, options, combinations }));
 </script>
 
 {#if !hasNoOptionsOrJustOneOption}

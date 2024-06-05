@@ -1,12 +1,10 @@
 <script lang="ts">
 	import { createDialog, melt } from '@melt-ui/svelte';
 	import { X } from '$lib/styles/icons';
-	import type { SvelteComponent } from 'svelte';
-
+	import type { Component, Snippet } from 'svelte';
 
 	interface Props {
-		props?: {
-		Icon?: SvelteComponent;
+		Icon?: Component;
 		trigger?: {
 			classes?: string;
 			text: string;
@@ -23,61 +21,61 @@
 		};
 		title?: string;
 		description?: string;
-	},
-		dialog?: any,
-		trigger_1?: import('svelte').Snippet,
-		children?: import('svelte').Snippet
+		children: Snippet;
 	}
 
-	let {
-		props = {},
-		dialog = createDialog({ forceVisible: true }),
-		trigger_1,
-		children
-	}: Props = $props();
+	const { Icon, cancel, confirm, description, title, trigger, children }: Props = $props();
 
-	let {
-		elements: { portalled, overlay, content, title, description, close: closeEl, trigger },
+	const dialog = createDialog({ forceVisible: true });
+
+	const {
+		elements: {
+			portalled: portalledEl,
+			overlay: overlayEl,
+			content: contentEl,
+			title: titleEl,
+			description: descriptionEl,
+			close: closeEl,
+			trigger: triggerEl,
+		},
 		states: { open },
-	} = $derived(dialog);
+	} = dialog;
 
 	const close = () => open.set(false);
 </script>
 
-{#if trigger_1}{@render trigger_1()}{:else}
-	{#if props.trigger?.text}
-		<button type="button" use:melt={$trigger} class={props.trigger.classes ?? 'btn btn-accent'}>
-			{props.trigger.text}
-		</button>
-	{/if}
+{#if trigger?.text}
+	<button type="button" use:melt={$triggerEl} class={trigger.classes ?? 'btn btn-accent'}>
+		{trigger.text}
+	</button>
 {/if}
 
-<div use:melt={$portalled}>
+<div use:melt={$portalledEl}>
 	{#if $open}
-		<div use:melt={$overlay} class="modal-overlay"></div>
-		<div class="modal-content" use:melt={$content}>
-			{#if props.Icon}
+		<div use:melt={$overlayEl} class="modal-overlay"></div>
+		<div class="modal-content" use:melt={$contentEl}>
+			{#if Icon}
 				<div class="modal-icon-wrapper">
-					<props.Icon class="h-full w-full"></props.Icon>
+					<Icon class="h-full w-full"></Icon>
 				</div>
 			{/if}
 
-			{#if props.title}
-				<h2 use:melt={$title} class="modal-title">{props.title}</h2>
+			{#if title}
+				<h2 use:melt={$titleEl} class="modal-title">{title}</h2>
 			{/if}
 
-			{#if props.description}
-				<p use:melt={$description} class="modal-description">
-					{props.description}
+			{#if description}
+				<p use:melt={$descriptionEl} class="modal-description">
+					{description}
 				</p>
 			{/if}
 
-			{@render children?.()}
+			{@render children()}
 
-			{#if props.cancel || props.confirm}
+			{#if cancel || confirm}
 				<div class="modal-btns-wrapper">
-					{#if props.cancel}
-						{@const { text, classes, handler } = props.cancel}
+					{#if cancel}
+						{@const { text, classes, handler } = cancel}
 						<button
 							type="button"
 							onclick={() => (handler ? handler({ close }) : close())}
@@ -85,13 +83,15 @@
 						>
 					{/if}
 
-					{#if props.confirm}
-						{@const { text, classes, handler } = props.confirm}
+					{#if confirm}
+						{@const { text, classes, handler } = confirm}
 						<button
 							type="button"
 							onclick={() => (handler ? handler({ close }) : close())}
-							class={classes ?? 'btn btn-accent'}>{text}</button
+							class={classes ?? 'btn btn-accent'}
 						>
+							{text}
+						</button>
 					{/if}
 				</div>
 			{/if}

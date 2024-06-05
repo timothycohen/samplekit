@@ -6,9 +6,11 @@
 	import VariantSelector from './VariantSelector.svelte';
 	import type { Product } from '$lib/shop';
 
-	interface Props { product: Product }
+	interface Props {
+		product: Product;
+	}
 
-	let { product }: Props = $props();
+	const { product }: Props = $props();
 
 	const getVariant = ({ searchParams, optionKeys }: { searchParams: URLSearchParams; optionKeys: string[] }) => {
 		return Array.from(searchParams.entries()).reduce<Record<string, string>>((accumulator, [key, value]) => {
@@ -18,18 +20,21 @@
 		}, {});
 	};
 
-	let partialVariant = $derived(getVariant({
-		searchParams: $page.url.searchParams,
-		optionKeys: product.options.map((o) => o.name.toLowerCase()),
-	}));
-	let selectedVariant =
-		$derived(product.variants.length === 1
+	const partialVariant = $derived(
+		getVariant({
+			searchParams: $page.url.searchParams,
+			optionKeys: product.options.map((o) => o.name.toLowerCase()),
+		}),
+	);
+	const selectedVariant = $derived(
+		product.variants.length === 1
 			? product.variants[0]
 			: product.variants.find((variant) =>
 					variant.selectedOptions.every(
 						(option) => option.value.toLowerCase() === partialVariant[option.name.toLowerCase()],
 					),
-				));
+				),
+	);
 </script>
 
 <div class="mb-6 flex flex-col space-y-6 border-b border-gray-5 pb-6">

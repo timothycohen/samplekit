@@ -4,13 +4,15 @@
 	import { superForm, type SuperValidated } from '$lib/superforms/client';
 	import type { sendSMSTokenSchema } from '$routes/(auth)/validators';
 
-	interface Props { sendSMSTokenForm: SuperValidated<typeof sendSMSTokenSchema> }
+	interface Props {
+		sendSMSTokenForm: SuperValidated<typeof sendSMSTokenSchema>;
+	}
 
-	let { sendSMSTokenForm }: Props = $props();
+	const { sendSMSTokenForm }: Props = $props();
 
 	const { enhance, message, submitting, delayed } = superForm(sendSMSTokenForm, { taintedMessage: null });
 
-	let sent = $derived(!!$message?.success);
+	const sent = $derived(!!$message?.success);
 </script>
 
 <form action="/mfa/sms?/sendSMSVeri" method="post" use:enhance>

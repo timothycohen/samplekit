@@ -1,9 +1,12 @@
 <script lang="ts">
-	interface Props { children?: import('svelte').Snippet }
-
-	let { children }: Props = $props();
 	import { createTableOfContents } from '@melt-ui/svelte';
 	import TOCTree from './TOCTree.svelte';
+
+	interface Props {
+		children?: import('svelte').Snippet;
+	}
+
+	const { children }: Props = $props();
 
 	const {
 		elements: { item },
@@ -20,7 +23,9 @@
 </script>
 
 <div class="lg:w-80">
-	{#if children}{@render children()}{:else}
+	{#if children}
+		{@render children()}
+	{:else}
 		<h2 class="t-h3 font-bold text-accent-12">Table of Contents</h2>
 	{/if}
 	<div class="mb-6 h-px w-full bg-gray-9"></div>

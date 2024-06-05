@@ -3,9 +3,11 @@
 	import { handleToPath } from '$routes/shop/utils';
 	import type { Product } from '$lib/shop';
 
-	interface Props { products: Product[] }
+	interface Props {
+		products: Product[];
+	}
 
-	let { products }: Props = $props();
+	const { products }: Props = $props();
 
 	const carouselProducts = $state([...products, ...products, ...products]);
 </script>

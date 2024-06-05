@@ -2,9 +2,14 @@
 	import { Icon } from '$lib/components';
 	import { Loader2 } from '$lib/styles/icons';
 
-	interface Props { submitGoogle?: boolean, persistent: boolean }
+	interface Props {
+		submitGoogle?: boolean;
+		persistent: boolean;
+	}
 
-	let { submitGoogle = $bindable(false), persistent }: Props = $props();
+	const { persistent }: Props = $props();
+
+	let submitGoogle = $state(false);
 </script>
 
 <form action="/login/google?/passToGoogleOAuth" method="post" onsubmit={() => (submitGoogle = true)}>

@@ -1,7 +1,10 @@
 <script lang="ts">
-	interface Props { link?: boolean, onAnchorClick?: (() => void) | undefined }
+	interface Props {
+		link?: boolean;
+		onAnchorClick?: (() => void) | undefined;
+	}
 
-	let { link = false, onAnchorClick = undefined }: Props = $props();
+	const { link = false, onAnchorClick = undefined }: Props = $props();
 </script>
 
 {#if link}

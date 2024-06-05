@@ -2,9 +2,12 @@
 	import { createDialog, melt } from '@melt-ui/svelte';
 	import type { Writable } from 'svelte/store';
 
-	interface Props { open: Writable<boolean>, handleDelete: () => void }
+	interface Props {
+		open: Writable<boolean>;
+		handleDelete: () => void;
+	}
 
-	let { open, handleDelete }: Props = $props();
+	const { open, handleDelete }: Props = $props();
 
 	const {
 		elements: { portalled, overlay, content, title, description, close },

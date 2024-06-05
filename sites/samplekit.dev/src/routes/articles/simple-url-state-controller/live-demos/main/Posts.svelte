@@ -1,7 +1,10 @@
 <script lang="ts">
-	interface Props { posts: { author: string; date: Date; message: string; avatar: number }[], resetFilters: () => void }
+	interface Props {
+		posts: { author: string; date: Date; message: string; avatar: number }[];
+		resetFilters: () => void;
+	}
 
-	let { posts, resetFilters }: Props = $props();
+	const { posts, resetFilters }: Props = $props();
 </script>
 
 <div class="flex flex-wrap justify-around gap-4 @container">

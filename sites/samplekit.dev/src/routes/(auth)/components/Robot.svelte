@@ -1,10 +1,12 @@
 <script lang="ts">
 	import type { SVGAttributes } from 'svelte/elements';
 
-	interface Props { attrs?: Omit<SVGAttributes<SVGElement>, 'class'>, class?: string | null | undefined }
+	interface Props {
+		attrs?: Omit<SVGAttributes<SVGElement>, 'class'>;
+		class?: string | null | undefined;
+	}
 
-	let { attrs = {}, class: classes = 'h-6 w-6' }: Props = $props();
-	
+	const { attrs = {}, class: classes = 'h-6 w-6' }: Props = $props();
 </script>
 
 <!-- https://lukaszadam.com/illustrations -->

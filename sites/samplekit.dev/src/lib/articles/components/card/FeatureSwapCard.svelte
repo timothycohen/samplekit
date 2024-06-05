@@ -1,20 +1,23 @@
 <script lang="ts">
-	import  = $state(){ = $state() o = $state()nMount } from 'svelte';
+	import { onMount } from 'svelte';
 	import { clickOn } from '$lib/actions';
 	import FeatureCardContent from './FeatureCardContent.svelte';
 
-	interface Props { feature: {
-		imgSm?: string;
-		imgSmGif?: string;
-		title: string;
-		description: string;
-		tags?: string[] | null;
-		articleSlug: string;
-		implementationSlug: string;
-		srcCodeHref: string;
-	}, preview?: boolean }
+	interface Props {
+		feature: {
+			imgSm?: string;
+			imgSmGif?: string;
+			title: string;
+			description: string;
+			tags?: string[] | null;
+			articleSlug: string;
+			implementationSlug: string;
+			srcCodeHref: string;
+		};
+		preview?: boolean;
+	}
 
-	let { feature, preview = false }: Props = $props();
+	const { feature, preview = false }: Props = $props();
 
 	let labelEl: HTMLLabelElement;
 	let frontEl: HTMLDivElement;

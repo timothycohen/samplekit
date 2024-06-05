@@ -3,21 +3,21 @@
 	import PasskeyChallenge from './PasskeyChallenge.svelte';
 
 	interface Props {
-		mfa: VerifierProps['mfa'],
-		passkeyAction: 'login' | 'confirmUser',
-		verifySMSTokenAction: App.Form.Action,
-		verifyAuthenticatorTokenAction: App.Form.Action,
-		onPasskeyFinished: () => void,
-		children?: import('svelte').Snippet
+		mfa: VerifierProps['mfa'];
+		passkeyAction: 'login' | 'confirmUser';
+		verifySMSTokenAction: App.Form.Action;
+		verifyAuthenticatorTokenAction: App.Form.Action;
+		onPasskeyFinished: () => void;
+		children?: import('svelte').Snippet;
 	}
 
-	let {
+	const {
 		mfa,
 		passkeyAction,
 		verifySMSTokenAction,
 		verifyAuthenticatorTokenAction,
 		onPasskeyFinished,
-		children
+		children,
 	}: Props = $props();
 
 	let selectedMFAMethod: DB.MFAs.Kind | '' = $state('');

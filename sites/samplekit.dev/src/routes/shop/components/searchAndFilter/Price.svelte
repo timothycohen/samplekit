@@ -27,9 +27,9 @@
 					}
 				}}
 				onpaste={(e) => {
-	e.preventDefault();
-	price.setParams({ [paramKey]: e.clipboardData?.getData('text') ?? null })
-}}
+					e.preventDefault();
+					price.setParams({ [paramKey]: e.clipboardData?.getData('text') ?? null });
+				}}
 				onchange={(e) => price.setParams({ [paramKey]: e.currentTarget.value })}
 			/>
 

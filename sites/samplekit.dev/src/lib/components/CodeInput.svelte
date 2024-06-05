@@ -1,12 +1,13 @@
 <script lang="ts">
+	import { createPinInput, melt } from '@melt-ui/svelte';
 	import { run } from 'svelte/legacy';
 
-	impo = $state()rt { createPinInput, melt } from '@melt-ui/svelte';
+	interface Props {
+		onChange?: ((a: { filled: true; code: string } | { filled: false; code?: never }) => void) | undefined;
+		namePrefix: string;
+	}
 
-
-	interface Props { onChange?: ((a: { filled: true; code: string } | { filled: false; code?: never }) => void) | undefined, namePrefix: string }
-
-	let { onChange = undefined, namePrefix }: Props = $props();
+	const { onChange = undefined, namePrefix }: Props = $props();
 
 	const codeLength = $state(6);
 

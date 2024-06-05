@@ -1,7 +1,9 @@
 <script lang="ts">
-	interface Props { pattern: { id: string; transform: string } }
+	interface Props {
+		pattern: { id: string; transform: string };
+	}
 
-	let { pattern }: Props = $props();
+	const { pattern }: Props = $props();
 </script>
 
 <!-- https://componentland.com/component/login-page-1 -->

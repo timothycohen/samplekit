@@ -1,35 +1,27 @@
 <script lang="ts">
-	import { run } from 'svelte/legacy';
-
 	import { Loader2 } from '$lib/styles/icons';
 	import { superForm, zodClient, type SuperValidated } from '$lib/superforms/client';
 	import { confirmPassSchema } from '$routes/(auth)/validators';
 	import PassInput from './PassInput.svelte';
+	import type { Snippet } from 'svelte';
 
 	interface Props {
-		confirmPassForm: SuperValidated<typeof confirmPassSchema>,
-		action: App.Form.Action,
-		email: string,
-		disabled?: boolean,
-		buttons?: import('svelte').Snippet,
-		children?: import('svelte').Snippet
+		confirmPassForm: SuperValidated<typeof confirmPassSchema>;
+		action: App.Form.Action;
+		email: string;
+		onSubmitting?: (isSubmitting: boolean) => void;
+		buttons?: Snippet;
+		children?: Snippet;
 	}
 
-	let {
-		confirmPassForm,
-		action,
-		email,
-		disabled = $bindable(false),
-		buttons,
-		children
-	}: Props = $props();
+	const { confirmPassForm, action, email, buttons, children, onSubmitting }: Props = $props();
 
 	const { form, errors, enhance, message, submitting } = superForm(confirmPassForm, {
 		validators: zodClient(confirmPassSchema),
 	});
 
-	run(() => {
-		disabled = $submitting;
+	$effect(() => {
+		onSubmitting?.($submitting);
 	});
 </script>
 
@@ -49,7 +41,9 @@
 	/>
 	<div class="input-subtext text-error-9">{$errors.password ?? $message?.fail ?? ''}</div>
 
-	{#if buttons}{@render buttons()}{:else}
+	{#if buttons}
+		{@render buttons()}
+	{:else}
 		<div class="mt-4 flex gap-4">
 			<button type="button" class="btn btn-hollow" onclick={() => history.back()}>Cancel</button>
 			<button type="submit" class="btn btn-accent" disabled={$submitting}>

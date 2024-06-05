@@ -1,17 +1,14 @@
 <script lang="ts">
+	import type { Snippet } from 'svelte';
+
 	interface Props {
-		title: string,
-		write?: import('svelte').Snippet,
-		process?: import('svelte').Snippet,
-		render?: import('svelte').Snippet
+		title: string;
+		write: Snippet;
+		process: Snippet;
+		render: Snippet;
 	}
 
-	let {
-		title,
-		write,
-		process,
-		render
-	}: Props = $props();
+	const { title, write, process, render }: Props = $props();
 </script>
 
 <span class="font-serif text-3xl font-bold text-accent-12"><h2>{title}</h2></span>

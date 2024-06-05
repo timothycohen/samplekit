@@ -22,9 +22,9 @@
 		getHeaderEl: () => (document.querySelector('#header') as HTMLElement) || null,
 	});
 
-	let mobileNavOpen = $derived(mobileNavController.isOpen);
-	let desktopNavPages = $derived(getDesktopNavRoutes(!!$page.data['user']));
-	let mobileNavPages = $derived(getMobileNavRoutes(!!$page.data['user']));
+	const mobileNavOpen = $derived(mobileNavController.isOpen);
+	const desktopNavPages = $derived(getDesktopNavRoutes(!!$page.data['user']));
+	const mobileNavPages = $derived(getMobileNavRoutes(!!$page.data['user']));
 
 	onMount(() => {
 		mobileNavController.listen();
@@ -34,6 +34,9 @@
 			mobileNavController.destroy();
 		};
 	});
+
+	// todo svelte-5-prettier inline definition breaks prettier
+	type AfterMenuProps = { prev: (e: KeyboardEvent) => void; next: (e: KeyboardEvent) => void };
 </script>
 
 <header
@@ -57,21 +60,21 @@
 
 			<span class="js-only block h-6 w-6 shrink-0 animate-[fadeIn_100ms_ease-in-out_forwards]">
 				<ThemeSwitchDayNightSystem
-					let:next
-					let:prev
 					schemeSystem={$themeController.schemeSystem}
 					mode={$themeController.mode}
 					modeApplied={$themeController.modeApplied}
 					onModeChange={themeController.setMode}
 				>
-					<a
-						tabindex="-1"
-						href="/appearance"
-						class="flex items-center rounded-b-card p-2 pl-4 text-xs font-light text-gray-11 decoration-accent-6 underline-offset-2 hover:bg-gray-4 hover:underline focus-visible:bg-gray-4"
-						use:keyboard={{ ArrowUp: [prev], ArrowDown: [next] }}
-					>
-						Customize appearance
-					</a>
+					{#snippet afterMenu({ prev, next }: AfterMenuProps)}
+						<a
+							tabindex="-1"
+							href="/appearance"
+							class="flex items-center rounded-b-card p-2 pl-4 text-xs font-light text-gray-11 decoration-accent-6 underline-offset-2 hover:bg-gray-4 hover:underline focus-visible:bg-gray-4"
+							use:keyboard={{ ArrowUp: [prev], ArrowDown: [next] }}
+						>
+							Customize appearance
+						</a>
+					{/snippet}
 				</ThemeSwitchDayNightSystem>
 			</span>
 			<span class="flex items-center justify-center md:hidden">

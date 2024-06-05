@@ -1,9 +1,11 @@
 <script lang="ts">
 	import { fade } from 'svelte/transition';
 
-	interface Props { getTextContent: () => string | null | undefined }
+	interface Props {
+		getTextContent: () => string | null | undefined;
+	}
 
-	let { getTextContent }: Props = $props();
+	const { getTextContent }: Props = $props();
 
 	let copied = $state(false);
 

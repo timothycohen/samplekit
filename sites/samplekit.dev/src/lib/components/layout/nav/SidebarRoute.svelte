@@ -1,21 +1,23 @@
 <script lang="ts">
-	import { p = $state()age } from '$app/stores';
+	import { page } from '$app/stores';
 	page; // https://github.com/sveltejs/eslint-plugin-svelte/issues/652#issuecomment-2087008855
 	import { keyboard } from '$lib/actions';
 	import { ChevronUp } from '$lib/styles/icons';
 	import type { RouteLeaf, RouteGroup } from './routes';
 
-	interface Props { route: RouteLeaf | RouteGroup }
+	interface Props {
+		route: RouteLeaf | RouteGroup;
+	}
 
-	let { route }: Props = $props();
+	const { route }: Props = $props();
 
 	const isGroup = (route: RouteLeaf | RouteGroup): route is RouteGroup => 'groupPath' in route;
 
-	let active = $derived($page.url.pathname.startsWith(route.path ?? route.groupPath));
-	let href = $derived(route.path ?? route.children[0]?.path);
-	let text = $derived(route.text ?? route.groupText);
+	const active = $derived($page.url.pathname.startsWith(route.path ?? route.groupPath));
+	const href = $derived(route.path ?? route.children[0]?.path);
+	const text = $derived(route.text ?? route.groupText);
 
-	let inputEl: HTMLInputElement;
+	let inputEl: undefined | HTMLInputElement = $state();
 </script>
 
 <li class="relative">
@@ -33,8 +35,8 @@
 						? 'active group border-transparent'
 						: ''}"
 		use:keyboard={{
-			ArrowDown: [() => (inputEl.checked = true)],
-			ArrowUp: [() => (inputEl.checked = false)],
+			ArrowDown: [() => inputEl && (inputEl.checked = true)],
+			ArrowUp: [() => inputEl && (inputEl.checked = false)],
 		}}
 	>
 		<div

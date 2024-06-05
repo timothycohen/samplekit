@@ -5,12 +5,14 @@
 	import { useCartService } from '$routes/shop/services';
 	import type { Result } from '$lib/utils/common';
 
-	interface Props { props: {
-		lineId: string;
-		handle?: (res: Result<Result.Success>) => void;
-	} }
+	interface Props {
+		props: {
+			lineId: string;
+			handle?: (res: Result<Result.Success>) => void;
+		};
+	}
 
-	let { props }: Props = $props();
+	const { props }: Props = $props();
 
 	const { pending, removingCartItem, cart } = useCartService();
 </script>

@@ -1,17 +1,21 @@
 <script lang="ts">
 	import { formatPrice } from '$routes/shop/utils';
 
-	interface Props { title: string, price: {
-		amount: string;
-		currencyCode: string;
-	}, position?: 'bottom' | 'center' | undefined }
+	interface Props {
+		title: string;
+		price: {
+			amount: string;
+			currencyCode: string;
+		};
+		position?: 'bottom' | 'center' | undefined;
+	}
 
-	let { title, price, position = undefined }: Props = $props();
+	const { title, price, position = undefined }: Props = $props();
 </script>
 
 <div
 	class="absolute bottom-0 left-0 flex w-full px-4 pb-4 @container/label
-  			{position === 'center' ? 'lg:px-20 lg:pb-[35%]' : ''}"
+				{position === 'center' ? 'lg:px-20 lg:pb-[35%]' : ''}"
 >
 	<div
 		class="flex items-center rounded-full border border-gray-5 bg-app-bg/70 p-1 text-xs font-semibold backdrop-blur-md"

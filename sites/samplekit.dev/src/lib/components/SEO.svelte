@@ -42,13 +42,17 @@
 	import { page } from '$app/stores';
 	page; // https://github.com/sveltejs/eslint-plugin-svelte/issues/652#issuecomment-2087008855
 
-	interface Props { meta?: Partial<SEOMeta> }
+	interface Props {
+		meta?: Partial<SEOMeta>;
+	}
 
-	let { meta = {} }: Props = $props();
+	const { meta = {} }: Props = $props();
 
 	const absolutePath = (path: string) => (path.startsWith('/') ? `${$page.url.origin}${path}` : path);
-	let title = $derived(meta?.title ?? 'SampleKit');
-	let description = $derived(meta?.description ?? 'A resource for Svelte developers to learn and share common design patterns.');
+	const title = $derived(meta?.title ?? 'SampleKit');
+	const description = $derived(
+		meta?.description ?? 'A resource for Svelte developers to learn and share common design patterns.',
+	);
 </script>
 
 <svelte:head>

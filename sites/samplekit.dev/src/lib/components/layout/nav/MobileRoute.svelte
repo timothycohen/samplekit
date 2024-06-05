@@ -3,9 +3,12 @@
 	page; // https://github.com/sveltejs/eslint-plugin-svelte/issues/652#issuecomment-2087008855
 	import type { RouteGroup, RouteLeaf } from './routes';
 
-	interface Props { route: RouteLeaf | RouteGroup, onNavItemClick: () => void }
+	interface Props {
+		route: RouteLeaf | RouteGroup;
+		onNavItemClick: () => void;
+	}
 
-	let { route, onNavItemClick }: Props = $props();
+	const { route, onNavItemClick }: Props = $props();
 
 	const isGroup = (route: RouteLeaf | RouteGroup): route is RouteGroup => 'groupPath' in route;
 </script>

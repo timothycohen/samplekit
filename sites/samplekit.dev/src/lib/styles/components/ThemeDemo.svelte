@@ -1,9 +1,11 @@
 <script lang="ts">
 	import { AlertTriangle, Check, Info, Moon, X } from '$lib/styles/icons';
 
-	interface Props { displayTheme: { name: string; scheme: 'light' | 'dark' } }
+	interface Props {
+		displayTheme: { name: string; scheme: 'light' | 'dark' };
+	}
 
-	let { displayTheme }: Props = $props();
+	const { displayTheme }: Props = $props();
 </script>
 
 <div data-theme={displayTheme.name} class="{displayTheme.scheme} pointer-events-none select-none">

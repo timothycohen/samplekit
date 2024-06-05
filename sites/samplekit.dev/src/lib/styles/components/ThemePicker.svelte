@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { run } from 'svelte/legacy';
-
 	import { fade } from 'svelte/transition';
 	import { Check, Moon, Sun } from '$lib/styles/icons';
 	import { debounce } from '$lib/utils/common';
@@ -8,24 +7,18 @@
 
 	type Theme = { name: string; scheme: 'light' | 'dark' };
 	interface Props {
-		mode: 'day' | 'night',
-		themes: Theme[],
-		active: boolean,
-		preference: Theme,
-		setTheme: (theme: { kind: 'day' | 'night'; theme: Theme }) => void
+		mode: 'day' | 'night';
+		themes: Theme[];
+		active: boolean;
+		preference: Theme;
+		setTheme: (theme: { kind: 'day' | 'night'; theme: Theme }) => void;
 	}
 
-	let {
-		mode,
-		themes,
-		active,
-		preference,
-		setTheme
-	}: Props = $props();
+	const { mode, themes, active, preference, setTheme }: Props = $props();
 
 	const Icon = mode === 'day' ? Sun : Moon;
 	let hovered: null | Theme = $state(null);
-	let displayTheme = $derived(hovered ?? preference);
+	const displayTheme = $derived(hovered ?? preference);
 
 	let saved: 'fading-in' | 'saved' | 'fading-out' | null = $state(null);
 

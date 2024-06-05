@@ -7,9 +7,12 @@
 	import { nameSchema } from '$routes/(auth)/validators';
 	import type { SuperValidated } from '$lib/superforms/client';
 
-	interface Props { user: DB.User, nameForm: SuperValidated<typeof nameSchema> }
+	interface Props {
+		user: DB.User;
+		nameForm: SuperValidated<typeof nameSchema>;
+	}
 
-	let { user, nameForm }: Props = $props();
+	const { user, nameForm }: Props = $props();
 
 	const { form, errors, constraints, enhance, message, submitting, tainted } = superForm(nameForm, {
 		taintedMessage: true,
@@ -18,7 +21,7 @@
 
 	let editingName = $state(false);
 
-	let noChanges = $derived(user.givenName === $form.given_name && user.familyName === $form.family_name);
+	const noChanges = $derived(user.givenName === $form.given_name && user.familyName === $form.family_name);
 	run(() => {
 		if (user.givenName || user.familyName) editingName = false;
 	}); // close form after server resolves new user data

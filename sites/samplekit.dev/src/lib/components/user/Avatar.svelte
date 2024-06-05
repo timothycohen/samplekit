@@ -2,29 +2,31 @@
 	import { Pencil } from '$lib/styles/icons';
 
 	interface Props {
-		editable?: boolean,
-		size: number,
-		avatar: DB.User['avatar'],
-		showEditButton?: boolean,
-		editing?: boolean,
-		onEditorClicked?: (() => void) | undefined
+		editable?: boolean;
+		size: number;
+		avatar: DB.User['avatar'];
+		showEditButton?: boolean;
+		editing?: boolean;
+		onEditorClicked?: (() => void) | undefined;
 	}
 
-	let {
+	const {
 		editable = false,
 		size,
 		avatar,
 		showEditButton = false,
 		editing = false,
-		onEditorClicked = undefined
+		onEditorClicked = undefined,
 	}: Props = $props();
 
-	let imgStyles = $derived(avatar
-		? `transform: translateX(-50%) translateY(-50%) rotate(${avatar.crop.rotation}deg);` +
-			`height: ${avatar.crop.scale * size}px;` +
-			`margin-left: ${(size * avatar.crop.aspect) / 2 + avatar.crop.position.x * size}px;` +
-			`margin-top: ${size / 2 + avatar.crop.position.y * size}px; max-width: none;`
-		: '');
+	const imgStyles = $derived(
+		avatar
+			? `transform: translateX(-50%) translateY(-50%) rotate(${avatar.crop.rotation}deg);` +
+					`height: ${avatar.crop.scale * size}px;` +
+					`margin-left: ${(size * avatar.crop.aspect) / 2 + avatar.crop.position.x * size}px;` +
+					`margin-top: ${size / 2 + avatar.crop.position.y * size}px; max-width: none;`
+			: '',
+	);
 </script>
 
 {#if !editable}

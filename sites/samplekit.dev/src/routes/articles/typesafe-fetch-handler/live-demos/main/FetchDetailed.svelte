@@ -1,11 +1,11 @@
 <script lang="ts">
-	imp = $state()ort { fly } from 'svelte/transition';
+	import { fly } from 'svelte/transition';
 	import { Switch } from '$lib/components';
 	import { LoadingDots } from '$lib/components';
 	import { createTempStore } from '$lib/stores';
 	import { Check, Loader2 } from '$lib/styles/icons';
 	import LangSelect from './LangSelect.svelte';
-	import { getRandomColor, type Lang } from '.';
+	import { getRandomColor, langOptions, type Lang } from '.';
 
 	const gettingRandomColor = getRandomColor();
 	const { delayed, timeout } = gettingRandomColor;
@@ -15,11 +15,12 @@
 	let time = $state('');
 	let abortController: AbortController | null = $state(null);
 	let res: null | Awaited<ReturnType<(typeof gettingRandomColor)['send']>> = $state(null);
-	let selectedLang: Lang;
+	let selectedLang: Lang = $state(langOptions.language[0].value.lang);
 
 	const success = createTempStore<true>({ duration: 1500 });
 
 	const getColor = async () => {
+		if (selectedLang === undefined) return;
 		if ($gettingRandomColor) return;
 		success.clear();
 		time = '';
@@ -41,7 +42,7 @@
 
 <div class="grid gap-x-12 gap-y-8 lg:grid-cols-2">
 	<div class="grid w-72 items-center gap-4">
-		<LangSelect bind:selectedLang />
+		<LangSelect onSelect={(lang) => (selectedLang = lang)} />
 
 		<button class="btn btn-accent transition-colors {$delayed ? 'cursor-not-allowed' : ''}" onclick={getColor}>
 			{#if $timeout}

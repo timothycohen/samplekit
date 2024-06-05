@@ -1,22 +1,22 @@
 <script lang="ts">
-	// svg fro = $state()m = $state() = $state() https://toggles.dev/
-	import { tick } from 'svelte';
+	// svg from https://toggles.dev/
+	import { tick, type Snippet } from 'svelte';
 	import { clickOutside, keyboard, windowEscape } from '$lib/actions';
 	import { Check, MonitorSmartphone, Moon, Sun } from '$lib/styles/icons';
 
 	interface Props {
-		modeApplied: 'day' | 'night',
-		schemeSystem: 'dark' | 'light',
-		mode: 'fixed_night' | 'fixed_day' | 'sync_system',
-		duration?: number,
-		version?: 'horizon' | 'expand',
-		onModeChange: (scheme: 'fixed_night' | 'fixed_day' | 'sync_system') => void,
-		dayName?: string | undefined,
-		nightName?: string | undefined,
-		children?: import('svelte').Snippet<[any]>
+		modeApplied: 'day' | 'night';
+		schemeSystem: 'dark' | 'light';
+		mode: 'fixed_night' | 'fixed_day' | 'sync_system';
+		duration?: number;
+		version?: 'horizon' | 'expand';
+		onModeChange: (scheme: 'fixed_night' | 'fixed_day' | 'sync_system') => void;
+		dayName?: string | undefined;
+		nightName?: string | undefined;
+		afterMenu?: Snippet<[{ prev: (e: KeyboardEvent) => void; next: (e: KeyboardEvent) => void }]>;
 	}
 
-	let {
+	const {
 		modeApplied,
 		schemeSystem,
 		mode,
@@ -25,14 +25,14 @@
 		onModeChange,
 		dayName = undefined,
 		nightName = undefined,
-		children
+		afterMenu,
 	}: Props = $props();
 
-	let checked = $derived(modeApplied === 'night');
+	const checked = $derived(modeApplied === 'night');
 
 	let dropdownShown = $state(false);
 
-	const slotUsed = $$slots.default;
+	const slotUsed = !!afterMenu;
 
 	const showDropdown = (e: Event, focus?: 'focus') => {
 		e.preventDefault();
@@ -55,7 +55,7 @@
 
 	let wrapperEl: HTMLDivElement;
 	let toggleEl: HTMLInputElement;
-	let firstEl: HTMLButtonElement;
+	let firstEl: undefined | HTMLButtonElement = $state();
 
 	const next = (e: KeyboardEvent) => {
 		e.preventDefault();
@@ -186,7 +186,7 @@
 					<Check class="ml-auto text-success-9" />
 				{/if}
 			</button>
-			{@render children?.({ prev, next, })}
+			{@render afterMenu?.({ prev, next })}
 		</div>
 	{/if}
 </div>

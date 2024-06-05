@@ -8,9 +8,11 @@
 	import { useNavService } from '$routes/shop/services';
 	import { handleToPath } from '$routes/shop/utils';
 
-	interface Props { collections?: { title: string; path: string }[] }
+	interface Props {
+		collections?: { title: string; path: string }[];
+	}
 
-	let { collections = [] }: Props = $props();
+	const { collections = [] }: Props = $props();
 
 	const { desktopDrawer, drawerProps, mobileDrawer } = useNavService();
 

@@ -1,19 +1,18 @@
 <script lang="ts">
-
 	interface Props {
-		id: string,
-		state?: boolean | null,
-		onClick: () => void,
-		defaultClasses?: string,
-		classes?: string
+		id: string;
+		state?: boolean | null;
+		onClick: () => void;
+		defaultClasses?: string;
+		classes?: string;
 	}
 
-	let {
+	const {
 		id,
 		state = null,
 		onClick,
 		defaultClasses = 'bg-accent-5 data-[state=checked]:bg-accent-6 relative h-6 cursor-default rounded-full transition-colors border border-accent-7',
-		classes = ''
+		classes = '',
 	}: Props = $props();
 </script>
 

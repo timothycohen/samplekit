@@ -13,6 +13,15 @@ const articleRoot = join(src, 'routes/articles');
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
 	extensions: ['.svelte', '.svx'],
+	compilerOptions: {
+		runes: true,
+		modernAst: true,
+	},
+	vitePlugin: {
+		dynamicCompileOptions({ filename }) {
+			if (filename.includes('node_modules')) return { runes: undefined };
+		},
+	},
 	preprocess: sequence([
 		preprocessCodeblock({
 			logger: { formatFilename: (filename) => filename.replace(articleRoot, ''), ...console },

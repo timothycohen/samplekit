@@ -2,23 +2,22 @@
 	import MobileRoute from './MobileRoute.svelte';
 	import type { RouteGroup, RouteLeaf } from './routes';
 
-
 	interface Props {
-		onNavItemClick: () => void,
-		routes: Array<RouteLeaf | RouteGroup>,
-		position: 'left' | 'center',
-		slideBg?: boolean,
-		liftIn?: boolean,
-		overlayClasses?: string | null | undefined
+		onNavItemClick: () => void;
+		routes: Array<RouteLeaf | RouteGroup>;
+		position: 'left' | 'center';
+		slideBg?: boolean;
+		liftIn?: boolean;
+		overlayClasses?: string | null | undefined;
 	}
 
-	let {
+	const {
 		onNavItemClick,
 		routes,
 		position,
 		slideBg = false,
 		liftIn = false,
-		overlayClasses = undefined
+		overlayClasses = undefined,
 	}: Props = $props();
 </script>
 

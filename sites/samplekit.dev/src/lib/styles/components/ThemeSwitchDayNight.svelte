@@ -3,20 +3,15 @@
 	import { clickOn } from '$lib/actions';
 
 	interface Props {
-		modeApplied: 'day' | 'night',
-		duration?: number,
-		version?: 'horizon' | 'expand',
-		onModeChange: (scheme: 'fixed_night' | 'fixed_day') => void
+		modeApplied: 'day' | 'night';
+		duration?: number;
+		version?: 'horizon' | 'expand';
+		onModeChange: (scheme: 'fixed_night' | 'fixed_day') => void;
 	}
 
-	let {
-		modeApplied,
-		duration = 500,
-		version = 'expand',
-		onModeChange
-	}: Props = $props();
+	const { modeApplied, duration = 500, version = 'expand', onModeChange }: Props = $props();
 
-	let checked = $derived(modeApplied === 'night');
+	const checked = $derived(modeApplied === 'night');
 </script>
 
 <input

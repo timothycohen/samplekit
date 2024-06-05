@@ -117,15 +117,13 @@
 						</div>
 
 						<Notice
-							props={{
-								trigger: {
-									text: 'Proceed to Checkout',
-									classes: `btn btn-accent w-full rounded-full p-4 tracking-wide ${$pending ? 'pointer-events-none' : ''}`,
-								},
-								title: 'Woah now, this is a demo',
-								description: 'Thanks for playing along!',
-								confirm: { text: 'Got it!' },
+							trigger={{
+								text: 'Proceed to Checkout',
+								classes: `btn btn-accent w-full rounded-full p-4 tracking-wide ${$pending ? 'pointer-events-none' : ''}`,
 							}}
+							title={'Woah now, this is a demo'}
+							description={'Thanks for playing along!'}
+							confirm={{ text: 'Got it!' }}
 						>
 							<div class="space-y-3 leading-6">
 								<span class="block">

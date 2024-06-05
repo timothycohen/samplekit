@@ -1,9 +1,12 @@
 <script lang="ts">
 	import { formatDate } from '$lib/utils/common';
 
-	interface Props { publishedAt: Date, lastUpdate: { at: Date } | undefined }
+	interface Props {
+		publishedAt: Date;
+		lastUpdate: { at: Date } | undefined;
+	}
 
-	let { publishedAt, lastUpdate }: Props = $props();
+	const { publishedAt, lastUpdate }: Props = $props();
 </script>
 
 <div class="flex flex-wrap items-center justify-between gap-3">

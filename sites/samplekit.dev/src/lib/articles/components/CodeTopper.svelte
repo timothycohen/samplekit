@@ -1,25 +1,21 @@
 <script lang="ts">
-	import { u = $state()seCollapsedService } from '$lib/components/collapsedService';
+	import { useCollapsedService } from '$lib/components/collapsedService';
 	import { ChevronUp } from '$lib/styles/icons';
 	import Copy from './Copy.svelte';
+	import type { Snippet } from 'svelte';
 
 	interface Props {
-		title: string,
-		copyable?: boolean,
-		initialCollapsed?: boolean,
-		children?: import('svelte').Snippet
+		title: string;
+		copyable?: boolean;
+		initialCollapsed?: boolean;
+		children?: Snippet;
 	}
 
-	let {
-		title,
-		copyable = true,
-		initialCollapsed = false,
-		children
-	}: Props = $props();
+	const { title, copyable = true, initialCollapsed = false, children }: Props = $props();
 
-	const collapsible = !!$$slots.default;
+	const collapsible = !!children;
 	let collapsed = $state(collapsible ? initialCollapsed : false);
-	let showCopy = $derived(collapsed ? false : copyable);
+	const showCopy = $derived(collapsed ? false : copyable);
 
 	let codeTopperEl: HTMLElement;
 
@@ -64,6 +60,6 @@
 	</div>
 </div>
 
-{#if !collapsed}
-	{@render children?.()}
+{#if !collapsed && children}
+	{@render children()}
 {/if}

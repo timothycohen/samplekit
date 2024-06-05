@@ -3,12 +3,15 @@
 	import { Avatar } from '$lib/components';
 	import AvatarEditor from './AvatarEditor.svelte';
 
-	interface Props { user: DB.User }
+	interface Props {
+		user: DB.User;
+		onAvatarUpdate: (img: DB.User['avatar']) => void;
+	}
 
-	let { user = $bindable() }: Props = $props();
+	const { user, onAvatarUpdate }: Props = $props();
 
 	const updateAvatar = (img: DB.User['avatar']) => {
-		user.avatar = img;
+		onAvatarUpdate(img);
 		editAvatarOpen.set(false);
 	};
 

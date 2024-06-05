@@ -1,10 +1,12 @@
 <script lang="ts">
 	import type { TurnstileStore } from './stores';
 
-	interface Props { turnstile: TurnstileStore, class?: string | null | undefined }
+	interface Props {
+		turnstile: TurnstileStore;
+		class?: string | null | undefined;
+	}
 
-	let { turnstile, class: classes = undefined }: Props = $props();
-	
+	const { turnstile, class: classes = undefined }: Props = $props();
 
 	let scriptLoaded = $state(typeof window === 'undefined' ? false : 'turnstile' in window);
 	const scriptLoadCallback = () => (scriptLoaded = true);

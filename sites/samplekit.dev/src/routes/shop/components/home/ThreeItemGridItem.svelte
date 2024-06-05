@@ -3,9 +3,13 @@
 	import { handleToPath } from '$routes/shop/utils';
 	import type { Product } from '$lib/shop';
 
-	interface Props { product: Product, size: 'full' | 'half', loading?: 'lazy' | 'eager' | undefined }
+	interface Props {
+		product: Product;
+		size: 'full' | 'half';
+		loading?: 'lazy' | 'eager' | undefined;
+	}
 
-	let { product, size, loading = undefined }: Props = $props();
+	const { product, size, loading = undefined }: Props = $props();
 </script>
 
 <div class={size === 'full' ? 'md:col-span-4 md:row-span-2' : 'md:col-span-2 md:row-span-1'}>

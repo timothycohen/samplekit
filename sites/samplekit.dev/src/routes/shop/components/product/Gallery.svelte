@@ -4,13 +4,15 @@
 	import { GridTileImage } from '..';
 	import type { Image } from '$lib/shop';
 
-	interface Props { images?: Image[] }
+	interface Props {
+		images?: Image[];
+	}
 
-	let { images = [] }: Props = $props();
+	const { images = [] }: Props = $props();
 
 	const imageIndex = createNumParam({ paramName: 'image' }, { max: images.length - 1, min: 0, wrap: true });
 
-	let image = $derived(images[$imageIndex]);
+	const image = $derived(images[$imageIndex]);
 </script>
 
 <div class="relative aspect-square h-full max-h-[550px] w-full overflow-hidden rounded-card">

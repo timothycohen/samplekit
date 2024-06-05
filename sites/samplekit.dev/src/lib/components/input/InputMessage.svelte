@@ -5,25 +5,20 @@
 	import type { Writable } from 'svelte/store';
 
 	interface Props {
-		form?: { success?: undefined; fail: string } | { fail?: undefined; success: string } | null,
-		message?: Writable<App.Superforms.Message | undefined> | undefined,
-		failOnly?: boolean,
-		useParams?: boolean
+		form?: { success?: undefined; fail: string } | { fail?: undefined; success: string } | null;
+		message?: Writable<App.Superforms.Message | undefined> | undefined;
+		failOnly?: boolean;
+		useParams?: boolean;
 	}
 
-	let {
-		form = null,
-		message = undefined,
-		failOnly = false,
-		useParams = false
-	}: Props = $props();
+	const { form = null, message = undefined, failOnly = false, useParams = false }: Props = $props();
 
-	let fSuccess = $derived(typeof form?.success === 'string' && form.success.length ? form.success : null);
-	let mSuccess = $derived(typeof $message?.success === 'string' && $message.success.length ? $message.success : null);
-	let fFail = $derived(typeof form?.fail === 'string' && form.fail.length ? form.fail : null);
-	let mFail = $derived(typeof $message?.fail === 'string' && $message.fail.length ? $message.fail : null);
-	let success = $derived(fSuccess ?? mSuccess ?? '');
-	let fail = $derived(fFail ?? mFail ?? '');
+	const fSuccess = $derived(typeof form?.success === 'string' && form.success.length ? form.success : null);
+	const mSuccess = $derived(typeof $message?.success === 'string' && $message.success.length ? $message.success : null);
+	const fFail = $derived(typeof form?.fail === 'string' && form.fail.length ? form.fail : null);
+	const mFail = $derived(typeof $message?.fail === 'string' && $message.fail.length ? $message.fail : null);
+	const success = $derived(fSuccess ?? mSuccess ?? '');
+	const fail = $derived(fFail ?? mFail ?? '');
 </script>
 
 <div class="input-subtext">

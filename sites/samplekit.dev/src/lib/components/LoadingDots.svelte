@@ -1,8 +1,10 @@
 <script lang="ts">
-	
-	interface Props { class?: string, wrapperClasses?: string }
+	interface Props {
+		class?: string;
+		wrapperClasses?: string;
+	}
 
-	let { class: classes = 'bg-gray-12', wrapperClasses = '' }: Props = $props();
+	const { class: classes = 'bg-gray-12', wrapperClasses = '' }: Props = $props();
 
 	const dots = 'mx-[1px] inline-block h-1 w-1 animate-blink rounded-full';
 </script>

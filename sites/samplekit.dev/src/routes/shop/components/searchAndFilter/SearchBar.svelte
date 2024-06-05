@@ -8,19 +8,25 @@
 		params: { query },
 	} = useSearchAndFilterService();
 
-	interface Props { action?: App.Form.Action, onSubmit?: (
-		e: SubmitEvent & {
-			currentTarget: EventTarget & HTMLFormElement;
-		},
-	) => void }
+	interface Props {
+		action?: App.Form.Action;
+		onSubmit?: (
+			e: SubmitEvent & {
+				currentTarget: EventTarget & HTMLFormElement;
+			},
+		) => void;
+	}
 
-	let { action = '/shop/collections/all', onSubmit = (e) => {
-		e.preventDefault();
-		const v = e.currentTarget.querySelector('input')?.value ?? null;
-		const isValidPage = $page.url.pathname.includes('/shop/collections/');
-		if (isValidPage) query.set(v);
-		else query.set(v, { root: '/shop/collections/all', deleteOtherParams: true });
-	} }: Props = $props();
+	const {
+		action = '/shop/collections/all',
+		onSubmit = (e) => {
+			e.preventDefault();
+			const v = e.currentTarget.querySelector('input')?.value ?? null;
+			const isValidPage = $page.url.pathname.includes('/shop/collections/');
+			if (isValidPage) query.set(v);
+			else query.set(v, { root: '/shop/collections/all', deleteOtherParams: true });
+		},
+	}: Props = $props();
 </script>
 
 <div class="relative">

@@ -1,18 +1,18 @@
 <script lang="ts">
 	interface Props {
-		svgClasses?: string,
-		lineColor?: string,
-		lineOpacity?: string,
-		width?: string,
-		height?: string
+		svgClasses?: string;
+		lineColor?: string;
+		lineOpacity?: string;
+		width?: string;
+		height?: string;
 	}
 
-	let {
+	const {
 		svgClasses = 'h-full w-full bg-accent-9',
 		lineColor = '#9C92AC',
 		lineOpacity = '0.4',
 		width = '6',
-		height = '6'
+		height = '6',
 	}: Props = $props();
 
 	const id = `pattern-${Math.random().toString(36).substring(2, 15)}`;

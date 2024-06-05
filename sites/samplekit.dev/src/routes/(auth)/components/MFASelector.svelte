@@ -1,19 +1,15 @@
 <script lang="ts">
 	import { mfaLabels } from '$lib/auth/client';
+	import type { Snippet } from 'svelte';
 
 	interface Props {
-		mfasEnabled: DB.MFAs.Enabled,
-		selectedMFAMethod: DB.MFAs.Kind | '',
-		onChange: (kind: DB.MFAs.Kind) => void,
-		children?: import('svelte').Snippet
+		mfasEnabled: DB.MFAs.Enabled;
+		selectedMFAMethod: DB.MFAs.Kind | '';
+		onChange: (kind: DB.MFAs.Kind) => void;
+		children: Snippet;
 	}
 
-	let {
-		mfasEnabled,
-		selectedMFAMethod,
-		onChange,
-		children
-	}: Props = $props();
+	const { mfasEnabled, selectedMFAMethod, onChange, children }: Props = $props();
 
 	const handleChange = (e: Event & { currentTarget: EventTarget & HTMLSelectElement }) => {
 		onChange(e.currentTarget.value as DB.MFAs.Kind);
@@ -23,7 +19,7 @@
 <div>
 	<div class="flex justify-between text-sm font-bold">
 		<label for="mfa_method" class="mb-2 font-bold">Authentication Method</label>
-		{@render children?.()}
+		{@render children()}
 	</div>
 
 	<select value={selectedMFAMethod} id="mfa_method" class="input-text" onchange={handleChange}>

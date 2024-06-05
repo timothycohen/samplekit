@@ -1,27 +1,23 @@
 <script lang="ts">
 	import { clickOn } from '$lib/actions';
 	import { BookOpenText, Boxes, Code } from '$lib/styles/icons';
+	import type { KeyboardEventHandler, MouseEventHandler } from 'svelte/elements';
 
 	interface Props {
 		feature: {
-		title: string;
-		description: string;
-		tags?: string[] | null;
-		articleSlug: string;
-		implementationSlug: string;
-		srcCodeHref: string;
-	},
-		tabindex?: 0 | -1,
-		onclick?: (event: any) => void,
-		onkeydown?: (event: any) => void
+			title: string;
+			description: string;
+			tags?: string[] | null;
+			articleSlug: string;
+			implementationSlug: string;
+			srcCodeHref: string;
+		};
+		tabindex?: 0 | -1;
+		onclick?: MouseEventHandler<HTMLAnchorElement>;
+		onkeydown?: KeyboardEventHandler<HTMLAnchorElement>;
 	}
 
-	let {
-		feature,
-		tabindex = 0,
-		onclick,
-		onkeydown
-	}: Props = $props();
+	const { feature, tabindex = 0, onclick, onkeydown }: Props = $props();
 </script>
 
 <div class="flex flex-1 flex-col p-8">

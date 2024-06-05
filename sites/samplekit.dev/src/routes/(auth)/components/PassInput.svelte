@@ -2,21 +2,20 @@
 	import { Eye, EyeOff } from '$lib/styles/icons';
 	import type { HTMLInputAttributes } from 'svelte/elements';
 
-
 	interface Props {
-		name_id: 'password' | 'confirmation' | 'currentPassword',
-		autocomplete: 'new-password' | 'current-password',
-		disabled: boolean,
-		attrs: HTMLInputAttributes | undefined,
-		onChange: (e: Event & { currentTarget: EventTarget & HTMLInputElement }) => void,
-		value: string,
-		invalid: boolean,
-		placeholder?: string,
-		required?: boolean,
-		class?: string
+		name_id: 'password' | 'confirmation' | 'currentPassword';
+		autocomplete: 'new-password' | 'current-password';
+		disabled: boolean;
+		attrs: HTMLInputAttributes | undefined;
+		onChange: (e: Event & { currentTarget: EventTarget & HTMLInputElement }) => void;
+		value: string;
+		invalid: boolean;
+		placeholder?: string;
+		required?: boolean;
+		class?: string;
 	}
 
-	let {
+	const {
 		name_id,
 		autocomplete,
 		disabled,
@@ -26,9 +25,8 @@
 		invalid,
 		placeholder = '············',
 		required = true,
-		class: classes = 'input-text input-text-has-btn'
+		class: classes = 'input-text input-text-has-btn',
 	}: Props = $props();
-	
 
 	let passElType = $state('password');
 	const togglePassVis = () => {

@@ -2,18 +2,14 @@
 	import { CropWindow, defaultValue, defaultOptions, type CropValue } from '$lib/image/client';
 
 	interface Props {
-		url: string,
-		disabled?: boolean,
-		onSave: (value: CropValue) => void,
-		crop?: CropValue | undefined
+		url: string;
+		disabled?: boolean;
+		onSave: (value: CropValue) => void;
+		crop?: CropValue | undefined;
 	}
 
-	let {
-		url,
-		disabled = false,
-		onSave,
-		crop = undefined
-	}: Props = $props();
+	const { url, disabled = false, onSave, crop = undefined }: Props = $props();
+
 	let value = $state({ ...(crop || defaultValue) });
 </script>
 
@@ -30,9 +26,9 @@
 		{disabled}
 		class="btn btn-accent w-full rounded-none rounded-br-card rounded-tl-card"
 		onclick={(event) => {
-	event.stopPropagation();
-	onSave(value)
-}}
+			event.stopPropagation();
+			onSave(value);
+		}}
 	>
 		Save
 	</button>

@@ -2,27 +2,27 @@
 	import Label from './Label.svelte';
 
 	interface Props {
-		isInteractive?: boolean,
-		active?: boolean,
-		label?: 
-		| {
-				title: string;
-				position?: 'bottom' | 'center';
-				price: {
-					amount: string;
-					currencyCode: string;
-				};
-		  }
-		| undefined,
-		images: string[],
-		alt: string,
-		sizes?: string | undefined,
-		loading?: 'lazy' | 'eager' | undefined,
-		height?: number | undefined,
-		width?: number | undefined
+		isInteractive?: boolean;
+		active?: boolean;
+		label?:
+			| {
+					title: string;
+					position?: 'bottom' | 'center';
+					price: {
+						amount: string;
+						currencyCode: string;
+					};
+			  }
+			| undefined;
+		images: string[];
+		alt: string;
+		sizes?: string | undefined;
+		loading?: 'lazy' | 'eager' | undefined;
+		height?: number | undefined;
+		width?: number | undefined;
 	}
 
-	let {
+	const {
 		isInteractive = true,
 		active = false,
 		label = undefined,
@@ -31,7 +31,7 @@
 		sizes = '',
 		loading = undefined,
 		height = undefined,
-		width = undefined
+		width = undefined,
 	}: Props = $props();
 </script>
 

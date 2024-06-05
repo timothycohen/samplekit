@@ -6,9 +6,11 @@
 		params: { query },
 	} = useSearchAndFilterService();
 
-	interface Props { onSubmit: (e: SubmitEvent & { currentTarget: EventTarget & HTMLFormElement }) => void }
+	interface Props {
+		onSubmit: (e: SubmitEvent & { currentTarget: EventTarget & HTMLFormElement }) => void;
+	}
 
-	let { onSubmit }: Props = $props();
+	const { onSubmit }: Props = $props();
 </script>
 
 <div class="relative">

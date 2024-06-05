@@ -14,7 +14,7 @@
 		onSuccess: () => void;
 	}
 
-	let { updatePassForm, email, onCancel, onSuccess }: Props = $props();
+	const { updatePassForm, email, onCancel, onSuccess }: Props = $props();
 
 	const { form, errors, constraints, enhance, message, submitting } = $state(superForm(updatePassForm, {}));
 

@@ -4,18 +4,13 @@
 	import type { SearchParam, SearchParams } from '$lib/stores';
 
 	interface Props {
-		authorNames: string[],
-		content: SearchParam,
-		maxDaysOld: SearchParam,
-		authors: SearchParams
+		authorNames: string[];
+		content: SearchParam;
+		maxDaysOld: SearchParam;
+		authors: SearchParams;
 	}
 
-	let {
-		authorNames,
-		content,
-		maxDaysOld,
-		authors
-	}: Props = $props();
+	const { authorNames, content, maxDaysOld, authors }: Props = $props();
 </script>
 
 <h2 class="text-h4">Filters</h2>
@@ -62,11 +57,10 @@
 			if (['-', '+', 'e', 'E'].includes(e.key)) e.preventDefault();
 		}}
 		onpaste={(e) => {
-	e.preventDefault();
-	
+			e.preventDefault();
+
 			$maxDaysOld = e.clipboardData?.getData('text') ?? null;
-		
-}}
+		}}
 		use:minMaxVal={{
 			min: 1,
 			max: 14,

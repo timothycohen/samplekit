@@ -1,17 +1,18 @@
 <script lang="ts">
-	import { run } from 'svelte/legacy';
-
 	import { enhance } from '$app/forms';
 	import { page } from '$app/stores';
 	page; // https://github.com/sveltejs/eslint-plugin-svelte/issues/652#issuecomment-2087008855
 	import { InputMessage } from '$lib/components';
 
-	interface Props { email: string, action: App.Form.Action }
+	interface Props {
+		email: string;
+		action: App.Form.Action;
+	}
 
-	let { email, action }: Props = $props();
+	const { email, action }: Props = $props();
 
-	let submitted;
-	run(() => {
+	let submitted = $state(false);
+	$effect(() => {
 		submitted = !!$page.url.searchParams.get('success');
 	});
 </script>

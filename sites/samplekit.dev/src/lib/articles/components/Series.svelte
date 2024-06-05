@@ -1,13 +1,15 @@
 <script lang="ts">
-	interface Props { series: 
-		| {
-				position: number;
-				name: string;
-				all: { title: string; articleSlug: string; position: number }[];
-		  }
-		| undefined }
+	interface Props {
+		series:
+			| {
+					position: number;
+					name: string;
+					all: { title: string; articleSlug: string; position: number }[];
+			  }
+			| undefined;
+	}
 
-	let { series }: Props = $props();
+	const { series }: Props = $props();
 </script>
 
 {#if series}

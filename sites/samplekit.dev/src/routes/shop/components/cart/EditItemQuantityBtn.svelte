@@ -5,13 +5,15 @@
 	import { useCartService } from '$routes/shop/services';
 	import type { CartItem } from '$lib/shop';
 
-	interface Props { props: {
-		item: CartItem;
-		type: 'plus' | 'minus';
-		handle?: (res: Awaited<ReturnType<typeof updatingCartItemQty.send>>) => void;
-	} }
+	interface Props {
+		props: {
+			item: CartItem;
+			type: 'plus' | 'minus';
+			handle?: (res: Awaited<ReturnType<typeof updatingCartItemQty.send>>) => void;
+		};
+	}
 
-	let { props }: Props = $props();
+	const { props }: Props = $props();
 
 	let localPending = $state(false);
 

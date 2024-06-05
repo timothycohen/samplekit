@@ -2,18 +2,13 @@
 	import type { TableOfContentsItem, TableOfContentsElements } from '@melt-ui/svelte';
 
 	interface Props {
-		tree?: TableOfContentsItem[],
-		activeHeadingIdxs: number[],
-		item: TableOfContentsElements['item'],
-		level?: number
+		tree?: TableOfContentsItem[];
+		activeHeadingIdxs: number[];
+		item: TableOfContentsElements['item'];
+		level?: number;
 	}
 
-	let {
-		tree = [],
-		activeHeadingIdxs,
-		item,
-		level = 1
-	}: Props = $props();
+	const { tree = [], activeHeadingIdxs, item, level = 1 }: Props = $props();
 </script>
 
 {#if tree && tree.length}

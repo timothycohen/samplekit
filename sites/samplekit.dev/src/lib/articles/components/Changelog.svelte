@@ -1,9 +1,11 @@
 <script lang="ts">
 	import { formatDate } from '$lib/utils/common';
 
-	interface Props { updates: Array<{ at: Date; descriptions: string[] }> | undefined }
+	interface Props {
+		updates: Array<{ at: Date; descriptions: string[] }> | undefined;
+	}
 
-	let { updates }: Props = $props();
+	const { updates }: Props = $props();
 </script>
 
 {#if updates && updates.length}

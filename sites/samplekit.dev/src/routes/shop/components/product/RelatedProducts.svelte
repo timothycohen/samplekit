@@ -3,9 +3,11 @@
 	import { handleToPath } from '$routes/shop/utils';
 	import type { Product } from '$lib/shop';
 
-	interface Props { relatedProducts: Product[] }
+	interface Props {
+		relatedProducts: Product[];
+	}
 
-	let { relatedProducts }: Props = $props();
+	const { relatedProducts }: Props = $props();
 </script>
 
 <div class="py-8">

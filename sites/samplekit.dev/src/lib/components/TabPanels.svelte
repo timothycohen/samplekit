@@ -19,9 +19,13 @@
 	import TabPanelItem from './TabPanelItem.svelte';
 	import type { NoPropComponent } from '$lib/utils/common';
 
-	interface Props { files: Array<TabPanel> }
+	interface Props {
+		files: Array<TabPanel>;
+	}
 
-	let { files }: Props = $props();
+	const { files }: Props = $props();
+
+	let collapsed = $state(false);
 
 	const {
 		elements: { root, list, trigger, content },
@@ -32,8 +36,6 @@
 			return next;
 		},
 	});
-
-	let collapsed = $state(false);
 
 	const service = useCollapsedService();
 	if (service) {

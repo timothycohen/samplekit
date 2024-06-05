@@ -1,17 +1,12 @@
-<script lang="ts"> = $state()
+<script lang="ts">
 	interface Props {
-		multiple?: boolean,
-		accept?: string | null,
-		disabled?: boolean,
-		onSelect: (files: File[]) => void
+		multiple?: boolean;
+		accept?: string | null;
+		disabled?: boolean;
+		onSelect: (files: File[]) => void;
 	}
 
-	let {
-		multiple = false,
-		accept = 'image/*',
-		disabled = false,
-		onSelect
-	}: Props = $props();
+	const { multiple = false, accept = 'image/*', disabled = false, onSelect }: Props = $props();
 
 	let inputEl: HTMLInputElement;
 	let isDragover = $state(false);
@@ -54,11 +49,10 @@
 			isDragover = true;
 		}}
 		ondragover={(event) => {
-	event.preventDefault();
-	
+			event.preventDefault();
+
 			isDragover = true;
-		
-}}
+		}}
 		ondragleave={() => {
 			isDragover = false;
 		}}
@@ -66,14 +60,13 @@
 			isDragover = false;
 		}}
 		ondrop={(e) => {
-	e.preventDefault();
-	
+			e.preventDefault();
+
 			const dataTransfer = e.dataTransfer;
 			if (!dataTransfer) return;
 			isDragover = false;
 			dispatchFiles(dataTransfer.files);
-		
-}}
+		}}
 		for="file"
 		class="block rounded-card border-2 border-dashed border-gray-10 p-4 text-center font-semibold text-gray-11 transition-colors peer-focus-visible:border-accent-7
 		{disabled ? '' : 'cursor-pointer'}"

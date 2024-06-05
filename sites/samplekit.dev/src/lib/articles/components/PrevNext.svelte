@@ -2,9 +2,12 @@
 	import { FeatureCard, FeatureSwapCard } from '.';
 	import type { LoadedFrontMatter } from '../schema';
 
-	interface Props { prev: LoadedFrontMatter | undefined, next: LoadedFrontMatter | undefined }
+	interface Props {
+		prev: LoadedFrontMatter | undefined;
+		next: LoadedFrontMatter | undefined;
+	}
 
-	let { prev, next }: Props = $props();
+	const { prev, next }: Props = $props();
 </script>
 
 {#if prev}

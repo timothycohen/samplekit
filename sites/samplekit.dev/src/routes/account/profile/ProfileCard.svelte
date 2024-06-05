@@ -4,14 +4,17 @@
 	import EditableName from './EditableName.svelte';
 	import type { SuperValidated } from '$lib/superforms/client';
 
-	interface Props { user: DB.User, nameForm: SuperValidated<typeof nameSchema> }
+	interface Props {
+		user: DB.User;
+		nameForm: SuperValidated<typeof nameSchema>;
+	}
 
-	let { user, nameForm }: Props = $props();
+	const { user, nameForm }: Props = $props();
 </script>
 
 <div class="mx-auto max-w-sm rounded-card p-8 shadow-4 md:mx-0">
 	<div class="relative mx-auto w-36 rounded-full">
-		<EditableAvatar {user} />
+		<EditableAvatar {user} onAvatarUpdate={(img) => (user.avatar = img)} />
 	</div>
 
 	<EditableName {user} {nameForm} />

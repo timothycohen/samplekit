@@ -5,20 +5,15 @@
 	type Option = { label: string; value: SvelteGeneric };
 
 	interface Props {
-		options: Record<string, Array<Option>> & { default?: Array<Option> },
-		title?: string,
-		ariaLabel?: any,
-		select: ReturnType<typeof createSelect<SvelteGeneric>>
+		options: Record<string, Array<Option>> & { default?: Array<Option> };
+		title?: string;
+		ariaLabel?: string;
+		select: ReturnType<typeof createSelect<SvelteGeneric>>;
 	}
 
-	let {
-		options,
-		title = '',
-		ariaLabel = title,
-		select
-	}: Props = $props();
+	const { options, title = '', ariaLabel = title, select }: Props = $props();
 
-	let {
+	const {
 		elements: { trigger, menu, option, group, groupLabel },
 		states: { open, selected },
 		helpers: { isSelected },

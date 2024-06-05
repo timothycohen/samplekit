@@ -7,9 +7,12 @@
 	import { useNavService } from '$routes/shop/services';
 	import { handleToPath, type MenuWithPath } from '$routes/shop/utils';
 
-	interface Props { menu: MenuWithPath, collections?: { title: string; path: string }[] | undefined }
+	interface Props {
+		menu: MenuWithPath;
+		collections?: { title: string; path: string }[] | undefined;
+	}
 
-	let { menu, collections = undefined }: Props = $props();
+	const { menu, collections = undefined }: Props = $props();
 
 	const {
 		desktopNav,
