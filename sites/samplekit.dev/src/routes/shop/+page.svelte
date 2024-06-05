@@ -2,9 +2,7 @@
 	import { Carousel, ThreeItemGrid } from '$routes/shop/components';
 	import { useNavService } from './services';
 
-	interface Props { data: any }
-
-	let { data }: Props = $props();
+	const { data } = $props();
 
 	const { desktopNav, desktopDrawer, mobileDrawer } = useNavService();
 	$desktopNav = { menuUnderneath: false, showDrawerToggle: true };

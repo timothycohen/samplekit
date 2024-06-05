@@ -2,9 +2,7 @@
 	import { Loader2 } from '$lib/styles/icons';
 	import { Verifier } from '$routes/(auth)/components';
 
-	interface Props { data: any }
-
-	let { data }: Props = $props();
+	const { data } = $props();
 
 	let confirmedEmail = $state('');
 	let submitting = $state(false);

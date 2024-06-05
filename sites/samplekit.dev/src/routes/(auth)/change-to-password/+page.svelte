@@ -1,9 +1,7 @@
 <script lang="ts">
 	import { InputMessage } from '$lib/components';
 
-	interface Props { form: any }
-
-	let { form }: Props = $props();
+	const { form } = $props();
 </script>
 
 <section class="mx-auto h-screen-nav w-full max-w-3xl p-8">

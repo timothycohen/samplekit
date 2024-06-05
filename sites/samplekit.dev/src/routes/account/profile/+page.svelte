@@ -1,9 +1,7 @@
 <script lang="ts">
 	import ProfileCard from './ProfileCard.svelte';
 
-	interface Props { data: any }
-
-	let { data }: Props = $props();
+	const { data } = $props();
 </script>
 
 <div class="space-y-6">

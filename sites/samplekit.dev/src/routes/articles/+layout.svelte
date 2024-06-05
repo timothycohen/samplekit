@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { onMount } fro = $state()m 'svelte';
+	import { onMount } from 'svelte';
 	import { fly } from 'svelte/transition';
 	import { Changelog, DateLine, FeatureCard, FeatureSwapCard, Series, TOC } from '$lib/articles/components';
 	import { TabPanels } from '$lib/components';
@@ -7,10 +7,8 @@
 	import { ArrowRight, PanelRightDashed, UnfoldVertical, FoldVertical } from '$lib/styles/icons';
 	import { pluralize } from '$lib/utils/common';
 
-	interface Props { data: any, children?: import('svelte').Snippet }
-
-	let { data, children }: Props = $props();
-	let article = $derived(data.article);
+	const { data, children } = $props();
+	const article = $derived(data.article);
 
 	let wordCount = $state(0);
 	let readingTime = $state(0);

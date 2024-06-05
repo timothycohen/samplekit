@@ -2,9 +2,9 @@
 	import { Icon } from '$lib/components';
 	import { VerifyPWForm } from '$routes/(auth)/components';
 
-	interface Props { data: any, disabled?: boolean }
+	const { data } = $props();
 
-	let { data, disabled = $bindable(false) }: Props = $props();
+	let disabled = $state(false);
 </script>
 
 <section class="mx-auto h-screen-nav w-full max-w-3xl space-y-8 p-8">
@@ -38,16 +38,21 @@
 				email={data.email}
 				confirmPassForm={data.confirmPassForm}
 				action="/change-to-google?/passwordToLinkGoogle"
-				bind:disabled
+				onSubmitting={(submitting) => (disabled = submitting)}
 			>
-				<div slot="buttons" class="flex flex-wrap gap-4">
-					<a class="btn btn-hollow sm:w-fit" href="/account/security/auth">Cancel</a>
-					<button type="submit" class="btn btn-hollow h-10 w-full py-0 sm:w-fit" {disabled}>
-						<Icon icon="google" />
-						<span>Continue with Google</span>
-					</button>
-				</div>
-				<div class="mt-4 text-xs">This will log you out of all other devices.</div>
+				{#snippet buttons()}
+					<div class="flex flex-wrap gap-4">
+						<a class="btn btn-hollow sm:w-fit" href="/account/security/auth">Cancel</a>
+						<button type="submit" class="btn btn-hollow h-10 w-full py-0 sm:w-fit" {disabled}>
+							<Icon icon="google" />
+							<span>Continue with Google</span>
+						</button>
+					</div>
+				{/snippet}
+
+				{#snippet children()}
+					<div class="mt-4 text-xs">This will log you out of all other devices.</div>
+				{/snippet}
 			</VerifyPWForm>
 		{/if}
 	</div>

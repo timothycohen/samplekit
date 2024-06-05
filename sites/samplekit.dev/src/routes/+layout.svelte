@@ -1,13 +1,12 @@
 <script lang="ts">
-	interface Props { children?: import('svelte').Snippet }
-
-	let { children }: Props = $props();
 	import '../app.css';
 	import { onMount } from 'svelte';
 	import { page } from '$app/stores';
 	page; // https://github.com/sveltejs/eslint-plugin-svelte/issues/652#issuecomment-2087008855
 	import { Header, SEO } from '$lib/components';
 	import { themeController } from '$lib/styles';
+
+	const { children } = $props();
 
 	onMount(() => {
 		const { destroy } = themeController.listen('light-dark-system');
@@ -23,7 +22,7 @@
 
 <div class="{$page.data.layout.showHeader ? 'min-h-screen-nav' : 'min-h-screen'} relative flex flex-col">
 	<main class="flex min-h-full flex-1 flex-col">
-		{@render children?.()}
+		{@render children()}
 	</main>
 
 	{#if $page.data.layout.showFooter}

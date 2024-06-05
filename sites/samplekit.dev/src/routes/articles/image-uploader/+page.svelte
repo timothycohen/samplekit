@@ -7,9 +7,7 @@
 	import Misc from './Misc.svx';
 	import img_uploaderFlow from './assets/image-uploader-flow-q30.webp';
 
-	interface Props { data: any }
-
-	let { data }: Props = $props();
+	const { data } = $props();
 </script>
 
 <p>

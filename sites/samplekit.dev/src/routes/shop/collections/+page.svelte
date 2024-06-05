@@ -4,9 +4,7 @@
 	import { useNavService } from '$routes/shop/services';
 	import { handleToPath } from '$routes/shop/utils';
 
-	interface Props { data: any }
-
-	let { data }: Props = $props();
+	const { data } = $props();
 
 	const { desktopNav, desktopDrawer, mobileDrawer } = useNavService();
 	$desktopNav = { menuUnderneath: false, showDrawerToggle: false };

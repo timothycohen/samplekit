@@ -3,9 +3,7 @@
 	page; // https://github.com/sveltejs/eslint-plugin-svelte/issues/652#issuecomment-2087008855
 	import { Trash2, BadgeCheck, Loader2 } from '$lib/styles/icons';
 
-	interface Props { data: any }
-
-	let { data }: Props = $props();
+	const { data } = $props();
 
 	let submitting: string | false = $state(false);
 </script>

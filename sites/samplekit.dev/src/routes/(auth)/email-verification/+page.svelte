@@ -3,9 +3,7 @@
 	import { InputMessage } from '$lib/components';
 	import { MailCheck } from '$lib/styles/icons';
 
-	interface Props { form: any, data: any }
-
-	let { form, data }: Props = $props();
+	const { form, data } = $props();
 </script>
 
 <div class="flex min-h-[80vh] items-center justify-center">

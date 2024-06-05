@@ -1,9 +1,7 @@
 <script lang="ts">
 	import { VerifyMFAForm, LoginAsDiffUserForm } from '$routes/(auth)/components';
 
-	interface Props { data: any }
-
-	let { data }: Props = $props();
+	const { data } = $props();
 </script>
 
 <section class="w-full max-w-3xl space-y-8 self-center p-8 md:p-16">

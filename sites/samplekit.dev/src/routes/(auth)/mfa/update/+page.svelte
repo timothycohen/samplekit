@@ -1,9 +1,7 @@
 <script lang="ts">
 	import { mfaLabels } from '$lib/auth/client';
 
-	interface Props { data: any }
-
-	let { data }: Props = $props();
+	const { data } = $props();
 
 	const mfaKind = data.desiredMFA;
 	const action = data.action;

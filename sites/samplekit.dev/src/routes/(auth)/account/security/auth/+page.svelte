@@ -17,12 +17,10 @@
 	} from '$lib/styles/icons';
 	import UpdatePassForm from './UpdatePassForm.svelte';
 
-	interface Props { data: any }
+	const { data } = $props();
 
-	let { data }: Props = $props();
-
-	let { method, mfasEnabled, mfaCount } = $derived(data);
-	let authMethods = $derived([
+	const { method, mfasEnabled, mfaCount } = $derived(data);
+	const authMethods = $derived([
 		{ AuthIcon: Fingerprint, enabled: mfasEnabled.passkeys, next: 'passkeys' as DB.MFAs.Kind },
 		{ AuthIcon: ShieldEllipsis, enabled: mfasEnabled.authenticator, next: 'authenticator' as DB.MFAs.Kind },
 		// { AuthIcon: MessageCircle, enabled: mfasEnabled.sms, next: 'sms' as DB.MFAs.Kind },

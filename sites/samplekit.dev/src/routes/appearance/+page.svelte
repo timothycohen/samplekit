@@ -1,7 +1,8 @@
 <script lang="ts">
 	import { ThemePicker, themeController, THEMES } from '$lib/styles';
 	themeController; // https://github.com/sveltejs/eslint-plugin-svelte/issues/652#issuecomment-2087008855
-	let optionsArr = $derived(['fixed_day', 'fixed_night', 'sync_system'] as const);
+
+	const optionsArr = ['fixed_day', 'fixed_night', 'sync_system'] as const;
 	const tsCast = (str: string) => str as (typeof optionsArr)[number];
 </script>
 

@@ -1,7 +1,4 @@
 <script lang="ts">
-	interface Props { children?: import('svelte').Snippet }
-
-	let { children }: Props = $props();
 	import { onMount } from 'svelte';
 	import { SlidersHorizontal } from '$lib/styles/icons';
 	import { Available, SortBy, Price } from '$routes/shop/components';
@@ -20,6 +17,8 @@
 			destroy();
 		};
 	});
+
+	const { children } = $props();
 
 	let filterAsideOpen = $state(false);
 </script>
@@ -56,7 +55,7 @@
 		{/if}
 
 		<div class="mt-4">
-			{@render children?.()}
+			{@render children()}
 		</div>
 	</div>
 </div>
