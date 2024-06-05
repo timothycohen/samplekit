@@ -1,12 +1,12 @@
 <script lang="ts">
-	import { Loader2 } from '$lib/styles/icons';
+	imp = $state()ort { Loader2 } from '$lib/styles/icons';
 	import LangSelect from './LangSelect.svelte';
 	import { getRandomColor, type Lang } from '.';
 
 	const gettingRandomColor = getRandomColor();
 	const { delayed } = gettingRandomColor;
 
-	let currentColor = 'Yellow';
+	let currentColor = $state('Yellow');
 	let selectedLang: Lang;
 
 	const getColor = async () => {
@@ -24,7 +24,7 @@
 
 	<button
 		class="btn btn-accent col-span-2 transition-colors sm:col-span-1 {$delayed ? 'cursor-not-allowed' : ''}"
-		on:click={getColor}
+		onclick={getColor}
 	>
 		{#if $delayed}
 			<span class="grid w-[1.625rem] place-content-center" aria-label="Delayed">

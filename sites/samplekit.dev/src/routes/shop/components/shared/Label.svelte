@@ -1,12 +1,12 @@
 <script lang="ts">
 	import { formatPrice } from '$routes/shop/utils';
 
-	export let title: string;
-	export let price: {
+	interface Props { title: string, price: {
 		amount: string;
 		currencyCode: string;
-	};
-	export let position: 'bottom' | 'center' | undefined = undefined;
+	}, position?: 'bottom' | 'center' | undefined }
+
+	let { title, price, position = undefined }: Props = $props();
 </script>
 
 <div

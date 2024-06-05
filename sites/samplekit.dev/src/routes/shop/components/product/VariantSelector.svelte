@@ -1,11 +1,13 @@
 <script lang="ts">
+	import { run } from 'svelte/legacy';
+
 	import Variant from './ProductVariant.svelte';
 	import type { ProductOption, ProductVariant } from '$lib/shop';
 	import type { ProductOptionWithAvailableForSale } from '$routes/shop/utils';
 
-	export let options: ProductOption[];
-	export let variants: ProductVariant[];
-	export let partialVariant: Record<string, string>;
+	interface Props { options: ProductOption[], variants: ProductVariant[], partialVariant: Record<string, string> }
+
+	let { options, variants, partialVariant }: Props = $props();
 
 	type Combination = { id: string; availableForSale: boolean; variant: Record<string, string> };
 
@@ -56,19 +58,21 @@
 		});
 	};
 
-	let combinations: Combination[] = [];
-	$: combinations = variants.map((variant) => ({
-		id: variant.id,
-		availableForSale: variant.availableForSale,
-		variant: variant.selectedOptions.reduce(
-			(accumulator, option) => ({ ...accumulator, [option.name.toLowerCase()]: option.value.toLowerCase() }),
-			{},
-		),
-	}));
+	let combinations: Combination[] = $state([]);
+	run(() => {
+		combinations = variants.map((variant) => ({
+			id: variant.id,
+			availableForSale: variant.availableForSale,
+			variant: variant.selectedOptions.reduce(
+				(accumulator, option) => ({ ...accumulator, [option.name.toLowerCase()]: option.value.toLowerCase() }),
+				{},
+			),
+		}));
+	});
 
-	$: hasNoOptionsOrJustOneOption = !options.length || (options.length === 1 && options[0]?.values.length === 1);
+	let hasNoOptionsOrJustOneOption = $derived(!options.length || (options.length === 1 && options[0]?.values.length === 1));
 
-	$: loadedOptions = loadOptions({ current: partialVariant, options, combinations });
+	let loadedOptions = $derived(loadOptions({ current: partialVariant, options, combinations }));
 </script>
 
 {#if !hasNoOptionsOrJustOneOption}

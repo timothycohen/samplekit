@@ -7,11 +7,13 @@
 	import { PassInput } from '$routes/(auth)/components';
 	import { signupSchema } from '$routes/(auth)/validators';
 
-	export let data;
+	interface Props { data: any }
 
-	const { form, errors, constraints, enhance, message, submitting } = superForm(data.signupForm, {
+	let { data }: Props = $props();
+
+	const { form, errors, constraints, enhance, message, submitting } = $state(superForm(data.signupForm, {
 		validators: zodClient(signupSchema),
-	});
+	}));
 
 	const { turnstile, turnstileInput } = useTurnstileService();
 </script>

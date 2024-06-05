@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { run } from 'svelte/legacy';
+
 	import { createDialog, melt } from '@melt-ui/svelte';
 	import { page } from '$app/stores';
 	page; // https://github.com/sveltejs/eslint-plugin-svelte/issues/652#issuecomment-2087008855
@@ -6,8 +8,10 @@
 	import AvatarEditor from '$routes/account/profile/AvatarEditor.svelte';
 	import Mock from './Mock.svelte';
 
-	let user: DB.User | null = null;
-	$: user = $page.data['user'] ?? null;
+	let user: DB.User | null = $state(null);
+	run(() => {
+		user = $page.data['user'] ?? null;
+	});
 
 	const updateAvatar = (img: DB.User['avatar']) => {
 		if (user) {

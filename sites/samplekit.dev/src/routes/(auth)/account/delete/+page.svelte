@@ -2,10 +2,12 @@
 	import { Loader2 } from '$lib/styles/icons';
 	import { Verifier } from '$routes/(auth)/components';
 
-	export let data;
+	interface Props { data: any }
 
-	let confirmedEmail = '';
-	let submitting = false;
+	let { data }: Props = $props();
+
+	let confirmedEmail = $state('');
+	let submitting = $state(false);
 </script>
 
 <section class="mx-auto h-screen-nav w-full max-w-3xl space-y-8 px-2 py-8">
@@ -27,7 +29,7 @@
 		<form
 			action="/account/delete?/deleteUserWithSeshConf"
 			method="post"
-			on:submit={() => (submitting = true)}
+			onsubmit={() => (submitting = true)}
 			class="w-full sm:w-96"
 		>
 			<label class="input-label" for="email">Type your email to confirm</label>

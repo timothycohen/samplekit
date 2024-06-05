@@ -7,17 +7,18 @@
 	import { useNavService } from '$routes/shop/services';
 	import { handleToPath, type MenuWithPath } from '$routes/shop/utils';
 
-	export let menu: MenuWithPath;
-	export let collections: { title: string; path: string }[] | undefined = undefined;
+	interface Props { menu: MenuWithPath, collections?: { title: string; path: string }[] | undefined }
+
+	let { menu, collections = undefined }: Props = $props();
 
 	const {
 		desktopNav,
 		drawerProps: {
 			elements: { trigger },
 		},
-	} = useNavService();
+	} = $state(useNavService());
 
-	const limitedMenu = menu.filter((m) => m.title === 'Catalog');
+	const limitedMenu = $state(menu.filter((m) => m.title === 'Catalog'));
 </script>
 
 <nav

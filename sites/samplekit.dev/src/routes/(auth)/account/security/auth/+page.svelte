@@ -17,17 +17,19 @@
 	} from '$lib/styles/icons';
 	import UpdatePassForm from './UpdatePassForm.svelte';
 
-	export let data;
+	interface Props { data: any }
 
-	$: ({ method, mfasEnabled, mfaCount } = data);
-	$: authMethods = [
+	let { data }: Props = $props();
+
+	let { method, mfasEnabled, mfaCount } = $derived(data);
+	let authMethods = $derived([
 		{ AuthIcon: Fingerprint, enabled: mfasEnabled.passkeys, next: 'passkeys' as DB.MFAs.Kind },
 		{ AuthIcon: ShieldEllipsis, enabled: mfasEnabled.authenticator, next: 'authenticator' as DB.MFAs.Kind },
 		// { AuthIcon: MessageCircle, enabled: mfasEnabled.sms, next: 'sms' as DB.MFAs.Kind },
-	];
+	]);
 
-	let signingOut: 'current' | 'all' | false = false;
-	let editingPassword = false;
+	let signingOut: 'current' | 'all' | false = $state(false);
+	let editingPassword = $state(false);
 
 	const {
 		elements: {
@@ -42,7 +44,7 @@
 		states: { open: delAccountOpen },
 	} = createDialog({ forceVisible: true });
 
-	let mfaToDelete: DB.MFAs.Kind | false = false;
+	let mfaToDelete: DB.MFAs.Kind | false = $state(false);
 	const {
 		elements: {
 			portalled: delMFAPortalled,
@@ -84,10 +86,10 @@
 			<div class="flex justify-between">
 				<h2 class="mb-2 font-bold">Password</h2>
 				{#if editingPassword}
-					<button on:click={() => (editingPassword = false)}><Eraser class="h-4 w-4" /></button>
+					<button onclick={() => (editingPassword = false)}><Eraser class="h-4 w-4" /></button>
 					<small class="sr-only">Open Password Editor</small>
 				{:else if method === 'pass'}
-					<button on:click={() => (editingPassword = true)}><Pencil class="h-4 w-4" /></button>
+					<button onclick={() => (editingPassword = true)}><Pencil class="h-4 w-4" /></button>
 					<small class="sr-only">Close Password Editor</small>
 				{/if}
 			</div>
@@ -164,7 +166,7 @@
 								<a
 									href="/mfa/update?next=remove-{next}"
 									{...mfaCount === 1 ? $delMFATrigger : {}}
-									on:click={(e) => {
+									onclick={(e) => {
 										if (mfaCount === 1) {
 											e.preventDefault();
 											mfaToDelete = next;
@@ -196,13 +198,13 @@
 
 	<div class="grid grid-cols-1 gap-4 sm:grid-cols-[2fr,_1fr]">
 		<div class="flex flex-wrap justify-between gap-4 sm:justify-start">
-			<form action="/logout?/logoutCurrent" method="post" on:submit={() => (signingOut = 'current')}>
+			<form action="/logout?/logoutCurrent" method="post" onsubmit={() => (signingOut = 'current')}>
 				<button disabled={!!signingOut} type="submit" class="btn btn-accent">
 					<small>{signingOut === 'current' ? 'Signing out...' : 'Sign out'}</small>
 				</button>
 			</form>
 
-			<form action="/logout?/logoutAll" method="post" on:submit={() => (signingOut = 'all')}>
+			<form action="/logout?/logoutAll" method="post" onsubmit={() => (signingOut = 'all')}>
 				<button disabled={!!signingOut} type="submit" class="btn btn-hollow">
 					<small>{signingOut === 'current' ? 'Signing out of all devices...' : 'Sign out of all devices'}</small>
 				</button>
@@ -237,7 +239,7 @@
 
 				<div class="modal-btns-wrapper">
 					<button class="btn btn-hollow" use:melt={$delMFAClose}>Cancel</button>
-					<button on:click={() => goto(`/mfa/update?next=remove-${mfaToDelete}`)} class="btn btn-error">
+					<button onclick={() => goto(`/mfa/update?next=remove-${mfaToDelete}`)} class="btn btn-error">
 						Continue
 					</button>
 				</div>
@@ -263,7 +265,7 @@
 			</div>
 
 			<div class="modal-btns-wrapper">
-				<button on:click={() => goto('/account/delete')} class="btn btn-hollow text-sm">
+				<button onclick={() => goto('/account/delete')} class="btn btn-hollow text-sm">
 					I want to delete my account
 				</button>
 			</div>

@@ -5,20 +5,22 @@
 	import { useCartService } from '$routes/shop/services';
 	import type { CartItem } from '$lib/shop';
 
-	export let props: {
+	interface Props { props: {
 		item: CartItem;
 		type: 'plus' | 'minus';
 		handle?: (res: Awaited<ReturnType<typeof updatingCartItemQty.send>>) => void;
-	};
+	} }
 
-	let localPending = false;
+	let { props }: Props = $props();
+
+	let localPending = $state(false);
 
 	const { cart, updatingCartItemQty, pending } = useCartService();
 </script>
 
 <button
 	type="button"
-	on:click={async () => {
+	onclick={async () => {
 		if ($pending) return;
 		localPending = true;
 		updatingCartItemQty

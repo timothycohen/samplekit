@@ -1,9 +1,19 @@
 <script lang="ts">
-	export let svgClasses = 'h-full w-full bg-accent-9';
-	export let lineColor = '#9C92AC';
-	export let lineOpacity = '0.4';
-	export let width = '6';
-	export let height = '6';
+	interface Props {
+		svgClasses?: string,
+		lineColor?: string,
+		lineOpacity?: string,
+		width?: string,
+		height?: string
+	}
+
+	let {
+		svgClasses = 'h-full w-full bg-accent-9',
+		lineColor = '#9C92AC',
+		lineOpacity = '0.4',
+		width = '6',
+		height = '6'
+	}: Props = $props();
 
 	const id = `pattern-${Math.random().toString(36).substring(2, 15)}`;
 </script>

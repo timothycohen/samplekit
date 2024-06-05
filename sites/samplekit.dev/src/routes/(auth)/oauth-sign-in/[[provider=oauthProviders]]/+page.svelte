@@ -1,7 +1,9 @@
 <script lang="ts">
 	import { indefiniteArticle } from '$lib/utils/common';
 
-	export let data;
+	interface Props { data: any }
+
+	let { data }: Props = $props();
 </script>
 
 <section class="mx-auto h-screen-nav w-full max-w-3xl p-8">

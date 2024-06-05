@@ -1,10 +1,19 @@
 <script lang="ts">
 	import type { TableOfContentsItem, TableOfContentsElements } from '@melt-ui/svelte';
 
-	export let tree: TableOfContentsItem[] = [];
-	export let activeHeadingIdxs: number[];
-	export let item: TableOfContentsElements['item'];
-	export let level = 1;
+	interface Props {
+		tree?: TableOfContentsItem[],
+		activeHeadingIdxs: number[],
+		item: TableOfContentsElements['item'],
+		level?: number
+	}
+
+	let {
+		tree = [],
+		activeHeadingIdxs,
+		item,
+		level = 1
+	}: Props = $props();
 </script>
 
 {#if tree && tree.length}

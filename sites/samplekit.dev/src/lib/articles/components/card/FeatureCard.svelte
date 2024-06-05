@@ -1,7 +1,7 @@
 <script lang="ts">
 	import FeatureCardContent from './FeatureCardContent.svelte';
 
-	export let feature: {
+	interface Props { feature: {
 		imgSm?: string;
 		imgSmGif?: string;
 		title: string;
@@ -10,8 +10,9 @@
 		articleSlug: string;
 		implementationSlug: string;
 		srcCodeHref: string;
-	};
-	export let preview = false;
+	}, preview?: boolean }
+
+	let { feature, preview = false }: Props = $props();
 
 	const borderWrapperClass = `h-full from-accent-5/50 via-accent-6/50 to-accent-9/50 rounded-card p-px dark:bg-gradient-to-t sm:dark:bg-gradient-to-tr`;
 	const innerClass = `overflow-hidden rounded-card from-gray-1 to-gray-2 shadow-2 hover:shadow-3 h-full bg-gradient-to-tr active:shadow-2 transition-shadow duration-500 ease-in hover:duration-200`;

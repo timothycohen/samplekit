@@ -1,8 +1,9 @@
 <script lang="ts">
 	import { keyboard } from '$lib/actions';
 
-	export let mobileNavOpen: boolean;
-	export let toggle: () => void;
+	interface Props { mobileNavOpen: boolean, toggle: () => void }
+
+	let { mobileNavOpen, toggle }: Props = $props();
 
 	// despite mobileNavOpen being reactive, on:click|preventDefault won't update the input:checked css without {#key mobileNavOpen}
 	// Instead, just allow the checkbox to update itself because toggle is infallible and therefore input:checked and {mobileNavOpen} should never be out of sync
@@ -14,7 +15,7 @@
 	type="checkbox"
 	class="peer sr-only"
 	aria-label="toggle navigation menu"
-	on:click={toggle}
+	onclick={toggle}
 	use:keyboard={{
 		Enter: [
 			(e) => {

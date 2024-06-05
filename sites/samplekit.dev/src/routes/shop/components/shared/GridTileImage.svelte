@@ -1,9 +1,10 @@
 <script lang="ts">
 	import Label from './Label.svelte';
 
-	export let isInteractive = true;
-	export let active = false;
-	export let label:
+	interface Props {
+		isInteractive?: boolean,
+		active?: boolean,
+		label?: 
 		| {
 				title: string;
 				position?: 'bottom' | 'center';
@@ -12,13 +13,26 @@
 					currencyCode: string;
 				};
 		  }
-		| undefined = undefined;
-	export let images: string[];
-	export let alt: string;
-	export let sizes: string | undefined = '';
-	export let loading: 'lazy' | 'eager' | undefined = undefined;
-	export let height: number | undefined = undefined;
-	export let width: number | undefined = undefined;
+		| undefined,
+		images: string[],
+		alt: string,
+		sizes?: string | undefined,
+		loading?: 'lazy' | 'eager' | undefined,
+		height?: number | undefined,
+		width?: number | undefined
+	}
+
+	let {
+		isInteractive = true,
+		active = false,
+		label = undefined,
+		images,
+		alt,
+		sizes = '',
+		loading = undefined,
+		height = undefined,
+		width = undefined
+	}: Props = $props();
 </script>
 
 <div

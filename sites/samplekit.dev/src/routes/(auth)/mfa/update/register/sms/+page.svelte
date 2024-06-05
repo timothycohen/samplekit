@@ -3,7 +3,9 @@
 	page; // https://github.com/sveltejs/eslint-plugin-svelte/issues/652#issuecomment-2087008855
 	import { VerifyCodeForm, PhoneInput } from '$routes/(auth)/components';
 
-	export let data;
+	interface Props { data: any }
+
+	let { data }: Props = $props();
 </script>
 
 <div class="space-y-8 rounded-card p-8 shadow-3">

@@ -2,15 +2,26 @@
 	import { clickOn } from '$lib/actions';
 	import { BookOpenText, Boxes, Code } from '$lib/styles/icons';
 
-	export let feature: {
+	interface Props {
+		feature: {
 		title: string;
 		description: string;
 		tags?: string[] | null;
 		articleSlug: string;
 		implementationSlug: string;
 		srcCodeHref: string;
-	};
-	export let tabindex: 0 | -1 = 0;
+	},
+		tabindex?: 0 | -1,
+		onclick?: (event: any) => void,
+		onkeydown?: (event: any) => void
+	}
+
+	let {
+		feature,
+		tabindex = 0,
+		onclick,
+		onkeydown
+	}: Props = $props();
 </script>
 
 <div class="flex flex-1 flex-col p-8">
@@ -30,8 +41,8 @@
 <div class="grid grid-cols-3">
 	<a
 		{tabindex}
-		on:click|stopPropagation
-		on:keydown|stopPropagation
+		{onclick}
+		{onkeydown}
 		use:clickOn={['Space']}
 		class="z-10 flex justify-center py-3 text-gray-11 outline-1 -outline-offset-1 hover:bg-accent-5/80 hover:text-gray-12 focus:bg-accent-4/80 focus:text-gray-12"
 		class:rounded-bl-card={true}
@@ -43,8 +54,8 @@
 	</a>
 	<a
 		{tabindex}
-		on:click|stopPropagation
-		on:keydown|stopPropagation
+		{onclick}
+		{onkeydown}
 		use:clickOn={['Space']}
 		class="z-10 flex justify-center py-3 text-gray-11 outline-1 -outline-offset-1 hover:bg-accent-5/80 hover:text-gray-12 focus:bg-accent-4/80 focus:text-gray-12"
 		href={feature.implementationSlug}
@@ -55,8 +66,8 @@
 	</a>
 	<a
 		{tabindex}
-		on:click|stopPropagation
-		on:keydown|stopPropagation
+		{onclick}
+		{onkeydown}
 		use:clickOn={['Space']}
 		class="z-10 flex justify-center py-3 text-gray-11 outline-1 -outline-offset-1 hover:bg-accent-5/80 hover:text-gray-12 focus:bg-accent-4/80 focus:text-gray-12"
 		class:rounded-br-card={true}

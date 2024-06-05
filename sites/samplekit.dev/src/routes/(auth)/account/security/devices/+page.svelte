@@ -3,9 +3,11 @@
 	page; // https://github.com/sveltejs/eslint-plugin-svelte/issues/652#issuecomment-2087008855
 	import { Trash2, BadgeCheck, Loader2 } from '$lib/styles/icons';
 
-	export let data;
+	interface Props { data: any }
 
-	let submitting: string | false = false;
+	let { data }: Props = $props();
+
+	let submitting: string | false = $state(false);
 </script>
 
 <section class="space-y-6">
@@ -21,7 +23,7 @@
 					{/if}
 				</div>
 			{:else}
-				<form action="/logout?/logoutSingle" method="post" on:submit={() => (submitting = 'all')}>
+				<form action="/logout?/logoutSingle" method="post" onsubmit={() => (submitting = 'all')}>
 					<input type="hidden" value={$page.url.pathname} name="redirect_path" />
 					<input type="hidden" value={session.id} name="session_id" />
 					<button disabled={!!submitting} type="submit" class="btn-ghost absolute right-4 top-4 border-none">
@@ -59,13 +61,13 @@
 	</div>
 
 	<div class="flex flex-wrap justify-between gap-4">
-		<form action="/logout?/logoutCurrent" method="post" on:submit={() => (submitting = 'all')}>
+		<form action="/logout?/logoutCurrent" method="post" onsubmit={() => (submitting = 'all')}>
 			<button disabled={!!submitting} type="submit" class="btn btn-accent">
 				<small>{submitting === 'current' ? 'Signout out...' : 'Sign out'}</small>
 			</button>
 		</form>
 
-		<form action="/logout?/logoutAll" method="post" on:submit={() => (submitting = 'all')}>
+		<form action="/logout?/logoutAll" method="post" onsubmit={() => (submitting = 'all')}>
 			<button disabled={!!submitting} type="submit" class="btn btn-hollow">
 				<small>{submitting === 'current' ? 'Signing out of all devices...' : 'Sign out of all devices'}</small>
 			</button>

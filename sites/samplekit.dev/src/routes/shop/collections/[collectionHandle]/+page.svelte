@@ -2,7 +2,9 @@
 	import { NoResults, GridTileImage } from '$routes/shop/components';
 	import { handleToPath } from '$routes/shop/utils';
 
-	export let data;
+	interface Props { data: any }
+
+	let { data }: Props = $props();
 </script>
 
 <section class="h-full">

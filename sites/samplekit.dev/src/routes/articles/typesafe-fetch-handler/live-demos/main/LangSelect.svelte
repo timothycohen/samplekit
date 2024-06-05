@@ -11,7 +11,9 @@
 		],
 	};
 	const defaultSelected = langOptions.language![0]!;
-	export let selectedLang = defaultSelected.value.lang;
+	interface Props { selectedLang?: any }
+
+	let { selectedLang = $bindable(defaultSelected.value.lang) }: Props = $props();
 
 	const select = createSelect<{ lang: Lang }>({
 		defaultSelected,

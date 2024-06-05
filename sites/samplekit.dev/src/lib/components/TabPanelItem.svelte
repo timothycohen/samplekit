@@ -1,9 +1,11 @@
 <script lang="ts">
 	import type { NoPropComponent } from '$lib/utils/common';
 
-	export let panel:
+	interface Props { panel: 
 		| { rawHTML: string | Promise<string>; component?: never }
-		| { rawHTML?: never; component: NoPropComponent | Promise<NoPropComponent> };
+		| { rawHTML?: never; component: NoPropComponent | Promise<NoPropComponent> } }
+
+	let { panel }: Props = $props();
 </script>
 
 {#await Promise.all([panel.component, panel.rawHTML]) then [component, rawHTML]}

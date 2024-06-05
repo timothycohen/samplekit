@@ -1,21 +1,36 @@
 <script lang="ts">
-	// svg from https://toggles.dev/
+	// svg fro = $state()m = $state() = $state() https://toggles.dev/
 	import { tick } from 'svelte';
 	import { clickOutside, keyboard, windowEscape } from '$lib/actions';
 	import { Check, MonitorSmartphone, Moon, Sun } from '$lib/styles/icons';
 
-	export let modeApplied: 'day' | 'night';
-	export let schemeSystem: 'dark' | 'light';
-	export let mode: 'fixed_night' | 'fixed_day' | 'sync_system';
-	export let duration = 500;
-	export let version: 'horizon' | 'expand' = 'expand';
-	export let onModeChange: (scheme: 'fixed_night' | 'fixed_day' | 'sync_system') => void;
-	export let dayName: string | undefined = undefined;
-	export let nightName: string | undefined = undefined;
+	interface Props {
+		modeApplied: 'day' | 'night',
+		schemeSystem: 'dark' | 'light',
+		mode: 'fixed_night' | 'fixed_day' | 'sync_system',
+		duration?: number,
+		version?: 'horizon' | 'expand',
+		onModeChange: (scheme: 'fixed_night' | 'fixed_day' | 'sync_system') => void,
+		dayName?: string | undefined,
+		nightName?: string | undefined,
+		children?: import('svelte').Snippet<[any]>
+	}
 
-	$: checked = modeApplied === 'night';
+	let {
+		modeApplied,
+		schemeSystem,
+		mode,
+		duration = 500,
+		version = 'expand',
+		onModeChange,
+		dayName = undefined,
+		nightName = undefined,
+		children
+	}: Props = $props();
 
-	let dropdownShown = false;
+	let checked = $derived(modeApplied === 'night');
+
+	let dropdownShown = $state(false);
 
 	const slotUsed = $$slots.default;
 
@@ -67,7 +82,7 @@
 <div
 	class="relative"
 	bind:this={wrapperEl}
-	on:focusout={(e) => {
+	onfocusout={(e) => {
 		if (!(e.relatedTarget instanceof Node) || wrapperEl.contains(e.relatedTarget)) return;
 		closeDropdown();
 	}}
@@ -81,7 +96,7 @@
 		type="checkbox"
 		class="peer sr-only"
 		bind:this={toggleEl}
-		on:click={toggleDropdown}
+		onclick={toggleDropdown}
 		use:keyboard={{
 			ArrowDown: [(e) => showDropdown(e, 'focus')],
 			Enter: [(e) => toggleDropdown(e, 'focus')],
@@ -130,7 +145,7 @@
 				tabindex="-1"
 				class="flex w-full items-center gap-3 p-4 outline-1 -outline-offset-1 hover:bg-gray-4 focus-visible:bg-gray-4"
 				class:rounded-t-card={true}
-				on:click={() => change('fixed_day')}
+				onclick={() => change('fixed_day')}
 				use:keyboard={{ ArrowUp: [prev], ArrowDown: [next] }}
 			>
 				<Sun class="h-5" />
@@ -145,7 +160,7 @@
 			<button
 				tabindex="-1"
 				class="flex w-full items-center gap-3 p-4 outline-1 -outline-offset-1 hover:bg-gray-4 focus-visible:bg-gray-4"
-				on:click={() => change('fixed_night')}
+				onclick={() => change('fixed_night')}
 				use:keyboard={{ ArrowUp: [prev], ArrowDown: [next] }}
 			>
 				<Moon class="h-5" />
@@ -161,7 +176,7 @@
 				tabindex="-1"
 				class="flex w-full items-center gap-3 p-4 outline-1 -outline-offset-1 hover:bg-gray-4 focus-visible:bg-gray-4"
 				class:rounded-b-card={!slotUsed}
-				on:click={() => change('sync_system')}
+				onclick={() => change('sync_system')}
 				use:keyboard={{ ArrowUp: [prev], ArrowDown: [next] }}
 			>
 				<MonitorSmartphone class="h-5" />
@@ -171,7 +186,7 @@
 					<Check class="ml-auto text-success-9" />
 				{/if}
 			</button>
-			<slot {prev} {next} />
+			{@render children?.({ prev, next, })}
 		</div>
 	{/if}
 </div>

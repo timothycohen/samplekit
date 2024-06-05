@@ -5,10 +5,10 @@
 <script lang="ts">
 	import type { SVGAttributes } from 'svelte/elements';
 
-	export let icon: IconName;
-	let classes: string | null | undefined = 'h-6 w-6';
-	export { classes as class };
-	export let attrs: Omit<SVGAttributes<SVGElement>, 'class'> = {};
+	
+	interface Props { icon: IconName, class?: string | null | undefined, attrs?: Omit<SVGAttributes<SVGElement>, 'class'> }
+
+	let { icon, class: classes = 'h-6 w-6', attrs = {} }: Props = $props();
 </script>
 
 {#if icon === 'google'}

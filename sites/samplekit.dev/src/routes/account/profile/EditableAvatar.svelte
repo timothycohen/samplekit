@@ -3,7 +3,9 @@
 	import { Avatar } from '$lib/components';
 	import AvatarEditor from './AvatarEditor.svelte';
 
-	export let user: DB.User;
+	interface Props { user: DB.User }
+
+	let { user = $bindable() }: Props = $props();
 
 	const updateAvatar = (img: DB.User['avatar']) => {
 		user.avatar = img;

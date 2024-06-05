@@ -11,7 +11,7 @@
 	import img_smoky from '$routes/articles/image-uploader/assets/smoky-400w.webp';
 	import type { CropControllerState } from '$lib/cloudStorage/client';
 
-	let avatar: DB.User['avatar'] = null;
+	let avatar: DB.User['avatar'] = $state(null);
 
 	const rotation = tweened(0, { duration: 500, easing: cubicOut });
 	const scale = tweened(1, { duration: 500, easing: cubicOut });
@@ -131,8 +131,8 @@
 
 <p class="my-4 text-center text-lg">
 	<a class="link" href="/login">Sign in</a> to use the demo or view
-	<button class="btn btn-accent inline-block px-2 py-1" on:click={() => happyPath()}> Happy Path Mock </button>
-	<button class="btn btn-accent inline-block px-2 py-1" on:click={() => moderationErrPath()}>
+	<button class="btn btn-accent inline-block px-2 py-1" onclick={() => happyPath()}> Happy Path Mock </button>
+	<button class="btn btn-accent inline-block px-2 py-1" onclick={() => moderationErrPath()}>
 		Moderation Error Mock
 	</button>
 </p>

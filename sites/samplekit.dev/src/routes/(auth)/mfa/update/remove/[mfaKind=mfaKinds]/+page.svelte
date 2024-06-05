@@ -1,7 +1,9 @@
 <script lang="ts">
 	import { mfaLabels } from '$lib/auth/client';
 
-	export let data;
+	interface Props { data: any }
+
+	let { data }: Props = $props();
 </script>
 
 <div class="space-y-8 rounded-card p-8 shadow-3">

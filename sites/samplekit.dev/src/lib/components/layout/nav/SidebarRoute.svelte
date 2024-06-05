@@ -1,17 +1,19 @@
 <script lang="ts">
-	import { page } from '$app/stores';
+	import { p = $state()age } from '$app/stores';
 	page; // https://github.com/sveltejs/eslint-plugin-svelte/issues/652#issuecomment-2087008855
 	import { keyboard } from '$lib/actions';
 	import { ChevronUp } from '$lib/styles/icons';
 	import type { RouteLeaf, RouteGroup } from './routes';
 
-	export let route: RouteLeaf | RouteGroup;
+	interface Props { route: RouteLeaf | RouteGroup }
+
+	let { route }: Props = $props();
 
 	const isGroup = (route: RouteLeaf | RouteGroup): route is RouteGroup => 'groupPath' in route;
 
-	$: active = $page.url.pathname.startsWith(route.path ?? route.groupPath);
-	$: href = route.path ?? route.children[0]?.path;
-	$: text = route.text ?? route.groupText;
+	let active = $derived($page.url.pathname.startsWith(route.path ?? route.groupPath));
+	let href = $derived(route.path ?? route.children[0]?.path);
+	let text = $derived(route.text ?? route.groupText);
 
 	let inputEl: HTMLInputElement;
 </script>

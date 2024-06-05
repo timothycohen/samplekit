@@ -4,16 +4,25 @@
 
 	type Option = { label: string; value: SvelteGeneric };
 
-	export let options: Record<string, Array<Option>> & { default?: Array<Option> };
-	export let title = '';
-	export let ariaLabel = title;
-	export let select: ReturnType<typeof createSelect<SvelteGeneric>>;
+	interface Props {
+		options: Record<string, Array<Option>> & { default?: Array<Option> },
+		title?: string,
+		ariaLabel?: any,
+		select: ReturnType<typeof createSelect<SvelteGeneric>>
+	}
 
-	$: ({
+	let {
+		options,
+		title = '',
+		ariaLabel = title,
+		select
+	}: Props = $props();
+
+	let {
 		elements: { trigger, menu, option, group, groupLabel },
 		states: { open, selected },
 		helpers: { isSelected },
-	} = select);
+	} = $derived(select);
 </script>
 
 <button

@@ -5,10 +5,12 @@
 	import { useCartService } from '$routes/shop/services';
 	import type { Result } from '$lib/utils/common';
 
-	export let props: {
+	interface Props { props: {
 		selectedVariant?: { id: string; availableForSale: boolean };
 		handle?: (res: Result<Result.Success>) => void;
-	};
+	} }
+
+	let { props }: Props = $props();
 
 	const {
 		cart,
@@ -36,7 +38,7 @@
 {:else}
 	<button
 		type="button"
-		on:click={async () => {
+		onclick={async () => {
 			if ($pending || !props.selectedVariant) return;
 			addingCartItem.send({ id: props.selectedVariant.id }).then((res) => {
 				if (props.handle) return props.handle(res);

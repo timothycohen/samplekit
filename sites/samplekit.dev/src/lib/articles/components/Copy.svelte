@@ -1,9 +1,11 @@
 <script lang="ts">
 	import { fade } from 'svelte/transition';
 
-	export let getTextContent: () => string | null | undefined;
+	interface Props { getTextContent: () => string | null | undefined }
 
-	let copied = false;
+	let { getTextContent }: Props = $props();
+
+	let copied = $state(false);
 
 	function copyToClipboard() {
 		const textContent = getTextContent?.();
@@ -15,7 +17,7 @@
 </script>
 
 <!-- lucide-svelte Clipboard -->
-<button class="grid h-full w-full place-content-center" on:click={copyToClipboard}>
+<button class="grid h-full w-full place-content-center" onclick={copyToClipboard}>
 	<span class="sr-only">{copied ? 'Copied' : 'Copy'}</span>
 	<svg
 		xmlns="http://www.w3.org/2000/svg"

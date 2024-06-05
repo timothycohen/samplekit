@@ -1,5 +1,7 @@
 <script lang="ts">
-	export let data;
+	interface Props { data: any }
+
+	let { data }: Props = $props();
 	import Page from './Page.svx';
 </script>
 

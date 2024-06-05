@@ -1,18 +1,26 @@
 <script lang="ts">
+	import { run } from 'svelte/legacy';
+
 	import { InputMessage } from '$lib/components';
 	import { Loader2 } from '$lib/styles/icons';
 	import { superForm, type SuperValidated } from '$lib/superforms/client';
 	import { PassInput } from '$routes/(auth)/components';
 	import type { updatePassSchema } from '$routes/(auth)/validators';
 
-	export let updatePassForm: SuperValidated<typeof updatePassSchema>;
-	export let email: string;
-	export let onCancel: () => void;
-	export let onSuccess: () => void;
+	interface Props {
+		updatePassForm: SuperValidated<typeof updatePassSchema>;
+		email: string;
+		onCancel: () => void;
+		onSuccess: () => void;
+	}
 
-	const { form, errors, constraints, enhance, message, submitting } = superForm(updatePassForm, {});
+	let { updatePassForm, email, onCancel, onSuccess }: Props = $props();
 
-	$: if ($message?.success) onSuccess();
+	const { form, errors, constraints, enhance, message, submitting } = $state(superForm(updatePassForm, {}));
+
+	run(() => {
+		if ($message?.success) onSuccess();
+	});
 </script>
 
 <form action="/account/security/auth?/updatePassFromCurrPass" method="post" use:enhance>
@@ -64,7 +72,7 @@
 	<div class="input-subtext text-error-9">{$errors.confirmation ?? ''}</div>
 
 	<div class="flex gap-4">
-		<button class="btn btn-hollow flex-grow" type="button" on:click={onCancel}> Cancel </button>
+		<button class="btn btn-hollow flex-grow" type="button" onclick={onCancel}> Cancel </button>
 
 		<button class="btn btn-accent" disabled={$submitting} type="submit">
 			{#if $submitting}

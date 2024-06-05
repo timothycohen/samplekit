@@ -1,4 +1,7 @@
 <script lang="ts">
+	interface Props { children?: import('svelte').Snippet }
+
+	let { children }: Props = $props();
 	import { Turnstile, createTurnstileService, useTurnstileService } from '$lib/botProtection/turnstile/client';
 	import { Logo } from '$lib/components';
 	import { DotPattern } from '$routes/(auth)/(login)/components';
@@ -24,7 +27,7 @@
 					<Logo link />
 				</div>
 
-				<slot />
+				{@render children?.()}
 
 				<div class="mb-4 mt-2 h-[65px] w-full">
 					<Turnstile {turnstile} />

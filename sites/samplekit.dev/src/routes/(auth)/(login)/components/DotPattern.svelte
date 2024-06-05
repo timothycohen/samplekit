@@ -1,5 +1,7 @@
 <script lang="ts">
-	export let pattern: { id: string; transform: string };
+	interface Props { pattern: { id: string; transform: string } }
+
+	let { pattern }: Props = $props();
 </script>
 
 <!-- https://componentland.com/component/login-page-1 -->

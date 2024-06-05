@@ -2,7 +2,9 @@
 	import { mfaLabels } from '$lib/auth/client';
 	import { Verifier } from '$routes/(auth)/components';
 
-	export let data;
+	interface Props { data: any, children?: import('svelte').Snippet }
+
+	let { data, children }: Props = $props();
 </script>
 
 <section class="mx-auto h-screen-nav w-full max-w-3xl space-y-8 px-2">
@@ -10,7 +12,7 @@
 
 	<Verifier veri={data.veri} />
 
-	<slot />
+	{@render children?.()}
 
 	<div class="h-px"></div>
 </section>

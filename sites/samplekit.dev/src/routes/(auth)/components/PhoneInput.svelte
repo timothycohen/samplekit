@@ -4,8 +4,9 @@
 	import { superForm, zodClient, type SuperValidated } from '$lib/superforms/client';
 	import { phoneNumberSchema } from '$routes/(auth)/validators';
 
-	export let phoneNumberForm: SuperValidated<typeof phoneNumberSchema>;
-	export let action: App.Form.Action;
+	interface Props { phoneNumberForm: SuperValidated<typeof phoneNumberSchema>, action: App.Form.Action, children?: import('svelte').Snippet }
+
+	let { phoneNumberForm, action, children }: Props = $props();
 
 	const { form, errors, enhance, submitting, message } = superForm(phoneNumberForm, {
 		validators: zodClient(phoneNumberSchema),
@@ -13,7 +14,7 @@
 </script>
 
 <form {action} method="post" use:enhance>
-	<slot />
+	{@render children?.()}
 	<label for="tel" class="input-label">Phone Number</label>
 	<input
 		bind:value={$form.phone_number}

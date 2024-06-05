@@ -2,8 +2,9 @@
 	import { Icon } from '$lib/components';
 	import { VerifyPWForm } from '$routes/(auth)/components';
 
-	export let data;
-	export let disabled = false;
+	interface Props { data: any, disabled?: boolean }
+
+	let { data, disabled = $bindable(false) }: Props = $props();
 </script>
 
 <section class="mx-auto h-screen-nav w-full max-w-3xl space-y-8 p-8">

@@ -1,37 +1,44 @@
 <script lang="ts">
+	import { run } from 'svelte/legacy';
+
 	import { slide } from 'svelte/transition';
 	import { Eraser, Loader2, Pencil } from '$lib/styles/icons';
 	import { superForm, zodClient } from '$lib/superforms/client';
 	import { nameSchema } from '$routes/(auth)/validators';
 	import type { SuperValidated } from '$lib/superforms/client';
 
-	export let user: DB.User;
-	export let nameForm: SuperValidated<typeof nameSchema>;
+	interface Props { user: DB.User, nameForm: SuperValidated<typeof nameSchema> }
+
+	let { user, nameForm }: Props = $props();
 
 	const { form, errors, constraints, enhance, message, submitting, tainted } = superForm(nameForm, {
 		taintedMessage: true,
 		validators: zodClient(nameSchema),
 	});
 
-	let editingName = false;
+	let editingName = $state(false);
 
-	$: noChanges = user.givenName === $form.given_name && user.familyName === $form.family_name;
-	$: if (user.givenName || user.familyName) editingName = false; // close form after server resolves new user data
-	$: if (!editingName && $tainted) {
-		$tainted.family_name = false;
-		$tainted.given_name = false;
-	}
+	let noChanges = $derived(user.givenName === $form.given_name && user.familyName === $form.family_name);
+	run(() => {
+		if (user.givenName || user.familyName) editingName = false;
+	}); // close form after server resolves new user data
+	run(() => {
+		if (!editingName && $tainted) {
+			$tainted.family_name = false;
+			$tainted.given_name = false;
+		}
+	});
 </script>
 
 <div class="my-4 text-center text-xl font-bold leading-8">
 	{#if editingName}
 		{$form.given_name}
 		{$form.family_name}
-		<button disabled={$submitting} on:click={() => (editingName = false)}><Eraser class="h-4 w-4" /></button>
+		<button disabled={$submitting} onclick={() => (editingName = false)}><Eraser class="h-4 w-4" /></button>
 	{:else}
 		{user.givenName}
 		{user.familyName}
-		<button disabled={$submitting} on:click={() => (editingName = true)}><Pencil class="h-4 w-4" /></button>
+		<button disabled={$submitting} onclick={() => (editingName = true)}><Pencil class="h-4 w-4" /></button>
 	{/if}
 </div>
 

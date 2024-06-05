@@ -1,4 +1,7 @@
 <script lang="ts">
+	interface Props { children?: import('svelte').Snippet }
+
+	let { children }: Props = $props();
 	import '../app.css';
 	import { onMount } from 'svelte';
 	import { page } from '$app/stores';
@@ -20,7 +23,7 @@
 
 <div class="{$page.data.layout.showHeader ? 'min-h-screen-nav' : 'min-h-screen'} relative flex flex-col">
 	<main class="flex min-h-full flex-1 flex-col">
-		<slot />
+		{@render children?.()}
 	</main>
 
 	{#if $page.data.layout.showFooter}

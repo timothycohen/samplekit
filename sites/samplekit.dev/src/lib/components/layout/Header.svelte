@@ -22,9 +22,9 @@
 		getHeaderEl: () => (document.querySelector('#header') as HTMLElement) || null,
 	});
 
-	$: mobileNavOpen = mobileNavController.isOpen;
-	$: desktopNavPages = getDesktopNavRoutes(!!$page.data['user']);
-	$: mobileNavPages = getMobileNavRoutes(!!$page.data['user']);
+	let mobileNavOpen = $derived(mobileNavController.isOpen);
+	let desktopNavPages = $derived(getDesktopNavRoutes(!!$page.data['user']));
+	let mobileNavPages = $derived(getMobileNavRoutes(!!$page.data['user']));
 
 	onMount(() => {
 		mobileNavController.listen();

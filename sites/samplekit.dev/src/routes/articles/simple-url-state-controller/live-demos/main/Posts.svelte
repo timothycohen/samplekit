@@ -1,6 +1,7 @@
 <script lang="ts">
-	export let posts: { author: string; date: Date; message: string; avatar: number }[];
-	export let resetFilters: () => void;
+	interface Props { posts: { author: string; date: Date; message: string; avatar: number }[], resetFilters: () => void }
+
+	let { posts, resetFilters }: Props = $props();
 </script>
 
 <div class="flex flex-wrap justify-around gap-4 @container">
@@ -22,7 +23,7 @@
 	{:else}
 		<div class="my-8 w-full space-y-4">
 			<div class="w-full alert-wrapper alert-wrapper-warning">No messages found.</div>
-			<button class="btn btn-hollow" on:click={resetFilters}>Clear All Filters</button>
+			<button class="btn btn-hollow" onclick={resetFilters}>Clear All Filters</button>
 		</div>
 	{/each}
 </div>

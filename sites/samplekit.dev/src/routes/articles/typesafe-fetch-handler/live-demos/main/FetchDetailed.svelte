@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { fly } from 'svelte/transition';
+	imp = $state()ort { fly } from 'svelte/transition';
 	import { Switch } from '$lib/components';
 	import { LoadingDots } from '$lib/components';
 	import { createTempStore } from '$lib/stores';
@@ -10,11 +10,11 @@
 	const gettingRandomColor = getRandomColor();
 	const { delayed, timeout } = gettingRandomColor;
 
-	let currentColor = 'Yellow';
-	let simulateDelay = false;
-	let time = '';
-	let abortController: AbortController | null = null;
-	let res: null | Awaited<ReturnType<(typeof gettingRandomColor)['send']>> = null;
+	let currentColor = $state('Yellow');
+	let simulateDelay = $state(false);
+	let time = $state('');
+	let abortController: AbortController | null = $state(null);
+	let res: null | Awaited<ReturnType<(typeof gettingRandomColor)['send']>> = $state(null);
 	let selectedLang: Lang;
 
 	const success = createTempStore<true>({ duration: 1500 });
@@ -43,7 +43,7 @@
 	<div class="grid w-72 items-center gap-4">
 		<LangSelect bind:selectedLang />
 
-		<button class="btn btn-accent transition-colors {$delayed ? 'cursor-not-allowed' : ''}" on:click={getColor}>
+		<button class="btn btn-accent transition-colors {$delayed ? 'cursor-not-allowed' : ''}" onclick={getColor}>
 			{#if $timeout}
 				<span class="grid w-[1.625rem] place-content-center" aria-label="Taking longer than usual.">
 					<LoadingDots class="bg-accent-1" wrapperClasses="mx-0" />
@@ -66,7 +66,7 @@
 			Random Color
 		</button>
 
-		<button class="btn btn-hollow w-full" disabled={!$delayed} on:click={() => abortController?.abort()}>
+		<button class="btn btn-hollow w-full" disabled={!$delayed} onclick={() => abortController?.abort()}>
 			Abort Request
 		</button>
 

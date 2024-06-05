@@ -4,9 +4,10 @@
 	import { pluralize } from '$lib/utils/common/language.js';
 	import { PassInput } from '$routes/(auth)/components';
 
-	let at = '';
-	export let data;
-	export let form;
+	let at = $state('');
+	interface Props { data: any, form: any }
+
+	let { data, form }: Props = $props();
 </script>
 
 <div class="grid place-content-center page">

@@ -40,7 +40,9 @@
 		}
 	});
 
-	export let data;
+	interface Props { data: any, children?: import('svelte').Snippet }
+
+	let { data, children }: Props = $props();
 </script>
 
 <div class="full">
@@ -72,7 +74,7 @@
 	<Sidebar collections={data.collections} />
 	<Cart />
 
-	<slot />
+	{@render children?.()}
 </div>
 
 <footer class="mt-8">

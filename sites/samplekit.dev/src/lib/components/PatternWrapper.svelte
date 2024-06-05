@@ -5,7 +5,9 @@
 <script lang="ts">
 	import DiagonalLines from './DiagonalLines.svelte';
 
-	export let opts: WrapperProps | undefined = undefined;
+	interface Props { opts?: WrapperProps | undefined, children?: import('svelte').Snippet }
+
+	let { opts = undefined, children }: Props = $props();
 </script>
 
 <div
@@ -23,6 +25,6 @@
 	{/if}
 
 	<div class="aspect-video h-full flex-1 {opts?.center ? 'grid place-content-center' : ''}">
-		<slot />
+		{@render children?.()}
 	</div>
 </div>

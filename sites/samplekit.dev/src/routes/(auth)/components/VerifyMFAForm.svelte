@@ -2,14 +2,26 @@
 	import { MFASelector, SendSMSTokenForm, VerifyCodeForm, type VerifierProps } from '$routes/(auth)/components';
 	import PasskeyChallenge from './PasskeyChallenge.svelte';
 
-	export let mfa: VerifierProps['mfa'];
-	export let passkeyAction: 'login' | 'confirmUser';
-	export let verifySMSTokenAction: App.Form.Action;
-	export let verifyAuthenticatorTokenAction: App.Form.Action;
-	export let onPasskeyFinished: () => void;
+	interface Props {
+		mfa: VerifierProps['mfa'],
+		passkeyAction: 'login' | 'confirmUser',
+		verifySMSTokenAction: App.Form.Action,
+		verifyAuthenticatorTokenAction: App.Form.Action,
+		onPasskeyFinished: () => void,
+		children?: import('svelte').Snippet
+	}
 
-	let selectedMFAMethod: DB.MFAs.Kind | '' = '';
-	let passkeyError = '';
+	let {
+		mfa,
+		passkeyAction,
+		verifySMSTokenAction,
+		verifyAuthenticatorTokenAction,
+		onPasskeyFinished,
+		children
+	}: Props = $props();
+
+	let selectedMFAMethod: DB.MFAs.Kind | '' = $state('');
+	let passkeyError = $state('');
 </script>
 
 <section class="mx-auto max-w-2xl">
@@ -22,7 +34,7 @@
 				passkeyError = '';
 			}}
 		>
-			<slot />
+			{@render children?.()}
 		</MFASelector>
 	</div>
 

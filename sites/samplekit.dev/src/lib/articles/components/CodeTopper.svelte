@@ -1,15 +1,25 @@
 <script lang="ts">
-	import { useCollapsedService } from '$lib/components/collapsedService';
+	import { u = $state()seCollapsedService } from '$lib/components/collapsedService';
 	import { ChevronUp } from '$lib/styles/icons';
 	import Copy from './Copy.svelte';
 
-	export let title: string;
-	export let copyable = true;
-	export let initialCollapsed = false;
+	interface Props {
+		title: string,
+		copyable?: boolean,
+		initialCollapsed?: boolean,
+		children?: import('svelte').Snippet
+	}
+
+	let {
+		title,
+		copyable = true,
+		initialCollapsed = false,
+		children
+	}: Props = $props();
 
 	const collapsible = !!$$slots.default;
-	let collapsed = collapsible ? initialCollapsed : false;
-	$: showCopy = collapsed ? false : copyable;
+	let collapsed = $state(collapsible ? initialCollapsed : false);
+	let showCopy = $derived(collapsed ? false : copyable);
 
 	let codeTopperEl: HTMLElement;
 
@@ -43,7 +53,7 @@
 		{/if}
 		{#if collapsible}
 			<button
-				on:click={() => (collapsed = !collapsed)}
+				onclick={() => (collapsed = !collapsed)}
 				class="grid min-h-10 w-10 place-content-center rounded-tr-card bg-gray-3 text-gray-10 -outline-offset-1 hover:bg-gray-4"
 			>
 				<div class="transition-transform {collapsed ? 'rotate-180' : ''}">
@@ -55,5 +65,5 @@
 </div>
 
 {#if !collapsed}
-	<slot />
+	{@render children?.()}
 {/if}

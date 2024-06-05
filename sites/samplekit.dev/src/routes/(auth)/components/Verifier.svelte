@@ -27,7 +27,9 @@
 <script lang="ts">
 	import { VerifyEmailForm, VerifyMFAForm, VerifyPWForm } from '$routes/(auth)/components';
 
-	export let veri: VerifierProps;
+	interface Props { veri: VerifierProps }
+
+	let { veri }: Props = $props();
 </script>
 
 <div class="space-y-8 rounded-card p-8 shadow-3">

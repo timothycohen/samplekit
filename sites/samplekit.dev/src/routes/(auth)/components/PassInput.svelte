@@ -2,20 +2,35 @@
 	import { Eye, EyeOff } from '$lib/styles/icons';
 	import type { HTMLInputAttributes } from 'svelte/elements';
 
-	export let name_id: 'password' | 'confirmation' | 'currentPassword';
-	export let autocomplete: 'new-password' | 'current-password';
-	export let disabled: boolean;
-	export let attrs: HTMLInputAttributes | undefined;
-	export let onChange: (e: Event & { currentTarget: EventTarget & HTMLInputElement }) => void;
-	export let value: string;
-	export let invalid: boolean;
 
-	export let placeholder = '············';
-	export let required = true;
-	let classes = 'input-text input-text-has-btn';
-	export { classes as class };
+	interface Props {
+		name_id: 'password' | 'confirmation' | 'currentPassword',
+		autocomplete: 'new-password' | 'current-password',
+		disabled: boolean,
+		attrs: HTMLInputAttributes | undefined,
+		onChange: (e: Event & { currentTarget: EventTarget & HTMLInputElement }) => void,
+		value: string,
+		invalid: boolean,
+		placeholder?: string,
+		required?: boolean,
+		class?: string
+	}
 
-	let passElType = 'password';
+	let {
+		name_id,
+		autocomplete,
+		disabled,
+		attrs,
+		onChange,
+		value,
+		invalid,
+		placeholder = '············',
+		required = true,
+		class: classes = 'input-text input-text-has-btn'
+	}: Props = $props();
+	
+
+	let passElType = $state('password');
 	const togglePassVis = () => {
 		passElType = passElType === 'password' ? 'text' : 'password';
 	};
@@ -31,7 +46,7 @@
 <div class="peer relative">
 	<input
 		{value}
-		on:change={(e) => onChange(e)}
+		onchange={(e) => onChange(e)}
 		name={name_id}
 		type={passElType}
 		id={name_id}
@@ -44,7 +59,7 @@
 		{...attrs}
 	/>
 	<div class="input-text-btn-wrapper">
-		<button type="button" class="input-text-btn" on:click={togglePassVis}>
+		<button type="button" class="input-text-btn" onclick={togglePassVis}>
 			{#if passElType === 'password'}<EyeOff class="h-5 w-5" />{:else}<Eye class="h-5 w-5" />{/if}
 		</button>
 	</div>

@@ -3,7 +3,9 @@
 	import { X } from '$lib/styles/icons';
 	import type { SvelteComponent } from 'svelte';
 
-	export let props: {
+
+	interface Props {
+		props?: {
 		Icon?: SvelteComponent;
 		trigger?: {
 			classes?: string;
@@ -21,25 +23,34 @@
 		};
 		title?: string;
 		description?: string;
-	} = {};
+	},
+		dialog?: any,
+		trigger_1?: import('svelte').Snippet,
+		children?: import('svelte').Snippet
+	}
 
-	export let dialog = createDialog({ forceVisible: true });
+	let {
+		props = {},
+		dialog = createDialog({ forceVisible: true }),
+		trigger_1,
+		children
+	}: Props = $props();
 
-	$: ({
+	let {
 		elements: { portalled, overlay, content, title, description, close: closeEl, trigger },
 		states: { open },
-	} = dialog);
+	} = $derived(dialog);
 
 	const close = () => open.set(false);
 </script>
 
-<slot name="trigger">
+{#if trigger_1}{@render trigger_1()}{:else}
 	{#if props.trigger?.text}
 		<button type="button" use:melt={$trigger} class={props.trigger.classes ?? 'btn btn-accent'}>
 			{props.trigger.text}
 		</button>
 	{/if}
-</slot>
+{/if}
 
 <div use:melt={$portalled}>
 	{#if $open}
@@ -61,7 +72,7 @@
 				</p>
 			{/if}
 
-			<slot />
+			{@render children?.()}
 
 			{#if props.cancel || props.confirm}
 				<div class="modal-btns-wrapper">
@@ -69,7 +80,7 @@
 						{@const { text, classes, handler } = props.cancel}
 						<button
 							type="button"
-							on:click={() => (handler ? handler({ close }) : close())}
+							onclick={() => (handler ? handler({ close }) : close())}
 							class={classes ?? 'btn btn-hollow'}>{text}</button
 						>
 					{/if}
@@ -78,7 +89,7 @@
 						{@const { text, classes, handler } = props.confirm}
 						<button
 							type="button"
-							on:click={() => (handler ? handler({ close }) : close())}
+							onclick={() => (handler ? handler({ close }) : close())}
 							class={classes ?? 'btn btn-accent'}>{text}</button
 						>
 					{/if}

@@ -1,5 +1,8 @@
 <script lang="ts">
+	interface Props { children?: import('svelte').Snippet }
+
+	let { children }: Props = $props();
 	import { AccountLayout } from '$lib/components';
 </script>
 
-<AccountLayout><slot /></AccountLayout>
+<AccountLayout>{@render children?.()}</AccountLayout>

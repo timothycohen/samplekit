@@ -1,4 +1,7 @@
 <script lang="ts">
+	interface Props { children?: import('svelte').Snippet }
+
+	let { children }: Props = $props();
 	import SidebarRoute from './nav/SidebarRoute.svelte';
 	import { accountLayoutRoutes } from './nav/routes';
 </script>
@@ -16,7 +19,7 @@
 
 	<div class="px-page">
 		<div class="mx-auto max-w-4xl">
-			<slot />
+			{@render children?.()}
 		</div>
 	</div>
 </div>

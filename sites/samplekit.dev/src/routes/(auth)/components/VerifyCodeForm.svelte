@@ -4,16 +4,17 @@
 	import { superForm, type SuperValidated } from '$lib/superforms/client';
 	import type { verifyOTPSchema } from '$routes/(auth)/validators';
 
-	export let action: App.Form.Action;
-	export let verifyOTPForm: SuperValidated<typeof verifyOTPSchema>;
+	interface Props { action: App.Form.Action, verifyOTPForm: SuperValidated<typeof verifyOTPSchema>, children?: import('svelte').Snippet }
+
+	let { action, verifyOTPForm, children }: Props = $props();
 
 	const { enhance, message, submitting, delayed } = superForm(verifyOTPForm, { taintedMessage: null });
 
-	let filled = false;
+	let filled = $state(false);
 </script>
 
 <form {action} method="post" use:enhance>
-	<slot />
+	{@render children?.()}
 	<CodeInput onChange={({ filled: f }) => (filled = f)} namePrefix="auth" />
 
 	<button type="submit" disabled={!filled || $submitting} class="btn btn-accent mt-5">

@@ -2,12 +2,21 @@
 	// svg from https://toggles.dev/
 	import { clickOn } from '$lib/actions';
 
-	export let modeApplied: 'day' | 'night';
-	export let duration = 500;
-	export let version: 'horizon' | 'expand' = 'expand';
-	export let onModeChange: (scheme: 'fixed_night' | 'fixed_day') => void;
+	interface Props {
+		modeApplied: 'day' | 'night',
+		duration?: number,
+		version?: 'horizon' | 'expand',
+		onModeChange: (scheme: 'fixed_night' | 'fixed_day') => void
+	}
 
-	$: checked = modeApplied === 'night';
+	let {
+		modeApplied,
+		duration = 500,
+		version = 'expand',
+		onModeChange
+	}: Props = $props();
+
+	let checked = $derived(modeApplied === 'night');
 </script>
 
 <input
@@ -16,7 +25,7 @@
 	{checked}
 	type="checkbox"
 	class="peer sr-only"
-	on:change={() => onModeChange(modeApplied === 'day' ? 'fixed_night' : 'fixed_day')}
+	onchange={() => onModeChange(modeApplied === 'day' ? 'fixed_night' : 'fixed_day')}
 	use:clickOn={['Enter']}
 />
 

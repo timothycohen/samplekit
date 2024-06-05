@@ -2,11 +2,12 @@
 	import { Icon } from '$lib/components';
 	import { Loader2 } from '$lib/styles/icons';
 
-	export let submitGoogle = false;
-	export let persistent: boolean;
+	interface Props { submitGoogle?: boolean, persistent: boolean }
+
+	let { submitGoogle = $bindable(false), persistent }: Props = $props();
 </script>
 
-<form action="/login/google?/passToGoogleOAuth" method="post" on:submit={() => (submitGoogle = true)}>
+<form action="/login/google?/passToGoogleOAuth" method="post" onsubmit={() => (submitGoogle = true)}>
 	<input type="hidden" name="persistent" value={persistent} />
 	<button type="submit" class="btn btn-hollow h-10 w-full py-0" disabled={submitGoogle}>
 		{#if submitGoogle}

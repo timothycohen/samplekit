@@ -7,11 +7,13 @@
 	import { PassInput } from '$routes/(auth)/components';
 	import { createNewPassSchema } from '$routes/(auth)/validators';
 
-	export let data;
+	interface Props { data: any }
 
-	const { form, errors, constraints, enhance, message, submitting } = superForm(data.createNewPassForm, {
+	let { data }: Props = $props();
+
+	const { form, errors, constraints, enhance, message, submitting } = $state(superForm(data.createNewPassForm, {
 		validators: zodClient(createNewPassSchema),
-	});
+	}));
 </script>
 
 <div class="flex min-h-[80vh] items-center justify-center">

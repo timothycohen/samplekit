@@ -2,7 +2,7 @@
 	import { createSlider } from '$lib/components';
 	import { Pause, Play } from '$lib/styles/icons';
 
-	const items: Array<{ title: string; description: string; img: { src: string; alt: string } }> = [];
+	const items: Array<{ title: string; description: string; img: { src: string; alt: string } }> = $state([]);
 
 	const {
 		elements: { root, swiperRoot, accordionRoot, accordionTrigger, playPauseBtn, swiperItem, progress },

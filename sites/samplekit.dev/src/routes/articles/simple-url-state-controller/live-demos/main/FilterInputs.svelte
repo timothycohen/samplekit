@@ -3,10 +3,19 @@
 	import { BadgeIcon } from '$lib/styles/icons';
 	import type { SearchParam, SearchParams } from '$lib/stores';
 
-	export let authorNames: string[];
-	export let content: SearchParam;
-	export let maxDaysOld: SearchParam;
-	export let authors: SearchParams;
+	interface Props {
+		authorNames: string[],
+		content: SearchParam,
+		maxDaysOld: SearchParam,
+		authors: SearchParams
+	}
+
+	let {
+		authorNames,
+		content,
+		maxDaysOld,
+		authors
+	}: Props = $props();
 </script>
 
 <h2 class="text-h4">Filters</h2>
@@ -24,14 +33,14 @@
 		{#each authorNames as author}
 			<button
 				class="btn {$authors.includes(author) ? 'btn-accent' : 'btn-hollow'}"
-				on:click={() => authors.updateOne(author, 'toggle')}
+				onclick={() => authors.updateOne(author, 'toggle')}
 			>
 				{author}
 			</button>
 		{/each}
 		<button
 			class="btn {!$authors.length ? 'btn-accent' : 'btn-hollow'}"
-			on:click={() => $authors.length && authors.set([])}>All</button
+			onclick={() => $authors.length && authors.set([])}>All</button
 		>
 	</div>
 </div>
@@ -49,12 +58,15 @@
 		max="14"
 		class="peer input-text"
 		value={$maxDaysOld}
-		on:keydown={(e) => {
+		onkeydown={(e) => {
 			if (['-', '+', 'e', 'E'].includes(e.key)) e.preventDefault();
 		}}
-		on:paste|preventDefault={(e) => {
+		onpaste={(e) => {
+	e.preventDefault();
+	
 			$maxDaysOld = e.clipboardData?.getData('text') ?? null;
-		}}
+		
+}}
 		use:minMaxVal={{
 			min: 1,
 			max: 14,

@@ -1,7 +1,8 @@
 <script lang="ts">
-	let classes = 'bg-gray-12';
-	export { classes as class };
-	export let wrapperClasses = '';
+	
+	interface Props { class?: string, wrapperClasses?: string }
+
+	let { class: classes = 'bg-gray-12', wrapperClasses = '' }: Props = $props();
 
 	const dots = 'mx-[1px] inline-block h-1 w-1 animate-blink rounded-full';
 </script>

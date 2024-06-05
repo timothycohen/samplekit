@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { searchParam } from '$lib/stores';
 
-	export let option: {
+	interface Props { option: {
 		name: string;
 		clean: string;
 		values: {
@@ -9,7 +9,9 @@
 			clean: string;
 			available: boolean;
 		}[];
-	};
+	} }
+
+	let { option }: Props = $props();
 
 	const param = searchParam(option.clean);
 </script>
@@ -20,7 +22,7 @@
 		{#each option.values as { name, clean, available } (clean)}
 			{@const isActive = $param === clean}
 			<button
-				on:click={() => {
+				onclick={() => {
 					if (!available) return;
 					param.toggle(clean);
 				}}

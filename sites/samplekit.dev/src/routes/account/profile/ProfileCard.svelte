@@ -4,8 +4,9 @@
 	import EditableName from './EditableName.svelte';
 	import type { SuperValidated } from '$lib/superforms/client';
 
-	export let user: DB.User;
-	export let nameForm: SuperValidated<typeof nameSchema>;
+	interface Props { user: DB.User, nameForm: SuperValidated<typeof nameSchema> }
+
+	let { user, nameForm }: Props = $props();
 </script>
 
 <div class="mx-auto max-w-sm rounded-card p-8 shadow-4 md:mx-0">

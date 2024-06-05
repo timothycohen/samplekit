@@ -1,4 +1,7 @@
 <script lang="ts">
+	interface Props { children?: import('svelte').Snippet }
+
+	let { children }: Props = $props();
 	import { onMount } from 'svelte';
 	import { SlidersHorizontal } from '$lib/styles/icons';
 	import { Available, SortBy, Price } from '$routes/shop/components';
@@ -18,12 +21,12 @@
 		};
 	});
 
-	let filterAsideOpen = false;
+	let filterAsideOpen = $state(false);
 </script>
 
 <div class="mt-4 w-full max-w-screen-2xl items-stretch px-page full">
 	<div class="hidden items-center justify-between lg:flex">
-		<button class="btn btn-hollow relative" on:click={() => (filterAsideOpen = !filterAsideOpen)}>
+		<button class="btn btn-hollow relative" onclick={() => (filterAsideOpen = !filterAsideOpen)}>
 			<span><SlidersHorizontal /></span>
 			<span>{filterAsideOpen ? 'Unpin ' : ''} Filters</span>
 			{#if $filterCount}<span>({$filterCount})</span>{/if}
@@ -41,7 +44,7 @@
 			>
 				<button
 					class="btn btn-hollow relative w-full animate-fade-up-and-in {scrollY > 120 ? '' : 'hidden'}"
-					on:click={() => (filterAsideOpen = !filterAsideOpen)}
+					onclick={() => (filterAsideOpen = !filterAsideOpen)}
 				>
 					<span><SlidersHorizontal /></span>
 					<span>{filterAsideOpen ? 'Unpin ' : ''} Filters</span>
@@ -53,7 +56,7 @@
 		{/if}
 
 		<div class="mt-4">
-			<slot />
+			{@render children?.()}
 		</div>
 	</div>
 </div>

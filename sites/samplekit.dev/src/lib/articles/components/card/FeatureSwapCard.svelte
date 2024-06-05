@@ -1,9 +1,9 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
+	import  = $state(){ = $state() o = $state()nMount } from 'svelte';
 	import { clickOn } from '$lib/actions';
 	import FeatureCardContent from './FeatureCardContent.svelte';
 
-	export let feature: {
+	interface Props { feature: {
 		imgSm?: string;
 		imgSmGif?: string;
 		title: string;
@@ -12,8 +12,9 @@
 		articleSlug: string;
 		implementationSlug: string;
 		srcCodeHref: string;
-	};
-	export let preview = false;
+	}, preview?: boolean }
+
+	let { feature, preview = false }: Props = $props();
 
 	let labelEl: HTMLLabelElement;
 	let frontEl: HTMLDivElement;
@@ -38,7 +39,7 @@
 		}
 	});
 
-	let checked = false;
+	let checked = $state(false);
 
 	const borderWrapperClass = `h-full from-accent-5/50 via-accent-6/50 to-accent-9/50 rounded-card p-px dark:bg-gradient-to-t sm:dark:bg-gradient-to-tr
 	transition-transform duration-500 ease-in-out peer-focus-visible:outline`;

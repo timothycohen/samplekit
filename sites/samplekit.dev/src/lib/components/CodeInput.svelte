@@ -1,12 +1,14 @@
 <script lang="ts">
-	import { createPinInput, melt } from '@melt-ui/svelte';
+	import { run } from 'svelte/legacy';
 
-	export let onChange: ((a: { filled: true; code: string } | { filled: false; code?: never }) => void) | undefined =
-		undefined;
+	impo = $state()rt { createPinInput, melt } from '@melt-ui/svelte';
 
-	export let namePrefix: string;
 
-	const codeLength = 6;
+	interface Props { onChange?: ((a: { filled: true; code: string } | { filled: false; code?: never }) => void) | undefined, namePrefix: string }
+
+	let { onChange = undefined, namePrefix }: Props = $props();
+
+	const codeLength = $state(6);
 
 	let rootEl: HTMLElement;
 
@@ -62,19 +64,19 @@
 		states: { value, valueStr },
 	} = createPinInput({ onValueChange: replaceCorruptValues });
 
-	$: {
+	run(() => {
 		if (onChange) {
 			if ($value.every((v) => v !== '')) onChange({ filled: true, code: $valueStr });
 			else onChange({ filled: false });
 		}
-	}
+	});
 </script>
 
 <div use:melt={$root} class="flex items-center gap-1" bind:this={rootEl}>
 	{#each Array.from({ length: codeLength }) as _, i}
 		<input
 			class="h-16 w-9 rounded-badge border border-gray-7 text-center placeholder-gray-8 {i === 2 ? 'mr-10' : ''}"
-			on:keydown={(e) => overrideUpAndDownArrow(e, i)}
+			onkeydown={(e) => overrideUpAndDownArrow(e, i)}
 			use:melt={$input()}
 			inputmode="numeric"
 			pattern="[0-9]"
