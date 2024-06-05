@@ -17,7 +17,7 @@
 </script>
 
 <button
-	class="btn border-accent-7 hover:border-accent-8 focus:border-accent-9 w-full min-w-64 justify-between border"
+	class="btn w-full min-w-64 justify-between border border-accent-7 hover:border-accent-8 focus:border-accent-9"
 	use:melt={$trigger}
 	aria-label={ariaLabel}
 >
@@ -31,7 +31,7 @@
 
 {#if $open}
 	<div
-		class="bg-gray-2 shadow-2 z-10 flex max-h-[300px] flex-col overflow-y-auto rounded-lg p-1 focus:!ring-0"
+		class="rounded-lg z-10 flex max-h-[300px] flex-col overflow-y-auto bg-gray-2 p-1 shadow-2 focus:!ring-0"
 		use:melt={$menu}
 	>
 		{#each Object.entries(options) as [key, arr]}

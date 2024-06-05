@@ -43,11 +43,11 @@
 
 <div use:melt={$portalled}>
 	{#if $open}
-		<div use:melt={$overlay} class="modal-overlay" />
+		<div use:melt={$overlay} class="modal-overlay"></div>
 		<div class="modal-content" use:melt={$content}>
 			{#if props.Icon}
 				<div class="modal-icon-wrapper">
-					<props.Icon class="h-full w-full" />
+					<props.Icon class="h-full w-full"></props.Icon>
 				</div>
 			{/if}
 

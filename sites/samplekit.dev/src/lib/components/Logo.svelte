@@ -4,9 +4,9 @@
 </script>
 
 {#if link}
-	<a href="/" on:click={onAnchorClick} aria-label="go to home page" class="text-logo font-black tracking-tight">
+	<a href="/" on:click={onAnchorClick} aria-label="go to home page" class="font-black tracking-tight text-logo">
 		SampleKit
 	</a>
 {:else}
-	<span class="text-logo font-black tracking-tight">SampleKit</span>
+	<span class="font-black tracking-tight text-logo">SampleKit</span>
 {/if}

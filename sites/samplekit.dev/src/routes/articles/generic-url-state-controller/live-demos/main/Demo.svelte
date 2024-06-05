@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/stores';
+	page; // https://github.com/sveltejs/eslint-plugin-svelte/issues/652#issuecomment-2087008855
 	import { Switch } from '$lib/components';
 	import { SearchBar, Price, SortBy } from '$routes/shop/components';
 	import { createSearchAndFilterService, useSearchAndFilterService } from '$routes/shop/services';
@@ -13,28 +14,28 @@
 </script>
 
 <div class="flex h-full flex-col justify-around gap-8">
-	<div class="border-accent-9 bg-accent-9/25 mx-auto w-fit rounded-full border px-4 py-2 font-mono">
+	<div class="mx-auto w-fit rounded-full border border-accent-9 bg-accent-9/25 px-4 py-2 font-mono">
 		<span>$page.url.search: </span>
-		<span class="text-gray-11 break-all">{$page.url.search}</span>
+		<span class="break-all text-gray-11">{$page.url.search}</span>
 	</div>
 
 	<div class="space-y-4 sm:space-y-0">
 		<p class="mb-2 text-2xl">Store</p>
 		<div>
 			<span class="block w-32 text-lg sm:inline-block">Query: </span>
-			<span class="text-gray-11 break-words font-mono">{$query}</span>
+			<span class="break-words font-mono text-gray-11">{$query}</span>
 		</div>
 		<div>
 			<span class="block w-32 text-lg sm:inline-block">Available: </span>
-			<span class="text-gray-11 break-words font-mono">{$available}</span>
+			<span class="break-words font-mono text-gray-11">{$available}</span>
 		</div>
 		<div>
 			<span class="block w-32 text-lg sm:inline-block">Price: </span>
-			<span class="text-gray-11 break-words font-mono">{JSON.stringify($price)}</span>
+			<span class="break-words font-mono text-gray-11">{JSON.stringify($price)}</span>
 		</div>
 		<div>
 			<span class="block w-32 text-lg sm:inline-block">Sort By: </span>
-			<span class="text-gray-11 break-words font-mono">{JSON.stringify($sortBy)}</span>
+			<span class="break-words font-mono text-gray-11">{JSON.stringify($sortBy)}</span>
 		</div>
 	</div>
 

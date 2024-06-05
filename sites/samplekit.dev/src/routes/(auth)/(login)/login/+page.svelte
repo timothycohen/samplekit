@@ -42,7 +42,7 @@
 
 <h1 class="text-h4 font-medium">Welcome to SampleKit!</h1>
 <p class="text-sm">New here? <a href="/signup" class="link">Create an account.</a></p>
-<div class="mb-6" />
+<div class="mb-6"></div>
 <GoogleFormButton persistent={$signinForm.persistent} />
 <Or />
 
@@ -53,7 +53,7 @@
 		name="email"
 		type="email"
 		id="email"
-		class="input-text peer"
+		class="peer input-text"
 		class:input-invalid={$signinErrors.email}
 		placeholder="Enter your email"
 		autocomplete="username"
@@ -85,7 +85,7 @@
 		<input type="checkbox" name="persistent" bind:checked={$signinForm.persistent} id="persistent" />
 		<label
 			for="persistent"
-			class="decoration-accent-6 select-none text-sm font-light underline-offset-2 group-hover:underline"
+			class="select-none text-sm font-light decoration-accent-6 underline-offset-2 group-hover:underline"
 		>
 			Remember me
 		</label>
@@ -105,7 +105,7 @@
 
 <div use:melt={$portalled}>
 	{#if $emailPassModal}
-		<div use:melt={$overlay} class="modal-overlay" />
+		<div use:melt={$overlay} class="modal-overlay"></div>
 		<div class="modal-content" use:melt={$content}>
 			<form
 				action="/password-reset?/emailPassReset"
@@ -126,7 +126,7 @@
 					name="email"
 					type="email"
 					id="reset-email"
-					class="input-text peer"
+					class="peer input-text"
 					class:input-invalid={$resetErrors.email}
 					placeholder="Enter your email"
 					autocomplete="username"

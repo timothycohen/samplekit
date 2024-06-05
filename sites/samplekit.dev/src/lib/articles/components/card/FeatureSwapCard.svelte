@@ -47,7 +47,7 @@
 
 <label
 	bind:this={labelEl}
-	class="swap-flip tilt-wrapper @container relative cursor-pointer"
+	class="tilt-wrapper swap-flip relative cursor-pointer @container"
 	use:clickOn={['Enter']}
 	aria-label="View example picture."
 >
@@ -73,7 +73,7 @@
 
 			<img
 				src={feature.imgSmGif ?? feature.imgSm}
-				class="bg-app-bg-amethyst h-full w-full select-none object-contain object-center"
+				class="h-full w-full select-none bg-app-bg-amethyst object-contain object-center"
 				alt=""
 				loading={preview ? 'eager' : 'lazy'}
 				draggable="false"

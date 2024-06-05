@@ -20,7 +20,7 @@
 		name="phone_number"
 		type="tel"
 		id="tel"
-		class="input-text peer w-52"
+		class="peer input-text w-52"
 		class:input-invalid={$errors.phone_number}
 		placeholder="Enter your phone number"
 		disabled={$submitting}

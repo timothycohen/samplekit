@@ -22,5 +22,5 @@
 </svelte:head>
 
 {#if scriptLoaded}
-	<div use:turnstile.render class={classes} />
+	<div use:turnstile.render class={classes}></div>
 {/if}

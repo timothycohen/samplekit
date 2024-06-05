@@ -8,12 +8,12 @@
 	let submitting = false;
 </script>
 
-<section class="h-screen-nav mx-auto w-full max-w-3xl space-y-8 px-2 py-8">
+<section class="mx-auto h-screen-nav w-full max-w-3xl space-y-8 px-2 py-8">
 	<h1 class="text-h4">Delete Account</h1>
 
 	<Verifier veri={data.veri} />
 
-	<div class="rounded-card shadow-3 space-y-8 p-8">
+	<div class="space-y-8 rounded-card p-8 shadow-3">
 		<h2 class="t-base-lg font-medium">Step 2: Confirm</h2>
 
 		<div class="alert-wrapper alert-wrapper-error mt-12">
@@ -36,7 +36,7 @@
 				type="text"
 				name="confirmedEmail"
 				bind:value={confirmedEmail}
-				class="input-text peer"
+				class="peer input-text"
 				placeholder={data.veri.email}
 				autocomplete="off"
 				required
@@ -48,7 +48,7 @@
 				class="btn btn-hollow mt-6 w-full"
 			>
 				{#if submitting}
-					<Loader2 class="text-accent-9 h-4 w-4 animate-spin" />
+					<Loader2 class="h-4 w-4 animate-spin text-accent-9" />
 				{/if}
 				<small>Permanently Delete</small>
 			</button>

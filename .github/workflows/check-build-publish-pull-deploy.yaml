@@ -21,7 +21,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v3
-      - run: pnpm install && pnpm --recursive build:dependencies && grep -o '^[^#]\+=' sites/samplekit.dev/.env.example > sites/samplekit.dev/.env && pnpm clean
+      - run: pnpm install && pnpm build:packages && grep -o '^[^#]\+=' sites/samplekit.dev/.env.example > sites/samplekit.dev/.env && pnpm sync && pnpm validate
 
   setup:
     runs-on: ubuntu-latest

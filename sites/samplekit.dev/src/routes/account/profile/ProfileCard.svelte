@@ -8,7 +8,7 @@
 	export let nameForm: SuperValidated<typeof nameSchema>;
 </script>
 
-<div class="rounded-card shadow-4 mx-auto max-w-sm p-8 md:mx-0">
+<div class="mx-auto max-w-sm rounded-card p-8 shadow-4 md:mx-0">
 	<div class="relative mx-auto w-36 rounded-full">
 		<EditableAvatar {user} />
 	</div>

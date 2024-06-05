@@ -14,8 +14,8 @@
 	<span class="relative">
 		Authors
 		{#if $authors.length}
-			<span class="absolute -right-6 -top-2 h-5 w-5"> <BadgeIcon class="fill-accent-9 h-full w-full" /> </span>
-			<span class="text-accent-9-contrast absolute -right-6 -top-2 grid h-5 w-5 place-content-center text-sm">
+			<span class="absolute -right-6 -top-2 h-5 w-5"> <BadgeIcon class="h-full w-full fill-accent-9" /> </span>
+			<span class="absolute -right-6 -top-2 grid h-5 w-5 place-content-center text-sm text-accent-9-contrast">
 				{$authors.length}
 			</span>
 		{/if}
@@ -38,7 +38,7 @@
 
 <label class="block">
 	Content
-	<input bind:value={$content} type="text" class="input-text peer" />
+	<input bind:value={$content} type="text" class="peer input-text" />
 </label>
 
 <label class="block">
@@ -47,7 +47,7 @@
 		type="number"
 		min="1"
 		max="14"
-		class="input-text peer"
+		class="peer input-text"
 		value={$maxDaysOld}
 		on:keydown={(e) => {
 			if (['-', '+', 'e', 'E'].includes(e.key)) e.preventDefault();

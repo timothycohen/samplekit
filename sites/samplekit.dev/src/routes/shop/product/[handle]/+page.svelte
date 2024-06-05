@@ -11,7 +11,7 @@
 </script>
 
 <div class="mx-auto max-w-screen-2xl px-4">
-	<div class="border-gray-5 bg-gray-1 rounded-card flex flex-col rounded-lg border p-8 md:p-12 lg:flex-row lg:gap-8">
+	<div class="rounded-lg flex flex-col rounded-card border border-gray-5 bg-gray-1 p-8 md:p-12 lg:flex-row lg:gap-8">
 		<div class="h-full w-full basis-full lg:basis-4/6">
 			<Gallery images={data.product.images} />
 		</div>

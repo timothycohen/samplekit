@@ -66,7 +66,7 @@
 <section class="space-y-6">
 	<h1 class="text-h4">Authentication</h1>
 
-	<div class="rounded-card shadow-3 space-y-6 p-8">
+	<div class="space-y-6 rounded-card p-8 shadow-3">
 		<div>
 			<h2 class="mb-2 font-bold">Email Address</h2>
 			<div class="flex justify-between">
@@ -134,7 +134,7 @@
 		{/if}
 	</div>
 
-	<div class="rounded-card shadow-3 space-y-6 p-8">
+	<div class="space-y-6 rounded-card p-8 shadow-3">
 		<div>
 			<h2 class="mb-2 font-bold">Multi-Factor Authentication (MFA)</h2>
 			<p class="text-sm font-light">
@@ -148,7 +148,7 @@
 
 		<ul class="grid gap-4 lg:grid-cols-2">
 			{#each authMethods as { AuthIcon, enabled, next }}
-				<li class="rounded-btn shadow-3 flex h-16 w-80 items-center justify-between px-4">
+				<li class="flex h-16 w-80 items-center justify-between rounded-btn px-4 shadow-3">
 					<AuthIcon />
 					<span class="flex-1 pl-4">{mfaLabels[next]}</span>
 					<div class="flex items-center justify-around gap-2">
@@ -178,11 +178,11 @@
 								</a>
 							</span>
 						{:else if method === 'pass'}
-							<a href={`/mfa/update?next=register-${next}`} class="btn btn-hollow rounded-badge w-[58px] p-2 text-xs">
+							<a href="/mfa/update?next=register-{next}" class="btn btn-hollow w-[58px] rounded-badge p-2 text-xs">
 								Enable
 							</a>
 						{:else}
-							<button disabled class="btn btn-hollow rounded-badge w-[58px] p-2 text-xs">Enable</button>
+							<button disabled class="btn btn-hollow w-[58px] rounded-badge p-2 text-xs">Enable</button>
 						{/if}
 					</div>
 				</li>
@@ -220,7 +220,7 @@
 {#if mfaCount === 1}
 	<div use:melt={$delMFAPortalled}>
 		{#if $delMFAOpen}
-			<div class="modal-overlay" use:melt={$delMFAOverlay} />
+			<div class="modal-overlay" use:melt={$delMFAOverlay}></div>
 			<div class="modal-content" use:melt={$delMFAContent}>
 				<h2 class="modal-title" use:melt={$delMFATitle}>Delete MFA Method</h2>
 				<p class="modal-description" use:melt={$delMFADescription}>
@@ -248,7 +248,7 @@
 
 <div use:melt={$delAccountPortalled}>
 	{#if $delAccountOpen}
-		<div class="modal-overlay" use:melt={$delAccountOverlay} />
+		<div class="modal-overlay" use:melt={$delAccountOverlay}></div>
 		<div class="modal-content" use:melt={$delAccountContent}>
 			<h2 class="modal-title" use:melt={$delAccountTitle}>Delete Account</h2>
 			<p class="modal-description" use:melt={$delAccountDescription}>
@@ -257,7 +257,7 @@
 
 			<div class="alert-wrapper alert-wrapper-warning">
 				<p class="alert-header">
-					Delete <strong class="text-accent-9 font-extrabold underline">{data.email}</strong>?
+					Delete <strong class="font-extrabold text-accent-9 underline">{data.email}</strong>?
 				</p>
 				<p>There is no going back. Please be certain.</p>
 			</div>

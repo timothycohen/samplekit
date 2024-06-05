@@ -16,7 +16,10 @@
 		"lint": "eslint --max-warnings 0 .",
 		"lint:fix": "pnpm sync && pnpm lint --fix",
 		"check": "pnpm --recursive --no-bail check",
-		"clean": "./scripts/.githooks/pre-commit --write",
+		"clean": "pnpm --recursive --no-bail clean",
+		"build:packages": "pnpm --filter './packages/**' build",
+		"sync": "pnpm --recursive sync",
+		"validate": "./scripts/.githooks/pre-commit --write",
 		"githooks:init": "git config core.hookspath ./scripts/.githooks"
 	},
 	"devDependencies": {
@@ -28,9 +31,9 @@
 		"eslint-plugin-import": "^2.29.1",
 		"eslint-plugin-svelte": "^2.39.0",
 		"globals": "^15.3.0",
-		"prettier": "^3.2.5",
-		"prettier-plugin-svelte": "^3.1.2",
-		"prettier-plugin-tailwindcss": "^0.5.11",
+		"prettier": "^3.3.1",
+		"prettier-plugin-svelte": "^3.2.4",
+		"prettier-plugin-tailwindcss": "^0.6.2",
 		"typescript": "^5.3.3",
 		"typescript-eslint": "^8.0.0-alpha.20"
 	},

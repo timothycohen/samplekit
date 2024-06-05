@@ -20,8 +20,8 @@
 </script>
 
 <div
-	class="rounded-card min-w-64 p-2 transition {disabled
-		? 'bg-gray-3/25 animate-pulse'
+	class="min-w-64 rounded-card p-2 transition {disabled
+		? 'animate-pulse bg-gray-3/25'
 		: isDragover
 			? 'bg-gray-7'
 			: 'bg-gray-2'}"
@@ -60,7 +60,7 @@
 			dispatchFiles(dataTransfer.files);
 		}}
 		for="file"
-		class="rounded-card border-gray-10 text-gray-11 peer-focus-visible:border-accent-7 block border-2 border-dashed p-4 text-center font-semibold transition-colors
+		class="block rounded-card border-2 border-dashed border-gray-10 p-4 text-center font-semibold text-gray-11 transition-colors peer-focus-visible:border-accent-7
 		{disabled ? '' : 'cursor-pointer'}"
 	>
 		{#if disabled}

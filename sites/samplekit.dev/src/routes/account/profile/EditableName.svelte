@@ -43,7 +43,7 @@
 			name="given_name"
 			type="text"
 			id="given_name"
-			class="input-text peer"
+			class="peer input-text"
 			class:input-invalid={$errors.given_name}
 			placeholder="First name"
 			disabled={$submitting}
@@ -58,7 +58,7 @@
 			name="family_name"
 			type="text"
 			id="family_name"
-			class="input-text peer"
+			class="peer input-text"
 			class:input-invalid={$errors.family_name}
 			placeholder="Last name"
 			disabled={$submitting}

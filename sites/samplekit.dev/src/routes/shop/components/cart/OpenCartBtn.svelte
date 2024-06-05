@@ -11,11 +11,11 @@
 	} = useCartService();
 </script>
 
-<button aria-label="Open cart" use:melt={$trigger} class="btn-ghost btn relative p-2">
+<button aria-label="Open cart" use:melt={$trigger} class="btn btn-ghost relative p-2">
 	<ShoppingBag />
 	{#if $cart?.totalQuantity}
 		<div
-			class="bg-accent-9 text-accent-9-contrast absolute right-0 top-0 -mr-2 -mt-2 h-4 w-4 rounded-full text-xs font-medium"
+			class="absolute right-0 top-0 -mr-2 -mt-2 h-4 w-4 rounded-full bg-accent-9 text-xs font-medium text-accent-9-contrast"
 		>
 			{$cart.totalQuantity}
 		</div>

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { ThemePicker, themeController, THEMES } from '$lib/styles';
-
+	themeController; // https://github.com/sveltejs/eslint-plugin-svelte/issues/652#issuecomment-2087008855
 	$: optionsArr = ['fixed_day', 'fixed_night', 'sync_system'] as const;
 	const tsCast = (str: string) => str as (typeof optionsArr)[number];
 </script>
@@ -23,7 +23,7 @@
 						on:click={(e) => themeController.setMode(tsCast(e.currentTarget.value))}
 					/>
 					<label for={value}>
-						<span class={checked ? '' : 'text-gray-10 font-light'}>
+						<span class={checked ? '' : 'font-light text-gray-10'}>
 							{#if value === 'fixed_day'}Always use day theme
 							{:else if value === 'fixed_night'}Always use night theme
 							{:else}Sync with system (currently {$themeController.schemeSystem === 'dark' ? 'night' : 'day'})

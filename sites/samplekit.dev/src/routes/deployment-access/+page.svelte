@@ -9,7 +9,7 @@
 	export let form;
 </script>
 
-<div class="page grid place-content-center">
+<div class="grid place-content-center page">
 	{#if !data.deploymentAuth.authenticated}
 		<form use:enhance action="?/signin" method="post" class="max-w-sm">
 			<input type="text" name="username" value="deployment_access_token" class="hidden" />

@@ -25,7 +25,7 @@
 	});
 </script>
 
-<div class="rounded-card shadow-3 space-y-8 p-8">
+<div class="space-y-8 rounded-card p-8 shadow-3">
 	<h2 class="t-base-lg font-medium">Step 2: Select Passkey</h2>
 	{#if err}
 		<div class="alert-wrapper alert-wrapper-error">

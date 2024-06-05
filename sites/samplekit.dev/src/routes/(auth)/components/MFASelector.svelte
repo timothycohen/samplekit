@@ -13,7 +13,7 @@
 <div>
 	<div class="flex justify-between text-sm font-bold">
 		<label for="mfa_method" class="mb-2 font-bold">Authentication Method</label>
-		<slot name="right-of-header" />
+		<slot />
 	</div>
 
 	<select value={selectedMFAMethod} id="mfa_method" class="input-text" on:change={handleChange}>

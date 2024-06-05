@@ -41,7 +41,7 @@
 
 <div use:melt={$root}>
 	<div
-		class="border-gray-9 dark:border-gray-5 bg-gray-3 rounded-t-card flex overflow-hidden border
+		class="flex overflow-hidden rounded-t-card border border-gray-9 bg-gray-3 dark:border-gray-5
 		{!collapsed ? 'border-b-0' : ''}"
 	>
 		<div use:melt={$list} class="flex w-fit overflow-x-auto bg-transparent">
@@ -66,9 +66,10 @@
 
 						<span class="relative">
 							{triggerItem.title}
-							<span class="group-hover:bg-accent-5 absolute -bottom-1 left-1/2 h-1 w-6 -translate-x-1/2 rounded-full" />
+							<span class="absolute -bottom-1 left-1/2 h-1 w-6 -translate-x-1/2 rounded-full group-hover:bg-accent-5">
+							</span>
 							{#if $value === triggerItem.id}
-								<span class="bg-accent-9 absolute -bottom-1 left-1/2 h-1 w-6 -translate-x-1/2 rounded-full" />
+								<span class="absolute -bottom-1 left-1/2 h-1 w-6 -translate-x-1/2 rounded-full bg-accent-9"></span>
 							{/if}
 						</span>
 					</span>
@@ -76,11 +77,11 @@
 			{/each}
 		</div>
 
-		<div class="bg-gray-5 flex-1"></div>
+		<div class="flex-1 bg-gray-5"></div>
 
 		<button
 			on:click={() => (collapsed = !collapsed)}
-			class="text-gray-10 border-gray-9 dark:border-gray-5 bg-gray-3 hover:bg-gray-4 rounded-tr-card grid min-h-10 w-10 shrink-0 place-content-center border-l -outline-offset-1"
+			class="grid min-h-10 w-10 shrink-0 place-content-center rounded-tr-card border-l border-gray-9 bg-gray-3 text-gray-10 -outline-offset-1 hover:bg-gray-4 dark:border-gray-5"
 		>
 			<div class="transition-transform {collapsed ? 'rotate-180' : ''}">
 				<ChevronUp />

@@ -1,4 +1,5 @@
 import { marked } from 'marked';
+import type { PreprocessorGroup } from './types.js';
 
 /**
  * Preprocess .svx markdown table block into html
@@ -43,17 +44,15 @@ import { marked } from 'marked';
 export function preprocessTable({
 	include,
 	logger,
-	formatLogFilename,
 }: {
-	logger?: { error: (s: string) => void; debug: (s: string) => void };
+	logger?: { error: (s: string) => void; debug: (s: string) => void; formatFilename?: (filename: string) => string };
 	include?: (filename: string) => boolean;
-	formatLogFilename?: (filename: string) => string;
-} = {}) {
+} = {}): PreprocessorGroup {
 	return {
-		markup({ content, filename }: { content: string; filename: string }): { code: string } | null {
-			if (include && !include(filename)) return null;
-			const format = formatLogFilename || ((filename: string) => filename);
-
+		name: 'md-tables',
+		markup({ content, filename }) {
+			if (!filename) return;
+			if (include && !include(filename)) return;
 			const startMarker = '<!-- table-start -->';
 			const endMarker = '<!-- table-end -->';
 
@@ -69,7 +68,7 @@ export function preprocessTable({
 
 				if (endIdx === -1) {
 					logger?.error(
-						`[PREPROCESS] | ${format(filename)} | Tables | Error | Incomplete md at start ${startIdx} (count: ${count}). Aborting.`,
+						`[PREPROCESS] | ${logger.formatFilename ? logger.formatFilename(filename) : filename} | Tables | Error | Incomplete md at start ${startIdx} (count: ${count}). Aborting.`,
 					);
 					return { code: resultContent };
 				}
@@ -85,7 +84,9 @@ export function preprocessTable({
 				startIdx = resultContent.indexOf(startMarker, startIdx + processedContent.length);
 			}
 
-			logger?.debug(`[PREPROCESS] | ${format(filename)} | Tables | Success | { count: ${count} } }`);
+			logger?.debug(
+				`[PREPROCESS] | ${logger.formatFilename ? logger.formatFilename(filename) : filename} | Tables | Success | { count: ${count} } }`,
+			);
 
 			return { code: resultContent };
 		},

@@ -21,7 +21,7 @@
 	let filterAsideOpen = false;
 </script>
 
-<div class="full px-page mt-4 w-full max-w-screen-2xl items-stretch">
+<div class="mt-4 w-full max-w-screen-2xl items-stretch px-page full">
 	<div class="hidden items-center justify-between lg:flex">
 		<button class="btn btn-hollow relative" on:click={() => (filterAsideOpen = !filterAsideOpen)}>
 			<span><SlidersHorizontal /></span>
@@ -37,10 +37,10 @@
 	<div class="flex">
 		{#if filterAsideOpen}
 			<aside
-				class="animate-fade-up-and-in pr-page sticky top-14 hidden h-fit w-64 shrink-0 space-y-8 pt-8 text-sm lg:block"
+				class="sticky top-14 hidden h-fit w-64 shrink-0 animate-fade-up-and-in space-y-8 pr-page pt-8 text-sm lg:block"
 			>
 				<button
-					class="btn btn-hollow animate-fade-up-and-in relative w-full {scrollY > 120 ? '' : 'hidden'}"
+					class="btn btn-hollow relative w-full animate-fade-up-and-in {scrollY > 120 ? '' : 'hidden'}"
 					on:click={() => (filterAsideOpen = !filterAsideOpen)}
 				>
 					<span><SlidersHorizontal /></span>

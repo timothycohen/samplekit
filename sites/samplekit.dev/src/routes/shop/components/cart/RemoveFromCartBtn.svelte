@@ -25,12 +25,12 @@
 	}}
 	aria-label="Remove cart item"
 	aria-disabled={$pending}
-	class="ease bg-gray-5 hover:bg-accent-9 flex h-4 items-center justify-center rounded-full transition-all duration-200
+	class="ease flex h-4 items-center justify-center rounded-full bg-gray-5 transition-all duration-200 hover:bg-accent-9
       {$pending ? 'cursor-not-allowed px-0' : ''}"
 >
 	{#if $removingCartItem}
 		<LoadingDots />
 	{:else}
-		<X class="hover:text-accent-9-contrast mx-[1px] h-4 w-4" />
+		<X class="mx-[1px] h-4 w-4 hover:text-accent-9-contrast" />
 	{/if}
 </button>

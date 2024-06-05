@@ -18,7 +18,7 @@
 
 <h1 class="text-h4 font-medium">Sign up</h1>
 <p class="text-sm">Have an account? <a href="/login" class="link">Log in now.</a></p>
-<div class="mb-6" />
+<div class="mb-6"></div>
 <GoogleFormButton persistent={$form.persistent} />
 <Or />
 
@@ -29,7 +29,7 @@
 		name="email"
 		type="email"
 		id="email"
-		class="input-text peer"
+		class="peer input-text"
 		class:input-invalid={$errors.email}
 		placeholder="Enter your email"
 		autocomplete="username"
@@ -45,7 +45,7 @@
 		name="given_name"
 		type="text"
 		id="given_name"
-		class="input-text peer"
+		class="peer input-text"
 		class:input-invalid={$errors.given_name}
 		placeholder="First name"
 		disabled={$submitting}
@@ -60,7 +60,7 @@
 		name="family_name"
 		type="text"
 		id="family_name"
-		class="input-text peer"
+		class="peer input-text"
 		class:input-invalid={$errors.family_name}
 		placeholder="Last name"
 		disabled={$submitting}
@@ -94,7 +94,7 @@
 		<input type="checkbox" name="persistent" bind:checked={$form.persistent} id="persistent" />
 		<label
 			for="persistent"
-			class="decoration-accent-6 select-none text-sm font-light underline-offset-2 group-hover:underline"
+			class="select-none text-sm font-light decoration-accent-6 underline-offset-2 group-hover:underline"
 		>
 			Remember me
 		</label>

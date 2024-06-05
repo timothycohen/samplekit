@@ -2,6 +2,7 @@ import { createDialog } from '@melt-ui/svelte';
 import { derived, get, writable, type Readable, type Writable } from 'svelte/store';
 import { browser } from '$app/environment';
 import { page } from '$app/stores';
+page; // https://github.com/sveltejs/eslint-plugin-svelte/issues/652#issuecomment-2087008855
 import { defineContext } from '$lib/utils/client';
 import { getCartItems, removeCartItem, updateCartItemQty, addCartItem } from '$routes/shop/cart.json';
 import { handleToPath, type CartWithPaths, DEFAULT_SELECTED_OPTION } from '$routes/shop/utils';

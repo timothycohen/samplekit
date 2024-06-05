@@ -16,7 +16,7 @@
 					href="#{heading.id}"
 					{...$item(heading.id)}
 					use:item
-					class="underline--hidden hover:text-accent-12 transition-colors duration-300
+					class="transition-colors duration-300 underline--hidden hover:text-accent-12
 					{active ? 'underline--show' : ''}"
 				>
 					{heading.title.slice(2)}

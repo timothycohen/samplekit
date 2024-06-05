@@ -4,7 +4,7 @@
 	export let data;
 </script>
 
-<div class="rounded-card shadow-3 space-y-8 p-8">
+<div class="space-y-8 rounded-card p-8 shadow-3">
 	<h2 class="t-base-lg font-medium">Step 2: Add To Authenticator App</h2>
 	<div class="alert-wrapper alert-wrapper-info">
 		<p class="alert-header">Scan our QR Code</p>
@@ -25,7 +25,7 @@
 	</div>
 </div>
 
-<div class="rounded-card shadow-3 space-y-8 p-8">
+<div class="space-y-8 rounded-card p-8 shadow-3">
 	<h2 class="t-base-lg font-medium">Step 3: Verify Authenticator Code</h2>
 	<VerifyCodeForm
 		verifyOTPForm={data.authenticator.verifyAuthenticatorTokenForm}

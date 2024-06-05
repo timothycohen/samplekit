@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/stores';
+	page; // https://github.com/sveltejs/eslint-plugin-svelte/issues/652#issuecomment-2087008855
 	import { AddToCartBtn } from '$routes/shop/components';
 	import { formatPrice } from '$routes/shop/utils';
 	import VariantSelector from './VariantSelector.svelte';
@@ -29,9 +30,9 @@
 				);
 </script>
 
-<div class="border-gray-5 mb-6 flex flex-col space-y-6 border-b pb-6">
+<div class="mb-6 flex flex-col space-y-6 border-b border-gray-5 pb-6">
 	<h1 class="text-4xl font-medium">{product.title}</h1>
-	<p class="bg-accent-9 text-accent-9-contrast w-fit flex-none rounded-full p-2 text-sm">
+	<p class="w-fit flex-none rounded-full bg-accent-9 p-2 text-sm text-accent-9-contrast">
 		{formatPrice(selectedVariant?.price ?? product.priceRange.minVariantPrice)}
 		{(selectedVariant?.price ?? product.priceRange.minVariantPrice).currencyCode}
 	</p>

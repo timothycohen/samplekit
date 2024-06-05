@@ -14,7 +14,7 @@
 <form action="/mfa/sms?/sendSMSVeri" method="post" use:enhance>
 	<button class="btn btn-hollow h-10 py-0" disabled={$submitting || sent} type="submit">
 		{#if sent}
-			<Check class="text-success-7/40 inline h-5 w-5" />
+			<Check class="inline h-5 w-5 text-success-7/40" />
 			<span>Sent</span>
 		{:else if $delayed}
 			<Loader2 class="inline h-5 w-5 animate-spin" />

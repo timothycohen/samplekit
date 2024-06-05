@@ -6,20 +6,20 @@
 </script>
 
 <div class="flex flex-wrap items-center justify-between gap-3">
-	<dl class="text-gray-11 flex text-xs font-bold uppercase tracking-wider">
+	<dl class="flex text-xs font-bold uppercase tracking-wider text-gray-11">
 		<dt>Published</dt>
-		<span class="text-gray-10 mx-2" aria-hidden="true">•</span>
+		<span class="mx-2 text-gray-10" aria-hidden="true">•</span>
 		<dd>
 			<time datetime={publishedAt.toISOString()}>{formatDate(publishedAt)}</time>
 		</dd>
 	</dl>
 
-	<span class="bg-gray-9 mx-2 h-px flex-1"></span>
+	<span class="mx-2 h-px flex-1 bg-gray-9"></span>
 
 	{#if lastUpdate}
-		<dl class="text-gray-11 flex text-xs font-bold uppercase tracking-wider">
+		<dl class="flex text-xs font-bold uppercase tracking-wider text-gray-11">
 			<dt>Last Updated</dt>
-			<span class="text-gray-10 mx-2" aria-hidden="true">•</span>
+			<span class="mx-2 text-gray-10" aria-hidden="true">•</span>
 			<dd>
 				<time datetime={lastUpdate.at.toISOString()}>{formatDate(lastUpdate.at)}</time>
 			</dd>

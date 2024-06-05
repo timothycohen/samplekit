@@ -75,6 +75,7 @@ const config = [
 		files: ['sites/samplekit.dev/**'],
 		ignores: ['**/*.svelte'],
 		languageOptions: { parserOptions: { project: 'sites/samplekit.dev/tsconfig.json' } },
+		rules: { '@typescript-eslint/no-unused-expressions': 'off' }, // https://github.com/sveltejs/eslint-plugin-svelte/issues/652#issuecomment-2087008855
 	},
 	// svelte
 	...svelte.configs['flat/recommended'].map((c, i) => ({ ...c, name: 'svelte/flat/recommended/' + (c.name ?? i) })),
@@ -83,6 +84,7 @@ const config = [
 		name: 'svelte/custom',
 		files: ['**/*.svelte'],
 		languageOptions: { parserOptions: { parser: ts.parser } },
+		rules: { '@typescript-eslint/no-unused-expressions': 'off' }, // https://github.com/sveltejs/eslint-plugin-svelte/issues/652#issuecomment-2087008855
 	},
 	// globals
 	{

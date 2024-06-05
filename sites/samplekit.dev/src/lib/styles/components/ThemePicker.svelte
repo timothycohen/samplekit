@@ -31,8 +31,8 @@
 	}
 </script>
 
-<div class="rounded-card border-gray-6 overflow-hidden border">
-	<div class="bg-app-bg border-b-gray-6 grid grid-cols-2 items-center border-b px-2 py-3">
+<div class="overflow-hidden rounded-card border border-gray-6">
+	<div class="grid grid-cols-2 items-center border-b border-b-gray-6 bg-app-bg px-2 py-3">
 		<span class="flex items-center gap-2">
 			<Icon class="h-5" />
 			<span><span class="capitalize">{mode}</span> theme</span>
@@ -46,12 +46,12 @@
 				class="flex items-center justify-end gap-2"
 			>
 				<span>Saved </span>
-				<Check class="text-success-9 h-5" />
+				<Check class="h-5 text-success-9" />
 			</span>
 		{:else if saved === null && active}
 			<span in:fade class="flex items-center justify-end gap-2">
 				<span>Active </span>
-				<Check class="text-success-9 h-5" />
+				<Check class="h-5 text-success-9" />
 			</span>
 		{/if}
 	</div>
@@ -65,13 +65,13 @@
 					<button
 						data-theme={theme.name}
 						class:scale-125={theme.name === displayTheme.name && theme.scheme === displayTheme.scheme}
-						class="{theme.scheme} rounded-badge border-gray-6 flex h-10 w-10 overflow-hidden border"
+						class="{theme.scheme} flex h-10 w-10 overflow-hidden rounded-badge border border-gray-6"
 						on:click={() => save(theme)}
 						on:mouseenter={() => (hovered = theme)}
 						on:mouseleave={() => (hovered = null)}
 					>
-						<span class="bg-app-bg h-full flex-1"></span>
-						<span class="bg-accent-9 h-full flex-1"></span>
+						<span class="h-full flex-1 bg-app-bg"></span>
+						<span class="h-full flex-1 bg-accent-9"></span>
 					</button>
 				{/if}
 			{/each}

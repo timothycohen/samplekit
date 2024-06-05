@@ -139,8 +139,8 @@
 
 <div use:melt={$portalled}>
 	{#if $editAvatarOpen}
-		<div use:melt={$overlay} class="modal-overlay" />
-		<div class="modal-content-position rounded-card overflow-hidden" use:melt={$content}>
+		<div use:melt={$overlay} class="modal-overlay"></div>
+		<div class="modal-content-position overflow-hidden rounded-card" use:melt={$content}>
 			<div class="relative aspect-square h-80 w-80 sm:h-[32rem] sm:w-[32rem]">
 				{#if $s.state === 'error'}
 					<ImageCardOverlays
@@ -158,7 +158,7 @@
 						/>
 					</div>
 					<div class="absolute bottom-0 right-0">
-						<button class="btn btn-accent rounded-tl-card rounded-br-card w-full rounded-none"> Save </button>
+						<button class="btn btn-accent w-full rounded-none rounded-br-card rounded-tl-card"> Save </button>
 					</div>
 					<ImageCardBtns onCancel={cancel} onNew={noop} />
 				{:else if $s.state === 'image_storage_uploading'}

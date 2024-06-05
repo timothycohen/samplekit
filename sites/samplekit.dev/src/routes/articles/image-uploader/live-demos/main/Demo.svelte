@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { createDialog, melt } from '@melt-ui/svelte';
 	import { page } from '$app/stores';
+	page; // https://github.com/sveltejs/eslint-plugin-svelte/issues/652#issuecomment-2087008855
 	import { Avatar } from '$lib/components';
 	import AvatarEditor from '$routes/account/profile/AvatarEditor.svelte';
 	import Mock from './Mock.svelte';
@@ -34,8 +35,8 @@
 
 	<div use:melt={$portalled}>
 		{#if $editAvatarOpen}
-			<div use:melt={$overlay} class="modal-overlay" />
-			<div class="modal-content-position rounded-card overflow-hidden" use:melt={$content}>
+			<div use:melt={$overlay} class="modal-overlay"></div>
+			<div class="modal-content-position overflow-hidden rounded-card" use:melt={$content}>
 				<AvatarEditor avatar={user.avatar} onCancel={() => editAvatarOpen.set(false)} {updateAvatar} />
 			</div>
 		{/if}

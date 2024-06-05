@@ -2,6 +2,7 @@ import { get, writable, type Readable } from 'svelte/store';
 import { browser } from '$app/environment';
 import { goto } from '$app/navigation';
 import { page } from '$app/stores';
+page; // https://github.com/sveltejs/eslint-plugin-svelte/issues/652#issuecomment-2087008855
 
 type Changed = { changed: boolean };
 type GoOpts = { root?: string; deleteOtherParams?: true };

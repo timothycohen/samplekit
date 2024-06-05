@@ -4,8 +4,8 @@
 	export let data;
 </script>
 
-<section class="h-screen-nav mx-auto w-full max-w-3xl p-8">
-	<div class="rounded-card shadow-3 space-y-8 p-8">
+<section class="mx-auto h-screen-nav w-full max-w-3xl p-8">
+	<div class="space-y-8 rounded-card p-8 shadow-3">
 		<div class="mb-2 text-xl font-bold">Link {data.provider ?? 'OAuth'} Account</div>
 
 		<p>This account does not have {data.provider ?? 'OAuth'} authentication enabled.</p>

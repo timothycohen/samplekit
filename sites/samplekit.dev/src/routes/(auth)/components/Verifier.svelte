@@ -30,7 +30,7 @@
 	export let veri: VerifierProps;
 </script>
 
-<div class="rounded-card shadow-3 space-y-8 p-8">
+<div class="space-y-8 rounded-card p-8 shadow-3">
 	<h2 class="t-base-lg font-medium">
 		Step 1: Verify {veri.kind}
 	</h2>

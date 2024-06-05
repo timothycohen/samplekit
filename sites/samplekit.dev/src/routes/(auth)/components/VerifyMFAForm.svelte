@@ -22,7 +22,7 @@
 				passkeyError = '';
 			}}
 		>
-			<slot slot="right-of-header" name="right-of-header" />
+			<slot />
 		</MFASelector>
 	</div>
 

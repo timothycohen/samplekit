@@ -5,17 +5,17 @@
 </script>
 
 <section class="page">
-	<div class="cross-dots absolute -top-[var(--nav-height)] bottom-0 left-0 right-0 -z-20 hidden dark:block" />
+	<div class="cross-dots absolute -top-[var(--nav-height)] bottom-0 left-0 right-0 -z-20 hidden dark:block"></div>
 	<div
-		class="from-app-bg/50 to-accent-3/50 absolute -top-[var(--nav-height)] left-0 right-0 -z-10 hidden h-96 w-full bg-gradient-to-t opacity-60 dark:block"
-	/>
+		class="absolute -top-[var(--nav-height)] left-0 right-0 -z-10 hidden h-96 w-full bg-gradient-to-t from-app-bg/50 to-accent-3/50 opacity-60 dark:block"
+	></div>
 	<div
-		class="from-app-bg/30 via-app-bg/50 absolute -top-[var(--nav-height)] left-0 right-0 -z-10 hidden h-96 w-full bg-gradient-to-tr to-transparent dark:block"
-	/>
+		class="absolute -top-[var(--nav-height)] left-0 right-0 -z-10 hidden h-96 w-full bg-gradient-to-tr from-app-bg/30 via-app-bg/50 to-transparent dark:block"
+	></div>
 
 	<div>
 		<h1
-			class="from-accent-7 via-accent-11 to-accent-7 t-h1 mt-[clamp(1.875rem,_4.5vw,_3rem)] bg-gradient-to-tr bg-clip-text text-center font-bold text-transparent"
+			class="t-h1 mt-[clamp(1.875rem,_4.5vw,_3rem)] bg-gradient-to-tr from-accent-7 via-accent-11 to-accent-7 bg-clip-text text-center font-bold text-transparent"
 		>
 			SvelteKit Design Patterns
 		</h1>
@@ -28,21 +28,21 @@
 		<div class="mx-auto my-[clamp(1.875rem,_4.5vw,_3rem)] max-w-4xl">
 			<ul class="mx-auto flex w-[17rem] flex-col items-center justify-between gap-4 md:w-full md:flex-row">
 				<li class="flex w-full items-center gap-6 sm:flex-col sm:gap-3">
-					<BookOpenText class="text-accent-12 h-10 w-10" />
+					<BookOpenText class="h-10 w-10 text-accent-12" />
 					<div class="flex flex-col sm:items-center">
 						<p class="text-h3-min font-bold">Articles</p>
 						<p>Full implementation details</p>
 					</div>
 				</li>
 				<li class="flex w-full items-center gap-6 sm:flex-col sm:gap-3">
-					<Boxes class="text-accent-12 h-10 w-10" />
+					<Boxes class="h-10 w-10 text-accent-12" />
 					<div class="flex flex-col sm:items-center">
 						<p class="text-h3-min font-bold">Demos</p>
 						<p>Embedded examples</p>
 					</div>
 				</li>
 				<li class="flex w-full items-center gap-6 sm:flex-col sm:gap-3">
-					<Code class="text-accent-12 h-10 w-10" />
+					<Code class="h-10 w-10 text-accent-12" />
 					<div class="flex flex-col sm:items-center">
 						<p class="text-h3-min font-bold">Code</p>
 						<p>Open source on GitHub</p>

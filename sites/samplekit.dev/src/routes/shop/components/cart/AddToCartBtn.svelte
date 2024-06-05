@@ -25,14 +25,14 @@
 </script>
 
 {#if !props.selectedVariant}
-	<button type="button" aria-label="Please select an option" aria-disabled class="{buttonClasses} {disabledClasses}">
+	<button type="button" aria-label="Please select an option" class="{buttonClasses} {disabledClasses}">
 		<div class="absolute left-0 ml-4">
 			<PlusIcon class="h-5" />
 		</div>
 		Add To Cart
 	</button>
 {:else if !props.selectedVariant.availableForSale}
-	<button type="button" aria-disabled class="{buttonClasses} {disabledClasses}"> Out Of Stock </button>
+	<button type="button" aria-disabled={true} class="{buttonClasses} {disabledClasses}"> Out Of Stock </button>
 {:else}
 	<button
 		type="button"
@@ -51,7 +51,7 @@
 	>
 		<div class="absolute left-0 ml-4">
 			{#if $addingCartItem}
-				<LoadingDots class="bg-gray-12 mb-3" />
+				<LoadingDots class="mb-3 bg-gray-12" />
 			{:else}
 				<PlusIcon class="h-5" />
 			{/if}

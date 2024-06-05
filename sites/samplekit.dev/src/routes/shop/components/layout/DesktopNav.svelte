@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { melt } from '@melt-ui/svelte';
 	import { page } from '$app/stores';
+	page; // https://github.com/sveltejs/eslint-plugin-svelte/issues/652#issuecomment-2087008855
 	import { MenuIcon } from '$lib/styles/icons';
 	import { SearchBar, OpenCartBtn } from '$routes/shop/components';
 	import { useNavService } from '$routes/shop/services';
@@ -20,7 +21,7 @@
 </script>
 
 <nav
-	class="bg-app-bg border-gray-5 sticky top-0 z-50
+	class="sticky top-0 z-50 border-gray-5 bg-app-bg
 	{$desktopNav.menuUnderneath ? 'h-[120px]' : 'h-[72px]'}
 		w-full self-start overflow-hidden border-b"
 >
@@ -31,7 +32,7 @@
 					<a
 						href="/shop"
 						aria-label="go to shop home page"
-						class="text-logo font-black tracking-tight
+						class="font-black tracking-tight text-logo
 							{$desktopNav.menuUnderneath ? 'text-xl' : 'text-sm'}"
 					>
 						SampleKit
@@ -43,7 +44,7 @@
 						<a
 							href={item.path}
 							data-selected={selected}
-							class="text-gray-11 hover:text-gray-12 data-[selected=true]:text-gray-12 underline-offset-4 data-[selected=true]:underline"
+							class="text-gray-11 underline-offset-4 hover:text-gray-12 data-[selected=true]:text-gray-12 data-[selected=true]:underline"
 						>
 							{item.title}
 						</a>
@@ -55,7 +56,7 @@
 
 			<div class="flex justify-end gap-3">
 				{#if $desktopNav.showDrawerToggle}
-					<button use:melt={$trigger} class="animate-fade-up-and-in btn-ghost btn p-2">
+					<button use:melt={$trigger} class="btn btn-ghost animate-fade-up-and-in p-2">
 						<MenuIcon />
 					</button>
 				{/if}
@@ -71,7 +72,7 @@
 						<a
 							href={collection.path}
 							data-selected={selected}
-							class="text-gray-11 hover:text-gray-12 data-[selected=true]:text-gray-12 underline-offset-4 data-[selected=true]:underline"
+							class="text-gray-11 underline-offset-4 hover:text-gray-12 data-[selected=true]:text-gray-12 data-[selected=true]:underline"
 						>
 							{collection.title}
 						</a>

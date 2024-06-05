@@ -3,7 +3,7 @@
 	import { accountLayoutRoutes } from './nav/routes';
 </script>
 
-<div class="py-page full mx-auto grid max-w-screen-xl md:grid-cols-[13rem_1fr]">
+<div class="mx-auto grid max-w-screen-xl py-page full md:grid-cols-[13rem_1fr]">
 	<div class="hidden flex-col md:flex">
 		<div class="t-h5 pb-4 pl-7 font-bold">Account</div>
 

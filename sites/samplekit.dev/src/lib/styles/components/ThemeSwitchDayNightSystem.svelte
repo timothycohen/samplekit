@@ -90,7 +90,7 @@
 	/>
 
 	<label
-		class="text-sun-moon inline-block h-full w-full cursor-pointer peer-focus-visible:outline color-mode-toggle__{version}"
+		class="inline-block h-full w-full cursor-pointer text-sun-moon peer-focus-visible:outline color-mode-toggle__{version}"
 		style="--duration: {duration}ms;"
 		for="theme-switch-btn"
 	>
@@ -123,12 +123,12 @@
 
 	{#if dropdownShown}
 		<div
-			class="rounded-card border-gray-6 bg-gray-3 shadow-4 absolute right-0 top-8 min-w-[14rem] gap-2 overflow-hidden"
+			class="absolute right-0 top-8 min-w-[14rem] gap-2 overflow-hidden rounded-card border-gray-6 bg-gray-3 shadow-4"
 		>
 			<button
 				bind:this={firstEl}
 				tabindex="-1"
-				class="hover:bg-gray-4 focus-visible:bg-gray-4 flex w-full items-center gap-3 p-4 outline-1 -outline-offset-1"
+				class="flex w-full items-center gap-3 p-4 outline-1 -outline-offset-1 hover:bg-gray-4 focus-visible:bg-gray-4"
 				class:rounded-t-card={true}
 				on:click={() => change('fixed_day')}
 				use:keyboard={{ ArrowUp: [prev], ArrowDown: [next] }}
@@ -139,12 +139,12 @@
 				</span>
 				{#if mode === 'fixed_day'}
 					<!-- <Dot class="fill-info-9 stroke-info-9 ml-auto scale-[3]" /> -->
-					<Check class="text-success-9 ml-auto" />
+					<Check class="ml-auto text-success-9" />
 				{/if}
 			</button>
 			<button
 				tabindex="-1"
-				class="hover:bg-gray-4 focus-visible:bg-gray-4 flex w-full items-center gap-3 p-4 outline-1 -outline-offset-1"
+				class="flex w-full items-center gap-3 p-4 outline-1 -outline-offset-1 hover:bg-gray-4 focus-visible:bg-gray-4"
 				on:click={() => change('fixed_night')}
 				use:keyboard={{ ArrowUp: [prev], ArrowDown: [next] }}
 			>
@@ -154,12 +154,12 @@
 				</span>
 				{#if mode === 'fixed_night'}
 					<!-- <Dot class="fill-info-9 stroke-info-9 ml-auto scale-[3]" /> -->
-					<Check class="text-success-9 ml-auto" />
+					<Check class="ml-auto text-success-9" />
 				{/if}
 			</button>
 			<button
 				tabindex="-1"
-				class="hover:bg-gray-4 focus-visible:bg-gray-4 flex w-full items-center gap-3 p-4 outline-1 -outline-offset-1"
+				class="flex w-full items-center gap-3 p-4 outline-1 -outline-offset-1 hover:bg-gray-4 focus-visible:bg-gray-4"
 				class:rounded-b-card={!slotUsed}
 				on:click={() => change('sync_system')}
 				use:keyboard={{ ArrowUp: [prev], ArrowDown: [next] }}
@@ -168,7 +168,7 @@
 				<span>System {schemeSystem === 'dark' ? ' (Night)' : ' (Day)'}</span>
 				{#if mode === 'sync_system'}
 					<!-- <Dot class="fill-info-9 stroke-info-9 ml-auto scale-[3]" /> -->
-					<Check class="text-success-9 ml-auto" />
+					<Check class="ml-auto text-success-9" />
 				{/if}
 			</button>
 			<slot {prev} {next} />
