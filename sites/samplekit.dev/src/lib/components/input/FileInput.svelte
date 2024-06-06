@@ -1,11 +1,15 @@
 <script lang="ts">
-	export let multiple = false;
-	export let accept: string | null = 'image/*';
-	export let disabled = false;
-	export let onSelect: (files: File[]) => void;
+	interface Props {
+		multiple?: boolean;
+		accept?: string | null;
+		disabled?: boolean;
+		onSelect: (files: File[]) => void;
+	}
+
+	const { multiple = false, accept = 'image/*', disabled = false, onSelect }: Props = $props();
 
 	let inputEl: HTMLInputElement;
-	let isDragover = false;
+	let isDragover = $state(false);
 
 	const dispatchFiles = (fileList: FileList | null) => {
 		if (!fileList) return;
@@ -31,7 +35,7 @@
 		id="file"
 		{multiple}
 		{accept}
-		on:input={() => {
+		oninput={() => {
 			dispatchFiles(inputEl.files);
 			inputEl.value = '';
 		}}
@@ -41,19 +45,23 @@
 	/>
 
 	<label
-		on:dragenter={() => {
+		ondragenter={() => {
 			isDragover = true;
 		}}
-		on:dragover|preventDefault={() => {
+		ondragover={(event) => {
+			event.preventDefault();
+
 			isDragover = true;
 		}}
-		on:dragleave={() => {
+		ondragleave={() => {
 			isDragover = false;
 		}}
-		on:dragend={() => {
+		ondragend={() => {
 			isDragover = false;
 		}}
-		on:drop|preventDefault={(e) => {
+		ondrop={(e) => {
+			e.preventDefault();
+
 			const dataTransfer = e.dataTransfer;
 			if (!dataTransfer) return;
 			isDragover = false;

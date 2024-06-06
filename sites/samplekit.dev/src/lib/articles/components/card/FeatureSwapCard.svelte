@@ -3,17 +3,21 @@
 	import { clickOn } from '$lib/actions';
 	import FeatureCardContent from './FeatureCardContent.svelte';
 
-	export let feature: {
-		imgSm?: string;
-		imgSmGif?: string;
-		title: string;
-		description: string;
-		tags?: string[] | null;
-		articleSlug: string;
-		implementationSlug: string;
-		srcCodeHref: string;
-	};
-	export let preview = false;
+	interface Props {
+		feature: {
+			imgSm?: string;
+			imgSmGif?: string;
+			title: string;
+			description: string;
+			tags?: string[] | null;
+			articleSlug: string;
+			implementationSlug: string;
+			srcCodeHref: string;
+		};
+		preview?: boolean;
+	}
+
+	const { feature, preview = false }: Props = $props();
 
 	let labelEl: HTMLLabelElement;
 	let frontEl: HTMLDivElement;
@@ -38,7 +42,7 @@
 		}
 	});
 
-	let checked = false;
+	let checked = $state(false);
 
 	const borderWrapperClass = `h-full from-accent-5/50 via-accent-6/50 to-accent-9/50 rounded-card p-px dark:bg-gradient-to-t sm:dark:bg-gradient-to-tr
 	transition-transform duration-500 ease-in-out peer-focus-visible:outline`;

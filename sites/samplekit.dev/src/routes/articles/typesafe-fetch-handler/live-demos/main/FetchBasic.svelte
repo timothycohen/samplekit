@@ -1,16 +1,16 @@
 <script lang="ts">
 	import { Loader2 } from '$lib/styles/icons';
 	import LangSelect from './LangSelect.svelte';
-	import { getRandomColor, type Lang } from '.';
+	import { getRandomColor, langOptions, type Lang } from '.';
 
 	const gettingRandomColor = getRandomColor();
 	const { delayed } = gettingRandomColor;
 
-	let currentColor = 'Yellow';
-	let selectedLang: Lang;
+	let currentColor = $state('Yellow');
+	let selectedLang: Lang = $state(langOptions.language[0].value.lang);
 
 	const getColor = async () => {
-		if ($gettingRandomColor) return;
+		if ($gettingRandomColor || !selectedLang) return;
 		const { data, error } = await gettingRandomColor.send({ excludeColor: currentColor, lang: selectedLang });
 		if (error) return window.alert('How did you break this? 😭');
 		currentColor = data.color;
@@ -19,12 +19,12 @@
 
 <div class="grid gap-x-12 gap-y-8">
 	<div class="col-span-2 sm:col-span-1">
-		<LangSelect bind:selectedLang />
+		<LangSelect onSelect={(lang) => (selectedLang = lang)} />
 	</div>
 
 	<button
 		class="btn btn-accent col-span-2 transition-colors sm:col-span-1 {$delayed ? 'cursor-not-allowed' : ''}"
-		on:click={getColor}
+		onclick={getColor}
 	>
 		{#if $delayed}
 			<span class="grid w-[1.625rem] place-content-center" aria-label="Delayed">

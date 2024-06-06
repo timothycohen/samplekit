@@ -6,6 +6,8 @@
 	import { Header, SEO } from '$lib/components';
 	import { themeController } from '$lib/styles';
 
+	const { children } = $props();
+
 	onMount(() => {
 		const { destroy } = themeController.listen('light-dark-system');
 		return destroy;
@@ -20,7 +22,7 @@
 
 <div class="{$page.data.layout.showHeader ? 'min-h-screen-nav' : 'min-h-screen'} relative flex flex-col">
 	<main class="flex min-h-full flex-1 flex-col">
-		<slot />
+		{@render children()}
 	</main>
 
 	{#if $page.data.layout.showFooter}

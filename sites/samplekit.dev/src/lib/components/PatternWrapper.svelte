@@ -4,8 +4,14 @@
 
 <script lang="ts">
 	import DiagonalLines from './DiagonalLines.svelte';
+	import type { Snippet } from 'svelte';
 
-	export let opts: WrapperProps | undefined = undefined;
+	interface Props {
+		opts?: WrapperProps | undefined;
+		children: Snippet;
+	}
+
+	const { opts = undefined, children }: Props = $props();
 </script>
 
 <div
@@ -23,6 +29,6 @@
 	{/if}
 
 	<div class="aspect-video h-full flex-1 {opts?.center ? 'grid place-content-center' : ''}">
-		<slot />
+		{@render children()}
 	</div>
 </div>

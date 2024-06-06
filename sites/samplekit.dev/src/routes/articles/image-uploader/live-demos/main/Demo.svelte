@@ -6,8 +6,10 @@
 	import AvatarEditor from '$routes/account/profile/AvatarEditor.svelte';
 	import Mock from './Mock.svelte';
 
-	let user: DB.User | null = null;
-	$: user = $page.data['user'] ?? null;
+	let user: DB.User | null = $state(null);
+	page.subscribe(($page) => {
+		user = $page.data['user'] ?? null;
+	});
 
 	const updateAvatar = (img: DB.User['avatar']) => {
 		if (user) {

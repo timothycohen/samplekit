@@ -3,9 +3,13 @@
 	import { handleToPath } from '$routes/shop/utils';
 	import type { Product } from '$lib/shop';
 
-	export let products: Product[];
+	interface Props {
+		products: Product[];
+	}
 
-	const carouselProducts = [...products, ...products, ...products];
+	const { products }: Props = $props();
+
+	const carouselProducts = $state([...products, ...products, ...products]);
 </script>
 
 {#if carouselProducts.length}

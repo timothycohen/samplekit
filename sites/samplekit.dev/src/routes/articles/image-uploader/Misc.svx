@@ -1,7 +1,11 @@
 <script lang="ts">
 	import { CodeTopper } from '$lib/articles/components';
 
-  export let part: "state-table" | "package.json" | "aws-sdk" | "cors"  | "env"
+  interface Props {
+    part: "state-table" | "package.json" | "aws-sdk" | "cors"  | "env"
+  }
+
+	const { part }: Props = $props();
 </script>
 
 {#if part === 'state-table'}

@@ -7,11 +7,11 @@
 	import { ArrowRight, PanelRightDashed, UnfoldVertical, FoldVertical } from '$lib/styles/icons';
 	import { pluralize } from '$lib/utils/common';
 
-	export let data;
-	$: article = data.article;
+	const { data, children } = $props();
+	const article = $derived(data.article);
 
-	let wordCount = 0;
-	let readingTime = 0;
+	let wordCount = $state(0);
+	let readingTime = $state(0);
 
 	function updateReadingTime() {
 		const text = articleContentWrapper.innerText;
@@ -26,11 +26,11 @@
 	});
 
 	let articleContentWrapper: HTMLDivElement;
-	let sidebarOpen = true;
+	let sidebarOpen = $state(true);
 
 	createCollapsedService();
 	const { triggerAll } = useCollapsedService();
-	let allOpen = false;
+	let allOpen = $state(false);
 
 	const toggleAllOpen = () => {
 		allOpen = !allOpen;
@@ -76,7 +76,9 @@
 						Interactive Demo
 					</h2>
 				</span>
-				<TabPanels files={article.demos.main} />
+				<div class="main-demo">
+					<TabPanels files={article.demos.main} />
+				</div>
 			{/if}
 		</div>
 
@@ -87,7 +89,7 @@
 
 		<div class="flex gap-[clamp(2.5rem,8vw,4rem)]">
 			<div class="prose prose-lg prose-radix min-w-0 max-w-none flex-1" bind:this={articleContentWrapper} id="use-toc">
-				<slot />
+				{@render children?.()}
 			</div>
 
 			{#if sidebarOpen}
@@ -102,7 +104,7 @@
 										<h2 class="t-h3 font-bold text-accent-12">Table of Contents</h2>
 										<button
 											class="btn btn-ghost mr-1 rounded-badge px-2 py-1"
-											on:click={() => (sidebarOpen = !sidebarOpen)}
+											onclick={() => (sidebarOpen = !sidebarOpen)}
 										>
 											<ArrowRight class="h-5 w-5" />
 										</button>
@@ -140,7 +142,7 @@
 				<button
 					in:fly={{ x: 40, y: 40 }}
 					class="fixed bottom-20 right-4 hidden h-12 w-12 items-center justify-center rounded-full border border-gray-5 bg-app-bg/75 text-gray-11 backdrop-blur-md lg:flex"
-					on:click={() => (sidebarOpen = !sidebarOpen)}
+					onclick={() => (sidebarOpen = !sidebarOpen)}
 				>
 					<PanelRightDashed class="h-6 w-6" />
 				</button>
@@ -149,7 +151,7 @@
 			<button
 				in:fly={{ x: 40, y: 40 }}
 				class="fixed bottom-4 right-4 z-10 flex h-12 w-12 items-center justify-center rounded-full border border-gray-5 bg-app-bg/75 text-gray-11 backdrop-blur-md"
-				on:click={() => toggleAllOpen()}
+				onclick={() => toggleAllOpen()}
 			>
 				{#if allOpen}
 					<UnfoldVertical class="h-6 w-6" />
@@ -225,5 +227,11 @@
 		width: calc(100% + 2rem);
 		text-decoration: none;
 		opacity: 0;
+	}
+
+	article .main-demo :global(.tabpanel > .code-wrapper) {
+		padding: 1rem 1.5rem;
+		margin: 0;
+		font-size: 0.9rem;
 	}
 </style>

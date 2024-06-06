@@ -19,7 +19,13 @@
 	import TabPanelItem from './TabPanelItem.svelte';
 	import type { NoPropComponent } from '$lib/utils/common';
 
-	export let files: Array<TabPanel>;
+	interface Props {
+		files: Array<TabPanel>;
+	}
+
+	const { files }: Props = $props();
+
+	let collapsed = $state(false);
 
 	const {
 		elements: { root, list, trigger, content },
@@ -31,12 +37,13 @@
 		},
 	});
 
-	let collapsed = false;
-
 	const service = useCollapsedService();
 	if (service) {
 		service.onTrigger((newState) => (collapsed = newState));
 	}
+
+	// todo svelte-5 melt-ui hack to get rid of "state_unsafe_mutation" error
+	files.forEach((_t, i) => $trigger(`tab-${i}`));
 </script>
 
 <div use:melt={$root}>
@@ -80,7 +87,7 @@
 		<div class="flex-1 bg-gray-5"></div>
 
 		<button
-			on:click={() => (collapsed = !collapsed)}
+			onclick={() => (collapsed = !collapsed)}
 			class="grid min-h-10 w-10 shrink-0 place-content-center rounded-tr-card border-l border-gray-9 bg-gray-3 text-gray-10 -outline-offset-1 hover:bg-gray-4 dark:border-gray-5"
 		>
 			<div class="transition-transform {collapsed ? 'rotate-180' : ''}">
@@ -105,12 +112,7 @@
 </div>
 
 <style lang="postcss">
-	:global(.tabpanel > .code-wrapper) {
+	.tabpanel :global(> .code-wrapper) {
 		border-radius: 0 0 var(--radius-card) var(--radius-card);
-		margin: 0;
-	}
-	:global(.tabpanel pre) {
-		padding: 1rem 1.5rem;
-		font-size: 0.9rem;
 	}
 </style>

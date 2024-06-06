@@ -1,11 +1,16 @@
 <script lang="ts">
 	import { CropWindow, defaultValue, defaultOptions, type CropValue } from '$lib/image/client';
 
-	export let url: string;
-	export let disabled = false;
-	export let onSave: (value: CropValue) => void;
-	export let crop: CropValue | undefined = undefined;
-	let value = { ...(crop || defaultValue) };
+	interface Props {
+		url: string;
+		disabled?: boolean;
+		onSave: (value: CropValue) => void;
+		crop?: CropValue | undefined;
+	}
+
+	const { url, disabled = false, onSave, crop = undefined }: Props = $props();
+
+	let value = $state({ ...(crop || defaultValue) });
 </script>
 
 <div class="crop-wrapper contents">
@@ -20,7 +25,10 @@
 	<button
 		{disabled}
 		class="btn btn-accent w-full rounded-none rounded-br-card rounded-tl-card"
-		on:click|stopPropagation={() => onSave(value)}
+		onclick={(event) => {
+			event.stopPropagation();
+			onSave(value);
+		}}
 	>
 		Save
 	</button>

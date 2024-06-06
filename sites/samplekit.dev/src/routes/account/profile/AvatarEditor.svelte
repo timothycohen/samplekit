@@ -14,9 +14,13 @@
 		deleteAvatar,
 	} from './avatar/upload.json';
 
-	export let avatar: DB.User['avatar'];
-	export let onCancel: () => void;
-	export let updateAvatar: (img: DB.User['avatar']) => void;
+	interface Props {
+		avatar: DB.User['avatar'];
+		onCancel: () => void;
+		updateAvatar: (img: DB.User['avatar']) => void;
+	}
+
+	const { avatar, onCancel, updateAvatar }: Props = $props();
 
 	onDestroy(() => editAvatarController.cancel());
 

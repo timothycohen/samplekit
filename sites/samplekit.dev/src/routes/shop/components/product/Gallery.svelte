@@ -4,11 +4,15 @@
 	import { GridTileImage } from '..';
 	import type { Image } from '$lib/shop';
 
-	export let images: Image[] = [];
+	interface Props {
+		images?: Image[];
+	}
+
+	const { images = [] }: Props = $props();
 
 	const imageIndex = createNumParam({ paramName: 'image' }, { max: images.length - 1, min: 0, wrap: true });
 
-	$: image = images[$imageIndex];
+	const image = $derived(images[$imageIndex]);
 </script>
 
 <div class="relative aspect-square h-full max-h-[550px] w-full overflow-hidden rounded-card">
@@ -27,7 +31,7 @@
 				<button
 					class="group flex h-11 w-20 items-center justify-center"
 					aria-label="Previous product image"
-					on:click={imageIndex.prev}
+					onclick={imageIndex.prev}
 				>
 					<ArrowLeftIcon class="h-5 w-5 group-hover:h-6 group-hover:w-6 group-hover:text-gray-12" />
 				</button>
@@ -37,7 +41,7 @@
 				<button
 					class="group flex h-11 w-20 items-center justify-center"
 					aria-label="Next product image"
-					on:click={imageIndex.next}
+					onclick={imageIndex.next}
 				>
 					<ArrowRightIcon class="h-5 w-5 group-hover:h-6 group-hover:w-6 group-hover:text-gray-12" />
 				</button>
@@ -53,7 +57,7 @@
 				{@const active = index === $imageIndex}
 
 				<li class="h-20 w-20">
-					<button class="h-full w-full" aria-label="Enlarge product image" on:click={() => imageIndex.set(index)}>
+					<button class="h-full w-full" aria-label="Enlarge product image" onclick={() => imageIndex.set(index)}>
 						<GridTileImage
 							{active}
 							images={[image.url]}

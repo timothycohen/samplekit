@@ -2,28 +2,30 @@
 	import { AlertTriangle, ImageIcon, Loader } from '$lib/styles/icons';
 	import type { CropValue } from '$lib/image/client';
 
-	export let img:
-		| { kind: 'overlay'; url: string | null | undefined; crop: CropValue | null; blur?: true }
-		| { kind: 'skeleton' }
-		| { kind: 'full'; url: string | undefined; crop: CropValue | undefined; blur?: true }
-		| null = null;
+	interface Props {
+		img?:
+			| { kind: 'overlay'; url: string | null | undefined; crop: CropValue | null; blur?: true }
+			| { kind: 'skeleton' }
+			| { kind: 'full'; url: string | undefined; crop: CropValue | undefined; blur?: true }
+			| null;
+		overlay?: { pulsingWhite?: true; red?: never } | { pulsingWhite?: never; red?: true } | null;
+		errorMsgs?: [string, string] | [string, null] | null;
+		onCancel?: (() => void) | undefined;
+	}
 
-	export let overlay: { pulsingWhite?: true; red?: never } | { pulsingWhite?: never; red?: true } | null = null;
-
-	export let errorMsgs: [string, string] | [string, null] | null = null;
-
-	export let onCancel: (() => void) | undefined = undefined;
+	const { img = null, overlay = null, errorMsgs = null, onCancel = undefined }: Props = $props();
 
 	const wrapperStyles = 'overflow: hidden; height: 100%;';
 
-	$: cropStyles =
+	const cropStyles = $derived(
 		img && 'crop' in img && img.crop
 			? `transform: translateX(-50%) translateY(-50%) rotate(${img.crop.rotation}deg);` +
-				`height: ${img.crop.scale * 100}%;` +
-				`margin-left: ${img.crop.aspect * 50 + img.crop.position.x * 100}%;` +
-				`margin-top: ${img.crop.aspect * 50 + img.crop.position.y * 100}%;` +
-				'max-width: none;'
-			: '';
+					`height: ${img.crop.scale * 100}%;` +
+					`margin-left: ${img.crop.aspect * 50 + img.crop.position.x * 100}%;` +
+					`margin-top: ${img.crop.aspect * 50 + img.crop.position.y * 100}%;` +
+					'max-width: none;'
+			: '',
+	);
 </script>
 
 {#if img?.kind === 'overlay' && img.url}
@@ -70,7 +72,7 @@
 
 {#if onCancel}
 	<div class="absolute bottom-0 right-0 overflow-hidden rounded-tl-card">
-		<button class="btn btn-accent w-full rounded-none rounded-br-card rounded-tl-card" on:click={onCancel}>
+		<button class="btn btn-accent w-full rounded-none rounded-br-card rounded-tl-card" onclick={onCancel}>
 			Cancel
 		</button>
 	</div>

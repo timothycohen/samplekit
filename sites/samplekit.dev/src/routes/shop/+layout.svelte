@@ -40,7 +40,7 @@
 		}
 	});
 
-	export let data;
+	const { data, children } = $props();
 </script>
 
 <div class="full">
@@ -72,7 +72,7 @@
 	<Sidebar collections={data.collections} />
 	<Cart />
 
-	<slot />
+	{@render children()}
 </div>
 
 <footer class="mt-8">

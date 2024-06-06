@@ -1,24 +1,38 @@
 <script lang="ts">
 	import Label from './Label.svelte';
 
-	export let isInteractive = true;
-	export let active = false;
-	export let label:
-		| {
-				title: string;
-				position?: 'bottom' | 'center';
-				price: {
-					amount: string;
-					currencyCode: string;
-				};
-		  }
-		| undefined = undefined;
-	export let images: string[];
-	export let alt: string;
-	export let sizes: string | undefined = '';
-	export let loading: 'lazy' | 'eager' | undefined = undefined;
-	export let height: number | undefined = undefined;
-	export let width: number | undefined = undefined;
+	interface Props {
+		isInteractive?: boolean;
+		active?: boolean;
+		label?:
+			| {
+					title: string;
+					position?: 'bottom' | 'center';
+					price: {
+						amount: string;
+						currencyCode: string;
+					};
+			  }
+			| undefined;
+		images: string[];
+		alt: string;
+		sizes?: string | undefined;
+		loading?: 'lazy' | 'eager' | undefined;
+		height?: number | undefined;
+		width?: number | undefined;
+	}
+
+	const {
+		isInteractive = true,
+		active = false,
+		label = undefined,
+		images,
+		alt,
+		sizes = '',
+		loading = undefined,
+		height = undefined,
+		width = undefined,
+	}: Props = $props();
 </script>
 
 <div

@@ -1,9 +1,15 @@
 <script lang="ts">
 	import { mfaLabels } from '$lib/auth/client';
+	import type { Snippet } from 'svelte';
 
-	export let mfasEnabled: DB.MFAs.Enabled;
-	export let selectedMFAMethod: DB.MFAs.Kind | '';
-	export let onChange: (kind: DB.MFAs.Kind) => void;
+	interface Props {
+		mfasEnabled: DB.MFAs.Enabled;
+		selectedMFAMethod: DB.MFAs.Kind | '';
+		onChange: (kind: DB.MFAs.Kind) => void;
+		children: Snippet;
+	}
+
+	const { mfasEnabled, selectedMFAMethod, onChange, children }: Props = $props();
 
 	const handleChange = (e: Event & { currentTarget: EventTarget & HTMLSelectElement }) => {
 		onChange(e.currentTarget.value as DB.MFAs.Kind);
@@ -13,10 +19,10 @@
 <div>
 	<div class="flex justify-between text-sm font-bold">
 		<label for="mfa_method" class="mb-2 font-bold">Authentication Method</label>
-		<slot />
+		{@render children()}
 	</div>
 
-	<select value={selectedMFAMethod} id="mfa_method" class="input-text" on:change={handleChange}>
+	<select value={selectedMFAMethod} id="mfa_method" class="input-text" onchange={handleChange}>
 		<option value="" disabled selected>Select a method</option>
 		{#if mfasEnabled.sms}
 			<option value="sms">{mfaLabels['sms']}</option>{/if}

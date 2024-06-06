@@ -1,19 +1,32 @@
 <script lang="ts">
 	import { Pencil } from '$lib/styles/icons';
 
-	export let editable = false;
-	export let size: number;
-	export let avatar: DB.User['avatar'];
-	export let showEditButton = false;
-	export let editing = false;
-	export let onEditorClicked: (() => void) | undefined = undefined;
+	interface Props {
+		editable?: boolean;
+		size: number;
+		avatar: DB.User['avatar'];
+		showEditButton?: boolean;
+		editing?: boolean;
+		onEditorClicked?: (() => void) | undefined;
+	}
 
-	$: imgStyles = avatar
-		? `transform: translateX(-50%) translateY(-50%) rotate(${avatar.crop.rotation}deg);` +
-			`height: ${avatar.crop.scale * size}px;` +
-			`margin-left: ${(size * avatar.crop.aspect) / 2 + avatar.crop.position.x * size}px;` +
-			`margin-top: ${size / 2 + avatar.crop.position.y * size}px; max-width: none;`
-		: '';
+	const {
+		editable = false,
+		size,
+		avatar,
+		showEditButton = false,
+		editing = false,
+		onEditorClicked = undefined,
+	}: Props = $props();
+
+	const imgStyles = $derived(
+		avatar
+			? `transform: translateX(-50%) translateY(-50%) rotate(${avatar.crop.rotation}deg);` +
+					`height: ${avatar.crop.scale * size}px;` +
+					`margin-left: ${(size * avatar.crop.aspect) / 2 + avatar.crop.position.x * size}px;` +
+					`margin-top: ${size / 2 + avatar.crop.position.y * size}px; max-width: none;`
+			: '',
+	);
 </script>
 
 {#if !editable}
@@ -32,7 +45,7 @@
 
 {#if editable}
 	<button
-		on:click={() => onEditorClicked?.()}
+		onclick={() => onEditorClicked?.()}
 		class="group relative block overflow-hidden rounded-full"
 		style="height:{size}px; width:{(avatar?.crop?.aspect ?? 1) * size}px;"
 	>

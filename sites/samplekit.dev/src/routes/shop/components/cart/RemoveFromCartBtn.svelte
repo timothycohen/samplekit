@@ -5,17 +5,21 @@
 	import { useCartService } from '$routes/shop/services';
 	import type { Result } from '$lib/utils/common';
 
-	export let props: {
-		lineId: string;
-		handle?: (res: Result<Result.Success>) => void;
-	};
+	interface Props {
+		props: {
+			lineId: string;
+			handle?: (res: Result<Result.Success>) => void;
+		};
+	}
+
+	const { props }: Props = $props();
 
 	const { pending, removingCartItem, cart } = useCartService();
 </script>
 
 <button
 	type="button"
-	on:click={async () => {
+	onclick={async () => {
 		if ($pending) return;
 		removingCartItem.send({ lineId: props.lineId }).then((res) => {
 			if (props.handle) return props.handle(res);

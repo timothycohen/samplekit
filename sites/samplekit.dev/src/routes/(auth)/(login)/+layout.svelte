@@ -3,6 +3,8 @@
 	import { Logo } from '$lib/components';
 	import { DotPattern } from '$routes/(auth)/(login)/components';
 
+	const { children } = $props();
+
 	createTurnstileService();
 	const { turnstile } = useTurnstileService();
 </script>
@@ -24,7 +26,7 @@
 					<Logo link />
 				</div>
 
-				<slot />
+				{@render children()}
 
 				<div class="mb-4 mt-2 h-[65px] w-full">
 					<Turnstile {turnstile} />

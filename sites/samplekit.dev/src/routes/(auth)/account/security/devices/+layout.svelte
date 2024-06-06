@@ -1,5 +1,7 @@
 <script lang="ts">
 	import { AccountLayout } from '$lib/components';
+
+	const { children } = $props();
 </script>
 
-<AccountLayout><slot /></AccountLayout>
+<AccountLayout>{@render children()}</AccountLayout>

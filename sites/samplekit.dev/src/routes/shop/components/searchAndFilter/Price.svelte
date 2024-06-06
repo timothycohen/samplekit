@@ -4,7 +4,7 @@
 
 	const {
 		params: { price },
-	} = useSearchAndFilterService();
+	} = $state(useSearchAndFilterService());
 </script>
 
 <div class="space-y-2">
@@ -19,15 +19,18 @@
 				max={price.absMax}
 				placeholder={cap(paramKey)}
 				value={$price[paramKey]}
-				on:keydown={(e) => {
+				onkeydown={(e) => {
 					if (['-', '+', 'e', 'E', '.'].includes(e.key)) e.preventDefault();
 					if (e.currentTarget.value.length === price.absMax.toString().length && e.key.match(/[0-9]/)) {
 						price.set({ [paramKey]: price.absMax }, { nogo: true });
 						e.preventDefault();
 					}
 				}}
-				on:paste|preventDefault={(e) => price.setParams({ [paramKey]: e.clipboardData?.getData('text') ?? null })}
-				on:change={(e) => price.setParams({ [paramKey]: e.currentTarget.value })}
+				onpaste={(e) => {
+					e.preventDefault();
+					price.setParams({ [paramKey]: e.clipboardData?.getData('text') ?? null });
+				}}
+				onchange={(e) => price.setParams({ [paramKey]: e.currentTarget.value })}
 			/>
 
 			{#if !i}

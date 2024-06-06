@@ -4,9 +4,9 @@
 	import { goto } from '$app/navigation';
 	import { registerMFA_Passkey_WithSeshConfAndPasskey } from '$routes/(auth)/mfa/update/register/passkeys.json';
 
-	export let data;
+	const { data } = $props();
 
-	let err = '';
+	let err = $state('');
 
 	const registeringPasskey = registerMFA_Passkey_WithSeshConfAndPasskey();
 

@@ -3,8 +3,12 @@
 	page; // https://github.com/sveltejs/eslint-plugin-svelte/issues/652#issuecomment-2087008855
 	import type { RouteGroup, RouteLeaf } from './routes';
 
-	export let route: RouteLeaf | RouteGroup;
-	export let onNavItemClick: () => void;
+	interface Props {
+		route: RouteLeaf | RouteGroup;
+		onNavItemClick: () => void;
+	}
+
+	const { route, onNavItemClick }: Props = $props();
 
 	const isGroup = (route: RouteLeaf | RouteGroup): route is RouteGroup => 'groupPath' in route;
 </script>
@@ -21,7 +25,7 @@
 		</ul>
 	{:else}
 		<a
-			on:click={onNavItemClick}
+			onclick={onNavItemClick}
 			href={route.path}
 			aria-current={$page.url.pathname.startsWith(route.path) ? 'page' : undefined}
 			class="text-h4 leading-h2 text-gray-12 underline--hidden before:bottom-[.175rem]

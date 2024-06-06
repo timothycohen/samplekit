@@ -5,17 +5,21 @@
 	import ThemeDemo from './ThemeDemo.svelte';
 
 	type Theme = { name: string; scheme: 'light' | 'dark' };
-	export let mode: 'day' | 'night';
-	export let themes: Theme[];
-	export let active: boolean;
-	export let preference: Theme;
-	export let setTheme: (theme: { kind: 'day' | 'night'; theme: Theme }) => void;
+	interface Props {
+		mode: 'day' | 'night';
+		themes: Theme[];
+		active: boolean;
+		preference: Theme;
+		setTheme: (theme: { kind: 'day' | 'night'; theme: Theme }) => void;
+	}
+
+	const { mode, themes, active, preference, setTheme }: Props = $props();
 
 	const Icon = mode === 'day' ? Sun : Moon;
-	let hovered: null | Theme = null;
-	$: displayTheme = hovered ?? preference;
+	let hovered: null | Theme = $state(null);
+	const displayTheme = $derived(hovered ?? preference);
 
-	let saved: 'fading-in' | 'saved' | 'fading-out' | null = null;
+	let saved: 'fading-in' | 'saved' | 'fading-out' | null = $state(null);
 
 	const setFadeOutTimer = debounce(() => (saved = 'fading-out'), 1000);
 
@@ -24,11 +28,13 @@
 		saved = 'fading-in';
 	};
 
-	let showOppositeScheme = false;
+	let showOppositeScheme = $state(false);
 
-	$: if (preference.scheme === (mode === 'day' ? 'dark' : 'light')) {
-		showOppositeScheme = true;
-	}
+	$effect(() => {
+		if (preference.scheme === (mode === 'day' ? 'dark' : 'light')) {
+			showOppositeScheme = true;
+		}
+	});
 </script>
 
 <div class="overflow-hidden rounded-card border border-gray-6">
@@ -41,8 +47,8 @@
 		{#if saved === 'fading-in' || saved === 'saved'}
 			<span
 				transition:fade={{ duration: 300 }}
-				on:introstart={setFadeOutTimer}
-				on:outroend={() => (saved = null)}
+				onintrostart={setFadeOutTimer}
+				onoutroend={() => (saved = null)}
 				class="flex items-center justify-end gap-2"
 			>
 				<span>Saved </span>
@@ -66,9 +72,9 @@
 						data-theme={theme.name}
 						class:scale-125={theme.name === displayTheme.name && theme.scheme === displayTheme.scheme}
 						class="{theme.scheme} flex h-10 w-10 overflow-hidden rounded-badge border border-gray-6"
-						on:click={() => save(theme)}
-						on:mouseenter={() => (hovered = theme)}
-						on:mouseleave={() => (hovered = null)}
+						onclick={() => save(theme)}
+						onmouseenter={() => (hovered = theme)}
+						onmouseleave={() => (hovered = null)}
 					>
 						<span class="h-full flex-1 bg-app-bg"></span>
 						<span class="h-full flex-1 bg-accent-9"></span>

@@ -6,9 +6,13 @@
 	import { loginWithPasskey } from '$routes/(auth)/login/verify-mfa/passkey.json';
 	import { getPasskeyAuthOpts } from '$routes/(auth)/mfa/passkey/getAuthOptions.json';
 
-	export let passkeyAction: 'login' | 'confirmUser';
-	export let onFinished: () => void;
-	export let onError: (error: string) => void;
+	interface Props {
+		passkeyAction: 'login' | 'confirmUser';
+		onFinished: () => void;
+		onError: (error: string) => void;
+	}
+
+	const { passkeyAction, onFinished, onError }: Props = $props();
 
 	onMount(async () => {
 		const pipeline = (() => {

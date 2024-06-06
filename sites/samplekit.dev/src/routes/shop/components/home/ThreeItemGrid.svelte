@@ -2,7 +2,11 @@
 	import { ThreeItemGridItem } from '$routes/shop/components';
 	import type { Product } from '$lib/shop';
 
-	export let products: Product[];
+	interface Props {
+		products: Product[];
+	}
+
+	const { products }: Props = $props();
 
 	const [firstProduct, secondProduct, thirdProduct] = products;
 </script>

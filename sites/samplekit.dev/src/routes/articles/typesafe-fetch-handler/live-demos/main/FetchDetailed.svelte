@@ -5,21 +5,22 @@
 	import { createTempStore } from '$lib/stores';
 	import { Check, Loader2 } from '$lib/styles/icons';
 	import LangSelect from './LangSelect.svelte';
-	import { getRandomColor, type Lang } from '.';
+	import { getRandomColor, langOptions, type Lang } from '.';
 
 	const gettingRandomColor = getRandomColor();
 	const { delayed, timeout } = gettingRandomColor;
 
-	let currentColor = 'Yellow';
-	let simulateDelay = false;
-	let time = '';
-	let abortController: AbortController | null = null;
-	let res: null | Awaited<ReturnType<(typeof gettingRandomColor)['send']>> = null;
-	let selectedLang: Lang;
+	let currentColor = $state('Yellow');
+	let simulateDelay = $state(false);
+	let time = $state('');
+	let abortController: AbortController | null = $state(null);
+	let res: null | Awaited<ReturnType<(typeof gettingRandomColor)['send']>> = $state(null);
+	let selectedLang: Lang = $state(langOptions.language[0].value.lang);
 
 	const success = createTempStore<true>({ duration: 1500 });
 
 	const getColor = async () => {
+		if (selectedLang === undefined) return;
 		if ($gettingRandomColor) return;
 		success.clear();
 		time = '';
@@ -41,9 +42,9 @@
 
 <div class="grid gap-x-12 gap-y-8 lg:grid-cols-2">
 	<div class="grid w-72 items-center gap-4">
-		<LangSelect bind:selectedLang />
+		<LangSelect onSelect={(lang) => (selectedLang = lang)} />
 
-		<button class="btn btn-accent transition-colors {$delayed ? 'cursor-not-allowed' : ''}" on:click={getColor}>
+		<button class="btn btn-accent transition-colors {$delayed ? 'cursor-not-allowed' : ''}" onclick={getColor}>
 			{#if $timeout}
 				<span class="grid w-[1.625rem] place-content-center" aria-label="Taking longer than usual.">
 					<LoadingDots class="bg-accent-1" wrapperClasses="mx-0" />
@@ -66,7 +67,7 @@
 			Random Color
 		</button>
 
-		<button class="btn btn-hollow w-full" disabled={!$delayed} on:click={() => abortController?.abort()}>
+		<button class="btn btn-hollow w-full" disabled={!$delayed} onclick={() => abortController?.abort()}>
 			Abort Request
 		</button>
 

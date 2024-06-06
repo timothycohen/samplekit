@@ -1,7 +1,15 @@
 <script lang="ts">
-	export let wrapperClasses = 'w-8 h-8';
-	export let svelteClasses = 'fill-accent-9-contrast';
-	export let gearClasses = 'fill-accent-9 stroke-accent-1 stroke-[2]';
+	interface Props {
+		wrapperClasses?: string;
+		svelteClasses?: string;
+		gearClasses?: string;
+	}
+
+	const {
+		wrapperClasses = 'w-8 h-8',
+		svelteClasses = 'fill-accent-9-contrast',
+		gearClasses = 'fill-accent-9 stroke-accent-1 stroke-[2]',
+	}: Props = $props();
 </script>
 
 <svg width="128" height="128" viewBox="0 0 128 128" class={wrapperClasses}>

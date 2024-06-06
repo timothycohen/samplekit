@@ -8,7 +8,7 @@
 	import { DEFAULT_SELECTED_OPTION, formatPrice } from '$routes/shop/utils';
 	import EditItemQuantityBtn from './EditItemQuantityBtn.svelte';
 
-	const { cart, drawerProps, pending } = useCartService();
+	const { cart, drawerProps, pending } = $state(useCartService());
 
 	const {
 		elements: { overlay, content, close, portalled },
@@ -49,7 +49,7 @@
 											<div class="absolute z-40 -mt-2 ml-14">
 												<RemoveFromCartBtn props={{ lineId: line.id }} />
 											</div>
-											<a href={line.path} on:click={() => open.set(false)} class="z-30 flex flex-row space-x-4">
+											<a href={line.path} onclick={() => open.set(false)} class="z-30 flex flex-row space-x-4">
 												<div class="rounded-md relative h-16 w-16 cursor-pointer overflow-hidden border border-gray-6">
 													{#if image}
 														<img
@@ -117,15 +117,13 @@
 						</div>
 
 						<Notice
-							props={{
-								trigger: {
-									text: 'Proceed to Checkout',
-									classes: `btn btn-accent w-full rounded-full p-4 tracking-wide ${$pending ? 'pointer-events-none' : ''}`,
-								},
-								title: 'Woah now, this is a demo',
-								description: 'Thanks for playing along!',
-								confirm: { text: 'Got it!' },
+							trigger={{
+								text: 'Proceed to Checkout',
+								classes: `btn btn-accent w-full rounded-full p-4 tracking-wide ${$pending ? 'pointer-events-none' : ''}`,
 							}}
+							title={'Woah now, this is a demo'}
+							description={'Thanks for playing along!'}
+							confirm={{ text: 'Got it!' }}
 						>
 							<div class="space-y-3 leading-6">
 								<span class="block">

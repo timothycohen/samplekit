@@ -1,11 +1,14 @@
 <script lang="ts">
 	import type { TurnstileStore } from './stores';
 
-	export let turnstile: TurnstileStore;
-	let classes: string | null | undefined = undefined;
-	export { classes as class };
+	interface Props {
+		turnstile: TurnstileStore;
+		class?: string | null | undefined;
+	}
 
-	let scriptLoaded = typeof window === 'undefined' ? false : 'turnstile' in window;
+	const { turnstile, class: classes = undefined }: Props = $props();
+
+	let scriptLoaded = $state(typeof window === 'undefined' ? false : 'turnstile' in window);
 	const scriptLoadCallback = () => (scriptLoaded = true);
 </script>
 
@@ -13,7 +16,7 @@
 	{#if !scriptLoaded}
 		<script
 			src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit"
-			on:load={scriptLoadCallback}
+			onload={scriptLoadCallback}
 			defer
 			async
 		>

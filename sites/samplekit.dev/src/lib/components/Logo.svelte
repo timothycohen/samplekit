@@ -1,10 +1,14 @@
 <script lang="ts">
-	export let link = false;
-	export let onAnchorClick: (() => void) | undefined = undefined;
+	interface Props {
+		link?: boolean;
+		onAnchorClick?: (() => void) | undefined;
+	}
+
+	const { link = false, onAnchorClick = undefined }: Props = $props();
 </script>
 
 {#if link}
-	<a href="/" on:click={onAnchorClick} aria-label="go to home page" class="font-black tracking-tight text-logo">
+	<a href="/" onclick={onAnchorClick} aria-label="go to home page" class="font-black tracking-tight text-logo">
 		SampleKit
 	</a>
 {:else}

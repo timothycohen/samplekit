@@ -6,11 +6,15 @@
 		params: { query },
 	} = useSearchAndFilterService();
 
-	export let onSubmit: (e: SubmitEvent & { currentTarget: EventTarget & HTMLFormElement }) => void;
+	interface Props {
+		onSubmit: (e: SubmitEvent & { currentTarget: EventTarget & HTMLFormElement }) => void;
+	}
+
+	const { onSubmit }: Props = $props();
 </script>
 
 <div class="relative">
-	<form method="get" action="/" on:submit={onSubmit}>
+	<form method="get" action="/" onsubmit={onSubmit}>
 		<input
 			name="query"
 			type="text"

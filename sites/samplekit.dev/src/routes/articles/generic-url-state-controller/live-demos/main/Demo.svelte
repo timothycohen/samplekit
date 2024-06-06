@@ -41,8 +41,8 @@
 
 	<div class="grid gap-8 sm:grid-cols-2">
 		<div class="flex w-full flex-col gap-4">
-			<button class="btn btn-hollow w-full" on:click={() => reset({ filtersOnly: true })}>Remove Filters</button>
-			<button class="btn btn-hollow w-full" on:click={() => reset()}>Reset Filters and Sorting</button>
+			<button class="btn btn-hollow w-full" onclick={() => reset({ filtersOnly: true })}>Remove Filters</button>
+			<button class="btn btn-hollow w-full" onclick={() => reset()}>Reset Filters and Sorting</button>
 		</div>
 
 		<div class="flex w-full flex-col gap-4">

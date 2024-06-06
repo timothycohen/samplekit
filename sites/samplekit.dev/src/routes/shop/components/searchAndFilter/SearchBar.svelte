@@ -8,22 +8,29 @@
 		params: { query },
 	} = useSearchAndFilterService();
 
-	export let action: App.Form.Action = '/shop/collections/all';
-	export let onSubmit: (
-		e: SubmitEvent & {
-			currentTarget: EventTarget & HTMLFormElement;
+	interface Props {
+		action?: App.Form.Action;
+		onSubmit?: (
+			e: SubmitEvent & {
+				currentTarget: EventTarget & HTMLFormElement;
+			},
+		) => void;
+	}
+
+	const {
+		action = '/shop/collections/all',
+		onSubmit = (e) => {
+			e.preventDefault();
+			const v = e.currentTarget.querySelector('input')?.value ?? null;
+			const isValidPage = $page.url.pathname.includes('/shop/collections/');
+			if (isValidPage) query.set(v);
+			else query.set(v, { root: '/shop/collections/all', deleteOtherParams: true });
 		},
-	) => void = (e) => {
-		e.preventDefault();
-		const v = e.currentTarget.querySelector('input')?.value ?? null;
-		const isValidPage = $page.url.pathname.includes('/shop/collections/');
-		if (isValidPage) query.set(v);
-		else query.set(v, { root: '/shop/collections/all', deleteOtherParams: true });
-	};
+	}: Props = $props();
 </script>
 
 <div class="relative">
-	<form method="get" {action} on:submit={onSubmit}>
+	<form method="get" {action} onsubmit={onSubmit}>
 		<input
 			name="query"
 			type="text"

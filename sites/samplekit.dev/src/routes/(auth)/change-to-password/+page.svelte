@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { InputMessage } from '$lib/components';
 
-	export let form;
+	const { form } = $props();
 </script>
 
 <section class="mx-auto h-screen-nav w-full max-w-3xl p-8">
@@ -13,7 +13,7 @@
 
 		<div>
 			<div class="flex gap-2">
-				<button class="btn btn-hollow" on:click={() => history.back()}>Cancel</button>
+				<button class="btn btn-hollow" onclick={() => history.back()}>Cancel</button>
 				<form action="/change-to-password?/changeToEmailPassProvider" method="post">
 					<button class="btn btn-accent" disabled={!!form?.fail || !!form?.success}>Send Setup Email</button>
 				</form>

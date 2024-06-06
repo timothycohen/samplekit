@@ -4,9 +4,9 @@
 	import { pluralize } from '$lib/utils/common/language.js';
 	import { PassInput } from '$routes/(auth)/components';
 
-	let at = '';
-	export let data;
-	export let form;
+	const { data, form } = $props();
+
+	let at = $state('');
 </script>
 
 <div class="grid place-content-center page">

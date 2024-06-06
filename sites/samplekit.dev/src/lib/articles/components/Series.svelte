@@ -1,11 +1,15 @@
 <script lang="ts">
-	export let series:
-		| {
-				position: number;
-				name: string;
-				all: { title: string; articleSlug: string; position: number }[];
-		  }
-		| undefined;
+	interface Props {
+		series:
+			| {
+					position: number;
+					name: string;
+					all: { title: string; articleSlug: string; position: number }[];
+			  }
+			| undefined;
+	}
+
+	const { series }: Props = $props();
 </script>
 
 {#if series}

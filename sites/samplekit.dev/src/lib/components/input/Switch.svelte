@@ -1,11 +1,19 @@
 <script lang="ts">
-	export let id: string;
-	export let state: boolean | null = null;
-	export let onClick: () => void;
+	interface Props {
+		id: string;
+		state?: boolean | null;
+		onClick: () => void;
+		defaultClasses?: string;
+		classes?: string;
+	}
 
-	export let defaultClasses =
-		'bg-accent-5 data-[state=checked]:bg-accent-6 relative h-6 cursor-default rounded-full transition-colors border border-accent-7';
-	export let classes = '';
+	const {
+		id,
+		state = null,
+		onClick,
+		defaultClasses = 'bg-accent-5 data-[state=checked]:bg-accent-6 relative h-6 cursor-default rounded-full transition-colors border border-accent-7',
+		classes = '',
+	}: Props = $props();
 </script>
 
 <button
@@ -16,7 +24,7 @@
 	type="button"
 	role="switch"
 	aria-checked={state === true}
-	on:click={onClick}
+	onclick={onClick}
 >
 	<span class="thumb {state ? 'bg-accent-9' : 'bg-accent-7'} block rounded-full transition"></span>
 </button>

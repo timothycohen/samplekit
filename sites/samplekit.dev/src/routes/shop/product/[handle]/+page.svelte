@@ -2,7 +2,7 @@
 	import { Gallery, ProductDescription, RelatedProducts } from '$routes/shop/components';
 	import { useNavService } from '$routes/shop/services';
 
-	export let data;
+	const { data } = $props();
 
 	const { desktopNav, desktopDrawer, mobileDrawer } = useNavService();
 	$desktopNav = { menuUnderneath: false, showDrawerToggle: true };

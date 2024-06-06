@@ -4,17 +4,21 @@
 	import { httpCodeMap } from '$lib/http/common';
 	import type { Writable } from 'svelte/store';
 
-	export let form: { success?: undefined; fail: string } | { fail?: undefined; success: string } | null = null;
-	export let message: Writable<App.Superforms.Message | undefined> | undefined = undefined;
-	export let failOnly = false;
-	export let useParams = false;
+	interface Props {
+		form?: { success?: undefined; fail: string } | { fail?: undefined; success: string } | null;
+		message?: Writable<App.Superforms.Message | undefined> | undefined;
+		failOnly?: boolean;
+		useParams?: boolean;
+	}
 
-	$: fSuccess = typeof form?.success === 'string' && form.success.length ? form.success : null;
-	$: mSuccess = typeof $message?.success === 'string' && $message.success.length ? $message.success : null;
-	$: fFail = typeof form?.fail === 'string' && form.fail.length ? form.fail : null;
-	$: mFail = typeof $message?.fail === 'string' && $message.fail.length ? $message.fail : null;
-	$: success = fSuccess ?? mSuccess ?? '';
-	$: fail = fFail ?? mFail ?? '';
+	const { form = null, message = undefined, failOnly = false, useParams = false }: Props = $props();
+
+	const fSuccess = $derived(typeof form?.success === 'string' && form.success.length ? form.success : null);
+	const mSuccess = $derived(typeof $message?.success === 'string' && $message.success.length ? $message.success : null);
+	const fFail = $derived(typeof form?.fail === 'string' && form.fail.length ? form.fail : null);
+	const mFail = $derived(typeof $message?.fail === 'string' && $message.fail.length ? $message.fail : null);
+	const success = $derived(fSuccess ?? mSuccess ?? '');
+	const fail = $derived(fFail ?? mFail ?? '');
 </script>
 
 <div class="input-subtext">

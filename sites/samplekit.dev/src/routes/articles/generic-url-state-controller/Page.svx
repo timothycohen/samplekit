@@ -3,7 +3,11 @@
 	import { CodeTopper } from '$lib/articles/components';
 	import { TabPanels, TabPanelItem } from '$lib/components';
 
-	export let data;
+	interface Props {
+		data: { typedVariantFiles: { title: string; rawHTML: Promise<string> }[] };
+	}
+
+	const { data }: Props = $props();
 </script>
 
 <p>
@@ -587,9 +591,7 @@ export const createParams = <Val, ParamName extends string = string>({
 
 <p>Now that we have a generic factory, it's easy to create some concrete types:</p>
 
-<div class="not-prose">
-	<TabPanels files={data.typedVariantFiles} />
-</div>
+<TabPanels files={data.typedVariantFiles} />
 
 <h2>Conclusion</h2>
 

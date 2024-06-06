@@ -2,8 +2,12 @@
 	import { createDialog, melt } from '@melt-ui/svelte';
 	import type { Writable } from 'svelte/store';
 
-	export let open: Writable<boolean>;
-	export let handleDelete: () => void;
+	interface Props {
+		open: Writable<boolean>;
+		handleDelete: () => void;
+	}
+
+	const { open, handleDelete }: Props = $props();
 
 	const {
 		elements: { portalled, overlay, content, title, description, close },
@@ -18,7 +22,7 @@
 			<p class="modal-description" use:melt={$description}>This cannot be undone.</p>
 			<div class="modal-btns-wrapper">
 				<button class="btn btn-hollow" use:melt={$close}>Cancel</button>
-				<button class="btn btn-error" on:click={handleDelete}>Delete</button>
+				<button class="btn btn-error" onclick={handleDelete}>Delete</button>
 			</div>
 		</div>
 	{/if}

@@ -8,7 +8,7 @@
 	import { PassInput } from '$routes/(auth)/components';
 	import { signinSchema } from '$routes/(auth)/validators';
 
-	export let data;
+	const { data } = $props();
 
 	const {
 		form: signinForm,
@@ -35,9 +35,9 @@
 		states: { open: emailPassModal },
 	} = createDialog({ forceVisible: true });
 
-	$: inputDisabled = $signinSubmitting || $resetSubmitting;
-	$: signinDisabled = $signinSubmitting || $resetSubmitting || !$turnstile;
-	$: resetDisabled = $signinSubmitting || $resetSubmitting || !$turnstile || !!$resetMessage?.success;
+	const inputDisabled = $derived($signinSubmitting || $resetSubmitting);
+	const signinDisabled = $derived($signinSubmitting || $resetSubmitting || !$turnstile);
+	const resetDisabled = $derived($signinSubmitting || $resetSubmitting || !$turnstile || !!$resetMessage?.success);
 </script>
 
 <h1 class="text-h4 font-medium">Welcome to SampleKit!</h1>

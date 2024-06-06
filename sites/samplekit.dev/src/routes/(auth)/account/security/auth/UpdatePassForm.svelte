@@ -5,14 +5,20 @@
 	import { PassInput } from '$routes/(auth)/components';
 	import type { updatePassSchema } from '$routes/(auth)/validators';
 
-	export let updatePassForm: SuperValidated<typeof updatePassSchema>;
-	export let email: string;
-	export let onCancel: () => void;
-	export let onSuccess: () => void;
+	interface Props {
+		updatePassForm: SuperValidated<typeof updatePassSchema>;
+		email: string;
+		onCancel: () => void;
+		onSuccess: () => void;
+	}
 
-	const { form, errors, constraints, enhance, message, submitting } = superForm(updatePassForm, {});
+	const { updatePassForm, email, onCancel, onSuccess }: Props = $props();
 
-	$: if ($message?.success) onSuccess();
+	const { form, errors, constraints, enhance, message, submitting } = $state(superForm(updatePassForm, {}));
+
+	message.subscribe(($message) => {
+		if ($message?.success) onSuccess();
+	});
 </script>
 
 <form action="/account/security/auth?/updatePassFromCurrPass" method="post" use:enhance>
@@ -64,7 +70,7 @@
 	<div class="input-subtext text-error-9">{$errors.confirmation ?? ''}</div>
 
 	<div class="flex gap-4">
-		<button class="btn btn-hollow flex-grow" type="button" on:click={onCancel}> Cancel </button>
+		<button class="btn btn-hollow flex-grow" type="button" onclick={onCancel}> Cancel </button>
 
 		<button class="btn btn-accent" disabled={$submitting} type="submit">
 			{#if $submitting}

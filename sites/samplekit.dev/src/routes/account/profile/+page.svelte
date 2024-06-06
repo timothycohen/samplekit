@@ -1,7 +1,7 @@
 <script lang="ts">
 	import ProfileCard from './ProfileCard.svelte';
 
-	export let data;
+	const { data } = $props();
 </script>
 
 <div class="space-y-6">

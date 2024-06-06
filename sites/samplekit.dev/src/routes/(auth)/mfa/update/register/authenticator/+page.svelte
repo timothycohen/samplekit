@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { VerifyCodeForm } from '$routes/(auth)/components';
 
-	export let data;
+	const { data } = $props();
 </script>
 
 <div class="space-y-8 rounded-card p-8 shadow-3">

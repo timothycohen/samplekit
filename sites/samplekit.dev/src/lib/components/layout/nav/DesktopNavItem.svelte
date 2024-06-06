@@ -1,6 +1,10 @@
 <script lang="ts">
-	export let entry: { title: string; url: string };
-	export let current: (url: string) => 'page' | undefined;
+	interface Props {
+		entry: { title: string; url: string };
+		current: (url: string) => 'page' | undefined;
+	}
+
+	const { entry, current }: Props = $props();
 </script>
 
 <li>
