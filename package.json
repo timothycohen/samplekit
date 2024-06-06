@@ -11,6 +11,8 @@
 		"lint:auth:fix": "pnpm lint:auth --fix",
 		"lint:markdown": "eslint --max-warnings 0 packages/markdown/",
 		"lint:markdown:fix": "pnpm lint:markdown --fix",
+		"lint:svelte-crop-window": "eslint --max-warnings 0 packages/svelte-crop-window/",
+		"lint:svelte-crop-window:fix": "pnpm lint:svelte-crop-window --fix",
 		"lint:samplekit": "eslint --max-warnings 0 sites/samplekit.dev/",
 		"lint:samplekit:fix": "pnpm lint:samplekit --fix",
 		"lint": "eslint --max-warnings 0 .",
