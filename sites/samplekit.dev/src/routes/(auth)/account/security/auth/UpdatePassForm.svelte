@@ -1,6 +1,4 @@
 <script lang="ts">
-	import { run } from 'svelte/legacy';
-
 	import { InputMessage } from '$lib/components';
 	import { Loader2 } from '$lib/styles/icons';
 	import { superForm, type SuperValidated } from '$lib/superforms/client';
@@ -18,7 +16,7 @@
 
 	const { form, errors, constraints, enhance, message, submitting } = $state(superForm(updatePassForm, {}));
 
-	run(() => {
+	message.subscribe(($message) => {
 		if ($message?.success) onSuccess();
 	});
 </script>

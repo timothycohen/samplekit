@@ -1,6 +1,4 @@
 <script lang="ts">
-	import { run } from 'svelte/legacy';
-
 	import { slide } from 'svelte/transition';
 	import { Eraser, Loader2, Pencil } from '$lib/styles/icons';
 	import { superForm, zodClient } from '$lib/superforms/client';
@@ -22,10 +20,12 @@
 	let editingName = $state(false);
 
 	const noChanges = $derived(user.givenName === $form.given_name && user.familyName === $form.family_name);
-	run(() => {
+	$effect(() => {
 		if (user.givenName || user.familyName) editingName = false;
-	}); // close form after server resolves new user data
-	run(() => {
+	});
+
+	$effect(() => {
+		// close form after server resolves new user data
 		if (!editingName && $tainted) {
 			$tainted.family_name = false;
 			$tainted.given_name = false;

@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { run } from 'svelte/legacy';
 	import { fade } from 'svelte/transition';
 	import { Check, Moon, Sun } from '$lib/styles/icons';
 	import { debounce } from '$lib/utils/common';
@@ -31,7 +30,7 @@
 
 	let showOppositeScheme = $state(false);
 
-	run(() => {
+	$effect(() => {
 		if (preference.scheme === (mode === 'day' ? 'dark' : 'light')) {
 			showOppositeScheme = true;
 		}

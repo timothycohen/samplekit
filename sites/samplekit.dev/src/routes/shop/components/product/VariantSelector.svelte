@@ -1,6 +1,4 @@
 <script lang="ts">
-	import { run } from 'svelte/legacy';
-
 	import Variant from './ProductVariant.svelte';
 	import type { ProductOption, ProductVariant } from '$lib/shop';
 	import type { ProductOptionWithAvailableForSale } from '$routes/shop/utils';
@@ -62,17 +60,16 @@
 		});
 	};
 
-	let combinations: Combination[] = $state([]);
-	run(() => {
-		combinations = variants.map((variant) => ({
+	const combinations = $derived(
+		variants.map((variant) => ({
 			id: variant.id,
 			availableForSale: variant.availableForSale,
 			variant: variant.selectedOptions.reduce(
 				(accumulator, option) => ({ ...accumulator, [option.name.toLowerCase()]: option.value.toLowerCase() }),
 				{},
 			),
-		}));
-	});
+		})),
+	);
 
 	const hasNoOptionsOrJustOneOption = $derived(
 		!options.length || (options.length === 1 && options[0]?.values.length === 1),

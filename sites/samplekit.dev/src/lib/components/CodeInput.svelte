@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { createPinInput, melt } from '@melt-ui/svelte';
-	import { run } from 'svelte/legacy';
 
 	interface Props {
 		onChange?: ((a: { filled: true; code: string } | { filled: false; code?: never }) => void) | undefined;
@@ -65,7 +64,7 @@
 		states: { value, valueStr },
 	} = createPinInput({ onValueChange: replaceCorruptValues });
 
-	run(() => {
+	value.subscribe(($value) => {
 		if (onChange) {
 			if ($value.every((v) => v !== '')) onChange({ filled: true, code: $valueStr });
 			else onChange({ filled: false });

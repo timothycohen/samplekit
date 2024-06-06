@@ -1,7 +1,5 @@
 <script lang="ts">
 	import { createDialog, melt } from '@melt-ui/svelte';
-	import { run } from 'svelte/legacy';
-
 	import { page } from '$app/stores';
 	page; // https://github.com/sveltejs/eslint-plugin-svelte/issues/652#issuecomment-2087008855
 	import { Avatar } from '$lib/components';
@@ -9,7 +7,7 @@
 	import Mock from './Mock.svelte';
 
 	let user: DB.User | null = $state(null);
-	run(() => {
+	page.subscribe(($page) => {
 		user = $page.data['user'] ?? null;
 	});
 
