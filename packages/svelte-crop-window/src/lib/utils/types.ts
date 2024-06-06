@@ -3,6 +3,11 @@ export type Point = {
 	y: number;
 };
 
+export type Size = {
+	width: number;
+	height: number;
+};
+
 export type CropShape = 'rect' | 'round';
 
 export type CropValue = {
@@ -11,4 +16,8 @@ export type CropValue = {
 	aspect: number;
 	rotation: number;
 	scale: number;
+};
+
+export type CropWindowOptions = {
+	marginPercent: number;
 };

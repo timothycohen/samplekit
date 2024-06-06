@@ -75,6 +75,7 @@ const config = [
 		files: ['packages/svelte-crop-window/**'],
 		ignores: ['**/*.svelte'],
 		languageOptions: { parserOptions: { project: './packages/svelte-crop-window/tsconfig.json' } },
+		rules: { '@typescript-eslint/no-this-alias': 'off' },
 	},
 	{
 		name: 'typescript-eslint/custom – samplekit.dev',

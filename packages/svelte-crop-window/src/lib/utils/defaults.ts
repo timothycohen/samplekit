@@ -1,4 +1,8 @@
-import type { CropValue } from './types.js';
+import type { CropValue, CropWindowOptions } from './types.js';
+
+export const defaultCropWindowOptions: CropWindowOptions = {
+	marginPercent: 0,
+};
 
 export const defaultCropValue: CropValue = {
 	shape: 'round',

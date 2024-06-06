@@ -10,7 +10,28 @@
 		alt: '1600x900px forest.',
 	};
 
+	const addOpacityToHex = (hex: number, opacity: number) => {
+		const hexString = hex.toString(16).padStart(6, '0');
+		const opacityString = Math.round(opacity * 255)
+			.toString(16)
+			.padStart(2, '0');
+		return `#${hexString}${opacityString}`;
+	};
+
 	let resultHeight = $state(200);
+	let thicknessPx = $state(1);
+
+	let insideColor = $state(data.colors.iris3);
+	let insideOpacity = $state(1);
+	const insideHex = $derived(addOpacityToHex(parseInt(insideColor.slice(1), 16), insideOpacity));
+
+	let outsideColor = $state(data.colors.iris5);
+	let outsideOpacity = $state(0.4);
+	const outsideHex = $derived(addOpacityToHex(parseInt(outsideColor.slice(1), 16), outsideOpacity));
+
+	let lineColor = $state(data.colors.iris12);
+	let lineOpacity = $state(0.25);
+	const lineHex = $derived(addOpacityToHex(parseInt(lineColor.slice(1), 16), lineOpacity));
 
 	const styles = $derived(cropValueToStyles({ cropValue: cw.cropValue, height: resultHeight }));
 </script>
@@ -19,6 +40,23 @@
 	class="page space-y-4 p-8"
 	style="--mauve-11: {data.colors.mauve11}; --mauve-12: {data.colors.mauve12}; --iris-1: {data.colors.iris1};"
 >
+	<section class="space-y-2">
+		<h2 class="text-2xl font-bold">Control `CropValue` With Gestures</h2>
+		<div class="relative h-80 w-full max-w-screen-md">
+			<div {...cw.root({ insideCropWindowColor: insideHex })}>
+				<img {...cw.media()} {...img} />
+				<div
+					style="{cw.cropWindow({ outsideCropWindowColor: outsideHex }).style} border: {thicknessPx}px solid {lineHex};"
+				>
+					{#each cw.thirdLines({ thicknessPx }) as thirdLine}
+						<div {...thirdLine({ color: lineHex })}></div>
+					{/each}
+				</div>
+				<div {...cw.gestureHandler()}></div>
+			</div>
+		</div>
+	</section>
+
 	<section class="space-y-2">
 		<h2 class="text-2xl font-bold">Result of `CropValue`</h2>
 		<p>`CropValue` can be used to replicate the crop via CSS later.</p>
@@ -67,6 +105,46 @@
 				<input type="range" min={-180} max="180" step={1} bind:value={cw.cropValue.rotation} />
 				{cw.cropValue.rotation}
 			</div>
+		</div>
+	</section>
+
+	<section class="space-y-2">
+		<h2 class="text-2xl font-bold">`CropWindowOptions`</h2>
+		<p>
+			`CropWindowOptions` are only used to customize the cropping experience using gestures. They do not affect the
+			resulting crop value.
+		</p>
+		<div class="grid max-w-xl sm:grid-cols-2">
+			<span>Margin (%)</span>
+			<input type="number" min={0} max="100" step={1} bind:value={cw.cropWindowOptions.marginPercent} />
+		</div>
+	</section>
+
+	<section class="space-y-2">
+		<h2 class="text-2xl font-bold">Gesture Controller Styles</h2>
+		<p>
+			The melt-ui builder pattern means you have complete access to the DOM elements. Therefore, you can handle styles
+			however you'd like. For convenience, the elements take optional parameters for common styling needs. These can be
+			omitted in favor of direct styling. The following are optional parameters, but anything else, such as the border
+			color, recticle peristence, etc., can be styled directly.
+		</p>
+		<div class="grid max-w-xl sm:grid-cols-2">
+			<div>cropWindow: outsideColor</div>
+			<input type="color" bind:value={outsideColor} />
+			<div>cropWindow: outsideOpacity</div>
+			<input type="range" min={0} max="1" step={0.01} bind:value={outsideOpacity} />
+			<div>cropWindow: insideColor</div>
+			<input type="color" bind:value={insideColor} />
+			<div>cropWindow: insideOpacity</div>
+			<input type="range" min={0} max="1" step={0.01} bind:value={insideOpacity} />
+			<div>cropWindow: lineColor</div>
+			<input type="color" bind:value={lineColor} />
+			<div>cropWindow: lineOpacity</div>
+			<input type="range" min={0} max="1" step={0.01} bind:value={lineOpacity} />
+			<div>thirdLines: thicknessPx</div>
+			<input type="number" min={0} step={1} bind:value={thicknessPx} />
+			<div>thirdLine: color</div>
+			<input type="color" bind:value={lineColor} />
 		</div>
 	</section>
 </div>
