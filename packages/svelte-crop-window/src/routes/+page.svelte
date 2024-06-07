@@ -34,7 +34,7 @@
 	let lineOpacity = $state(0.25);
 	const lineHex = $derived(addOpacityToHex(parseInt(lineColor.slice(1), 16), lineOpacity));
 
-	const styles = $derived(cropValueToStyles({ cropValue: cw.cropValue, height: resultHeight }));
+	const styles = $derived(cropValueToStyles({ cropValue: cw.pendingFixes ?? cw.cropValue, height: resultHeight }));
 </script>
 
 <div
@@ -59,8 +59,8 @@
 	</section>
 
 	<section class="space-y-2">
-		<h2 class="text-2xl font-bold">Result of `CropValue`</h2>
-		<p>`CropValue` can be used to replicate the crop via CSS later.</p>
+		<h2 class="text-2xl font-bold">Result of Valid `CropValue`</h2>
+		<p>The validated `CropValue` can be used to replicate the crop via CSS later.</p>
 		<div class="grid max-w-xl sm:grid-cols-2">
 			<span>Height (px)</span>
 			<input type="number" min={50} max="250" step={5} bind:value={resultHeight} />
@@ -69,6 +69,37 @@
 		<div style={styles.outer}>
 			<img draggable={false} style={styles.media} {...img} />
 		</div>
+	</section>
+
+	<section class="space-y-2">
+		<h2 class="text-2xl font-bold">Valid `CropValue`</h2>
+		{#if !cw.pendingFixes}
+			<span>All good! `CropValue`:</span>
+			<ul>
+				{#each Object.entries(cw.cropValue) as [key, value]}
+					{#if typeof value === 'object' && value !== null}
+						{#each Object.entries(value) as [subKey, subValue]}
+							<li><strong>{key}.{subKey}</strong>: {subValue}</li>
+						{/each}
+					{:else}
+						<li><strong>{key}</strong>: {value}</li>
+					{/if}
+				{/each}
+			</ul>
+		{:else}
+			<span>Pending Fixes:</span>
+			<ul>
+				{#each Object.entries(cw.pendingFixes) as [key, value]}
+					{#if typeof value === 'object' && value !== null}
+						{#each Object.entries(value) as [subKey, subValue]}
+							<li><strong>{key}.{subKey}</strong>: {subValue}</li>
+						{/each}
+					{:else}
+						<li><strong>{key}</strong>: {value}</li>
+					{/if}
+				{/each}
+			</ul>
+		{/if}
 	</section>
 
 	<section class="space-y-2">
