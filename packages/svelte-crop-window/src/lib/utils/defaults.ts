@@ -2,6 +2,8 @@ import type { CropValue, CropWindowOptions } from './types.js';
 
 export const defaultCropWindowOptions: CropWindowOptions = {
 	marginPercent: 0,
+	fixDelayMs: 500,
+	fixDurationMs: 500,
 };
 
 export const defaultCropValue: CropValue = {

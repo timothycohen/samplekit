@@ -2,20 +2,6 @@ import { Points } from './utils/point.js';
 import type { MouseDragMove } from './actions/mouseEvents.js';
 import type { Size, Point, TouchScalePanRotate } from './utils/types.js';
 
-function debounce<T extends []>(func: (...args: T) => void, duration: number) {
-	let timeout: ReturnType<typeof setTimeout> | null = null;
-
-	return function (...args: T) {
-		const effect = () => {
-			timeout = null;
-			return func(...args);
-		};
-
-		if (timeout) clearTimeout(timeout);
-		timeout = setTimeout(effect, duration);
-	};
-}
-
 type CropController = {
 	pan: (panOffset: Point) => void;
 	zoom: (zoomOffset: number) => void;
@@ -35,8 +21,6 @@ export class GestureHandler {
 	#mouseDragLastPoint: Point | undefined = undefined;
 	#touchFocalPoint: Point | undefined = undefined;
 
-	#r_gestureInProgress = $state(false);
-
 	constructor(props: {
 		centerPoint: Point;
 		cropWindowSize: Size;
@@ -54,7 +38,6 @@ export class GestureHandler {
 	#mouseMoveHandler({ dx, dy, cropWindowHeight }: { dx: number; dy: number; cropWindowHeight: number }) {
 		const mousePan = { x: dx || 0, y: dy || 0 };
 		this.#cropController.pan(Points.mul(mousePan, 1.0 / cropWindowHeight));
-		this.#r_gestureInProgress = true;
 	}
 
 	#mouseRotateHandler({ detail, imgCenter }: { detail: Point; imgCenter: Point }) {
@@ -69,7 +52,6 @@ export class GestureHandler {
 
 		// todo: this should also call this.#cropController.pan to keep the center point in the same place
 		this.#cropController.rotate(mouseRotate);
-		this.#r_gestureInProgress = true;
 	}
 
 	mouseDragmoveHandler(detail: MouseDragMove) {
@@ -82,7 +64,6 @@ export class GestureHandler {
 
 	mouseDragendHandler() {
 		this.#mouseDragLastPoint = undefined;
-		this.debouncedFinish();
 	}
 
 	wheelHandler(e: WheelEvent) {
@@ -100,16 +81,12 @@ export class GestureHandler {
 
 		this.#cropController.zoom(zoomOffset);
 		this.#cropController.pan(panOffset);
-		this.#r_gestureInProgress = true;
-		this.debouncedFinish();
 	}
 
 	touchHandler(detail: TouchScalePanRotate) {
 		if (!this.#touchFocalPoint) {
 			this.#touchFocalPoint = detail.focalPoint;
 		}
-
-		this.#r_gestureInProgress = true;
 
 		this.#cropController.zoom(detail.scale);
 		this.#cropController.rotate(detail.rotation);
@@ -122,14 +99,5 @@ export class GestureHandler {
 
 	touchendHandler() {
 		this.#touchFocalPoint = undefined;
-		this.debouncedFinish();
-	}
-
-	debouncedFinish = debounce(() => {
-		this.#r_gestureInProgress = false;
-	}, 500);
-
-	get r_gestureInProgress() {
-		return this.#r_gestureInProgress;
 	}
 }

@@ -27,4 +27,6 @@ export type TouchScalePanRotate = {
 
 export type CropWindowOptions = {
 	marginPercent: number;
+	fixDelayMs: number;
+	fixDurationMs: number;
 };

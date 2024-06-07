@@ -149,6 +149,10 @@
 		<div class="grid max-w-xl sm:grid-cols-2">
 			<span>Margin (%)</span>
 			<input type="number" min={0} max="100" step={1} bind:value={cw.cropWindowOptions.marginPercent} />
+			<span>Fix Delay (ms)</span>
+			<input type="number" min={0} step={1} bind:value={cw.cropWindowOptions.fixDelayMs} />
+			<span>Fix Duration (ms)</span>
+			<input type="number" min={0} step={1} bind:value={cw.cropWindowOptions.fixDurationMs} />
 		</div>
 	</section>
 

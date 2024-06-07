@@ -1,7 +1,8 @@
 import { untrack } from 'svelte';
 import { createMouseDraggableHandler } from './actions/mouseEvents.js';
 import { createTouchScalePanRotateHandler } from './actions/touchScalePanRotate.js';
-import { GestureHandler } from './gestureHandler.svelte.js';
+import { GestureHandler } from './gestureHandler.js';
+import { StateController } from './stateController.svelte.js';
 import { styleToString } from './utils/css.js';
 import { defaultCropWindowOptions, defaultCropValue } from './utils/defaults.js';
 import { checkIfChangesNecessary } from './utils/geometry.js';
@@ -15,6 +16,7 @@ export class CropWindow {
 	#r_cropValue: CropValue = $state() as CropValue;
 	#r_cropWindowOptions = $state() as CropWindowOptions;
 	#ids: { root: string; media: string };
+	#stateController: StateController;
 	#r_rootElRect: null | { x: number; y: number; height: number; width: number } = $state(null);
 	#initRoot() {
 		this.#r_rootElRect = document.getElementById(this.#ids.root)?.getBoundingClientRect() ?? null;
@@ -27,7 +29,15 @@ export class CropWindow {
 			(acc, key) => ({ ...acc, [key]: generateId() }),
 			{} as { root: string; media: string },
 		);
-
+		this.#stateController = new StateController({
+			fixDelayMs: this.#r_cropWindowOptions.fixDelayMs,
+			fixDurationMs: this.#r_cropWindowOptions.fixDurationMs,
+			needsFix: () => !!this.#r_pendingFixes,
+			onFixing: () => {
+				if (this.#r_pendingFixes) this.#r_cropValue = this.#r_pendingFixes;
+				else this.#stateController.finish();
+			},
+		});
 		$effect(() => {
 			untrack(() => {
 				this.#initRoot();
@@ -88,15 +98,12 @@ export class CropWindow {
 		const cropController = {
 			pan: (positionOffset: Point) => {
 				this.#r_cropValue.position = Points.add(this.#r_cropValue.position, positionOffset);
-				this.autoFixIn500ms();
 			},
 			rotate: (angleOffset: number) => {
 				this.#r_cropValue.rotation += angleOffset;
-				this.autoFixIn500ms();
 			},
 			zoom: (zoomOffset: number) => {
 				this.#r_cropValue.scale *= zoomOffset;
-				this.autoFixIn500ms();
 			},
 		};
 
@@ -130,24 +137,6 @@ export class CropWindow {
 		return { ...this.#r_cropValue, position, scale };
 	});
 	//#endregion Initialization
-
-	//#region Helpers
-	#r_autoFixTransition = $state(false);
-	#autoFixTransition500msTimeout: null | ReturnType<typeof setTimeout> = null;
-	#autoFixIn500msTimeout: null | ReturnType<typeof setTimeout> = null;
-	applyFixes() {
-		if (!this.#r_pendingFixes) return;
-		if (this.#autoFixIn500msTimeout) clearTimeout(this.#autoFixIn500msTimeout);
-		if (this.#autoFixTransition500msTimeout) clearTimeout(this.#autoFixTransition500msTimeout);
-		this.#r_autoFixTransition = true;
-		this.#r_cropValue = this.#r_pendingFixes;
-		this.#autoFixTransition500msTimeout = setTimeout(() => (this.#r_autoFixTransition = false), 500);
-	}
-	autoFixIn500ms() {
-		if (this.#autoFixIn500msTimeout) clearTimeout(this.#autoFixIn500msTimeout);
-		this.#autoFixIn500msTimeout = setTimeout(() => this.applyFixes(), 500);
-	}
-	//#endregion Helpers
 
 	//#region Elements
 	root({ insideCropWindowColor }: { insideCropWindowColor?: string } = {}) {
@@ -194,7 +183,8 @@ export class CropWindow {
 					'max-width': 'none',
 					'user-select': 'none',
 					'pointer-events': 'none',
-					transition: klass.#r_autoFixTransition ? 'all 0.5s' : 'none',
+					transition:
+						klass.#stateController.r_state === 'fixing' ? `all ${klass.#r_cropWindowOptions.fixDurationMs}ms` : 'none',
 				});
 			},
 			onload() {
@@ -229,6 +219,8 @@ export class CropWindow {
 	}
 
 	thirdLines({ thicknessPx }: { thicknessPx?: number } = {}) {
+		const klass = this;
+
 		const lines = [
 			[`${thicknessPx ?? 1}px`, '100%', '33%', '0%'],
 			[`${thicknessPx ?? 1}px`, '100%', '66%', '0%'],
@@ -239,8 +231,12 @@ export class CropWindow {
 		return lines.map(([height, width, top, left]) => ({ color }: { color?: string } = {}) => {
 			const extra = (() => {
 				if (!color) return {};
+				const showReticle =
+					klass.#stateController.r_state === 'active' || klass.#stateController.r_state === 'debounce';
+				const fade = klass.#stateController.r_state !== 'debounce';
 				return {
-					'background-color': color,
+					'background-color': showReticle ? `${color}` : 'none',
+					transition: fade ? `background-color ${klass.#r_cropWindowOptions.fixDurationMs}ms` : 'none',
 				};
 			})();
 
@@ -272,22 +268,27 @@ export class CropWindow {
 				...createMouseDraggableHandler({
 					onMouseDraggableMove: (e) => {
 						gh.mouseDragmoveHandler(e);
+						klass.#stateController.start();
 					},
 					onMouseDraggableEnd: () => {
 						gh.mouseDragendHandler();
+						klass.#stateController.finish();
 					},
 				}),
 				...createTouchScalePanRotateHandler({
 					onTouchScalePanRotate: (e) => {
 						gh.touchHandler(e);
+						klass.#stateController.start();
 					},
 					onTouchendScalePanRotate: () => {
 						gh.touchendHandler();
+						klass.#stateController.finish();
 					},
 				}),
 				onwheel(e: WheelEvent) {
 					e.preventDefault();
 					gh.wheelHandler(e);
+					klass.#stateController.finish();
 				},
 			};
 		})();
@@ -309,6 +310,9 @@ export class CropWindow {
 	//#endregion Elements
 
 	//#region Getters and Setters
+	// gesture controller updates the cropValue and calls the start/finish methods directly
+	// this is for public access only and is proxied so that setting the cropValue programmatically also calls the auto-fixing mechanism.
+	// todo: setting the rotation should also update the position.
 	get cropValue() {
 		return new Proxy(this.#r_cropValue, {
 			get: <K extends keyof CropValue>(target: CropValue, prop: K) => {
@@ -316,7 +320,7 @@ export class CropWindow {
 					return new Proxy(target.position, {
 						set: <K extends keyof Points>(target: Points, prop: K, value: Points[K]) => {
 							target[prop] = value;
-							this.autoFixIn500ms();
+							this.#stateController.finish();
 							return true;
 						},
 					});
@@ -324,17 +328,20 @@ export class CropWindow {
 			},
 			set: <K extends keyof CropValue>(target: CropValue, prop: K, value: CropValue[K]) => {
 				target[prop] = value;
-				this.autoFixIn500ms();
+				this.#stateController.finish();
 				return true;
 			},
 		});
 	}
 	set cropValue(value: CropValue) {
 		this.#r_cropValue = value;
-		this.autoFixIn500ms();
+		this.#stateController.finish();
 	}
 	get cropWindowOptions() {
 		return this.#r_cropWindowOptions;
+	}
+	get state() {
+		return this.#stateController.r_state;
 	}
 	get pendingFixes() {
 		return this.#r_pendingFixes;
