@@ -18,6 +18,13 @@ export type CropValue = {
 	scale: number;
 };
 
+export type TouchScalePanRotate = {
+	focalPoint: Point;
+	pan: Point;
+	rotation: number;
+	scale: number;
+};
+
 export type CropWindowOptions = {
 	marginPercent: number;
 };

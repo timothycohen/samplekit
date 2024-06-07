@@ -1,4 +1,7 @@
 import { untrack } from 'svelte';
+import { createMouseDraggableHandler } from './actions/mouseEvents.js';
+import { createTouchScalePanRotateHandler } from './actions/touchScalePanRotate.js';
+import { GestureHandler } from './gestureHandler.svelte.js';
 import { styleToString } from './utils/css.js';
 import { defaultCropWindowOptions, defaultCropValue } from './utils/defaults.js';
 import { generateId } from './utils/id.js';
@@ -47,6 +50,35 @@ export class CropWindow {
 	#r_rootCenter: null | Point = $derived(
 		this.#r_rootElRect ? { x: this.#r_rootElRect.width / 2, y: this.#r_rootElRect.height / 2 } : null,
 	);
+
+	#r_outerElTopLeftPoint: null | Point = $derived(
+		this.#r_rootElRect ? { x: this.#r_rootElRect.x, y: this.#r_rootElRect.y } : null,
+	);
+
+	#r_gestureHandler: null | GestureHandler = $derived.by(() => {
+		if (!this.#r_cropWindowSize || !this.#r_rootElRect || !this.#r_rootCenter || !this.#r_outerElTopLeftPoint)
+			return null;
+
+		const cropController = {
+			pan: (positionOffset: Point) => {
+				this.#r_cropValue.position = Points.add(this.#r_cropValue.position, positionOffset);
+			},
+			rotate: (angleOffset: number) => {
+				this.#r_cropValue.rotation += angleOffset;
+			},
+			zoom: (zoomOffset: number) => {
+				this.#r_cropValue.scale *= zoomOffset;
+			},
+		};
+
+		return new GestureHandler({
+			centerPoint: this.#r_rootCenter,
+			cropWindowSize: this.#r_cropWindowSize,
+			outerElTopLeftPoint: this.#r_outerElTopLeftPoint,
+			currentPosition: this.#r_cropValue.position,
+			cropController,
+		});
+	});
 	//#endregion Initialization
 
 	//#region Elements
@@ -151,16 +183,49 @@ export class CropWindow {
 		});
 	}
 
-	gestureHandler() {
+	gestureHandler({ disabled }: { disabled?: boolean } = {}) {
+		const klass = this;
+
+		const handlers = (() => {
+			const gh = klass.#r_gestureHandler;
+			if (gh === null) return {};
+
+			return {
+				...createMouseDraggableHandler({
+					onMouseDraggableMove: (e) => {
+						gh.mouseDragmoveHandler(e);
+					},
+					onMouseDraggableEnd: () => {
+						gh.mouseDragendHandler();
+					},
+				}),
+				...createTouchScalePanRotateHandler({
+					onTouchScalePanRotate: (e) => {
+						gh.touchHandler(e);
+					},
+					onTouchendScalePanRotate: () => {
+						gh.touchendHandler();
+					},
+				}),
+				onwheel(e: WheelEvent) {
+					e.preventDefault();
+					gh.wheelHandler(e);
+				},
+			};
+		})();
+
 		return {
 			get style() {
 				return styleToString({
 					position: 'absolute',
 					inset: '0',
 					'background-color': 'transparent',
-					cursor: 'crosshair',
+					cursor: disabled ? 'default' : 'crosshair',
+					'pointer-events': disabled ? 'none' : 'all',
+					'touch-action': 'none',
 				});
 			},
+			...handlers,
 		};
 	}
 	//#endregion Elements
@@ -170,7 +235,7 @@ export class CropWindow {
 		return this.#r_cropValue;
 	}
 	set cropValue(value: CropValue) {
-		this.cropValue = value;
+		this.#r_cropValue = value;
 	}
 	get cropWindowOptions() {
 		return this.#r_cropWindowOptions;

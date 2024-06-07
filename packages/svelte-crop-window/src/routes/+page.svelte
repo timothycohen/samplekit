@@ -20,6 +20,7 @@
 
 	let resultHeight = $state(200);
 	let thicknessPx = $state(1);
+	let disabled = $state(false);
 
 	let insideColor = $state(data.colors.iris3);
 	let insideOpacity = $state(1);
@@ -52,7 +53,7 @@
 						<div {...thirdLine({ color: lineHex })}></div>
 					{/each}
 				</div>
-				<div {...cw.gestureHandler()}></div>
+				<div {...cw.gestureHandler({ disabled })}></div>
 			</div>
 		</div>
 	</section>
@@ -129,6 +130,8 @@
 			color, recticle peristence, etc., can be styled directly.
 		</p>
 		<div class="grid max-w-xl sm:grid-cols-2">
+			<div>gestureHandler: disable</div>
+			<input type="checkbox" bind:checked={disabled} />
 			<div>cropWindow: outsideColor</div>
 			<input type="color" bind:value={outsideColor} />
 			<div>cropWindow: outsideOpacity</div>
