@@ -10,6 +10,40 @@ import { generateId } from './utils/id.js';
 import { Points } from './utils/point.js';
 import type { Size, CropValue, CropWindowOptions, Point } from './utils/types.js';
 
+/**
+ * ### Inspired by [sabine/svelte-crop-window](https://sabine.github.io/svelte-crop-window/) and [melt-ui](https://melt-ui.com/).
+ *
+ * A component builder which allows the user to zoom, pan, and rotate.
+ *
+ * Outputs a value to easily recreate the cropped value with CSS.
+ *
+ *
+ * ### Usage
+ * ```svelte
+ * <script lang="ts">
+ *	const cw = new CropWindow({
+ *		cropValue: { ...user.avatar.cropValue },
+ *		cropWindowOptions: {
+ *			marginPercent: 0,
+ *			fixDelayMs: 500,
+ *			fixDurationMs: 500,
+ *		},
+ *	});
+ * </script>
+ *
+ * <div {...cw.root({ insideCropWindowColor: 'hsl(var(--accent-3))' })}>
+ * 	<img {...cw.media()} src={url} />
+ * 	<div {...cw.cropWindow({ outsideCropWindowColor: 'hsl(var(--accent-5) / 0.4)' })} class="border-accent-12/25 border">
+ * 		{#each cw.thirdLines({ thicknessPx: 1 }) as thirdLine}
+ * 			<div {...thirdLine({ color: 'hsl(var(--accent-12) / 0.25)' })}></div>
+ * 		{/each}
+ * 	</div>
+ * 	<div {...cw.gestureHandler()}></div>
+ * </div>
+ * ````
+ *
+ * The component is fully reactive, whether changed by user gestures (mouse, touch, wheel) or programmatically (cw.cropValue.aspect = 16 / 9).
+ */
 export class CropWindow {
 	//#region Initialization
 	// initialized in constructor()
@@ -139,6 +173,19 @@ export class CropWindow {
 	//#endregion Initialization
 
 	//#region Elements
+	/**
+	 * #### Required
+	 *
+	 * Specify an `insideCropWindowColor` directly:
+	 * ```svelte
+	 * <div {...s.bg({ insideCropWindowColor: 'hsl(var(--accent-3))' })}></div>
+	 * ```
+	 *
+	 * Or use your own markup (Tailwind shown)
+	 * ```svelte
+	 * <div {...s.bg()} class="bg-accent-3 absolute inset-0"></div>
+	 * ```
+	 */
 	root({ insideCropWindowColor }: { insideCropWindowColor?: string } = {}) {
 		const klass = this;
 
@@ -155,11 +202,21 @@ export class CropWindow {
 						position: 'relative',
 					},
 					...(insideCropWindowColor ? { 'background-color': insideCropWindowColor } : {}),
+					...{
+						height: '100%',
+						width: '100%',
+						overflow: 'hidden',
+						position: 'relative',
+					},
+					...(insideCropWindowColor ? { 'background-color': insideCropWindowColor } : {}),
 				});
 			},
 		};
 	}
 
+	/**
+	 * #### Required
+	 */
 	media() {
 		const klass = this;
 
@@ -196,6 +253,18 @@ export class CropWindow {
 		};
 	}
 
+	/**
+	 * #### Required
+	 * Specify an `outsideCropWindowColor` directly:
+	 * ```svelte
+	 * <div {...s.cropWindow({ outsideCropWindowColor: 'hsl(var(--accent-5) / 0.4)' })}>
+	 * ```
+	 *
+	 * Or use your own styles
+	 * ```svelte
+	 * <div style="{s.cropWindow().style} box-shadow: hsl(var(--accent-5) / 0.4) 0 0 0 9999em;">
+	 * ```
+	 */
 	cropWindow({ outsideCropWindowColor }: { outsideCropWindowColor?: string } = {}) {
 		const klass = this;
 
@@ -218,6 +287,40 @@ export class CropWindow {
 		};
 	}
 
+	/**
+	 * #### Optional
+	 * Specify line thickness and color directly:
+	 * ```svelte
+	 * {#each s.thirdLines({ thicknessPx: 1 }) as thirdLine}
+	 * 	<div {...thirdLine({ color: 'hsl(var(--accent-12) / 0.25)' })}></div>
+	 * {/each}
+	 * ```
+	 *
+	 * Or use your own styles
+	 * ```svelte
+	 * <div
+	 * 	style="{s.cropWindow().style} box-shadow: hsl(var(--gray-4) / .5) 0 0 0 9999em;"
+	 * 	class="border-gray-12/50 border"
+	 * >
+	 * 	<div
+	 * 		class="absolute left-0 top-1/3 h-px w-full {s.state !== 'idle' ? 'bg-gray-12/50' : ''}
+	 * 		{s.state === 'debounce' ? '' : 'transition duration-500'}"
+	 * 	></div>
+	 * 	<div
+	 * 		class="absolute left-0 top-2/3 h-px w-full {s.state !== 'idle' ? 'bg-gray-12/50' : ''}
+	 * 		{s.state === 'debounce' ? '' : 'transition duration-500'}"
+	 * 	></div>
+	 * 	<div
+	 * 		class="absolute left-1/3 top-0 h-full w-px {s.state !== 'idle' ? 'bg-gray-12/50' : ''}
+	 * 		{s.state === 'debounce' ? '' : 'transition duration-500'}"
+	 * 	></div>
+	 * 	<div
+	 * 		class="absolute left-2/3 top-0 h-full w-px {s.state !== 'idle' ? 'bg-gray-12/50' : ''}
+	 * 		{s.state === 'debounce' ? '' : 'transition duration-500'}"
+	 * 	></div>
+	 * </div>
+	 * ```
+	 */
 	thirdLines({ thicknessPx }: { thicknessPx?: number } = {}) {
 		const klass = this;
 
@@ -257,6 +360,12 @@ export class CropWindow {
 		});
 	}
 
+	/**
+	 * #### Required
+	 * Handles the gestures for zoom, pan, and rotate.
+	 *
+	 * Optionally disable the gestures by passing `disabled: true`.
+	 */
 	gestureHandler({ disabled }: { disabled?: boolean } = {}) {
 		const klass = this;
 

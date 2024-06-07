@@ -10,6 +10,9 @@ export type Size = {
 
 export type CropShape = 'rect' | 'round';
 
+/**
+ * When scaling or rotating, `position` must be updated to keep the same center point.
+ */
 export type CropValue = {
 	shape: CropShape;
 	position: Point;
