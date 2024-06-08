@@ -1,14 +1,12 @@
 import { untrack } from 'svelte';
-import { createMouseDraggableHandler } from './actions/mouseEvents.js';
+import { createMouseDraggableHandler, type MouseDragMove } from './actions/mouseEvents.js';
 import { createTouchScalePanRotateHandler } from './actions/touchScalePanRotate.js';
-import { GestureHandler } from './gestureHandler.js';
-import { StateController } from './stateController.svelte.js';
 import { styleToString } from './utils/css.js';
 import { defaultCropWindowOptions, defaultCropValue } from './utils/defaults.js';
 import { checkIfChangesNecessary } from './utils/geometry.js';
 import { generateId } from './utils/id.js';
 import { Points } from './utils/point.js';
-import type { Size, CropValue, CropWindowOptions, Point } from './utils/types.js';
+import type { Size, CropValue, CropWindowOptions, Point, TouchScalePanRotate } from './utils/types.js';
 
 /**
  * ### Inspired by [sabine/svelte-crop-window](https://sabine.github.io/svelte-crop-window/) and [melt-ui](https://melt-ui.com/).
@@ -47,14 +45,10 @@ import type { Size, CropValue, CropWindowOptions, Point } from './utils/types.js
 export class CropWindow {
 	//#region Initialization
 	// initialized in constructor()
-	#r_cropValue: CropValue = $state() as CropValue;
+	#r_cropValue = $state() as CropValue;
 	#r_cropWindowOptions = $state() as CropWindowOptions;
 	#ids: { root: string; media: string };
-	#stateController: StateController;
-	#r_rootElRect: null | { x: number; y: number; height: number; width: number } = $state(null);
-	#initRoot() {
-		this.#r_rootElRect = document.getElementById(this.#ids.root)?.getBoundingClientRect() ?? null;
-	}
+	#r_rootRect: null | { x: number; y: number; height: number; width: number } = $state(null);
 
 	constructor(props?: { cropWindowOptions?: Partial<CropWindowOptions>; cropValue?: CropValue }) {
 		this.#r_cropValue = props?.cropValue ?? defaultCropValue;
@@ -63,25 +57,16 @@ export class CropWindow {
 			(acc, key) => ({ ...acc, [key]: generateId() }),
 			{} as { root: string; media: string },
 		);
-		this.#stateController = new StateController({
-			fixDelayMs: this.#r_cropWindowOptions.fixDelayMs,
-			fixDurationMs: this.#r_cropWindowOptions.fixDurationMs,
-			needsFix: () => !!this.#r_pendingFixes,
-			onFixing: () => {
-				if (this.#r_pendingFixes) this.#r_cropValue = this.#r_pendingFixes;
-				else this.#stateController.finish();
-			},
-		});
 		$effect(() => {
 			untrack(() => {
-				this.#initRoot();
+				this.#r_rootRect = document.getElementById(this.#ids.root)?.getBoundingClientRect() ?? null;
 			});
 		});
 	}
 
-	// initialized in media.onload()
-	#r_naturalMediaSize: null | { width: number; height: number; aspect: number } = $state(null);
-	#initNaturalMediaSize() {
+	// initialized by media element (onload, onloadedmetadata)
+	#r_mediaAspect: null | number = $state(null);
+	#initMediaAspect() {
 		const mediaEl = document.getElementById(this.#ids.media);
 		if (!mediaEl) return;
 
@@ -98,64 +83,37 @@ export class CropWindow {
 		if (width === null || height === null) return;
 		if (height === 0) throw new Error('Media height is 0');
 
-		this.#r_naturalMediaSize = { width, height, aspect: width / height };
+		this.#r_mediaAspect = width / height;
 	}
 
 	// derived
+	#r_rootCenter: null | Point = $derived.by(() => {
+		if (!this.#r_rootRect) return null;
+		return { x: this.#r_rootRect.width / 2, y: this.#r_rootRect.height / 2 };
+	});
+
 	#r_cropWindowSize: null | Size = $derived.by(() => {
-		if (this.#r_rootElRect === null) return null;
-		const wide = this.#r_rootElRect.width / this.#r_rootElRect.height > this.#r_cropValue.aspect;
+		if (this.#r_rootRect === null) return null;
+		const wide = this.#r_rootRect.width / this.#r_rootRect.height > this.#r_cropValue.aspect;
 		const marginScale = 1 - this.#r_cropWindowOptions.marginPercent / 100;
 		return wide
 			? {
-					height: this.#r_rootElRect.height * marginScale,
-					width: this.#r_rootElRect.height * marginScale * this.#r_cropValue.aspect,
+					height: this.#r_rootRect.height * marginScale,
+					width: this.#r_rootRect.height * marginScale * this.#r_cropValue.aspect,
 				}
 			: {
-					height: (this.#r_rootElRect.width * marginScale) / this.#r_cropValue.aspect,
-					width: this.#r_rootElRect.width * marginScale,
+					height: (this.#r_rootRect.width * marginScale) / this.#r_cropValue.aspect,
+					width: this.#r_rootRect.width * marginScale,
 				};
 	});
 
-	#r_rootCenter: null | Point = $derived(
-		this.#r_rootElRect ? { x: this.#r_rootElRect.width / 2, y: this.#r_rootElRect.height / 2 } : null,
-	);
-
-	#r_outerElTopLeftPoint: null | Point = $derived(
-		this.#r_rootElRect ? { x: this.#r_rootElRect.x, y: this.#r_rootElRect.y } : null,
-	);
-
-	#r_gestureHandler: null | GestureHandler = $derived.by(() => {
-		if (!this.#r_cropWindowSize || !this.#r_rootElRect || !this.#r_rootCenter || !this.#r_outerElTopLeftPoint)
-			return null;
-
-		const cropController = {
-			pan: (positionOffset: Point) => {
-				this.#r_cropValue.position = Points.add(this.#r_cropValue.position, positionOffset);
-			},
-			rotate: (angleOffset: number) => {
-				this.#r_cropValue.rotation += angleOffset;
-			},
-			zoom: (zoomOffset: number) => {
-				this.#r_cropValue.scale *= zoomOffset;
-			},
-		};
-
-		return new GestureHandler({
-			centerPoint: this.#r_rootCenter,
-			cropWindowSize: this.#r_cropWindowSize,
-			outerElTopLeftPoint: this.#r_outerElTopLeftPoint,
-			currentPosition: this.#r_cropValue.position,
-			cropController,
-		});
-	});
-
+	/** If `#r_cropValue` creates dead space within the crop window, it is deemed invalid and the fixes are stored here. */
 	#r_pendingFixes = $derived.by(() => {
 		if (
+			this.#r_rootRect === null ||
 			this.#r_rootCenter === null ||
 			this.#r_cropWindowSize === null ||
-			this.#r_naturalMediaSize === null ||
-			this.#r_rootElRect === null
+			this.#r_mediaAspect === null
 		)
 			return null;
 
@@ -163,14 +121,241 @@ export class CropWindow {
 			centerPoint: this.#r_rootCenter,
 			cropValue: this.#r_cropValue,
 			cropWindowSize: this.#r_cropWindowSize,
-			mediaAspect: this.#r_naturalMediaSize.aspect,
-			rootElSize: { width: this.#r_rootElRect.width, height: this.#r_rootElRect.height },
+			mediaAspect: this.#r_mediaAspect,
+			rootElSize: { width: this.#r_rootRect.width, height: this.#r_rootRect.height },
 		});
 
 		if (!needsChange) return null;
 		return { ...this.#r_cropValue, position, scale };
 	});
 	//#endregion Initialization
+
+	//#region Logic
+	/** Exposes methods to mutate `this.#r_cropValue`. */
+	#cropController = {
+		/** When the rotation changes, the pan must also change in order to keep the image centered */
+		calcPanOffsetFromRotation: (angleOffset: number): Point | null => {
+			const cropValue = this.#r_cropValue;
+			const cropWindowHeight = this.#r_cropWindowSize?.height;
+			const rootElCenter = this.#r_rootCenter;
+			if (!cropWindowHeight || !rootElCenter) return null;
+			if (cropValue.position.x === 0 && cropValue.position.y === 0) return null;
+
+			const imgWidth = cropWindowHeight * cropValue.aspect * cropValue.scale;
+			const imgHeight = cropWindowHeight * cropValue.scale;
+
+			const projectionTopLeft = Points.add(
+				Points.rotate({ x: -imgWidth / 2, y: -imgHeight / 2 }, angleOffset),
+				Points.mul(cropValue.position, cropWindowHeight),
+				rootElCenter,
+			);
+
+			const projectionBottomRight = Points.add(
+				Points.rotate({ x: imgWidth / 2, y: imgHeight / 2 }, angleOffset),
+				Points.mul(cropValue.position, cropWindowHeight),
+				rootElCenter,
+			);
+
+			const projectionCenter = Points.getCenter(projectionTopLeft, projectionBottomRight);
+			const rotated = Points.rotateAroundCenter(rootElCenter, projectionCenter, angleOffset);
+			return Points.mul(Points.sub(rootElCenter, rotated), 1.0 / cropWindowHeight);
+		},
+		/** When the scale changes, the pan must also change in order to keep the image centered */
+		calcPanOffsetFromScale: ({
+			zoomOffset,
+			actionCenter,
+		}: {
+			zoomOffset: number;
+			actionCenter: Point;
+		}): Point | null => {
+			const { scale: currentScale, position: currentPosition } = this.#r_cropValue;
+			const cropWindowHeight = this.#r_cropWindowSize?.height;
+			const rootElCenter = this.#r_rootCenter;
+			const rootElTopLeftPoint = this.#r_rootRect ? { x: this.#r_rootRect.x, y: this.#r_rootRect.y } : null;
+			if (!cropWindowHeight || !rootElCenter || !rootElTopLeftPoint) return null;
+
+			const scaledPosition = Points.mul(currentPosition, cropWindowHeight);
+			const scaledPositionFromCenter = Points.add(rootElCenter, scaledPosition);
+			const actionCenterRelativeToEl = Points.sub(actionCenter, rootElTopLeftPoint);
+			const zoomOffsetFromCenter = Points.sub(actionCenterRelativeToEl, scaledPositionFromCenter);
+			const newScale = currentScale * zoomOffset;
+			const zoomScaleChangeFactor = (1 - newScale / currentScale) / cropWindowHeight;
+			return Points.mul(zoomOffsetFromCenter, zoomScaleChangeFactor);
+		},
+		pan: (panOffset: Point) => {
+			this.#r_cropValue.position = Points.add(this.#r_cropValue.position, panOffset);
+		},
+		rotate: (angleOffset: number) => {
+			this.#r_cropValue.rotation += angleOffset;
+		},
+		zoom: (zoomOffset: number) => {
+			this.#r_cropValue.scale *= zoomOffset;
+		},
+		zoomAndPan: ({ zoomOffset, actionCenter }: { zoomOffset: number; actionCenter: Point }) => {
+			this.#cropController.zoom(zoomOffset);
+			const panOffset = this.#cropController.calcPanOffsetFromScale({ zoomOffset, actionCenter });
+			if (panOffset) this.#cropController.pan(panOffset);
+		},
+		rotateAndPan: ({ angleOffset }: { angleOffset: number }) => {
+			this.#cropController.rotate(angleOffset);
+			const panOffset = this.#cropController.calcPanOffsetFromRotation(angleOffset);
+			if (panOffset) this.#cropController.pan(panOffset);
+		},
+	};
+
+	/** gh (gesture handler) receives mouse and touch gestures and calls the appropriate cropController methods. */
+	#gh = (() => {
+		let mouseDragLastPoint: Point | undefined = undefined;
+		let touchFocalPoint: Point | undefined = undefined;
+
+		const mouseMoveHandler = ({ dx, dy }: { dx: number; dy: number }) => {
+			const cropWindowHeight = this.#r_cropWindowSize?.height;
+			if (!cropWindowHeight) return;
+
+			const mousePan = { x: dx || 0, y: dy || 0 };
+			this.#cropController.pan(Points.mul(mousePan, 1.0 / cropWindowHeight));
+		};
+
+		const mouseRotateHandler = (focalPoint: Point) => {
+			const rootElTopLeftPoint = this.#r_rootRect ? { x: this.#r_rootRect.x, y: this.#r_rootRect.y } : null;
+			const rootElCenter = this.#r_rootCenter;
+			if (!rootElTopLeftPoint || !rootElCenter) return;
+
+			const currentPosition = this.#r_cropValue.position;
+
+			const imgCenter: Point = {
+				x: rootElCenter.x + rootElCenter.x * currentPosition.x,
+				y: rootElCenter.y + rootElCenter.y * currentPosition.y,
+			};
+
+			const mouseDragCurrentPoint = Points.sub(focalPoint, rootElTopLeftPoint);
+			if (mouseDragLastPoint === undefined) {
+				mouseDragLastPoint = mouseDragCurrentPoint;
+				return;
+			}
+			const lastDragPoint = mouseDragLastPoint;
+			mouseDragLastPoint = mouseDragCurrentPoint;
+			const angleOffset = Points.getAngle(mouseDragCurrentPoint, imgCenter) - Points.getAngle(lastDragPoint, imgCenter);
+			this.#cropController.rotateAndPan({ angleOffset });
+		};
+
+		const mouseDragmoveHandler = (detail: MouseDragMove) => {
+			if (detail.mouseButton == 0) {
+				mouseMoveHandler({ dx: detail.dx, dy: detail.dy });
+			} else {
+				mouseRotateHandler({ x: detail.x, y: detail.y });
+			}
+		};
+
+		const mouseDragendHandler = () => {
+			mouseDragLastPoint = undefined;
+		};
+
+		const mouseWheelHandler = (e: WheelEvent) => {
+			const wheelScaleStep = 0.1;
+			const mouseWheelDirection: 1 | -1 = e.deltaY <= 0 ? 1 : -1;
+			const zoomOffset = 1 + mouseWheelDirection * wheelScaleStep;
+			this.#cropController.zoomAndPan({ zoomOffset, actionCenter: { x: e.x, y: e.y } });
+		};
+
+		const touchHandler = (detail: TouchScalePanRotate) => {
+			const cropWindowHeight = this.#r_cropWindowSize?.height;
+			if (!cropWindowHeight) return;
+
+			if (!touchFocalPoint) {
+				touchFocalPoint = detail.focalPoint;
+			}
+
+			this.#cropController.zoomAndPan({ zoomOffset: detail.scale, actionCenter: detail.focalPoint });
+			this.#cropController.rotateAndPan({ angleOffset: detail.rotation });
+			this.#cropController.pan(Points.mul(detail.pan, 1.0 / cropWindowHeight));
+		};
+
+		const touchendHandler = () => {
+			touchFocalPoint = undefined;
+		};
+
+		return {
+			mouseDragmoveHandler,
+			mouseDragendHandler,
+			mouseWheelHandler,
+			touchHandler,
+			touchendHandler,
+		};
+	})();
+
+	/** Debounces assigning #r_pendingFixes to #r_cropValue to create an "autoFix" feature. */
+	#stateController = (() => {
+		let r_state: 'idle' | 'active' | 'debounce' | 'fixing' = $state('idle');
+		let untilFix: null | ReturnType<typeof setTimeout> = null;
+		let untilFixOver: null | ReturnType<typeof setTimeout> = null;
+
+		const start = () => {
+			if (untilFix) clearTimeout(untilFix);
+			if (untilFixOver) clearTimeout(untilFixOver);
+			r_state = 'active';
+		};
+
+		const finish = () => {
+			if (untilFix) clearTimeout(untilFix);
+			if (untilFixOver) clearTimeout(untilFixOver);
+			r_state = 'debounce';
+			untilFix = setTimeout(() => {
+				if (!this.#r_pendingFixes) {
+					r_state = 'idle';
+					return;
+				}
+
+				r_state = 'fixing';
+				this.#r_cropValue = this.#r_pendingFixes;
+				untilFixOver = setTimeout(() => {
+					r_state = 'idle';
+				}, this.#r_cropWindowOptions.fixDurationMs);
+			}, this.#r_cropWindowOptions.fixDelayMs);
+		};
+
+		return {
+			start,
+			finish,
+			get r_state() {
+				return r_state;
+			},
+		};
+	})();
+
+	/** Returns DOM event listeners that call the gesture handler and state controller. */
+	#gestureHandlers = (() => {
+		const klass = this;
+
+		return {
+			...createMouseDraggableHandler({
+				onMouseDraggableMove: (e) => {
+					klass.#gh.mouseDragmoveHandler(e);
+					klass.#stateController.start();
+				},
+				onMouseDraggableEnd: () => {
+					klass.#gh.mouseDragendHandler();
+					klass.#stateController.finish();
+				},
+			}),
+			...createTouchScalePanRotateHandler({
+				onTouchScalePanRotate: (e) => {
+					klass.#gh.touchHandler(e);
+					klass.#stateController.start();
+				},
+				onTouchendScalePanRotate: () => {
+					klass.#gh.touchendHandler();
+					klass.#stateController.finish();
+				},
+			}),
+			onwheel(e: WheelEvent) {
+				e.preventDefault();
+				klass.#gh.mouseWheelHandler(e);
+				klass.#stateController.finish();
+			},
+		};
+	})();
+	//#endregion Logic
 
 	//#region Elements
 	/**
@@ -225,9 +410,9 @@ export class CropWindow {
 				return klass.#ids.media;
 			},
 			get style() {
-				if (!klass.#r_cropWindowSize || !klass.#r_rootCenter) return 'display: none;';
+				if (!klass.#r_rootCenter || !klass.#r_cropWindowSize) return 'display: none;';
 
-				const position = Points.add(
+				const mediaPosition = Points.add(
 					klass.#r_rootCenter,
 					Points.mul(klass.#r_cropValue.position, klass.#r_cropWindowSize.height),
 				);
@@ -235,8 +420,8 @@ export class CropWindow {
 				return styleToString({
 					transform: `translateX(-50%) translateY(-50%) rotate(${klass.#r_cropValue.rotation}deg)`,
 					height: `${klass.#r_cropWindowSize.height * klass.#r_cropValue.scale}px`,
-					'margin-left': `${position.x}px`,
-					'margin-top': `${position.y}px`,
+					'margin-left': `${mediaPosition.x}px`,
+					'margin-top': `${mediaPosition.y}px`,
 					'max-width': 'none',
 					'user-select': 'none',
 					'pointer-events': 'none',
@@ -245,10 +430,10 @@ export class CropWindow {
 				});
 			},
 			onload() {
-				klass.#initNaturalMediaSize();
+				klass.#initMediaAspect();
 			},
 			onloadedmetadata() {
-				klass.#initNaturalMediaSize();
+				klass.#initMediaAspect();
 			},
 		};
 	}
@@ -367,41 +552,6 @@ export class CropWindow {
 	 * Optionally disable the gestures by passing `disabled: true`.
 	 */
 	gestureHandler({ disabled }: { disabled?: boolean } = {}) {
-		const klass = this;
-
-		const handlers = (() => {
-			const gh = klass.#r_gestureHandler;
-			if (gh === null) return {};
-
-			return {
-				...createMouseDraggableHandler({
-					onMouseDraggableMove: (e) => {
-						gh.mouseDragmoveHandler(e);
-						klass.#stateController.start();
-					},
-					onMouseDraggableEnd: () => {
-						gh.mouseDragendHandler();
-						klass.#stateController.finish();
-					},
-				}),
-				...createTouchScalePanRotateHandler({
-					onTouchScalePanRotate: (e) => {
-						gh.touchHandler(e);
-						klass.#stateController.start();
-					},
-					onTouchendScalePanRotate: () => {
-						gh.touchendHandler();
-						klass.#stateController.finish();
-					},
-				}),
-				onwheel(e: WheelEvent) {
-					e.preventDefault();
-					gh.wheelHandler(e);
-					klass.#stateController.finish();
-				},
-			};
-		})();
-
 		return {
 			get style() {
 				return styleToString({
@@ -413,7 +563,7 @@ export class CropWindow {
 					'touch-action': 'none',
 				});
 			},
-			...handlers,
+			...this.#gestureHandlers,
 		};
 	}
 	//#endregion Elements
@@ -421,7 +571,6 @@ export class CropWindow {
 	//#region Getters and Setters
 	// gesture controller updates the cropValue and calls the start/finish methods directly
 	// this is for public access only and is proxied so that setting the cropValue programmatically also calls the auto-fixing mechanism.
-	// todo: setting the rotation should also update the position.
 	get cropValue() {
 		return new Proxy(this.#r_cropValue, {
 			get: <K extends keyof CropValue>(target: CropValue, prop: K) => {
@@ -444,6 +593,16 @@ export class CropWindow {
 	}
 	set cropValue(value: CropValue) {
 		this.#r_cropValue = value;
+		this.#stateController.finish();
+	}
+	scaleAndKeepFocus(scale: number) {
+		const actionCenter = this.#r_rootCenter;
+		if (!actionCenter) return;
+		this.#cropController.zoomAndPan({ zoomOffset: scale / this.#r_cropValue.scale, actionCenter });
+		this.#stateController.finish();
+	}
+	rotateAndKeepFocus(angle: number) {
+		this.#cropController.rotateAndPan({ angleOffset: angle - this.#r_cropValue.rotation });
 		this.#stateController.finish();
 	}
 	get cropWindowOptions() {

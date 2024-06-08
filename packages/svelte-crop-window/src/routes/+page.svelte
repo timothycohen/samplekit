@@ -4,6 +4,7 @@
 	const { data } = $props();
 
 	const cw = new CropWindow();
+	let lockCenter = $state(false);
 
 	const img = {
 		src: 'https://images.unsplash.com/photo-1501244686579-97d04b498199?w=1600&h=900',
@@ -121,21 +122,62 @@
 			</div>
 
 			<div>Position X (multiplier offset)</div>
-			<input type="number" min={-1} max={1} step={0.01} bind:value={cw.cropValue.position.x} />
+			<input
+				type="number"
+				min={-10}
+				max={10}
+				step={0.01}
+				value={cw.cropValue.position.x.toFixed(2)}
+				oninput={(e) => {
+					cw.cropValue.position.x = e.currentTarget.valueAsNumber;
+				}}
+			/>
 
 			<div>Position Y (multiplier offset)</div>
-			<input type="number" min={-1} max={1} step={0.01} bind:value={cw.cropValue.position.y} />
+			<input
+				type="number"
+				min={-10}
+				max={10}
+				step={0.01}
+				value={cw.cropValue.position.y.toFixed(2)}
+				oninput={(e) => {
+					cw.cropValue.position.y = e.currentTarget.valueAsNumber;
+				}}
+			/>
+
+			<div>Lock center</div>
+			<div><input type="checkbox" bind:checked={lockCenter} /></div>
 
 			<div>Scale (multiplier)</div>
 			<div>
-				<input type="range" min={0.01} max="6" step={0.01} bind:value={cw.cropValue.scale} />
-				{cw.cropValue.scale}
+				<input
+					type="range"
+					min={0.01}
+					max="6"
+					step={0.01}
+					value={cw.cropValue.scale}
+					oninput={(e) => {
+						if (lockCenter) cw.scaleAndKeepFocus(e.currentTarget.valueAsNumber);
+						else cw.cropValue.scale = e.currentTarget.valueAsNumber;
+					}}
+				/>
+				{cw.cropValue.scale.toFixed(2)}
 			</div>
 
 			<div>Rotation (degrees clockwise)</div>
 			<div>
-				<input type="range" min={-180} max="180" step={1} bind:value={cw.cropValue.rotation} />
-				{cw.cropValue.rotation}
+				<input
+					type="range"
+					min={-180}
+					max="180"
+					step={1}
+					value={cw.cropValue.rotation}
+					oninput={(e) => {
+						if (lockCenter) cw.rotateAndKeepFocus(e.currentTarget.valueAsNumber);
+						else cw.cropValue.rotation = e.currentTarget.valueAsNumber;
+					}}
+				/>
+				{cw.cropValue.rotation.toFixed(0)}
 			</div>
 		</div>
 	</section>
