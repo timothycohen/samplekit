@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { mediaStyles, outerStyles } from '$lib/image/client';
 	import { Pencil } from '$lib/styles/icons';
 
 	interface Props {
@@ -19,38 +20,32 @@
 		onEditorClicked = undefined,
 	}: Props = $props();
 
-	const imgStyles = $derived(
-		avatar
-			? `transform: translateX(-50%) translateY(-50%) rotate(${avatar.crop.rotation}deg);` +
-					`height: ${avatar.crop.scale * size}px;` +
-					`margin-left: ${(size * avatar.crop.aspect) / 2 + avatar.crop.position.x * size}px;` +
-					`margin-top: ${size / 2 + avatar.crop.position.y * size}px; max-width: none;`
-			: '',
-	);
+	const outerStyle = outerStyles({ shape: 'round', height: size });
 </script>
 
 {#if !editable}
-	<div
-		class="group relative overflow-hidden rounded-full"
-		style="height:{size}px; width:{(avatar?.crop?.aspect ?? 1) * size}px;"
-	>
+	<div class="group" style={outerStyle}>
 		{#if avatar}
-			<img style={imgStyles} src={avatar.url} alt="" referrerpolicy="no-referrer" />
+			<img
+				style={mediaStyles({ cropValue: avatar.crop, height: size })}
+				src={avatar.url}
+				alt=""
+				referrerpolicy="no-referrer"
+			/>
 		{:else}
 			<div class="h-full w-full bg-black/10"></div>
 		{/if}
 		<div class="absolute inset-0 rounded-full ring-1 ring-inset ring-gray-6"></div>
 	</div>
-{/if}
-
-{#if editable}
-	<button
-		onclick={() => onEditorClicked?.()}
-		class="group relative block overflow-hidden rounded-full"
-		style="height:{size}px; width:{(avatar?.crop?.aspect ?? 1) * size}px;"
-	>
+{:else}
+	<button onclick={() => onEditorClicked?.()} class="group block" style={outerStyle}>
 		{#if avatar}
-			<img style={imgStyles} src={avatar.url} alt="" referrerpolicy="no-referrer" />
+			<img
+				style={mediaStyles({ cropValue: avatar.crop, height: size })}
+				src={avatar.url}
+				alt=""
+				referrerpolicy="no-referrer"
+			/>
 		{:else}
 			<div class="h-full w-full bg-black/10"></div>
 		{/if}

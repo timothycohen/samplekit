@@ -1,25 +1,46 @@
 <script lang="ts">
 	import { createDialog, melt } from '@melt-ui/svelte';
+	import { onMount } from 'svelte';
 	import { cubicOut } from 'svelte/easing';
 	import { tweened } from 'svelte/motion';
 	import { writable } from 'svelte/store';
 	import { fade } from 'svelte/transition';
 	import { Avatar } from '$lib/components';
 	import { UploadProgress, ImageCardBtns, ImageCardOverlays } from '$lib/image/client';
-	import { CropWindow, defaultOptions } from '$lib/image/client';
 	import img_owl from '$routes/articles/image-uploader/assets/owl-400w.webp';
 	import img_smoky from '$routes/articles/image-uploader/assets/smoky-400w.webp';
 	import type { CropControllerState } from '$lib/cloudStorage/client';
+
+	const noop = () => {};
 
 	let avatar: DB.User['avatar'] = $state(null);
 
 	const rotation = tweened(0, { duration: 500, easing: cubicOut });
 	const scale = tweened(1, { duration: 500, easing: cubicOut });
 	const uploadProgress = tweened(0, { duration: 1000, easing: cubicOut });
-	const crop = { position: { x: 0, y: 0 }, aspect: 1, rotation: 165, scale: 1.5 };
-	const noop = () => {};
 	const s = writable<CropControllerState>({ state: 'canceled' });
 	const timeouts: Array<ReturnType<typeof setTimeout>> = [];
+
+	onMount(() => {
+		const unsub = rotation.subscribe(($rotation: number) => {
+			s.update((s) => {
+				if ('crop' in s) s.crop.rotation = $rotation;
+				return s;
+			});
+		});
+
+		const unsub2 = scale.subscribe(($scale: number) => {
+			s.update((s) => {
+				if ('crop' in s) s.crop.scale = $scale;
+				return s;
+			});
+		});
+
+		return () => {
+			unsub();
+			unsub2();
+		};
+	});
 
 	const reset = () => {
 		s.set({ state: 'canceled' });
@@ -46,6 +67,8 @@
 	});
 
 	const happyPath = () => {
+		const endCrop = { position: { x: 0, y: 0 }, aspect: 1, rotation: 165, scale: 1.5 };
+
 		reset();
 		avatar = null;
 		s.set({
@@ -58,15 +81,15 @@
 
 		timeouts.push(setTimeout(() => editAvatarOpen.set(true), 300));
 
-		timeouts.push(setTimeout(() => rotation.set(crop.rotation), 600));
+		timeouts.push(setTimeout(() => rotation.set(endCrop.rotation), 600));
 
-		timeouts.push(setTimeout(() => scale.set(crop.scale), 900));
+		timeouts.push(setTimeout(() => scale.set(endCrop.scale), 900));
 
 		timeouts.push(
 			setTimeout(() => {
 				s.set({
 					state: 'image_storage_uploading',
-					crop,
+					crop: endCrop,
 					uri: img_owl,
 					abortUpload: noop,
 					imageUploadPromise: new Promise(noop),
@@ -78,7 +101,7 @@
 
 		timeouts.push(
 			setTimeout(() => {
-				avatar = { crop, url: img_owl };
+				avatar = { crop: endCrop, url: img_owl };
 				s.set({ state: 'completed', savedImg: avatar });
 			}, 3000),
 		);
@@ -150,16 +173,7 @@
 						errorMsgs={$s.errorMsgs}
 					/>
 				{:else if $s.state === 'cropped'}
-					<div class="crop-wrapper contents">
-						<CropWindow
-							value={{ position: { x: 0, y: 0 }, aspect: 1, rotation: $rotation, scale: $scale }}
-							media={{ content_type: 'image', url: $s.uri }}
-							options={{ ...defaultOptions, shape: 'round', crop_window_margin: 0 }}
-						/>
-					</div>
-					<div class="absolute bottom-0 right-0">
-						<button class="btn btn-accent w-full rounded-none rounded-br-card rounded-tl-card"> Save </button>
-					</div>
+					<ImageCardOverlays img={{ kind: 'overlay', url: $s.uri, crop: $s.crop }} />
 					<ImageCardBtns onCancel={cancel} onNew={noop} />
 				{:else if $s.state === 'image_storage_uploading'}
 					<ImageCardOverlays img={{ kind: 'overlay', url: $s.uri, crop: $s.crop }} overlay={{ pulsingWhite: true }} />
@@ -173,9 +187,3 @@
 		</div>
 	{/if}
 </div>
-
-<style lang="postcss">
-	.crop-wrapper :global(.outline) {
-		@apply border-gray-6 outline-none;
-	}
-</style>
