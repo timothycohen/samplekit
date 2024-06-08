@@ -177,7 +177,7 @@ public loadCropValue({ crop }: { crop: CropValue }): void {
 }
 
 /** States: 'uri_loaded' -> 'cropped' */
-public skipCrop({ crop }: { crop: CropValue } = { crop: defaultValue }): void {
+public skipCrop({ crop }: { crop: CropValue } = { crop: defaultCropValue }): void {
 	const { uri, file } = this.guard(['uri_loaded']);
 	this.state.set({ state: 'cropped', crop, file, uri });
 }

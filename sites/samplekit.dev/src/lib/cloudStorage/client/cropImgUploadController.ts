@@ -1,7 +1,7 @@
 import { circOut } from 'svelte/easing';
 import { tweened, type Tweened } from 'svelte/motion';
 import { get, type Writable } from 'svelte/store';
-import { defaultValue, fileToDataUrl, humanReadableFileSize } from '$lib/image/client';
+import { defaultCropValue, fileToDataUrl, humanReadableFileSize } from '$lib/image/client';
 import type { CroppedImg, CropValue } from '$lib/image/client';
 import type { Result } from '$lib/utils/common';
 
@@ -152,7 +152,7 @@ export class CropImgUploadController {
 	}
 
 	/** States: 'uri_loaded' -> 'cropped' */
-	public skipCrop({ crop }: { crop: CropValue } = { crop: defaultValue }): void {
+	public skipCrop({ crop }: { crop: CropValue } = { crop: defaultCropValue }): void {
 		const { uri, file } = this.guard(['uri_loaded']);
 		this.state.set({ state: 'cropped', crop, file, uri });
 	}

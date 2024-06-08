@@ -1,0 +1,17 @@
+{
+	"extends": ["./.svelte-kit/tsconfig.json", "../../tsconfig.base.json"],
+	"compilerOptions": {
+		"module": "NodeNext",
+		"moduleResolution": "NodeNext",
+		"lib": ["ES2022", "DOM", "DOM.Iterable"],
+		"target": "ES2022"
+	},
+	"include": [
+		"*",
+		"src/**/*",
+		".svelte-kit/ambient.d.ts",
+		".svelte-kit/non-ambient.d.ts",
+		".svelte-kit/./types/**/$types.d.ts"
+	],
+	"exclude": ["static/**", "vite.config.ts.timestamp-*", "vite.config.js.timestamp-*"]
+}
