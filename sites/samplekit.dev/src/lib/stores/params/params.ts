@@ -164,8 +164,8 @@ export const cleanMinMax: (a: {
 	newMax?: number | null;
 	newMin?: number | null;
 }) => { min: number | null; max: number | null } = ({ absMax, curMax, curMin, newMax, newMin }) => {
-	const cleanMin = withinBounds({ num: newMin === undefined ? curMin ?? null : newMin, absMax });
-	const cleanMax = withinBounds({ num: newMax === undefined ? curMax ?? null : newMax, absMax });
+	const cleanMin = withinBounds({ num: newMin === undefined ? (curMin ?? null) : newMin, absMax });
+	const cleanMax = withinBounds({ num: newMax === undefined ? (curMax ?? null) : newMax, absMax });
 
 	if (cleanMin === null || cleanMax === null || cleanMax >= cleanMin) {
 		return { min: cleanMin, max: cleanMax };

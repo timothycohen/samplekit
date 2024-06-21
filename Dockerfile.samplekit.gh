@@ -12,7 +12,7 @@
 # `ENV_FILE`: full contents of .env
 # `MODE`: staging or production
 
-FROM node:20.11-alpine AS BUILD
+FROM node:20.14-alpine AS BUILD
 WORKDIR /usr/src/app
 ARG ROOT=/usr/src/app
 ARG REPO=/usr/src/app/sites/samplekit.dev
@@ -32,7 +32,7 @@ RUN corepack enable pnpm
 RUN pnpm install
 RUN echo $MODE | pnpm --filter samplekit.dev build
 
-FROM node:20.11-alpine
+FROM node:20.14-alpine
 WORKDIR /usr/src/app
 ARG ROOT=/usr/src/app
 ARG REPO=/usr/src/app/sites/samplekit.dev

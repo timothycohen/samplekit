@@ -11,7 +11,7 @@
 # Expects:
 # `./sites/samplekit.dev/.env._preview' to exist
 
-FROM node:20.11-alpine AS BUILD
+FROM node:20.14-alpine AS BUILD
 WORKDIR /usr/src/app
 ARG ROOT=/usr/src/app
 ARG REPO=/usr/src/app/sites/samplekit.dev
@@ -25,7 +25,7 @@ RUN corepack enable pnpm
 RUN pnpm install
 RUN echo _preview | pnpm --filter samplekit.dev build
 
-FROM node:20.11-alpine
+FROM node:20.14-alpine
 WORKDIR /usr/src/app
 ARG ROOT=/usr/src/app
 ARG REPO=/usr/src/app/sites/samplekit.dev
