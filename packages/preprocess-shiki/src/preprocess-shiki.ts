@@ -1,21 +1,58 @@
-import { getHighlighter, type BundledLanguage as ShikiLang } from 'shiki';
+import { walk } from 'estree-walker';
+import MagicString from 'magic-string';
+import { getHighlighter, type Highlighter, type BundledLanguage as ShikiLang } from 'shiki';
+import { parse, type SvelteNode, type PreprocessorGroup } from 'svelte/compiler';
 import darkerJSON from './darker.js';
-import type { PreprocessorGroup } from './types.js';
 import type { Element } from 'hast';
 
-export const mdLanguages = ['json', 'sh', 'html', 'css', 'md', 'js', 'ts', 'svelte', 'diff'] satisfies ShikiLang[];
+// todo make sure this is fully customizable with own highlighter
+
+export const mdLanguages = [
+	'json',
+	'sh',
+	'html',
+	'css',
+	'md',
+	'js',
+	'ts',
+	'svelte',
+	'diff',
+	'latex',
+	'graphql',
+] satisfies ShikiLang[];
 export type MdLang = (typeof mdLanguages)[number];
 export const isMdLang = (lang?: string): lang is MdLang => mdLanguages.includes(lang as MdLang);
 
+const commonDelimiter = 'shiki-';
+
+const fencedDelimiter = (() => {
+	const start = `${commonDelimiter}start`;
+	const end = `${commonDelimiter}end`;
+	const startLoc = start.length + 1;
+	const endLoc = -end.length - 1;
+	return { start, end, startLoc, endLoc };
+})();
+
+const inlineDelimiters = mdLanguages.map((lang) => {
+	const delimiter = `${commonDelimiter}${lang}`;
+	const delimLoc = { start: delimiter.length + 1, end: -delimiter.length - 1 };
+	return { delimiter, delimLoc, lang };
+});
+
 const escapePreprocessor = (code: string) => {
-	return code.replace(/&tripgrave;|&tripslash;|&triptilde;|&brackbang;/g, (match) => {
-		return {
-			'&tripgrave;': '```',
-			'&tripslash;': '///',
-			'&triptilde;': '~~~',
-			'&brackbang;': '[!',
-		}[match]!;
-	});
+	return code.replace(
+		/&tripgrave;|&tripslash;|&triptilde;|&brackbang;|&openhtmlcomment;|&closehtmlcomment;/g,
+		(match) => {
+			return {
+				'&tripgrave;': '```',
+				'&tripslash;': '///',
+				'&triptilde;': '~~~',
+				'&brackbang;': '[!',
+				'&openhtmlcomment;': '<!--',
+				'&closehtmlcomment;': '-->',
+			}[match]!;
+		},
+	);
 };
 
 const escapeSvelte = (code: string) => {
@@ -112,18 +149,25 @@ const getLineProps = (rawCode: string) => {
 	return { strippedCode: code, lineProps, preProps };
 };
 
-const highlighter = await getHighlighter({ themes: [darkerJSON, 'rose-pine-dawn'], langs: mdLanguages });
+const defaultHighlighter: Highlighter = await getHighlighter({
+	themes: [darkerJSON, 'rose-pine-dawn'],
+	langs: mdLanguages,
+});
 
 const createThemedCodeHtml = ({
 	code,
 	lang,
 	lineProps,
 	preProps,
+	codeInline,
+	highlighter,
 }: {
 	code: string;
 	lang: MdLang;
 	lineProps: Record<number, string[]>;
 	preProps: string[];
+	codeInline?: true;
+	highlighter: Highlighter;
 }) => {
 	let lineNum = 1;
 
@@ -160,6 +204,10 @@ const createThemedCodeHtml = ({
 						}
 					}
 					el.children = newChildren;
+					if (codeInline) {
+						el.properties['data-inline'] = '';
+						el.properties['style'] = 'whitespace: pre;';
+					}
 					return el;
 				},
 				pre(el: Element) {
@@ -192,14 +240,41 @@ const createThemedCodeHtml = ({
  *
  * ///highlight:2,4-10
  */
-export const mdCodeBlockToRawHtml = ({ rawCode, lang }: { rawCode: string; lang: MdLang }) => {
+export const mdCodeBlockToRawHtml = (
+	{ rawCode, lang, noWrap }: { rawCode: string; lang: MdLang; noWrap?: true },
+	highlighter = defaultHighlighter,
+) => {
+	try {
+		const { strippedCode, lineProps, preProps } = getLineProps(rawCode);
+
+		const raw = escapeSvelte(
+			createThemedCodeHtml({ code: escapePreprocessor(strippedCode), lang, lineProps, preProps, highlighter }),
+		);
+		if (noWrap) return { data: raw };
+		return { data: `<div class="code-wrapper">` + raw + `</div>` };
+	} catch (err) {
+		if (err instanceof Error) return { error: err };
+		return { error: new Error(`Unable to highlight`) };
+	}
+};
+
+export const mdCodeBlockToRawHtmlInline = (
+	{ rawCode, lang }: { rawCode: string; lang: MdLang },
+	highlighter = defaultHighlighter,
+) => {
 	try {
 		const { strippedCode, lineProps, preProps } = getLineProps(rawCode);
 		return {
-			data:
-				`<div class="code-wrapper">` +
-				escapeSvelte(createThemedCodeHtml({ code: escapePreprocessor(strippedCode), lang, lineProps, preProps })) +
-				'</div>',
+			data: escapeSvelte(
+				createThemedCodeHtml({
+					code: escapePreprocessor(strippedCode),
+					lang,
+					lineProps,
+					preProps,
+					codeInline: true,
+					highlighter,
+				}).replace(/^<pre[^>]*>(<code[^>]*>[\s\S]*?<\/code>)<\/pre>$/, '$1'),
+			),
 		};
 	} catch (err) {
 		if (err instanceof Error) return { error: err };
@@ -207,9 +282,9 @@ export const mdCodeBlockToRawHtml = ({ rawCode, lang }: { rawCode: string; lang:
 	}
 };
 
-const parseAndRemoveWrapper = (
+const removeFence = (
 	rawMarkdown: string,
-): { rawCode: string; lang: MdLang; error?: never } | { rawCode?: never; lang?: never; error: Error } => {
+): { data: { rawCode: string; lang: MdLang }; error?: never } | { data?: never; error: Error } => {
 	rawMarkdown = rawMarkdown.trim();
 	const lines = rawMarkdown.split('\n');
 	const firstLine = lines[0];
@@ -235,19 +310,21 @@ const parseAndRemoveWrapper = (
 	}
 
 	const rawCode = lines.join('\n');
-	return { rawCode, lang };
+	return { data: { rawCode, lang } };
 };
 
 /**
- * Preprocess .svx markdown code block into html
+ * Preprocess markdown code block into html
  *
  * from
  *
- * \`\`\`ts
- *
+ * ~~~html
+ * <!-- shiki-start
+ * ```ts
  * console.log('hello world');
- *
- * \`\`\`
+ * ```
+ * shiki-end -->
+ * ~~~
  *
  * into
  *
@@ -276,82 +353,88 @@ const parseAndRemoveWrapper = (
  * </div>
  * ```
  * */
-
-export function preprocessCodeblock({
+export function processCodeblock({
 	include,
 	logger,
+	highlighter = defaultHighlighter,
 }: {
+	include?: (filename: string) => boolean;
 	logger?: {
-		error: (s: string) => void;
-		warn: (s: string) => void;
-		debug: (s: string) => void;
+		error?: (s: string) => void;
+		debug?: (s: string) => void;
 		formatFilename?: (filename: string) => string;
 	};
-	include?: (filename: string) => boolean;
+	highlighter?: Highlighter;
 } = {}): PreprocessorGroup {
 	return {
-		name: 'md-codeblock',
+		name: 'codeblock',
 		markup({ content, filename }) {
 			if (!filename) return;
 			if (include && !include(filename)) return;
-			const delimiters = [
-				{ startRegex: new RegExp('```(' + mdLanguages.join('|') + ')'), endMarker: '```' },
-				{ startRegex: new RegExp('~~~(' + mdLanguages.join('|') + ')'), endMarker: '~~~' },
-			];
-
-			let resultContent = content;
-			let { startRegex, endMarker } = delimiters.pop()!;
-			let startMatch = startRegex.exec(resultContent);
-
+			const s = new MagicString(content);
+			const ast = parse(content, { filename, modern: true });
 			let count = 0;
 
-			while (startMatch || delimiters.length) {
-				if (!startMatch) {
-					({ startRegex, endMarker } = delimiters.pop()!);
-					startMatch = startRegex.exec(resultContent);
-					continue;
-				}
+			walk(ast.fragment, {
+				enter(node: SvelteNode) {
+					if (node.type !== 'Comment') return;
+					const trimmed = node.data.trim();
+					if (!trimmed.startsWith(commonDelimiter)) return;
 
-				count++;
+					if (trimmed.endsWith(fencedDelimiter.end)) {
+						s.remove(node.start, node.end);
 
-				const startIdx = startMatch.index;
-				const endIdx = resultContent.indexOf(endMarker, startIdx + startMatch[0].length);
+						const fenceRes = removeFence(trimmed.slice(fencedDelimiter.startLoc, fencedDelimiter.endLoc));
+						if (fenceRes.error) {
+							logger?.error?.(
+								`[PREPROCESS] | Code | Error | ${logger.formatFilename ? logger.formatFilename(filename) : filename} | ${fenceRes.error.message}`,
+							);
+							return;
+						}
 
-				if (endIdx === -1) {
-					logger?.error(
-						`[PREPROCESS] | ${logger.formatFilename ? logger.formatFilename(filename) : filename} | Codeblock | Error | Incomplete md at start ${startIdx} (count: ${count}). Aborting.`,
-					);
-					return { code: resultContent };
-				}
+						const { error, data } = mdCodeBlockToRawHtml(fenceRes.data, highlighter);
+						if (error) {
+							logger?.error?.(
+								`[PREPROCESS] | Code | Error | ${logger.formatFilename ? logger.formatFilename(filename) : filename} | ${error.message}`,
+							);
+							return;
+						}
 
-				const before = resultContent.substring(0, startIdx);
-				const extractedContentWithWrapper = resultContent.substring(startIdx, endIdx + endMarker.length);
-				const after = resultContent.substring(endIdx + endMarker.length);
-				let processedContent = '';
+						s.appendLeft(node.start, data);
+						count++;
+						return;
+					}
 
-				const { rawCode, lang, error: codeProcessError } = parseAndRemoveWrapper(extractedContentWithWrapper);
-				let highlightError;
-				if (rawCode && lang) {
-					const { data, error } = mdCodeBlockToRawHtml({ rawCode, lang });
-					if (data) processedContent = data;
-					else if (error) highlightError = error;
-				}
+					for (const { delimLoc, delimiter, lang } of inlineDelimiters) {
+						if (trimmed.endsWith(delimiter)) {
+							s.remove(node.start, node.end);
 
-				if (codeProcessError || highlightError) {
-					logger?.warn(
-						`[PREPROCESS] | ${logger.formatFilename ? logger.formatFilename(filename) : filename} | Codeblock | Warning | Unable to process at start ${startIdx} count ${count}. Skipping.`,
-					);
-				}
+							const rawCode = trimmed.slice(delimLoc.start, delimLoc.end);
 
-				resultContent = before + processedContent + after;
-				startMatch = startRegex.exec(resultContent);
+							const { error, data } = mdCodeBlockToRawHtmlInline({ rawCode, lang }, highlighter);
+							if (error) {
+								logger?.error?.(
+									`[PREPROCESS] | Code | Error | ${logger.formatFilename ? logger.formatFilename(filename) : filename} | ${error.message}`,
+								);
+								return;
+							}
+
+							s.appendLeft(node.start, data);
+							count++;
+							break;
+						}
+					}
+				},
+			});
+
+			if (logger?.debug && count) {
+				const msg = `{ count: ${count} }`;
+				logger.debug?.(
+					`[PREPROCESS] | Code | Success | ${logger.formatFilename ? logger.formatFilename(filename) : filename} | ${msg}`,
+				);
 			}
 
-			logger?.debug(
-				`[PREPROCESS] | ${logger.formatFilename ? logger.formatFilename(filename) : filename} | Codeblock | Success | { count: ${count} } }`,
-			);
-
-			return { code: resultContent };
+			return { code: s.toString() };
 		},
 	};
 }

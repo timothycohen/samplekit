@@ -66,9 +66,14 @@ const config = [
 		languageOptions: { parserOptions: { project: 'packages/auth/tsconfig.json' } },
 	},
 	{
-		name: 'typescript-eslint/custom – @samplekit/markdown',
-		files: ['packages/markdown/src'],
-		languageOptions: { parserOptions: { project: 'packages/markdown/tsconfig.json' } },
+		name: 'typescript-eslint/custom – @samplekit/preprocess-markdown',
+		files: ['packages/preprocess-markdown/src'],
+		languageOptions: { parserOptions: { project: 'packages/preprocess-markdown/tsconfig.json' } },
+	},
+	{
+		name: 'typescript-eslint/custom – @samplekit/preprocess-shiki',
+		files: ['packages/preprocess-shiki/src'],
+		languageOptions: { parserOptions: { project: 'packages/preprocess-shiki/tsconfig.json' } },
 	},
 	{
 		name: 'typescript-eslint/custom – @samplekit/svelte-crop-window',
@@ -143,6 +148,7 @@ const config = [
 	{
 		name: 'ignores',
 		ignores: [
+			'sites/samplekit.dev/vite.config.ts',
 			'sites/*/build/',
 			'sites/*/.svelte-kit/',
 			'packages/*/dist/',
