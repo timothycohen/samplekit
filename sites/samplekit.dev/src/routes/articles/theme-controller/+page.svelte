@@ -1,7 +1,938 @@
 <script lang="ts">
-	import Page from './Page.svx';
-
-	const { data } = $props();
+	import { CodeTopper } from '$lib/articles/components';
 </script>
 
-<Page {data} />
+<p>
+	When given the opportunity, I nearly always switch to dark mode. From cursory Googling, it seems a majority of people
+	share that preference. For example, an
+	<a href="https://www.androidauthority.com/dark-mode-poll-results-1090716/">Android Authority poll</a>
+	showed 81.9% of their users choose dark mode.
+</p>
+
+<p>
+	If you clicked on that link you may have noticed the option to toggle between light and dark mode. However, there's no
+	option to sync with device setting. Also, if you opened the page while your device is set to dark mode, you were
+	probably blinded by an <code>#FFF</code> background until the JavaScript kicked in. These are not uncommon issues, but
+	in this article we're going to overcome them.
+</p>
+
+<h2>Goals</h2>
+
+<p>Let's build a color theming system for SvelteKit with all these benefits:</p>
+
+<div class="w-fit rounded-badge border border-accent-5 bg-accent-2 p-4">
+	<div class="grid grid-cols-[48px_1fr]">
+		<span class="text-gray-9">☐</span>
+		<span class="text-left">
+			Compatibility with design tokens from popular sources like
+			<a href="https://www.radix-ui.com/colors">Radix</a>,
+			<a href="https://designsystem.digital.gov/utilities/color/">USWDS</a>,
+			<a href="https://daisyui.com/docs/themes/">DaisyUI</a>, or
+			<a href="https://tailwindcss.com/docs/customizing-colors">TailwindCSS</a>
+		</span>
+	</div>
+	<div class="grid grid-cols-[48px_1fr]">
+		<span class="text-gray-9">☐</span>
+		<span class="text-left">Integration and intellisense with Tailwind</span>
+	</div>
+
+	<div class="grid grid-cols-[48px_1fr]">
+		<span class="text-gray-9">☐</span>
+		<span class="text-left">Full user control </span>
+	</div>
+
+	<div class="grid grid-cols-[48px_1fr]">
+		<span class="text-gray-9">☐</span>
+		<span class="text-left">Persistent preference storage available on the client (and optionally the server)</span>
+	</div>
+</div>
+
+<p>And none of the downsides:</p>
+
+<div class="w-fit rounded-badge border border-accent-5 bg-accent-2 p-4">
+	<div class="grid grid-cols-[48px_1fr]">
+		<span class="text-gray-9">☐</span>
+		<span class="text-left">
+			Flash of Unstyled Content – or more precisely, incorrectly styled content – while loading a user's stored settings
+		</span>
+	</div>
+
+	<div class="grid grid-cols-[48px_1fr]">
+		<span class="text-gray-9">☐</span>
+		<span class="text-left">Bloated light and dark css classes for every component</span>
+	</div>
+
+	<div class="grid grid-cols-[48px_1fr]">
+		<span class="text-gray-9">☐</span>
+		<span class="text-left">Synchronization problems with system settings</span>
+	</div>
+</div>
+
+<p>
+	This website shows one such implementation using the methods described here. The complete source code can be found at
+
+	<a href="https://github.com/timothycohen/samplekit/tree/main/sites/samplekit.dev/src/lib/styles"> $lib/styles </a>
+</p>
+
+<h2>Organizing the CSS</h2>
+
+<p>
+	Before we create the components and logic to handle multiple themes, we should think about how we want to implement
+	the colors in our CSS.
+</p>
+
+<p>
+	Let's consider two ways to organize our color design tokens that will make it easy to use in CSS (and later Tailwind).
+</p>
+
+<h3>Two design token sets for each theme</h3>
+
+<p>First an example using <a href="https://github.com/radix-ui/colors">Radix UI Colors</a>:</p>
+
+<CodeTopper title="adaptiveColorThemes.css">
+	<!-- shiki-start
+```css
+.light {
+	--blue-5: 205.6deg 100% 88%;
+}
+.dark {
+	--blue-5: 206.9deg 100% 22.7%;
+}
+[data-theme='adaptive-theme'] {
+	--info-5: var(--blue-5);
+}
+```
+shiki-end -->
+</CodeTopper>
+
+<CodeTopper title="tailwind.config.ts">
+	<!-- shiki-start
+		```ts
+colors: {
+	...,
+	info: {
+		'1': `hsl(var(--info-5) / <alpha-value>)`
+	},
+	...
+}
+```
+shiki-end -->
+</CodeTopper>
+
+<p>Organizing the theme this way means each color variable has two separate design tokens for light and dark modes.</p>
+
+<p>By changing <code>class="light"</code> to <code>class="dark"</code>, all the themed color variables will change.</p>
+
+<CodeTopper title="src/app.html">
+	<!-- shiki-start
+```html
+///highlight:1
+<html lang="en" data-theme="adaptive-theme" class="light">
+	...
+	<p class="border-info-5 border">Hi</p>
+	...
+</html>
+```
+shiki-end -->
+</CodeTopper>
+
+<CodeTopper title="src/app.html">
+	<!-- shiki-start
+```html
+///highlight:1
+<html lang="en" data-theme="adaptive-theme" class="dark">
+	...
+	<p class="border-info-5 border">Hi</p>
+	...
+</html>
+```
+shiki-end -->
+</CodeTopper>
+
+<h3>One design token set for each theme</h3>
+
+<p>Now lets look at an example using a <a href="https://daisyui.com/docs/themes/">DaisyUI</a> theme:</p>
+
+<CodeTopper title="staticColorThemes.css">
+	<!-- shiki-start
+```css
+[data-theme='cupcake'] {
+	/* --p is short for primary */
+	--p: 0.76172 0.089459 200.026556;
+}
+[data-theme='business'] {
+	--p: 0.417036 0.099057 251.473931;
+}
+```
+shiki-end -->
+</CodeTopper>
+
+<CodeTopper title="src/app.html">
+	<!-- shiki-start
+```html
+///highlight:4
+&openhtmlcomment; only the data-theme matters for the css.
+		 class="light" is optional here,
+		 but it can be useful for overriding with tailwind &closehtmlcomment;
+<html lang="en" data-theme="cupcake" class="light">
+	...
+	<p class="border-primary border">Hi</p>
+	...
+</html>
+```
+shiki-end -->
+</CodeTopper>
+
+<CodeTopper title="src/app.html">
+	<!-- shiki-start
+```html
+///highlight:1
+<html lang="en" data-theme="business" class="dark">
+	...
+	<p class="border-primary border">Hi</p>
+	...
+</html>
+```
+shiki-end -->
+</CodeTopper>
+
+<p>With this organization, the theme is always fixed to either a light or dark mode.</p>
+
+<h3>Lifting design tokens up</h3>
+
+<p>If we look back at our Radix UI example:</p>
+
+<CodeTopper title="adaptiveColorThemes.css">
+	<!-- shiki-start
+```css
+.light {
+	--blue-5: 205.6deg 100% 88%;
+}
+.dark {
+	--blue-5: 206.9deg 100% 22.7%;
+}
+[data-theme='adaptive-theme'] {
+	--info-5: var(--blue-5);
+}
+```
+shiki-end -->
+</CodeTopper>
+
+<p>
+	We can see that there is no direct way to use a light <code>--blue-5</code> while in dark mode. We can fix this by pulling
+	the variables up one level.
+</p>
+
+<CodeTopper title="adaptiveColorThemes.css">
+	<!-- shiki-start
+```css
+:root {
+	--blue-5-light: 205.6deg 100% 88%;
+	--blue-5-dark: 206.9deg 100% 22.7%;
+}
+.light {
+	--blue-5: var(--blue-5-light);
+}
+.dark {
+	--blue-5: var(--blue-5-dark);
+}
+[data-theme='adaptive-theme'] {
+	--info-5: var(--blue-5);
+}
+```
+shiki-end -->
+</CodeTopper>
+
+<p>Similarly:</p>
+
+<CodeTopper title="staticColorThemes.css">
+	<!-- shiki-start
+```css
+:root {
+	--cupcake-p: 0.76172 0.089459 200.026556;
+	--business-p: 0.417036 0.099057 251.473931;
+}
+[data-theme='cupcake'] {
+	--p: var(--cupcake-p);
+}
+[data-theme='business'] {
+	--p: var(--business-p);
+}
+```
+shiki-end -->
+</CodeTopper>
+
+<h3>Choosing an organization method</h3>
+
+<p>
+	Both methods of organization work equally, but one might be more convenient depending on where the design tokens are
+	coming from and how the customization options are presented to the user. The rest of this article will use the "two
+	tokens per theme" or "Radix UI" approach.
+</p>
+
+<h2>Controller Components</h2>
+
+<p>
+	Now that we've pulled in some design tokens into our css, we can control the entire theme using just
+	<code>data-theme</code> and <code>class</code> attributes on some top level HTML tag. We can force specific components
+	to use a different theme by adding a wrapper with those properties.
+</p>
+
+<p>But how should we let the user interact with these two attributes?</p>
+
+<p>
+	Depending on how many themes are supported and whether we allow syncing the theme to a user's browser preference, we
+	have the following options of components for our users:
+</p>
+
+<!-- md-start
+| Theme Count | System Sync | Kind                                                                                                                                                                                                                                                                                                                                    | Examples                                                                                                                                                    |
+| ----------- | ----------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2           | No          | Day / Night switch [[Source]](https://github.com/timothycohen/samplekit/blob/main/sites/samplekit.dev/src/lib/styles/components/ThemeSwitchDayNight.svelte)                                                                                                                                                                             | [Svelte](https://svelte.dev/), [React](https://react.dev/)                                                                                                  |
+| 2           | Yes         | Day / Night / System select [[Source]](https://github.com/timothycohen/samplekit/blob/main/sites/samplekit.dev/src/lib/styles/components/ThemeSwitchDayNightSystem.svelte)                                                                                                                                                              | [Tailwind](https://tailwindcss.com/), [Supabase](https://supabase.com/dashboard/account/me), [LinkedIn](https://www.linkedin.com/mypreferences/d/dark-mode) |
+| 3+          | No          | Single theme picker                                                                                                                                                                                                                                                                                                                     | [DaisyUI](https://daisyui.com/docs/themes/), [Rust Book](https://doc.rust-lang.org/book/), [Gitlab](https://gitlab.com/-/profile/preferences)                |
+| 3+          | Yes         | Day / Night theme pickers [[Source]](https://github.com/timothycohen/samplekit/blob/main/sites/samplekit.dev/src/lib/styles/components/ThemePicker.svelte) + Day / Night / System select [[Source]](https://github.com/timothycohen/samplekit/blob/main/sites/samplekit.dev/src/lib/styles/components/ThemeSwitchDayNightSystem.svelte) | [GitHub](https://github.com/settings/appearance)                                                                                                            |
+md-end -->
+
+<p>
+	By far, the first two are the most familiar. Most sites have a specific character they want to showcase, and that
+	includes a carefully chosen color palette.
+</p>
+
+<p>
+	Of those two, the <code>Day / Night</code> switch is simpler, but because it doesn't consider if the user wants to
+	sync with their system, they would have to manually change the site theme when their system changed (or override the
+	changes from an <code>EventListener</code> if we set one).
+</p>
+
+<p>The third, – <code>theme picker</code> – gives the user the power to personalize the site.</p>
+
+<p>
+	This website implements the last option, which is the most flexible. However, we'll make our controller compatible
+	with any.
+</p>
+
+<h2>Controller</h2>
+
+<h3>Interface</h3>
+
+<p>
+	The controller should handle both theme organization methods and all four presentation options. If we choose our API
+	well, it's simple logic to implement.
+</p>
+
+<p>
+	Because we'll be using the data in our theme controller components, a Svelte store's data reactivity will be
+	practical. Therefore, let's wrap a store with a few helper methods.
+</p>
+
+<!-- shiki-start
+```ts
+type Theme = { name: string; scheme: 'light' | 'dark' };
+type Mode = 'fixed_day' | 'fixed_night' | 'sync_system';
+type ModeApplied = 'day' | 'night';
+type SystemScheme = 'light' | 'dark';
+
+type ThemeStore = Writable<{
+	// the browser `prefers-color-scheme`
+	schemeSystem: SystemScheme;
+	// the toggle switch options
+	mode: Mode;
+	// the mode applied after converting sync_system to the user's preferred scheme
+	modeApplied: ModeApplied;
+	// the user's preferred day theme
+	themeDay: Theme;
+	// the user's preferred night theme
+	themeNight: Theme;
+	// the theme actually applied
+	themeApplied: Theme;
+	// knowing if the store is initialized can be useful when loading external scripts
+	// that render light/dark components (for example Turnstile or reCAPTCHA)
+	initialized: boolean;
+}>;
+
+interface ThemeController {
+	subscribe: ThemeStore['subscribe'];
+	setMode: (mode: Mode) => void;
+	setTheme: (a: { kind: ModeApplied; theme: Theme }) => void;
+	listen: (type: 'light-dark' | 'light-dark-system') => { destroy: () => void };
+}
+```
+shiki-end -->
+
+<p>Each setter calculates the new state and keep it in sync in three places:</p>
+
+<ul>
+	<li class="list-disc">
+		HTML: <code>data-theme="&lbrace;&lbrace; themeApplied.name &rbrace;&rbrace;"</code> and
+		<code>class="&lbrace;&lbrace; themeApplied.scheme &rbrace;&rbrace;"</code>
+	</li>
+	<li class="list-disc">Component reactivity: Svelte store</li>
+	<li class="list-disc">Permanent storage: Either <code>Cookies</code> or <code>LocalStorage</code></li>
+</ul>
+
+<p>
+	The <code>listen</code> method monitors changes to the <code>prefers-color-scheme</code> system preference with slightly
+	different implementations depending on whether a two or three way switch is supported.
+</p>
+
+<h3>Storage</h3>
+
+<p>We'll first need to choose our storage system. If using <code>localStorage</code>, it can be as simple as:</p>
+
+<CodeTopper title="colorThemeUtils.ts">
+	<!-- shiki-start
+```ts
+const STORAGE_KEY_THEME_DAY = 'theme_day';
+const STORAGE_KEY_THEME_NIGHT = 'theme_night';
+const STORAGE_KEY_THEME_SYNC_MODE = 'theme_sync_mode';
+type Key = "theme_sync_mode" | "theme_day_name" | "theme_day_scheme" | "theme_night_name" | "theme_night_scheme"
+
+function getStorage(name: Key): string | null {
+	return localStorage.getItem(key);
+}
+
+function setStorage(name: Key, value: string, days?: number): void {
+	localStorage.setItem(key, value);
+}
+```
+shiki-end -->
+</CodeTopper>
+
+<p>
+	Note that we store <code>theme_day_scheme</code> and <code>theme_night_scheme</code> and don't assume
+	<code>theme_day_scheme=light</code> and <code>theme_night_scheme=dark</code>. This gives the user the option, for
+	example, to have a "light" theme during the day and a dimmer "light" theme during the night.
+</p>
+
+<p>If we want to have access to the values on the server, we might prefer <code>Cookies</code>.</p>
+
+<!-- shiki-start
+```ts
+export const load: LayoutServerLoad = async ({ cookies }) => {
+	console.log(cookies.getAll().filter((c) => c.name.startsWith('theme_')));
+};
+// [
+//   { name: 'theme_day_scheme', value: 'light' },
+//   { name: 'theme_day_name', value: 'bellflower' },
+//   { name: 'theme_night_scheme', value: 'dark' },
+//   { name: 'theme_night_name', value: 'amethyst' },
+//   { name: 'theme_sync_mode', value: 'sync_system' }
+// ]
+```
+shiki-end -->
+
+<CodeTopper title="colorThemeUtils.ts">
+	<!-- shiki-start
+```ts
+function getStorage(name: Key): string | null {
+	const nameEQ = `${name}=`;
+	const cookies = document.cookie.split(';');
+
+	for (let i = 0; i < cookies.length; i++) {
+		let cookie = cookies[i];
+		while (cookie?.charAt(0) === ' ') {
+			cookie = cookie.substring(1, cookie.length);
+		}
+		if (cookie?.indexOf(nameEQ) === 0) {
+			return cookie.substring(nameEQ.length, cookie.length);
+		}
+	}
+
+	return null;
+}
+
+function setStorage(name: Key, value: string, days?: number): void {
+	let expires = '';
+
+	if (days) {
+		const date = new Date();
+		date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
+		expires = `; expires=${date.toUTCString()}`;
+	}
+
+	document.cookie = `${name}=${value}${expires}; path=/`;
+}
+```
+shiki-end -->
+</CodeTopper>
+
+<h3>Utils</h3>
+
+<p>And now we can implement the getters and setters consumed by the controller.</p>
+
+<p>For this demo, we'll have two light themes and two dark themes.</p>
+
+<CodeTopper title="colorThemeUtils.ts">
+	<!-- shiki-start
+```ts
+export type Theme = { name: string; scheme: 'light' | 'dark' };
+
+export const THEMES = [
+	{ name: 'daffodil', scheme: 'light' },
+	{ name: 'desert', scheme: 'dark' },
+	{ name: 'bellflower', scheme: 'light' },
+	{ name: 'amethyst', scheme: 'dark' },
+] as const satisfies Theme[];
+
+export type SystemScheme = 'light' | 'dark';
+export type Mode = 'fixed_day' | 'fixed_night' | 'sync_system';
+export type ModeApplied = 'day' | 'night';
+
+const DEFAULT_THEME_DAY = { name: 'bellflower', scheme: 'light' } as const satisfies Theme;
+const DEFAULT_THEME_NIGHT = { name: 'amethyst', scheme: 'dark' } as const satisfies Theme;
+const DEFAULT_THEME_SYNC_MODE: Mode = 'sync_system';
+
+export const getSystemScheme = (): SystemScheme => {
+	if (typeof window === 'undefined' || !window.matchMedia) return 'light';
+	return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+};
+
+export const getStoredThemeMode = (): Mode => {
+	if (typeof window === 'undefined') return DEFAULT_THEME_SYNC_MODE;
+	const val = getStorage(STORAGE_KEY_THEME_SYNC_MODE);
+	if (!val) return DEFAULT_THEME_SYNC_MODE;
+	if (val === 'fixed_day' || val === 'fixed_night' || val === 'sync_system') return val;
+	return DEFAULT_THEME_SYNC_MODE;
+};
+
+export const getStoredThemeDay = (): Theme => {
+	if (typeof window === 'undefined') return DEFAULT_THEME_DAY;
+	const name = getStorage(`${STORAGE_KEY_THEME_DAY}_name`);
+	if (!name) return DEFAULT_THEME_DAY;
+	const scheme = getStorage(`${STORAGE_KEY_THEME_DAY}_scheme`);
+	if (!scheme) return DEFAULT_THEME_DAY;
+	return THEMES.find((t) => t.name === name && t.scheme === scheme) ?? DEFAULT_THEME_DAY;
+};
+
+export const getStoredThemeNight = (): Theme => {
+	if (typeof window === 'undefined') return DEFAULT_THEME_NIGHT;
+	const name = getStorage(`${STORAGE_KEY_THEME_NIGHT}_name`);
+	if (!name) return DEFAULT_THEME_NIGHT;
+	const scheme = getStorage(`${STORAGE_KEY_THEME_NIGHT}_scheme`);
+	if (!scheme) return DEFAULT_THEME_NIGHT;
+	return THEMES.find((t) => t.name === name && t.scheme === scheme) ?? DEFAULT_THEME_NIGHT;
+};
+
+export const setThemeOnDoc = ({ name, scheme }: Theme) => {
+	if (scheme === 'dark') {
+		document.documentElement.classList.remove('light');
+		document.documentElement.classList.add('dark');
+		document.documentElement.dataset['theme'] = name;
+	} else {
+		document.documentElement.classList.add('light');
+		document.documentElement.classList.remove('dark');
+		document.documentElement.dataset['theme'] = name;
+	}
+};
+
+export const setThemeInStorage = ({ kind, theme }: { kind: ModeApplied; theme: Theme }) => {
+	const storageKey: typeof STORAGE_KEY_THEME_DAY | typeof STORAGE_KEY_THEME_NIGHT = `theme_${kind}`;
+	setStorage(`${storageKey}_name`, theme.name);
+	setStorage(`${storageKey}_scheme`, theme.scheme);
+};
+
+export const setModeInStorage = (mode: Mode) => {
+	setStorage(STORAGE_KEY_THEME_SYNC_MODE, mode);
+};
+```
+shiki-end -->
+</CodeTopper>
+
+<h3>Implementation</h3>
+
+<p>We now have all the building blocks to implement the controller. Here's one possible implementation.</p>
+
+<CodeTopper title="colorThemeController.ts">
+	<!-- shiki-start
+```ts
+import { get, writable } from 'svelte/store';
+import {
+	getStoredThemeDay,
+	getStoredThemeMode,
+	getStoredThemeNight,
+	getSystemScheme,
+	setModeInStorage,
+	setThemeInStorage,
+	setThemeOnDoc,
+	type ModeApplied,
+	type Mode,
+	type SystemScheme,
+	type Theme,
+} from './colorThemeUtils';
+
+const calcApplied = (a: { mode: Mode; schemeSystem: SystemScheme; themeNight: Theme; themeDay: Theme }) => {
+	const modeApplied: ModeApplied =
+		a.mode === 'fixed_day' ? 'day' : a.mode === 'fixed_night' ? 'night' : a.schemeSystem === 'dark' ? 'night' : 'day';
+
+	const themeApplied: Theme = modeApplied === 'night' ? a.themeNight : a.themeDay;
+
+	return { modeApplied, themeApplied };
+};
+
+const createThemeController = () => {
+	const store = (() => {
+		const schemeSystem: 'light' | 'dark' = getSystemScheme();
+		const mode: 'fixed_day' | 'fixed_night' | 'sync_system' = getStoredThemeMode();
+		const themeDay = getStoredThemeDay();
+		const themeNight = getStoredThemeNight();
+		const { modeApplied, themeApplied } = calcApplied({ schemeSystem, mode, themeDay, themeNight });
+
+		return writable({
+			initialized: false,
+			schemeSystem,
+			mode,
+			themeDay,
+			themeNight,
+			modeApplied,
+			themeApplied,
+		});
+	})();
+
+	const setTheme = ({ kind, theme }: { kind: ModeApplied; theme: Theme }) => {
+		store.update((s) => {
+			if (kind === 'day') s.themeDay = theme;
+			else if (kind === 'night') s.themeNight = theme;
+			s = { ...s, ...calcApplied(s) };
+
+			setThemeInStorage({ kind, theme });
+			setThemeOnDoc(s.themeApplied);
+
+			return s;
+		});
+	};
+
+	const setMode = (mode: 'fixed_day' | 'fixed_night' | 'sync_system') => {
+		store.update((s) => {
+			s.mode = mode;
+			s = { ...s, ...calcApplied(s) };
+
+			setModeInStorage(s.mode);
+			setThemeOnDoc(s.themeApplied);
+
+			return s;
+		});
+	};
+
+	const listen = (type: 'light-dark' | 'light-dark-system') => {
+		if (!window.matchMedia || get(store).initialized) return { destroy: () => undefined };
+		store.update((s) => ({ ...s, initialized: true }));
+
+		const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+
+		const listener = (prefersDark: MediaQueryListEvent) => {
+			const schemeSystem = prefersDark.matches ? 'dark' : 'light';
+			const s = get(store);
+
+			if (type === 'light-dark') {
+				const mode = schemeSystem === 'dark' ? 'fixed_night' : 'fixed_day';
+				setModeInStorage(mode);
+
+				const modeApplied = schemeSystem === 'dark' ? 'night' : 'day';
+				const themeApplied = schemeSystem === 'dark' ? s.themeNight : s.themeDay;
+				setThemeOnDoc(themeApplied);
+
+				store.update((s) => ({ ...s, schemeSystem, themeApplied, modeApplied, mode }));
+			} else if (s.mode === 'sync_system') {
+				const modeApplied = schemeSystem === 'dark' ? 'night' : 'day';
+				const themeApplied = schemeSystem === 'dark' ? s.themeNight : s.themeDay;
+				setThemeOnDoc(themeApplied);
+
+				store.update((s) => ({ ...s, schemeSystem, themeApplied, modeApplied }));
+			} else {
+				store.update((s) => ({ ...s, schemeSystem }));
+			}
+		};
+
+		mediaQuery.addEventListener('change', listener);
+		return {
+			destroy: () => mediaQuery.removeEventListener('change', listener),
+		};
+	};
+
+	return {
+		subscribe: store.subscribe,
+		setMode,
+		setTheme,
+		listen,
+	};
+};
+```
+shiki-end -->
+</CodeTopper>
+
+<p>And we make sure to set the listener in case the user's preference changes while the site is open.</p>
+
+<CodeTopper title="$routes/+layout.svelte">
+	<!-- shiki-start
+```svelte
+<script lang="ts">
+	import '../app.css';
+	import { onMount } from 'svelte';
+	import { themeController } from '$lib/styles';
+
+	onMount(() => {
+		const { destroy } = themeController.listen('light-dark-system');
+		return destroy;
+	});
+</script>
+```
+shiki-end -->
+</CodeTopper>
+
+<h3>Prevent FOUC</h3>
+
+<p>The only thing left on our checklist is to remove the flash of the wrong theme when the user refreshes.</p>
+
+<p>We can completely eliminate this by calling some (blocking) init logic in <code>app.html</code>.</p>
+
+<p>
+	I prefer to write a short script inside <code>colorThemeUtils.ts</code>, compile it with a script into
+	<code>/static</code>, and call it in <code>app.html</code>.
+</p>
+
+<CodeTopper title="colorThemeUtils.ts">
+	<!-- shiki-start
+```ts
+export const _initTheme = () => {
+	const mode = getStoredThemeMode();
+	const appliedMode =
+		mode === 'fixed_day' ? 'day' : mode === 'fixed_night' ? 'night' : getSystemScheme() === 'dark' ? 'night' : 'day';
+	const themeApplied = appliedMode === 'night' ? getStoredThemeNight() : getStoredThemeDay();
+	setThemeOnDoc(themeApplied);
+};
+```
+shiki-end -->
+</CodeTopper>
+
+<CodeTopper title="package.json">
+	<!-- shiki-start
+	```json
+"generate:theme_utils": "./scripts/generate-theme-utils.sh",
+```
+shiki-end -->
+</CodeTopper>
+
+<CodeTopper title="scripts/generate-theme-utils.sh">
+	<!-- shiki-start
+```sh
+cd src/lib/styles &&
+	cp colorThemeUtils.ts themeUtils.ts &&
+	sed -i '' 's/export //g' themeUtils.ts &&
+	npx tsc themeUtils.ts &&
+	mv themeUtils.js ../../../static/themeUtils.js &&
+	rm themeUtils.ts
+```
+shiki-end -->
+</CodeTopper>
+
+<CodeTopper title="app.html">
+	<!-- shiki-start
+	```html
+<!doctype html>
+<html lang="en" data-theme="amethyst" class="dark">
+	<head>
+		&openhtmlcomment; theme &closehtmlcomment;
+		<script src="/themeUtils.js"></script>
+		<script>
+			_initTheme();
+		</script>
+		...
+	</head>
+	...
+</html>
+```
+shiki-end -->
+</CodeTopper>
+
+<h2>Using our theme</h2>
+
+<h3>CSS</h3>
+
+<p>In our css, we can write:</p>
+
+<!-- shiki-start
+```html
+<span class="red-box">I'm red!</span>
+
+<style>
+	.red-box {
+		background-color: hsl(var(--red-5));
+		border: 1px solid hsl(var(--red-7));
+		width: fit-content;
+	}
+</style>
+```
+shiki-end -->
+
+<p>
+	And it will render as:
+	<span style="background-color: hsl(var(--red-5)); border: 1px solid hsl(var(--red-7)); width: fit-content;"
+		>I'm red!</span
+	>
+</p>
+
+<p>
+	Notice that we didn't have to write light, dark, or theme specific styles. The correct design token is used
+	automatically when the user switches modes or theme.
+</p>
+
+<p>
+	And our design tokens aren't just limited to colors! Things like border radii can make something seem more fun or
+	trustworthy, and definitely belong in the theme.
+</p>
+
+<h3>Tailwind</h3>
+
+<p>
+	Getting this working with Tailwind is easy! This is for Radix UI, so each Tailwind class references one of its 12 css
+	variables. If it's gray, it also has alpha colors. Otherwise, it has a special "contrast" color. Just adapt it to
+	whatever design tokens you have.
+</p>
+
+<CodeTopper title="tailwind.config.ts">
+	<!-- shiki-start
+```ts
+const colors = [
+	// design colors
+	'green',
+	'jade',
+	'red',
+	'ruby',
+	'yellow',
+	'amber',
+	'blue',
+	'cyan',
+	'iris',
+	'mauve', // grayish
+	'sand', // grayish
+
+	// theme colors
+	'success',
+	'error',
+	'warning',
+	'info',
+	'accent',
+	'gray',
+] as const;
+const grays = ['gray', 'mauve', 'sand'] as const;
+type Grayish = (typeof grays)[number];
+const isGrayish = (color: string): color is Grayish => ['gray', 'mauve', 'sand'].includes(color);
+
+export default {
+	darkMode: ['class'],
+	content: ['./src/**/*.{html,svelte,js,ts}'],
+	theme: {
+		...
+		colors: (() => {
+			const res: Record<string, string | Record<string, string>> = {
+				transparent: 'transparent',
+				black: 'hsl(0deg 0% 0% / <alpha-value>)',
+				white: 'hsl(0deg 0% 100% / <alpha-value>)',
+			};
+
+			for (const color of colors) {
+				const baseColors = [...Array(12).keys()].reduce<Record<string, string>>((acc, i) => {
+					return { ...acc, [`${i + 1}`]: `hsl(var(--${color}-${i + 1}) / <alpha-value>)` };
+				}, {});
+				if (isGrayish(color)) {
+					const alphaColors = [...Array(12).keys()].reduce<Record<string, string>>((acc, i) => {
+						return { ...acc, [`a${i + 1}`]: `var(--${color}-a${i + 1})` };
+					}, {});
+					res[color] = { ...baseColors, ...alphaColors };
+				} else {
+					res[color] = { ...baseColors, '9-contrast': `hsl(var(--${color}-9-contrast) / <alpha-value>)` };
+				}
+			}
+			return res;
+		})(),
+		...
+	},
+	...
+} satisfies Config;
+```
+shiki-end -->
+</CodeTopper>
+
+<p>Now our css example from before:</p>
+
+<!-- shiki-start
+```html
+<span class="red-box">I'm red!</span>
+
+<style>
+	.red-box {
+		background-color: hsl(var(--red-5));
+		border: 1px solid hsl(var(--red-7));
+		width: fit-content;
+	}
+</style>
+```
+shiki-end -->
+
+<p>Can be written (with intellisense) as:</p>
+
+<!-- shiki-start
+	```html
+<span class="bg-red-5 border-red-7 w-fit border">I'm red!</span>
+```
+shiki-end -->
+
+<p>
+	And it will still render as:
+	<span class="w-fit border border-red-7 bg-red-5">I'm red!</span>
+</p>
+
+<h2>Conclusion</h2>
+<p>
+	This is just one way of implementing a theming system in SvelteKit, but we can safely say we've checked all the boxes
+	we set out to check.
+</p>
+
+<div class="w-fit rounded-badge border border-accent-5 bg-accent-2 p-4">
+	<div class="flex h-full flex-col justify-around">
+		<p class="my-0 ml-12 font-bold">Attain</p>
+
+		<div class="grid grid-cols-[48px_1fr]">
+			<span class="text-success-9">✓</span>
+			<span class="text-left">Compatibility with design tokens from popular sources</span>
+		</div>
+		<div class="grid grid-cols-[48px_1fr]">
+			<span class="text-success-9">✓</span>
+			<span class="text-left">Integration and intellisense with Tailwind</span>
+		</div>
+
+		<div class="grid grid-cols-[48px_1fr]">
+			<span class="text-success-9">✓</span>
+			<span class="text-left">Full user control </span>
+		</div>
+
+		<div class="grid grid-cols-[48px_1fr]">
+			<span class="text-success-9">✓</span>
+			<span class="text-left">Persistent preference storage available on the client (and optionally the server)</span>
+		</div>
+
+		<p class="my-0 ml-12 mt-12 font-bold">Avoid</p>
+
+		<div class="grid grid-cols-[48px_1fr]">
+			<span class="text-success-9">✓</span>
+			<span class="text-left">Flash of Unstyled Content</span>
+		</div>
+
+		<div class="grid grid-cols-[48px_1fr]">
+			<span class="text-success-9">✓</span>
+			<span class="text-left">Bloated light and dark css classes for every component</span>
+		</div>
+
+		<div class="grid grid-cols-[48px_1fr]">
+			<span class="text-success-9">✓</span>
+			<span class="text-left">Synchronization problems with system settings</span>
+		</div>
+	</div>
+</div>
+
+<p>
+	Do you have an even better way? I'd love it hear it! Share it in the
+	<a href="https://github.com/timothycohen/samplekit/discussions">GitHub discussions</a>
+	!
+</p>

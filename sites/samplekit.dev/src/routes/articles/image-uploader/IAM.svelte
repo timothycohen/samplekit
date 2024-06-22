@@ -2,14 +2,15 @@
 	import { CodeTopper } from '$lib/articles/components';
 
 	interface Props {
-		part: 1 | 2 | 3
+		part: 1 | 2 | 3;
 	}
 
-  const { part }: Props = $props();
+	const { part }: Props = $props();
 </script>
 
 {#if part === 1}
-<CodeTopper title="Select User name you created -> Add permissions -> Create Inline Policy -> JSON">
+	<CodeTopper title="Select User name you created -> Add permissions -> Create Inline Policy -> JSON">
+		<!-- shiki-start
 ```json
 {
 	"Version": "2012-10-17",
@@ -29,9 +30,11 @@
 	]
 }
 ```
-</CodeTopper>
+shiki-end -->
+	</CodeTopper>
 {:else if part === 2}
-<CodeTopper title="IAM -> Users -> User name you created -> Policy you created">
+	<CodeTopper title="IAM -> Users -> User name you created -> Policy you created">
+		<!-- shiki-start
 ```json
 {
 	"Version": "2012-10-17",
@@ -61,9 +64,11 @@
 	]
 }
 ```
-</CodeTopper>
+shiki-end -->
+	</CodeTopper>
 {:else if part === 3}
-<CodeTopper title="IAM -> Users -> User name you created -> Policy you created">
+	<CodeTopper title="IAM -> Users -> User name you created -> Policy you created">
+		<!-- shiki-start
 ```json
 {
 	"Version": "2012-10-17",
@@ -104,5 +109,6 @@
 	]
 }
 ```
-</CodeTopper>
+shiki-end -->
+	</CodeTopper>
 {/if}

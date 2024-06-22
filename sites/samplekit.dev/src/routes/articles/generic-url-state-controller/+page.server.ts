@@ -1,4 +1,4 @@
-import { mdCodeBlockToRawHtml } from '@samplekit/markdown';
+import { mdCodeBlockToRawHtml } from '@samplekit/preprocess-shiki';
 
 const typedVariantFiles = (() => {
 	const titles = ['Shared', 'String', 'Bool And Flag', 'Number', 'Select', 'MinMax'];

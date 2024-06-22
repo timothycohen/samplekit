@@ -1,6 +1,7 @@
 import { join } from 'path';
 import { sequence, preprocessMeltUI } from '@melt-ui/pp';
-import { preprocessCodeblock, preprocessTable } from '@samplekit/markdown';
+import { processMarkdown } from '@samplekit/preprocess-markdown';
+import { processCodeblock } from '@samplekit/preprocess-shiki';
 import adapter from '@sveltejs/adapter-node';
 import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
 import { preprocessExternalLinks } from './scripts/preprocessors/anchor.js';
@@ -23,13 +24,13 @@ const config = {
 		},
 	},
 	preprocess: sequence([
-		preprocessCodeblock({
+		processCodeblock({
 			logger: { formatFilename: (filename) => filename.replace(articleRoot, ''), ...console },
-			include: (filename) => filename.endsWith('.svx'),
+			include: (filename) => filename.startsWith(articleRoot) || filename.endsWith('.svx'),
 		}),
-		preprocessTable({
+		processMarkdown({
 			logger: { formatFilename: (filename) => filename.replace(articleRoot, ''), ...console },
-			include: (filename) => filename.endsWith('.svx'),
+			include: (filename) => filename.startsWith(articleRoot) || filename.endsWith('.svx'),
 		}),
 		vitePreprocess(),
 		preprocessExternalLinks({

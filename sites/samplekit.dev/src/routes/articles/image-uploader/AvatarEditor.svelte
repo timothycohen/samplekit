@@ -5,11 +5,12 @@
 		part: 1 | 2 | 3;
 	}
 
-  const { part }: Props = $props();
+	const { part }: Props = $props();
 </script>
 
 {#if part === 1}
-<CodeTopper title="AvatarEditor.svelte Part 1">
+	<CodeTopper title="AvatarEditor.svelte Part 1">
+		<!-- shiki-start
 ```svelte
 <script lang="ts">
 	import { writable } from 'svelte/store';
@@ -20,9 +21,11 @@
 		);
 </script>
 ```
-</CodeTopper>
+shiki-end -->
+	</CodeTopper>
 {:else if part === 2}
-<CodeTopper title="AvatarEditor.svelte Part 2">
+	<CodeTopper title="AvatarEditor.svelte Part 2">
+		<!-- shiki-start
 ```svelte
 <script lang="ts">
 	import { onDestroy } from 'svelte';
@@ -45,7 +48,6 @@
 
 	const editAvatarController = new CropImgUploadController(s);
 </script>
-
 
 {#if $s.state === 'file_selecting'}
 	<FileInput onSelect={onFileSelected} accept="image/jpeg, image/png" />
@@ -86,9 +88,11 @@
 
 <ConfirmDelAvatarModal open={deleteConfirmationModalOpen} {handleDelete} />
 ```
-</CodeTopper>
+shiki-end -->
+	</CodeTopper>
 {:else if part === 3}
-<CodeTopper title="AvatarEditor.svelte Part 3">
+	<CodeTopper title="AvatarEditor.svelte Part 3">
+		<!-- shiki-start
 ```svelte
 <script lang="ts">
 	import { onDestroy } from 'svelte';
@@ -153,7 +157,6 @@
 	}; // [!diff-add]
 </script>
 
-
 {#if $s.state === 'file_selecting'}
 	<FileInput onSelect={onFileSelected} accept="image/jpeg, image/png" />
 {:else}
@@ -193,5 +196,6 @@
 
 <ConfirmDelAvatarModal open={deleteConfirmationModalOpen} {handleDelete} />
 ```
-</CodeTopper>
+shiki-end -->
+	</CodeTopper>
 {/if}

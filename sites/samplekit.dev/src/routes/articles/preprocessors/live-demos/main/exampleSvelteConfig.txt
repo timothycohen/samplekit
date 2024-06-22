@@ -1,4 +1,6 @@
-import { preprocessCodeblock, preprocessTable } from '@samplekit/markdown';
+import { processKatex } from '@samplekit/preprocess-katex';
+import { processMarkdown } from '@samplekit/preprocess-markdown';
+import { processCodeblock } from '@samplekit/preprocess-shiki';
 import adapter from '@sveltejs/adapter-auto';
 import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
 
@@ -6,15 +8,16 @@ import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
 const config = {
 	extensions: ['.svelte', '.svx'],
 	preprocess: [
-		preprocessCodeblock({
-			logger: console,
-			include: (filename) => filename.endsWith('.svx'),
-			formatLogFilename: (filename) => filename.replace(articleRoot, ''),
+		processCodeblock({
+			logger: { error: console.error, formatFilename: (filename) => filename.replace(preprocessorRoot, '') },
+			include: (filename) => filename.startsWith(preprocessorRoot),
 		}),
-		preprocessTable({
-			logger: console,
-			include: (filename) => filename.endsWith('.svx'),
-			formatLogFilename: (filename) => filename.replace(articleRoot, ''),
+		processMarkdown({
+			include: (filename) => filename.startsWith(preprocessorRoot),
+		}),
+		processKatex({
+			logger: { error: console.error, formatFilename: (filename) => filename.replace(preprocessorRoot, '') },
+			include: (filename) => filename.startsWith(preprocessorRoot),
 		}),
 		vitePreprocess(),
 	],

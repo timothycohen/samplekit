@@ -1,6 +1,6 @@
 import type { WrapperProps } from '$lib/components/PatternWrapper.svelte';
 import type { NoPropComponent } from '$lib/utils/common';
-import type { MdLang } from '@samplekit/markdown';
+import type { MdLang } from '@samplekit/preprocess-shiki';
 
 export type CodeDefined = {
 	title: string;

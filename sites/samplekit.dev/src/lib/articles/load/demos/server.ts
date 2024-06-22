@@ -1,4 +1,4 @@
-import { isMdLang, mdCodeBlockToRawHtml } from '@samplekit/markdown';
+import { isMdLang, mdCodeBlockToRawHtml } from '@samplekit/preprocess-shiki';
 import { logger } from '$lib/logging/server';
 import { splitAndProcess } from './common';
 import type { CodeProcessed, ModuleDefinitions } from './types';

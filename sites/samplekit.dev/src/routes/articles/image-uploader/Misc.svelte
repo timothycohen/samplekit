@@ -1,23 +1,26 @@
 <script lang="ts">
 	import { CodeTopper } from '$lib/articles/components';
 
-  interface Props {
-    part: "state-table" | "package.json" | "aws-sdk" | "cors"  | "env"
-  }
+	interface Props {
+		part: 'state-table' | 'package.json' | 'aws-sdk' | 'cors' | 'env';
+	}
 
 	const { part }: Props = $props();
 </script>
 
 {#if part === 'state-table'}
-<!-- table-start -->
+	<!-- md-start
+
+
 | State Change Breakpoint            | Reasoning                                                                                                                                 |
 | ---------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
 | There's a decision branch          | Allow for easily composable pipelines                                                                                                     |
 | An async function is being awaited | Allow cancellation logic to be added to the state so a cancel function can handle cancels that occurred during <code>await promise</code> |
 | Something must be shown in the UI  | Allow getting user input, showing spinners, updating progress bars, etc.                                                                  |
-<!-- table-end -->
-{:else if part === "package.json"}
-<CodeTopper title="package.json">
+md-end -->
+{:else if part === 'package.json'}
+	<CodeTopper title="package.json">
+		<!-- shiki-start
 ```json
 "dependencies": {
   "@aws-sdk/client-cloudfront": "^3.474.0",
@@ -26,18 +29,22 @@
   "@aws-sdk/s3-presigned-post": "^3.478.0",
 }
 ```
-</CodeTopper>
-{:else if part === "aws-sdk"}
-<CodeTopper title="AWS SDKs">
+shiki-end -->
+	</CodeTopper>
+{:else if part === 'aws-sdk'}
+	<CodeTopper title="AWS SDKs">
+		<!-- shiki-start
 ```ts
 import { CloudFrontClient, CreateInvalidationCommand } from '@aws-sdk/client-cloudfront';
 import { RekognitionClient, DetectModerationLabelsCommand } from '@aws-sdk/client-rekognition';
 import { S3Client, DeleteObjectCommand } from '@aws-sdk/client-s3';
 import { createPresignedPost } from '@aws-sdk/s3-presigned-post';
 ```
-</CodeTopper>
-{:else if part === "cors"}
-<CodeTopper title="Select bucket -> Permissions -> (CORS) -> Edit">
+shiki-end -->
+	</CodeTopper>
+{:else if part === 'cors'}
+	<CodeTopper title="Select bucket -> Permissions -> (CORS) -> Edit">
+		<!-- shiki-start
 ```json
 [
   {
@@ -48,9 +55,11 @@ import { createPresignedPost } from '@aws-sdk/s3-presigned-post';
   }
 ]
 ```
-</CodeTopper>
-{:else if part === "env"}
-<CodeTopper title=".env">
+shiki-end -->
+	</CodeTopper>
+{:else if part === 'env'}
+	<CodeTopper title=".env">
+		<!-- shiki-start
 ```sh
 AWS_SERVICE_REGION="" # for example: us-east-1
 
@@ -65,5 +74,6 @@ S3_BUCKET_URL="" # https://[bucket-name].s3.[region].amazonaws.com
 CLOUDFRONT_URL=""             # Copy Distribution domain name (including https://)
 CLOUDFRONT_DISTRIBUTION_ID="" # Copy ARN – the last digits after the final "/"
 ```
-</CodeTopper>
+shiki-end -->
+	</CodeTopper>
 {/if}

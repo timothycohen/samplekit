@@ -5,11 +5,12 @@
 		part: number;
 	}
 
-  const { part }: Props = $props();
+	const { part }: Props = $props();
 </script>
 
 {#if part === 1}
-<CodeTopper title="$lib/cloudStorage/client/cropImgUploadController.ts Part 1">
+	<CodeTopper title="$lib/cloudStorage/client/cropImgUploadController.ts Part 1">
+		<!-- shiki-start
 ```ts
 export type Err = {
 	state: 'error';
@@ -19,10 +20,12 @@ export type Err = {
 export type Canceled = { state: 'canceled' };
 export type Completed = { state: 'completed'; savedImg: CroppedImg | null };
 ```
-</CodeTopper>
+shiki-end -->
+	</CodeTopper>
 {:else if part === 2}
-<CodeTopper title="$lib/cloudStorage/client/cropImgUploadController.ts Part 2">
-```ts
+	<CodeTopper title="$lib/cloudStorage/client/cropImgUploadController.ts Part 2">
+		<!-- shiki-start
+	```ts
 export type CroppingPreexisting = { state: 'cropping_preexisting'; url: string; crop: CropValue };
 export type DbUpdatingPreexisting = {
 	state: 'db_updating_preexisting';
@@ -37,10 +40,12 @@ export type DeletingPreexisting = {
 	deletePreexistingImgPromise: Promise<Result<Result.Success>>;
 };
 ```
-</CodeTopper>
+shiki-end -->
+	</CodeTopper>
 {:else if part === 3}
-<CodeTopper title="$lib/cloudStorage/client/cropImgUploadController.ts Part 3">
-```ts
+	<CodeTopper title="$lib/cloudStorage/client/cropImgUploadController.ts Part 3">
+		<!-- shiki-start
+	```ts
 export type FileSelecting = { state: 'file_selecting' };
 export type UriLoading = {
 	state: 'uri_loading';
@@ -75,10 +80,12 @@ export type DbSaving = {
 	uploadProgress: Tweened<number>;
 };
 ```
-</CodeTopper>
+shiki-end -->
+	</CodeTopper>
 {:else if part === 4}
-<CodeTopper title="$lib/cloudStorage/client/cropImgUploadController.ts Part 4">
-```ts
+	<CodeTopper title="$lib/cloudStorage/client/cropImgUploadController.ts Part 4">
+		<!-- shiki-start
+	```ts
 export type CropControllerState =
 	| Err
 	| Canceled
@@ -97,10 +104,12 @@ export type CropControllerState =
 
 export type StateName = CropControllerState['state'];
 ```
-</CodeTopper>
+shiki-end -->
+	</CodeTopper>
 {:else if part === 5}
-<CodeTopper title="$lib/cloudStorage/client/cropImgUploadController.ts Part 5">
-```ts
+	<CodeTopper title="$lib/cloudStorage/client/cropImgUploadController.ts Part 5">
+		<!-- shiki-start
+	```ts
 type GetUploadArgs = () => Promise<Result<{ bucketUrl: string; formDataFields: Record<string, string> }>>;
 type Upload = (a: {
 	bucketUrl: string;
@@ -111,10 +120,12 @@ type SaveToDb = (a: { crop: CropValue }) => Promise<Result<{ savedImg: CroppedIm
 type DeletePreexistingImg = () => Promise<Result<Result.Success>>;
 type SaveCropToDb = (a: { crop: CropValue }) => Promise<Result<{ savedImg: CroppedImg | null }>>;
 ```
-</CodeTopper>
+shiki-end -->
+	</CodeTopper>
 {:else if part === 6}
-<CodeTopper title="$lib/cloudStorage/client/cropImgUploadController.ts Part 6">
-```ts
+	<CodeTopper title="$lib/cloudStorage/client/cropImgUploadController.ts Part 6">
+		<!-- shiki-start
+	```ts
 export class CropImgUploadController {
 	private state: Writable<CropControllerState>;
 
@@ -154,10 +165,12 @@ export class CropImgUploadController {
 	}
 }
 ```
-</CodeTopper>
+shiki-end -->
+	</CodeTopper>
 {:else if part === 7}
-<CodeTopper title="$lib/cloudStorage/client/cropImgUploadController.ts Part 7">
-```ts
+	<CodeTopper title="$lib/cloudStorage/client/cropImgUploadController.ts Part 7">
+		<!-- shiki-start
+	```ts
 export class CropImgUploadController { // [!hide]
 /** States: any -> 'file_selecting' */
 public fileSelectStart(): void {
@@ -183,10 +196,12 @@ public skipCrop({ crop }: { crop: CropValue } = { crop: defaultCropValue }): voi
 }
 } // [!hide]
 ```
-</CodeTopper>
+shiki-end -->
+	</CodeTopper>
 {:else if part === 8}
-<CodeTopper title="$lib/cloudStorage/client/cropImgUploadController.ts Part 8">
-```ts
+	<CodeTopper title="$lib/cloudStorage/client/cropImgUploadController.ts Part 8">
+		<!-- shiki-start
+	```ts
 class CropImgUploadController { // [!hide]
 /** Update a preexisting image's crop value.
  * States: 'cropping_preexisting' -> 'db_updating_preexisting' -> 'completed'
@@ -225,10 +240,12 @@ public async deleteImg({ delImg }: { delImg: DeletePreexistingImg }): Promise<vo
 }
 } // [!hide]
 ```
-</CodeTopper>
+shiki-end -->
+	</CodeTopper>
 {:else if part === 9}
-<CodeTopper title="$lib/cloudStorage/client/cropImgUploadController.ts Part 9">
-```ts
+	<CodeTopper title="$lib/cloudStorage/client/cropImgUploadController.ts Part 9">
+		<!-- shiki-start
+	```ts
 class CropImgUploadController { // [!hide]
 /** Convert a file into an in memory uri, guarding max file size.
  * States: any -> 'uri_loading' -> 'uri_loaded'
@@ -270,10 +287,12 @@ public async loadFiles({ files, MAX_UPLOAD_SIZE }: { files: File[]; MAX_UPLOAD_S
 }
 }
 ```
-</CodeTopper>
+shiki-end -->
+	</CodeTopper>
 {:else if part === 10}
-<CodeTopper title="$lib/cloudStorage/client/cropImgUploadController.ts Part 10">
-```ts
+	<CodeTopper title="$lib/cloudStorage/client/cropImgUploadController.ts Part 10">
+		<!-- shiki-start
+	```ts
 class CropImgUploadController { // [!hide]
 /** Get the upload url, upload the file, and save it to the DB.
  * States: any -> 'upload_url_fetching' -> 'image_storage_uploading' -> 'db_saving' -> 'completed'
@@ -392,5 +411,6 @@ public async uploadCropped(a: {
 }
 } // [!hide]
 ```
-</CodeTopper>
+shiki-end -->
+	</CodeTopper>
 {/if}
