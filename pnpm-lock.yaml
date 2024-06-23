@@ -94,6 +94,8 @@ importers:
         specifier: 5.0.0-next.164
         version: 5.0.0-next.164
 
+  packages/preprocess-markdown-vscode: {}
+
   packages/preprocess-shiki:
     dependencies:
       estree-walker:

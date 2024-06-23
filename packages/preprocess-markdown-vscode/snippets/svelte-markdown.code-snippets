@@ -1,0 +1,8 @@
+{
+	"New Markdown block": {
+		"scope": "text.svelte",
+		"prefix": "md-start",
+		"description": "Creates a new markdown block.",
+		"body": ["<!-- md-start", "$1", "md-end -->", "$0"],
+	},
+}

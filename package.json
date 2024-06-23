@@ -11,6 +11,8 @@
 		"lint:auth:fix": "pnpm lint:auth --fix",
 		"lint:preprocess-markdown": "eslint --max-warnings 0 packages/preprocess-markdown/",
 		"lint:preprocess-markdown:fix": "pnpm lint:preprocess-markdown --fix",
+		"lint:preprocess-markdown-vscode": "eslint --max-warnings 0 packages/preprocess-markdown-vscode/",
+		"lint:preprocess-markdown-vscode:fix": "pnpm lint:preprocess-markdown-vscode --fix",
 		"lint:preprocess-shiki": "eslint --max-warnings 0 packages/preprocess-shiki/",
 		"lint:preprocess-shiki:fix": "pnpm lint:preprocess-shiki --fix",
 		"lint:svelte-crop-window": "eslint --max-warnings 0 packages/svelte-crop-window/",
@@ -24,6 +26,7 @@
 		"build:packages": "pnpm --filter './packages/**' build",
 		"sync": "pnpm --recursive sync",
 		"validate": "./scripts/.githooks/pre-commit --write",
+		"install:extensions": "fd .vsix -I | xargs -I {} code --install-extension {}",
 		"githooks:init": "git config core.hookspath ./scripts/.githooks"
 	},
 	"devDependencies": {
