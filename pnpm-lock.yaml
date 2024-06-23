@@ -115,6 +115,8 @@ importers:
         specifier: ^3.0.4
         version: 3.0.4
 
+  packages/preprocess-shiki-vscode: {}
+
   packages/svelte-crop-window:
     devDependencies:
       '@sveltejs/adapter-node':

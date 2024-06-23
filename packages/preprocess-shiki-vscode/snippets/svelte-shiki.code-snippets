@@ -1,0 +1,68 @@
+{
+	"New shiki codeblock": {
+		"scope": "text.svelte",
+		"prefix": "shi-start",
+		"description": "Creates a new shiki code block.",
+		"body": ["<!-- shiki-start ", "```$1", "$2", "```", "shiki-end -->", "$0"],
+	},
+	"New inline md codeblock": {
+		"scope": "text.svelte",
+		"prefix": "shi-md",
+		"description": "Creates a new md code block.",
+		"body": ["<!-- shiki-md $1 shiki-md -->", "$0"],
+	},
+	"New inline json codeblock": {
+		"scope": "text.svelte",
+		"prefix": "shi-json",
+		"description": "Creates a new json code block.",
+		"body": ["<!-- shiki-json $1 shiki-json -->", "$0"],
+	},
+	"New inline sh codeblock": {
+		"scope": "text.svelte",
+		"prefix": "shi-sh",
+		"description": "Creates a new sh code block.",
+		"body": ["<!-- shiki-sh $1 shiki-sh -->", "$0"],
+	},
+	"New inline html codeblock": {
+		"scope": "text.svelte",
+		"prefix": "shi-html",
+		"description": "Creates a new html code block.",
+		"body": ["<!-- shiki-html $1 shiki-html -->", "$0"],
+	},
+	"New inline css codeblock": {
+		"scope": "text.svelte",
+		"prefix": "shi-css",
+		"description": "Creates a new css code block.",
+		"body": ["<!-- shiki-css $1 shiki-css -->", "$0"],
+	},
+	"New inline js codeblock": {
+		"scope": "text.svelte",
+		"prefix": "shi-js",
+		"description": "Creates a new js code block.",
+		"body": ["<!-- shiki-js $1 shiki-js -->", "$0"],
+	},
+	"New inline ts codeblock": {
+		"scope": "text.svelte",
+		"prefix": "shi-ts",
+		"description": "Creates a new ts code block.",
+		"body": ["<!-- shiki-ts $1 shiki-ts -->", "$0"],
+	},
+	"New inline svelte codeblock": {
+		"scope": "text.svelte",
+		"prefix": "shi-svelte",
+		"description": "Creates a new svelte code block.",
+		"body": ["<!-- shiki-svelte $1 shiki-svelte -->", "$0"],
+	},
+	"New inline latex codeblock": {
+		"scope": "text.svelte",
+		"prefix": "shi-latex",
+		"description": "Creates a new latex code block.",
+		"body": ["<!-- shiki-latex $1 shiki-latex -->", "$0"],
+	},
+	"New inline graphql codeblock": {
+		"scope": "text.svelte",
+		"prefix": "shi-graphql",
+		"description": "Creates a new graphql code block.",
+		"body": ["<!-- shiki-graphql $1 shiki-graphql -->", "$0"],
+	},
+}

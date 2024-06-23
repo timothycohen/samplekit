@@ -1,0 +1,63 @@
+{
+	"name": "svelte-shiki-vscode",
+	"displayName": "svelte-shiki",
+	"description": "Syntax highlighting for codeblocks in Svelte HTML comments.",
+	"publisher": "timothycohen",
+	"type": "module",
+	"scripts": {
+		"format": "prettier --ignore-path ../../.prettierignore --check .",
+		"format:fix": "prettier --ignore-path ../../.prettierignore --list-different --write .",
+		"lint": "pnpm -w run lint:svelte-shiki-vscode",
+		"lint:fix": "pnpm -w run lint:svelte-shiki-vscode:fix",
+		"validate": "pnpm format && pnpm lint",
+		"clean": "rm -f *.vsix",
+		"generate": "node ./scripts/generate/shiki-block.js && node ./scripts/generate/shiki-line.js",
+		"build": "pnpm clean && pnpm generate && vsce package"
+	},
+	"repository": {
+		"url": "https://github.com/timothycohen/samplekit/packages/svelte-shiki-vscode"
+	},
+	"bugs": {
+		"url": "https://github.com/timothycohen/samplekit/packages/svelte-shiki-vscode/issues"
+	},
+	"engines": {
+		"vscode": "^1.9.0"
+	},
+	"categories": [
+		"Programming Languages"
+	],
+	"keywords": [
+		"md",
+		"markdown",
+		"svelte",
+		"codeblock",
+		"preprocess-svelte",
+		"preprocess-shiki",
+		"preprocess-codeblock",
+		"svelte-shiki-vscode"
+	],
+	"contributes": {
+		"grammars": [
+			{
+				"injectTo": [
+					"source.svelte"
+				],
+				"scopeName": "shiki.block.svelte",
+				"path": "./syntaxes/generated/shiki-block.json"
+			},
+			{
+				"injectTo": [
+					"source.svelte"
+				],
+				"scopeName": "shiki.line.svelte",
+				"path": "./syntaxes/generated/shiki-line.json"
+			}
+		],
+		"snippets": [
+			{
+				"language": "svelte",
+				"path": "./snippets/svelte-shiki.code-snippets"
+			}
+		]
+	}
+}

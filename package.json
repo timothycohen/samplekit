@@ -15,6 +15,8 @@
 		"lint:preprocess-markdown-vscode:fix": "pnpm lint:preprocess-markdown-vscode --fix",
 		"lint:preprocess-shiki": "eslint --max-warnings 0 packages/preprocess-shiki/",
 		"lint:preprocess-shiki:fix": "pnpm lint:preprocess-shiki --fix",
+		"lint:preprocess-shiki-vscode": "eslint --max-warnings 0 packages/preprocess-shiki-vscode/",
+		"lint:preprocess-shiki-vscode:fix": "pnpm lint:preprocess-shiki-vscode --fix",
 		"lint:svelte-crop-window": "eslint --max-warnings 0 packages/svelte-crop-window/",
 		"lint:svelte-crop-window:fix": "pnpm lint:svelte-crop-window --fix",
 		"lint:samplekit": "eslint --max-warnings 0 sites/samplekit.dev/",
