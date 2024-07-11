@@ -89,6 +89,12 @@ const config = [
 		languageOptions: { parserOptions: { project: 'sites/samplekit.dev/tsconfig.json' } },
 		rules: { '@typescript-eslint/no-unused-expressions': 'off' }, // https://github.com/sveltejs/eslint-plugin-svelte/issues/652#issuecomment-2087008855
 	},
+	{
+		name: 'typescript-eslint/custom – svelte-katex',
+		files: ['sites/svelte-katex/**'],
+		ignores: ['**/*.svelte'],
+		languageOptions: { parserOptions: { project: 'sites/svelte-katex/tsconfig.json' } },
+	},
 	// svelte
 	...svelte.configs['flat/recommended'].map((c, i) => ({ ...c, name: 'svelte/flat/recommended/' + (c.name ?? i) })),
 	...svelte.configs['flat/prettier'].map((c, i) => ({ ...c, name: 'svelte/flat/prettier/' + (c.name ?? i) })),
