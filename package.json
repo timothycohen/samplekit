@@ -11,6 +11,8 @@
 		"lint:auth:fix": "pnpm lint:auth --fix",
 		"lint:preprocess-katex": "eslint --max-warnings 0 packages/preprocess-katex/",
 		"lint:preprocess-katex:fix": "pnpm lint:preprocess-katex --fix",
+		"lint:preprocess-katex-vscode": "eslint --max-warnings 0 packages/preprocess-katex-vscode/",
+		"lint:preprocess-katex-vscode:fix": "pnpm lint:preprocess-katex-vscode --fix",
 		"lint:preprocess-markdown": "eslint --max-warnings 0 packages/preprocess-markdown/",
 		"lint:preprocess-markdown:fix": "pnpm lint:preprocess-markdown --fix",
 		"lint:preprocess-markdown-vscode": "eslint --max-warnings 0 packages/preprocess-markdown-vscode/",

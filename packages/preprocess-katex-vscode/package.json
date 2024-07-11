@@ -1,0 +1,72 @@
+{
+	"name": "svelte-katex-vscode",
+	"displayName": "svelte-katex",
+	"description": "Syntax highlighting for KaTeX in Svelte HTML comments and JS template literals.",
+	"publisher": "timothycohen",
+	"type": "module",
+	"scripts": {
+		"format": "prettier --ignore-path ../../.prettierignore --check .",
+		"format:fix": "prettier --ignore-path ../../.prettierignore --list-different --write .",
+		"lint": "pnpm -w run lint:svelte-katex-vscode",
+		"lint:fix": "pnpm -w run lint:svelte-katex-vscode:fix",
+		"validate": "pnpm format && pnpm lint",
+		"clean": "rm -f *.vsix",
+		"build": "pnpm clean && vsce package"
+	},
+	"repository": {
+		"url": "https://github.com/timothycohen/samplekit/packages/svelte-katex-vscode"
+	},
+	"bugs": {
+		"url": "https://github.com/timothycohen/samplekit/packages/svelte-katex-vscode/issues"
+	},
+	"engines": {
+		"vscode": "^1.9.0"
+	},
+	"categories": [
+		"Programming Languages"
+	],
+	"keywords": [
+		"latex",
+		"katex",
+		"tex",
+		"javascript",
+		"typescript",
+		"svelte",
+		"preprocess-svelte",
+		"preprocess-katex",
+		"svelte-katex-vscode"
+	],
+	"contributes": {
+		"grammars": [
+			{
+				"injectTo": [
+					"source.svelte"
+				],
+				"scopeName": "svelte-comment.latex",
+				"path": "./syntaxes/comment.json"
+			},
+			{
+				"injectTo": [
+					"source.js",
+					"source.jsx",
+					"source.ts",
+					"source.tsx",
+					"source.html",
+					"source.vue",
+					"source.svelte"
+				],
+				"scopeName": "template-literal.latex",
+				"path": "./syntaxes/template-literal.json",
+				"embeddedLanguages": {
+					"meta.embedded.block.latex": "latex"
+				}
+			}
+		],
+		"snippets": [
+			{
+				"language": "svelte",
+				"path": "./snippets/svelte-katex.code-snippets"
+			}
+		]
+	}
+}

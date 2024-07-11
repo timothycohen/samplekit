@@ -1,0 +1,14 @@
+{
+	"New KaTeX inline comment": {
+		"scope": "text.svelte",
+		"prefix": "katinline",
+		"description": "Creates a new inline KaTeX block.",
+		"body": ["<!-- \\( $1 \\) --> $0"],
+	},
+	"New KaTeX display comment": {
+		"scope": "text.svelte",
+		"prefix": "katdisplay",
+		"description": "Creates a new display KaTeX block.",
+		"body": ["<!-- \\[", "$1", "\\] -->", "$0"],
+	},
+}

@@ -98,6 +98,8 @@ importers:
         specifier: ^0.16.7
         version: 0.16.7
 
+  packages/preprocess-katex-vscode: {}
+
   packages/preprocess-markdown:
     dependencies:
       estree-walker:
