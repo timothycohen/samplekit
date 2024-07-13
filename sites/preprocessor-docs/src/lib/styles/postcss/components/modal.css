@@ -1,0 +1,51 @@
+@layer components {
+	.modal-overlay {
+		@apply fixed inset-0 z-50 bg-black;
+		animation: overlayFadeIn 150ms ease-out forwards;
+	}
+	.modal-content-position {
+		@apply fixed left-1/2 top-1/2 z-50 -translate-x-1/2 -translate-y-1/2;
+		animation: modalContentFadeUpAndIn 200ms ease-out forwards;
+	}
+	.modal-content-size {
+		@apply max-h-[85vh] w-[95vw] max-w-[440px] p-10;
+	}
+	.modal-content {
+		@apply modal-content-position modal-content-size rounded-card bg-gray-2 shadow-3;
+	}
+	.modal-icon-wrapper {
+		@apply mb-6 grid h-10 place-items-center text-accent-9;
+	}
+	.modal-title {
+		@apply mb-6 text-lg font-medium text-gray-12;
+	}
+	.modal-description {
+		@apply -mt-5 mb-6 leading-normal text-gray-11;
+	}
+	.modal-btns-wrapper {
+		@apply mt-6 flex justify-end gap-4;
+	}
+	.modal-x-btn {
+		@apply btn-ghost absolute right-4 top-4 inline-flex h-6 w-6 items-center justify-center p-1;
+	}
+
+	@keyframes overlayFadeIn {
+		0% {
+			opacity: 0;
+		}
+		100% {
+			opacity: 0.7;
+		}
+	}
+
+	@keyframes modalContentFadeUpAndIn {
+		0% {
+			opacity: 0;
+			transform: translate(-50%, -48%);
+		}
+		100% {
+			opacity: 1;
+			transform: translate(-50%, -50%);
+		}
+	}
+}

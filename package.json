@@ -25,6 +25,8 @@
 		"lint:svelte-crop-window:fix": "pnpm lint:svelte-crop-window --fix",
 		"lint:samplekit": "eslint --max-warnings 0 sites/samplekit.dev/",
 		"lint:samplekit:fix": "pnpm lint:samplekit --fix",
+		"lint:preprocessor-docs": "eslint --max-warnings 0 sites/preprocessor-docs/",
+		"lint:preprocessor-docs:fix": "pnpm lint:preprocessor-docs --fix",
 		"lint": "eslint --max-warnings 0 .",
 		"lint:fix": "pnpm sync && pnpm lint --fix",
 		"check": "pnpm --recursive --no-bail check",

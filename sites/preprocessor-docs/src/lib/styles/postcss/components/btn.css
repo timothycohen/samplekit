@@ -1,0 +1,52 @@
+@layer components {
+	.btn-sizing {
+		@apply flex select-none items-center justify-center gap-2 rounded-btn text-center;
+		@apply px-5 py-2;
+	}
+	.btn-disabled {
+		@apply !cursor-not-allowed !border-transparent !bg-gray-4 !text-gray-9;
+	}
+	.btn {
+		@apply btn-sizing disabled:btn-disabled;
+	}
+
+	.btn-color-accent {
+		@apply bg-accent-9 text-accent-9-contrast outline-accent-8 ring-accent-10 hover:bg-accent-10 focus:bg-accent-10 focus:ring-1;
+	}
+	.btn-color-error {
+		@apply bg-error-9 text-error-9-contrast outline-error-8 ring-error-10 hover:bg-error-10 focus:bg-error-10 focus:ring-1;
+	}
+	.btn-color-success {
+		@apply bg-success-9 text-success-9-contrast outline-success-8 ring-success-10 hover:bg-success-10 focus:bg-success-10 focus:ring-1;
+	}
+
+	.btn-border-accent {
+		@apply border border-accent-5 hover:border-accent-6 focus:border-accent-6;
+	}
+	.btn-border-error {
+		@apply border border-error-5 hover:border-error-6 focus:border-error-6;
+	}
+	.btn-border-success {
+		@apply border border-success-5 hover:border-success-6 focus:border-success-6;
+	}
+	.btn-border-gray {
+		@apply border border-gray-6 hover:border-gray-7 focus:border-gray-8;
+	}
+
+	.btn-accent {
+		@apply btn-color-accent btn-border-accent;
+	}
+	.btn-error {
+		@apply btn-color-error btn-border-error;
+	}
+	.btn-success {
+		@apply btn-color-success btn-border-success;
+	}
+	.btn-hollow {
+		@apply btn-border-gray;
+	}
+
+	.btn-ghost {
+		@apply rounded-badge hover:bg-gray-4 focus:bg-gray-4;
+	}
+}

@@ -1,0 +1,50 @@
+@import './lib/styles/css/colorThemes.css';
+@import './lib/styles/css/code-block.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Resets ####################### */
+* {
+	-webkit-tap-highlight-color: transparent;
+}
+select {
+	-moz-appearance: none;
+	-webkit-appearance: none;
+	appearance: none;
+}
+
+.lucide {
+	@apply stroke-[1.25];
+}
+
+/* Base Colors ####################### */
+::selection {
+	@apply bg-accent-9 text-accent-9-contrast;
+}
+* {
+	@apply outline-2 outline-offset-2 outline-accent-7 focus-visible:outline;
+}
+html {
+	@apply accent-accent-9;
+	scroll-behavior: smooth;
+}
+body {
+	@apply bg-app-bg text-gray-12;
+}
+
+/* Fonts ####################### */
+body,
+html {
+	@apply font-serif;
+}
+
+/* Katex ####################### */
+.katex-display > .katex > .katex-html > .tag {
+	right: 0.15rem;
+}
+.katex {
+	position: relative;
+	z-index: -1;
+}

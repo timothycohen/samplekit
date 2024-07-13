@@ -1,0 +1,5 @@
+@layer components {
+	.link {
+		@apply font-light text-accent-11 decoration-accent-6 underline-offset-2 hover:underline;
+	}
+}

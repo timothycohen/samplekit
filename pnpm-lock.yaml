@@ -186,6 +186,57 @@ importers:
         specifier: ^5.0.11
         version: 5.2.12(@types/node@20.14.10)
 
+  sites/preprocessor-docs:
+    devDependencies:
+      '@melt-ui/svelte':
+        specifier: ^0.83.0
+        version: 0.83.0(svelte@5.0.0-next.164)
+      '@samplekit/preprocess-katex':
+        specifier: workspace:^
+        version: link:../../packages/preprocess-katex
+      '@samplekit/preprocess-markdown':
+        specifier: workspace:^
+        version: link:../../packages/preprocess-markdown
+      '@samplekit/preprocess-shiki':
+        specifier: workspace:^
+        version: link:../../packages/preprocess-shiki
+      '@sveltejs/adapter-node':
+        specifier: ^5.0.1
+        version: 5.2.0(@sveltejs/kit@2.5.18(@sveltejs/vite-plugin-svelte@3.1.1(svelte@5.0.0-next.164)(vite@5.3.3(@types/node@20.14.10)))(svelte@5.0.0-next.164)(vite@5.3.3(@types/node@20.14.10)))
+      '@sveltejs/kit':
+        specifier: ^2.5.17
+        version: 2.5.18(@sveltejs/vite-plugin-svelte@3.1.1(svelte@5.0.0-next.164)(vite@5.3.3(@types/node@20.14.10)))(svelte@5.0.0-next.164)(vite@5.3.3(@types/node@20.14.10))
+      '@sveltejs/vite-plugin-svelte':
+        specifier: ^3.1.1
+        version: 3.1.1(svelte@5.0.0-next.164)(vite@5.3.3(@types/node@20.14.10))
+      '@tailwindcss/typography':
+        specifier: ^0.5.13
+        version: 0.5.13(tailwindcss@3.4.5)
+      '@types/postcss-js':
+        specifier: ^4.0.4
+        version: 4.0.4
+      autoprefixer:
+        specifier: ^10.4.19
+        version: 10.4.19(postcss@8.4.39)
+      postcss:
+        specifier: ^8.4.38
+        version: 8.4.39
+      postcss-js:
+        specifier: ^4.0.1
+        version: 4.0.1(postcss@8.4.39)
+      svelte:
+        specifier: 5.0.0-next.164
+        version: 5.0.0-next.164
+      svelte-check:
+        specifier: ^3.8.4
+        version: 3.8.4(@babel/core@7.23.9)(postcss-load-config@4.0.2(postcss@8.4.39))(postcss@8.4.39)(svelte@5.0.0-next.164)
+      tailwindcss:
+        specifier: ^3.4.4
+        version: 3.4.5
+      vite:
+        specifier: ^5.3.1
+        version: 5.3.3(@types/node@20.14.10)
+
   sites/samplekit.dev:
     dependencies:
       '@aws-sdk/client-cloudfront':
