@@ -1,23 +1,26 @@
 {
-	"name": "svelte-katex-vscode",
-	"displayName": "svelte-katex",
-	"description": "Syntax highlighting for KaTeX in Svelte HTML comments and JS template literals.",
+	"name": "svelte-pp-katex",
+	"displayName": "Svelte KaTeX Preprocessor",
 	"publisher": "timothycohen",
+	"description": "Syntax highlighting for KaTeX in Svelte HTML comments and JS template literals.",
+	"license": "MIT",
 	"type": "module",
+	"author": "Tim Cohen <contact@timcohen.dev>",
+	"private": true,
 	"scripts": {
 		"format": "prettier --ignore-path ../../.prettierignore --check .",
 		"format:fix": "prettier --ignore-path ../../.prettierignore --list-different --write .",
-		"lint": "pnpm -w run lint:svelte-katex-vscode",
-		"lint:fix": "pnpm -w run lint:svelte-katex-vscode:fix",
-		"validate": "pnpm format && pnpm lint",
+		"validate": "pnpm format",
 		"clean": "rm -f *.vsix",
 		"build": "pnpm clean && vsce package"
 	},
 	"repository": {
-		"url": "https://github.com/timothycohen/samplekit/packages/svelte-katex-vscode"
+		"type": "git",
+		"url": "https://github.com/timothycohen/samplekit/tree/staging/packages/svelte-pp-katex"
 	},
+	"icon": "static/sk-katex.png",
 	"bugs": {
-		"url": "https://github.com/timothycohen/samplekit/packages/svelte-katex-vscode/issues"
+		"url": "https://github.com/timothycohen/samplekit/tree/staging/packages/svelte-pp-katex/issues"
 	},
 	"engines": {
 		"vscode": "^1.9.0"
@@ -29,43 +32,38 @@
 		"latex",
 		"katex",
 		"tex",
+		"math",
 		"javascript",
 		"typescript",
 		"svelte",
-		"preprocess-svelte",
-		"preprocess-katex",
-		"svelte-katex-vscode"
+		"preprocess",
+		"samplekit",
+		"preprocess-katex"
 	],
 	"contributes": {
 		"grammars": [
 			{
+				"scopeName": "katex.pp-svelte",
+				"path": "./syntaxes/katex.pp-svelte.tmLanguage.json",
 				"injectTo": [
 					"source.svelte"
-				],
-				"scopeName": "svelte-comment.latex",
-				"path": "./syntaxes/comment.json"
+				]
 			},
 			{
+				"scopeName": "katex.template-literal.pp-svelte",
+				"path": "./syntaxes/katex.template-literal.tmLanguage.json",
 				"injectTo": [
 					"source.js",
-					"source.jsx",
 					"source.ts",
-					"source.tsx",
-					"source.html",
-					"source.vue",
+					"text.html.derivative",
 					"source.svelte"
-				],
-				"scopeName": "template-literal.latex",
-				"path": "./syntaxes/template-literal.json",
-				"embeddedLanguages": {
-					"meta.embedded.block.latex": "latex"
-				}
+				]
 			}
 		],
 		"snippets": [
 			{
 				"language": "svelte",
-				"path": "./snippets/svelte-katex.code-snippets"
+				"path": "./snippets/katex.pp-svelte.code-snippets"
 			}
 		]
 	}

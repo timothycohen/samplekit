@@ -2,6 +2,7 @@ import { walk } from 'estree-walker';
 import katex from 'katex';
 import MagicString from 'magic-string';
 import { parse, type SvelteNode, type PreprocessorGroup } from 'svelte/compiler';
+import type { Logger } from './logger.js';
 
 const display = { start: String.raw`\[`, end: String.raw`\]` };
 const inline = { start: String.raw`\(`, end: String.raw`\)` };
@@ -53,9 +54,9 @@ function replaceSvelteAndStore(input: string): { svelteFreeString: string; extra
 	const svelteFreeString = input.replace(/\\s\{([^}]*)\}/g, (_match, p1) => {
 		if (index >= unicodeInsertionPlaceholders.length) throw new Error('Too many variable substitutions.');
 		extractedSvelteContent.push(p1);
-		const unicodePlacholder = unicodeInsertionPlaceholders[index];
+		const unicodePlaceholder = unicodeInsertionPlaceholders[index];
 		index++;
-		return `{` + unicodePlacholder + `}`;
+		return `{` + unicodePlaceholder + `}`;
 	});
 
 	return { svelteFreeString, extractedSvelteContent };
@@ -69,9 +70,9 @@ function restoreSvelte(mathString: string, extractedSvelteContent: string[]): st
 		unicodeMap.set(unicodeInsertionPlaceholders[i], content);
 	});
 
-	const unicodePlacholderRegex = new RegExp(`(${unicodeInsertionPlaceholders.join('|')})`, 'g');
+	const unicodePlaceholderRegex = new RegExp(`(${unicodeInsertionPlaceholders.join('|')})`, 'g');
 
-	return mathString.replaceAll(unicodePlacholderRegex, (placeholder) => {
+	return mathString.replaceAll(unicodePlaceholderRegex, (placeholder) => {
 		const svelteContent = unicodeMap.get(placeholder);
 		return `\${${svelteContent}}`;
 	});
@@ -83,13 +84,9 @@ export function processKatex({
 	renderToString = katex.renderToString,
 }: {
 	include?: (filename: string) => boolean;
-	logger?: {
-		error?: (s: string) => void;
-		debug?: (s: string) => void;
-		formatFilename?: (filename: string) => string;
-	};
+	logger?: Logger;
 	renderToString?: (tex: string, options?: katex.KatexOptions) => string;
-} = {}): PreprocessorGroup {
+} = {}) {
 	return {
 		name: 'katex',
 		markup({ content, filename }) {
@@ -115,7 +112,7 @@ export function processKatex({
 					try {
 						const rawInput = String.raw`${trimmed.slice(delimLoc.start, delimLoc.end)}`;
 						const { svelteFreeString, extractedSvelteContent } = replaceSvelteAndStore(rawInput);
-						const logs: string[] = [];
+						const warns: Error[] = [];
 						catchStdErr({
 							trappedFn: () => {
 								const mathString = renderToString(svelteFreeString, {
@@ -129,24 +126,15 @@ export function processKatex({
 								parsed = restoreSvelte(mathString, extractedSvelteContent);
 							},
 							tmpWrite: (str) => {
-								if (!str.startsWith('No character metrics for ')) logs.push(str);
+								if (!str.startsWith('No character metrics for ')) warns.push(Error(str));
 								return true;
 							},
 						});
-						if (logger?.error) {
-							logs.forEach((msg) => {
-								logger.error?.(
-									`[PREPROCESS] | Math | Error | ${logger.formatFilename ? logger.formatFilename(filename) : filename} | ${msg}`,
-								);
-							});
+						if (logger?.warn) {
+							warns.forEach((err) => logger.warn?.(err, filename));
 						}
 					} catch (err) {
-						if (logger?.error) {
-							const msg = err instanceof Error ? err.message : 'Failed to render KaTeX.';
-							logger.error(
-								`[PREPROCESS] | Math | Error | ${logger.formatFilename ? logger.formatFilename(filename) : filename} | ${msg}`,
-							);
-						}
+						logger?.error?.(err instanceof Error ? err : Error('Failed to render KaTeX.'), filename);
 						return;
 					}
 					const content = displayMode
@@ -157,14 +145,9 @@ export function processKatex({
 				},
 			});
 
-			if (logger && count) {
-				const msg = `{ count: ${count} }`;
-				logger.debug?.(
-					`[PREPROCESS] | Math | Success | ${logger.formatFilename ? logger.formatFilename(filename) : filename} | ${msg}`,
-				);
-			}
+			if (count) logger?.info?.({ count }, filename);
 
 			return { code: s.toString() };
 		},
-	};
+	} satisfies PreprocessorGroup;
 }

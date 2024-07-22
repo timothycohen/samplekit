@@ -1,11 +1,11 @@
-# LaTeX and Markdown Injection
+# KaTeX TextMate Grammar Injection into Svelte Templates
 
-Accompanies the @samplekit/preprocess-katex npm package to make typesetting math pleasant inside Svelte.
+Accompanies the @samplekit/preprocess-katex npm package to inject syntax highlighting into the Svelte template math blocks.
 
 ## Features
 
-- injects LaTeX highlighting into HTML comments inside Svelte markup.
-- injects LaTeX highlighting into tagged template literals in JS.
+- injects [text.tex.latex meta.math.block.latex support.class.math.block.environment.latex]() highlighting into HTML comments inside Svelte markup.
+- injects [text.katex scope](https://github.com/yzhang-gh/vscode-markdown/blob/master/syntaxes/katex.tmLanguage.json) into tagged template literals in JS
 - adds snippets to make it quicker to generate the required HTML comments.
 
 ## Svelte HTML Comments
@@ -16,11 +16,11 @@ By using HTML comments, it's trivial to write a preprocessor without running afo
 
 Before
 
-<img alt="LaTeX display in HTML comment without extension." src="./static/demo-comment-latex-before.png" width="300" />
+<img alt="KaTeX display in HTML comment without extension." src="./static/demo-comment-katex-before.png" width="300" />
 
 After
 
-<img alt="LaTeX display in HTML comment with extension." src="./static/demo-comment-latex.png" width="300" />
+<img alt="KaTeX display in HTML comment with extension." src="./static/demo-comment-katex.png" width="300" />
 
 ## JS/TS Template Literals
 
@@ -30,12 +30,12 @@ A tagged template literal is used to inject KaTeX highlighting into JS.
 
 Before
 
-<img alt="LaTeX in template literal without extension." src="./static/demo-template-latex-before.png" width="300" />
+<img alt="KaTeX in template literal without extension." src="./static/demo-template-katex-before.png" width="300" />
 
 After
 
-<img alt="LaTeX in template literal with extension." src="./static/demo-template-latex.png" width="300" />
+<img alt="KaTeX in template literal with extension." src="./static/demo-template-katex.png" width="300" />
 
 ## Extension
 
-> [VSCode Marketplace](https://marketplace.visualstudio.com/items?itemName=timothycohen.svelte-katex)
+> [VSCode Marketplace](https://marketplace.visualstudio.com/items?itemName=timothycohen.svelte-pp-katex)

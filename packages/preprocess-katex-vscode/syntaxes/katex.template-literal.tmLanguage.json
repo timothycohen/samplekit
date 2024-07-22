@@ -1,0 +1,27 @@
+{
+	"scopeName": "katex.template-literal.pp-svelte",
+	"fileTypes": [],
+	"injectionSelector": "L:source.js -comment -string, L:source.jsx -comment -string, L:source.ts -comment -string, L:source.tsx -comment -string",
+	"patterns": [
+		{
+			"match": "(?i)(latex|katex)(`)([^`]+)(`)",
+			"captures": {
+				"1": { "name": "entity.name.function" },
+				"2": { "name": "punctuation.definition.string.begin.latex" },
+				"3": { "name": "meta.embedded.block.latex", "patterns": [{ "include": "text.tex.latex" }] },
+				"4": { "name": "punctuation.definition.string.end.latex" }
+			}
+		},
+		{
+			"begin": "(?i)(latex|katex)(`)",
+			"beginCaptures": {
+				"1": { "name": "entity.name.function" },
+				"2": { "name": "punctuation.definition.string.begin.latex" }
+			},
+			"end": ".*(`)",
+			"endCaptures": { "1": { "name": "punctuation.definition.string.end.latex" } },
+			"name": "meta.embedded.block.latex",
+			"patterns": [{ "include": "text.tex.latex" }]
+		}
+	]
+}
