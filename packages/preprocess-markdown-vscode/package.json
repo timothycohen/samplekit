@@ -1,23 +1,26 @@
 {
-	"name": "svelte-markdown-vscode",
-	"displayName": "svelte-markdown",
-	"description": "Syntax highlighting for Markdown in Svelte HTML comments.",
+	"name": "svelte-pp-markdown",
+	"displayName": "Svelte Markdown Preprocessor",
 	"publisher": "timothycohen",
+	"description": "Syntax highlighting for Markdown in Svelte HTML comments.",
+	"license": "MIT",
 	"type": "module",
+	"author": "Tim Cohen <contact@timcohen.dev>",
+	"private": true,
 	"scripts": {
 		"format": "prettier --ignore-path ../../.prettierignore --check .",
 		"format:fix": "prettier --ignore-path ../../.prettierignore --list-different --write .",
-		"lint": "pnpm -w run lint:svelte-markdown-vscode",
-		"lint:fix": "pnpm -w run lint:svelte-markdown-vscode:fix",
-		"validate": "pnpm format && pnpm lint",
+		"validate": "pnpm format",
 		"clean": "rm -f *.vsix",
 		"build": "pnpm clean && vsce package"
 	},
 	"repository": {
-		"url": "https://github.com/timothycohen/samplekit/packages/svelte-markdown-vscode"
+		"type": "git",
+		"url": "https://github.com/timothycohen/samplekit/tree/staging/packages/preprocess-markdown-vscode"
 	},
+	"icon": "static/sk-md.png",
 	"bugs": {
-		"url": "https://github.com/timothycohen/samplekit/packages/svelte-markdown-vscode/issues"
+		"url": "https://github.com/timothycohen/samplekit/tree/staging/packages/preprocess-markdown-vscode/issues"
 	},
 	"engines": {
 		"vscode": "^1.9.0"
@@ -26,28 +29,27 @@
 		"Programming Languages"
 	],
 	"keywords": [
-		"md",
 		"markdown",
+		"md",
 		"svelte",
-		"tables",
-		"preprocess-svelte",
-		"preprocess-markdown",
-		"svelte-markdown-vscode"
+		"preprocess",
+		"samplekit",
+		"preprocess-markdown"
 	],
 	"contributes": {
 		"grammars": [
 			{
-				"scopeName": "md.preprocessor.svelte",
+				"scopeName": "md.pp-svelte",
 				"injectTo": [
 					"source.svelte"
 				],
-				"path": "./syntaxes/md-preprocessor.tmLanguage.json"
+				"path": "./syntaxes/md.pp-svelte.tmLanguage.json"
 			}
 		],
 		"snippets": [
 			{
 				"language": "svelte",
-				"path": "./snippets/svelte-markdown.code-snippets"
+				"path": "./snippets/md.pp-svelte.code-snippets"
 			}
 		]
 	}

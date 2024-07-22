@@ -1,6 +1,6 @@
-# LaTeX and Markdown Injection
+# Markdown TextMate Grammar Injection into Svelte Templates
 
-Accompanies the @samplekit/preprocess-markdown npm package to make Markdown pleasant to use inside Svelte.
+Accompanies the @samplekit/preprocess-katex npm package to inject syntax highlighting into the Svelte template markdown blocks.
 
 ## Features
 
@@ -11,7 +11,7 @@ Accompanies the @samplekit/preprocess-markdown npm package to make Markdown plea
 
 By using HTML comments, it's trivial to write a preprocessor without running afoul of svelte check, prettier, eslint, typescript, etc.
 
-#### `<!--md-start md-end-->`
+#### `<!-- md-start md-end -->`
 
 Before
 
@@ -23,4 +23,4 @@ After
 
 ## Extension
 
-> [VSCode Marketplace](https://marketplace.visualstudio.com/items?itemName=timothycohen.svelte-markdown)
+> [VSCode Marketplace](https://marketplace.visualstudio.com/items?itemName=timothycohen.svelte-pp-markdown)

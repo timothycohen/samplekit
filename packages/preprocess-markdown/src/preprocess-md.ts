@@ -2,6 +2,7 @@ import { walk } from 'estree-walker';
 import MagicString from 'magic-string';
 import { marked as hostedMarked } from 'marked';
 import { parse, type SvelteNode, type PreprocessorGroup } from 'svelte/compiler';
+import type { Logger } from './logger.js';
 
 const delimiter = { start: 'md-start', end: 'md-end' };
 const delimLoc = { start: delimiter.start.length + 1, end: -delimiter.end.length - 1 };
@@ -49,41 +50,38 @@ export function processMarkdown({
 	marked = hostedMarked,
 }: {
 	include?: (filename: string) => boolean;
-	logger?: {
-		debug?: (s: string) => void;
-		formatFilename?: (filename: string) => string;
-	};
+	logger?: Logger;
 	marked?: typeof hostedMarked;
-} = {}): PreprocessorGroup {
+} = {}) {
 	return {
 		name: 'md',
 		markup({ content, filename }) {
 			if (!filename) return;
 			if (include && !include(filename)) return;
-			const s = new MagicString(content);
-			const ast = parse(content, { filename, modern: true });
-			let count = 0;
 
-			walk(ast.fragment, {
-				enter(node: SvelteNode) {
-					if (node.type !== 'Comment') return;
-					const trimmed = node.data.trim();
-					if (!trimmed.startsWith(delimiter.start)) return;
-					if (!trimmed.endsWith(delimiter.end)) return;
-					s.remove(node.start, node.end);
-					s.appendLeft(node.start, marked(trimmed.slice(delimLoc.start, delimLoc.end), { async: false }) as string);
-					count++;
-				},
-			});
+			try {
+				const s = new MagicString(content);
+				const ast = parse(content, { filename, modern: true });
+				let count = 0;
 
-			if (logger && count) {
-				const msg = `{ count: ${count} }`;
-				logger.debug?.(
-					`[PREPROCESS] | Mark | Success | ${logger.formatFilename ? logger.formatFilename(filename) : filename} | ${msg}`,
-				);
+				walk(ast.fragment, {
+					enter(node: SvelteNode) {
+						if (node.type !== 'Comment') return;
+						const trimmed = node.data.trim();
+						if (!trimmed.startsWith(delimiter.start)) return;
+						if (!trimmed.endsWith(delimiter.end)) return;
+						s.remove(node.start, node.end);
+						s.appendLeft(node.start, marked(trimmed.slice(delimLoc.start, delimLoc.end), { async: false }) as string);
+						count++;
+					},
+				});
+
+				if (count) logger?.info?.({ count }, filename);
+				return { code: s.toString() };
+			} catch (err) {
+				if (err instanceof Error) logger?.error?.(err, filename);
+				else logger?.error?.(Error('Failed to render Markdown.'), filename);
 			}
-
-			return { code: s.toString() };
 		},
-	};
+	} satisfies PreprocessorGroup;
 }
