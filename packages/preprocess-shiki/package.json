@@ -11,19 +11,27 @@
 		"check": "tsc --noEmit",
 		"validate": "pnpm install --frozen-lockfile && pnpm format && pnpm lint && pnpm check",
 		"clean": "rm -rf dist",
-		"build": "pnpm clean && tsc"
+		"build": "pnpm clean && tsc",
+		"test": "vitest run",
+		"test:coverage": "vitest run --coverage",
+		"test:watch": "vitest"
 	},
 	"exports": {
 		".": "./dist/index.js",
 		"./package.json": "./package.json"
 	},
+	"peerDependencies": {
+		"svelte": ">=5.0.0-next.114"
+	},
 	"dependencies": {
 		"estree-walker": "^3.0.3",
 		"magic-string": "^0.30.10",
-		"shiki": "^1.1.9",
-		"svelte": "5.0.0-next.164"
+		"shiki": "^1.12.0"
 	},
 	"devDependencies": {
-		"@types/hast": "^3.0.4"
+		"@types/hast": "^3.0.4",
+		"@vitest/coverage-v8": "^2.0.4",
+		"vitest": "^2.0.4",
+		"@shikijs/core": ">=1.12.0 < 2"
 	}
 }

@@ -1,6 +1,6 @@
-# LaTeX and Markdown Injection
+# Codeblock TextMate Grammar Injection into Svelte Templates
 
-Accompanies the @samplekit/preprocess-shiki npm package to make codeblocks pleasant to use inside Svelte.
+Accompanies the @samplekit/preprocess-shiki npm package to inject syntax highlighting into the Svelte template code blocks.
 
 ## Features
 
@@ -11,7 +11,7 @@ Accompanies the @samplekit/preprocess-shiki npm package to make codeblocks pleas
 
 By using HTML comments, it's trivial to write a preprocessor without running afoul of svelte check, prettier, eslint, typescript, etc.
 
-#### `<!--code-start code-end-->`
+#### `<!-- shiki-start shiki-end -->`
 
 Before
 
@@ -23,4 +23,4 @@ After
 
 ## Extension
 
-> [VSCode Marketplace](https://marketplace.visualstudio.com/items?itemName=timothycohen.svelte-shiki)
+> [VSCode Marketplace](https://marketplace.visualstudio.com/items?itemName=timothycohen.svelte-pp-shiki)
