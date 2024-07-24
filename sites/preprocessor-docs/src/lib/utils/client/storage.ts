@@ -24,5 +24,5 @@ export function setBrowserCookie(name: string, value: string, days?: number): vo
 		expires = `; expires=${date.toUTCString()}`;
 	}
 
-	document.cookie = `${name}=${value}${expires}; path=/`;
+	document.cookie = `${name}=${value}${expires}; path=/; SameSite=Lax;`;
 }

@@ -1,31 +1,25 @@
 <script lang="ts">
+	import { page } from '$app/stores';
+	import LogoIcon from '$lib/components/LogoIcon.svelte';
+	import I from '$lib/icons';
 	import { PaletteMenu } from '$lib/styles';
 
-	const title = 'Svelte Preprocessors';
+	const title = $derived.by(() => {
+		if ($page.url.pathname.includes('code-decoration')) return 'Code Decoration';
+		if ($page.url.pathname.includes('markdown')) return 'Markdown';
+		if ($page.url.pathname.includes('math')) return 'Math';
+		return 'Svelte Preprocessors';
+	});
 </script>
 
-<div class="js-only relative h-6 w-6">
-	<PaletteMenu />
-</div>
+<PaletteMenu />
 
 <h2 class="flex-1 overflow-hidden overflow-ellipsis whitespace-nowrap text-center text-xl">{title}</h2>
 
+<a href="https://samplekit.dev">
+	<LogoIcon svgClasses="h-6 w-6" />
+</a>
+
 <a href="https://github.com/timothycohen/samplekit">
-	<svg
-		xmlns="http://www.w3.org/2000/svg"
-		width="24"
-		height="24"
-		viewBox="0 0 24 24"
-		fill="none"
-		stroke="currentColor"
-		stroke-width="2"
-		stroke-linecap="round"
-		stroke-linejoin="round"
-		class="lucide lucide-github rounded-full"
-	>
-		<path
-			d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"
-		/>
-		<path d="M9 18c-4.51 2-5-2-7-2" />
-	</svg>
+	<I.GitHub class="rounded-full hover:fill-accent-9/30" />
 </a>

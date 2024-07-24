@@ -12,6 +12,6 @@ export const getOnServer = (cookies: Cookies): boolean => {
 	return DEFAULT_SIDEBAR_STATE;
 };
 
-export const setOnClient = (state: boolean) => {
+export const storeOnClient = (state: boolean) => {
 	setBrowserCookie(STORAGE_KEY_SIDEBAR_STATE, state.toString());
 };

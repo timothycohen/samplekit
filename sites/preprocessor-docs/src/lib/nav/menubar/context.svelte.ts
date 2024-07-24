@@ -1,9 +1,9 @@
-import { defineContext } from '$lib/utils/client';
+import { defineCtx } from '$lib/utils/client';
 import { MenubarController } from './menubarController.svelte';
 
-const [get, set] = defineContext<MenubarController>();
+const [get, set] = defineCtx<MenubarController>();
 
-const createMenubarContext = (r_alwaysOpen: { value: boolean }) => {
+const createMenubarCtx = (r_alwaysOpen: { value: boolean }) => {
 	set(new MenubarController(r_alwaysOpen));
 };
 
@@ -12,7 +12,7 @@ const createMenubarContext = (r_alwaysOpen: { value: boolean }) => {
  *
  * Example usage:
  * ```html
- * <div class="sticky w-full bg-app-bg" style="top: {menubar.topPx}px; height: var(--nav-height);">
+ * <div class="sticky w-full bg-app-bg" style="top: {menubar.topPx}px; height: var(--open-nav-height);">
  * ```
  *
  * `topPx` will become slightly negative (between `-navbarHeightPx` and `0px`) when scrolling down so the menubar gradually goes out of view.
@@ -27,6 +27,6 @@ const createMenubarContext = (r_alwaysOpen: { value: boolean }) => {
  * be visible when the user reveals the menubar again by scrolling up,
  * and be hidden again when the user scrolls to the top.
  */
-const useMenubarContext = get;
+const useMenubarCtx = get;
 
-export { createMenubarContext, useMenubarContext };
+export { createMenubarCtx, useMenubarCtx };

@@ -1,27 +1,24 @@
 <script lang="ts">
-	import { navbarHeightPx, useSidebarContext } from '$lib/nav';
+	import I from '$lib/icons';
 
-	const { title, tag }: { title: string; tag: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' } = $props();
+	const {
+		title,
+		tag,
+		dataToc = true,
+	}: { title: string; tag: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6'; dataToc?: true | null } = $props();
 
 	const id = title.toLowerCase().replace(/\s+/g, '-');
 	const href = '#' + id;
-
-	const sidebar = useSidebarContext();
 </script>
 
-<svelte:element
-	this={tag}
-	data-toc
-	{id}
-	class="relative {sidebar.open ? 'scroll-mt-16' : ''}"
-	style={sidebar.open ? `scroll-margin-top: ${navbarHeightPx}px` : ''}
->
-	<a {href} class="group">
+<svelte:element this={tag} data-toc={dataToc} {id} style="scroll-margin-top: var(--derived-nav-height);">
+	<a {href} class="group relative -mr-8 pr-8">
+		<span class="text-gray-12 group-hover:text-accent-12">{title}</span>
 		<span
-			class="absolute -left-4 bottom-0 top-0 content-center text-base opacity-0 transition-opacity group-hover:opacity-100"
+			class="absolute bottom-0 right-0 top-0 grid content-center
+			opacity-0 transition-opacity group-hover:opacity-100"
 		>
-			#</span
+			<small><I.Link class="!stroke-2 text-accent-12" /></small></span
 		>
-		<span class="text-gray-12">{title}</span>
 	</a>
 </svelte:element>

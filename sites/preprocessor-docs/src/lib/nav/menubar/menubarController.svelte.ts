@@ -4,7 +4,7 @@ import { navbarHeightPx } from '../consts';
 
 export class MenubarController {
 	#topPx = $state(0);
-	#border = $state(browser ? scrollY > navbarHeightPx : false);
+	#border = $state(browser ? document.body.scrollTop > navbarHeightPx : false);
 	#destroyTopListener = $state(() => {});
 	#destroyBorderListener = $state(() => {});
 
@@ -31,11 +31,11 @@ export class MenubarController {
 	}
 
 	#addTopListener() {
-		let lastScrollTop = scrollY;
+		let lastScrollTop = document.body.scrollTop;
 		let topPosition = 0;
 
 		const scrollHandler = () => {
-			const scrollTop = scrollY;
+			const scrollTop = document.body.scrollTop;
 			const scrollDownDistance = scrollTop - lastScrollTop;
 
 			if (scrollDownDistance > 0) {
@@ -50,19 +50,19 @@ export class MenubarController {
 			lastScrollTop = scrollTop;
 		};
 
-		document.addEventListener('scroll', scrollHandler, { passive: true });
+		document.body.addEventListener('scroll', scrollHandler, { passive: true });
 		this.#destroyTopListener = () => {
-			document.removeEventListener('scroll', scrollHandler);
+			document.body.removeEventListener('scroll', scrollHandler);
 			this.#topPx = 0;
 			this.#destroyTopListener = () => {};
 		};
 	}
 
 	#addBorderListener(threshold: 'one' | 'navbarHeight') {
-		let lastScrollTop = scrollY;
+		let lastScrollTop = document.body.scrollTop;
 
 		const scrollHandler = () => {
-			const scrollTop = scrollY;
+			const scrollTop = document.body.scrollTop;
 			const scrollDownDistance = scrollTop - lastScrollTop;
 
 			if (scrollDownDistance > 0) {
@@ -73,10 +73,10 @@ export class MenubarController {
 			lastScrollTop = scrollTop;
 		};
 
-		document.addEventListener('scroll', scrollHandler, { passive: true });
+		document.body.addEventListener('scroll', scrollHandler, { passive: true });
 		this.#destroyBorderListener = () => {
-			document.removeEventListener('scroll', scrollHandler);
-			this.#border = browser ? scrollY > navbarHeightPx : false;
+			document.body.removeEventListener('scroll', scrollHandler);
+			this.#border = browser ? document.body.scrollTop > navbarHeightPx : false;
 			this.#destroyBorderListener = () => {};
 		};
 	}

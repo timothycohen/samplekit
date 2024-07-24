@@ -1,5 +1,5 @@
-import { defineContext } from '$lib/utils/client';
-import { setOnClient } from './sidebarStorage';
+import { defineCtx } from '$lib/utils/client';
+import { storeOnClient } from './sidebarStorage';
 
 class SidebarState {
 	#open = $state(false);
@@ -14,13 +14,13 @@ class SidebarState {
 
 	set open(value: boolean) {
 		this.#open = value;
-		setOnClient(value);
+		storeOnClient(value);
 	}
 }
 
-const [get, set] = defineContext<SidebarState>();
+const [get, set] = defineCtx<SidebarState>();
 
-const createSidebarContext = (initialState: boolean) => set(new SidebarState(initialState));
+const createSidebarCtx = (initialState: boolean) => set(new SidebarState(initialState));
 
 /**
  * The source of truth for the sidebar state is the `#sidebar-toggler` checkbox, ensuring changes work without JS.
@@ -31,6 +31,6 @@ const createSidebarContext = (initialState: boolean) => set(new SidebarState(ini
  * 2) forcing the menubar to stay visible when sidebar is open
  * 3) syncs with localStorage for persistence
  */
-const useSidebarContext = get;
+const useSidebarCtx = get;
 
-export { createSidebarContext, useSidebarContext };
+export { createSidebarCtx, useSidebarCtx };

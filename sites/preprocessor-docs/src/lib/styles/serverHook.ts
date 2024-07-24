@@ -1,7 +1,14 @@
-import { getStoredThemeOnServer } from './colorThemeUtils';
+import { getStoredThemeOnServer } from './themeUtils';
 import type { Handle } from '@sveltejs/kit';
 
-/** Expects app.html `<html updateThemeFromCookies>` */
+/**
+ * Prevents FOUC by rendering the correct theme on the server according to user cookies.
+ *
+ * Expects `app.html` `<html updateThemeFromCookies>`
+ *
+ * Could instead compile the themeUtils and run `setThemeOnDoc(getStoredThemeOnClient)` in `app.html`
+ *
+ * */
 export const updateThemeFromCookies: Handle = async ({ event, resolve }) => {
 	if (event.request.method !== 'GET') return resolve(event);
 

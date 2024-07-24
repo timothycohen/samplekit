@@ -1,12 +1,13 @@
-/* eslint-disable no-console */
-
-import { processKatex } from '@samplekit/preprocess-katex';
-import { processMarkdown } from '@samplekit/preprocess-markdown';
-import { processCodeblock } from '@samplekit/preprocess-shiki';
+import { processKatex, createKatexLogger } from '@samplekit/preprocess-katex';
+import { processMarkdown, createMdLogger } from '@samplekit/preprocess-markdown';
+import { createShikiLogger, processCodeblockSync } from '@samplekit/preprocess-shiki';
 import adapter from '@sveltejs/adapter-node';
 import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
+import { opts } from './shiki.config.js';
 
 const preprocessorRoot = `${import.meta.dirname}/src/routes/`;
+const formatFilename = (/** @type {string} */ filename) => filename.replace(preprocessorRoot, '');
+const include = (/** @type {string} */ filename) => filename.startsWith(preprocessorRoot);
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
@@ -20,16 +21,18 @@ const config = {
 		},
 	},
 	preprocess: [
-		processCodeblock({
-			logger: { error: console.error, formatFilename: (filename) => filename.replace(preprocessorRoot, '') },
-			include: (filename) => filename.startsWith(preprocessorRoot),
+		processCodeblockSync({
+			include,
+			logger: { ...createShikiLogger(formatFilename), info: undefined },
+			opts,
 		}),
 		processMarkdown({
-			include: (filename) => filename.startsWith(preprocessorRoot),
+			include,
+			logger: { ...createMdLogger(formatFilename), info: undefined },
 		}),
 		processKatex({
-			logger: { error: console.error, formatFilename: (filename) => filename.replace(preprocessorRoot, '') },
-			include: (filename) => filename.startsWith(preprocessorRoot),
+			include,
+			logger: { ...createKatexLogger(formatFilename), info: undefined },
 		}),
 		vitePreprocess(),
 	],

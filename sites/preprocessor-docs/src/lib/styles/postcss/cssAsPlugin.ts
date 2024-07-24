@@ -3,6 +3,10 @@ import postcss from 'postcss';
 import postcssJs from 'postcss-js';
 import type { PluginCreator } from 'tailwindcss/types/config';
 
+/**
+ * We do it this way to enable tailwind intellisense.
+ * See https://github.com/tailwindlabs/tailwindcss-intellisense/issues/227#issuecomment-1462034856
+ */
 const buildPluginCreator =
 	(cssFilePath: string): PluginCreator =>
 	({ addBase, addComponents, addUtilities }) => {
@@ -25,8 +29,6 @@ require.extensions['.css'] = function (module, cssFilePath) {
 	module.exports = buildPluginCreator(cssFilePath);
 };
 
-export const componentPaths = ['alert', 'btn', 'input', 'link', 'modal', 'radio'].map(
-	(p) => `./src/lib/styles/postcss/components/${p}.css`,
-);
-
-export const utilityPaths = ['underline'].map((p) => `./src/lib/styles/postcss/utilities/${p}.css`);
+// these are relative to the file which imports them (tailwindConfig.ts)
+export const componentPaths = ['btn', 'features', 'link', 'steps'].map((p) => `./postcss/components/${p}.css`);
+export const utilityPaths = ['underline', 'utils'].map((p) => `./postcss/utilities/${p}.css`);

@@ -1,15 +1,15 @@
-import { defineContext } from '$lib/utils/client';
-import { ThemeController } from './colorThemeController.svelte';
+import { defineCtx } from '$lib/utils/client';
+import { ThemeController } from './themeController.svelte';
 
-const [get, set] = defineContext<ThemeController>();
+const [get, set] = defineCtx<ThemeController>();
 
-const createThemeControllerContext = () => {
+const createThemeControllerCtx = () => {
 	set(new ThemeController());
 };
 
 /**
  * Initializes from storage and propagates changes to storage and the DOM.
  */
-const useThemeControllerContext = get;
+const useThemeControllerCtx = get;
 
-export { createThemeControllerContext, useThemeControllerContext };
+export { createThemeControllerCtx, useThemeControllerCtx };

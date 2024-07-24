@@ -1,4 +1,4 @@
-import { keyboard } from '$lib/actions/keyboard';
+import { keyboard } from '$lib/actions';
 
 export const KeyboardLoop = (() => {
 	const prev = (e: KeyboardEvent) => {

@@ -63,7 +63,7 @@ function createTree(items: FlatTocItem[]): TocItem[] {
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
 	const root = path.join(import.meta.dirname, '..');
-	const out = path.join(root, 'src', 'lib', 'generated', 'toc.json');
+	const out = path.join(root, 'src', 'routes', 'docs', 'generated', 'toc.ts');
 	const docs = path.join(root, 'src', 'routes', 'docs');
 
 	const filenames = fs
@@ -76,5 +76,12 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
 		}));
 
 	const toc = createToc(filenames);
-	fs.writeFileSync(out, JSON.stringify(toc));
+
+	fs.writeFileSync(
+		out,
+		`import type { LayoutRouteId } from '../$types'
+type TocItem = { title: string; href: string; children?: TocItem[] };
+
+export default ${JSON.stringify(toc)} satisfies Record<Exclude<LayoutRouteId, '/docs'>, TocItem[]>`,
+	);
 }

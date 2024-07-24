@@ -1,0 +1,18 @@
+@layer components {
+	.steps {
+		counter-reset: 0;
+	}
+	.step {
+		@apply relative list-none before:absolute before:-left-6 before:top-0.5 before:grid before:h-6 before:w-6 before:place-content-center before:rounded-badge before:border before:border-accent-5 before:bg-accent-12 before:text-xs before:font-bold before:text-accent-1 before:content-[counter(step)];
+		counter-increment: step;
+	}
+	.step-title {
+		@apply text-xl text-gray-12;
+	}
+	.step-content {
+		@apply my-5 block text-base lg:my-6;
+	}
+	.step:not(:last-of-type) {
+		@apply after:absolute after:-left-[13px] after:bottom-1 after:top-8 after:w-0.5 after:bg-accent-11/10;
+	}
+}

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { katex } from '..';
 
-	export const { eq } = $props();
+	const { eq }: { eq: string } = $props();
 </script>
 
 <!-- eslint-disable-next-line svelte/no-at-html-tags -->

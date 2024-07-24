@@ -1,5 +1,6 @@
-<script>
+<script lang="ts">
 	import { HAnchor } from '$lib/components';
+	import I from '$lib/icons';
 
 	let count = $state(0);
 	// @ts-expect-error – Used in Markdown
@@ -7,56 +8,110 @@
 	const increaseCount = () => count++;
 </script>
 
-<h1>Markdown</h1>
+<svelte:head>
+	<title>Markdown Preprocessor | SampleKit</title>
+</svelte:head>
+
+<HAnchor tag="h1" title="Markdown" dataToc={null} />
 
 <p>
-	The <a href="https://github.com/timothycohen/samplekit/tree/staging/packages/preprocess-markdown">
-		<code>@samplekit/preprocess-markdown</code>
+	The <a data-external href="https://github.com/timothycohen/samplekit/tree/staging/packages/preprocess-markdown">
+		<span class="font-mono text-base">@samplekit/preprocess-markdown</span>
 	</a>
-	package and
-	<a href="https://github.com/timothycohen/samplekit/tree/staging/packages/preprocess-markdown-vscode">
-		<code>@samplekit/preprocess-markdown-vscode</code>
+	npm package and
+	<a data-external href="https://marketplace.visualstudio.com/items?itemName=timothycohen.svelte-pp-markdown">
+		<span class="font-mono text-base">svelte-pp-markdown</span>
 	</a>
-	extension allow you to use Markdown processed with directly within your Svelte template.
+	VS Code extension allow you to write Markdown processed with
+	<a data-external href="https://github.com/markedjs/marked">Marked</a> directly within your Svelte template.
 </p>
 
 <HAnchor tag="h2" title="Feature Overview" />
 
-<p class="text-gray-12">Write Markdown in your Svelte!</p>
+<ul class="features">
+	<li class="feature">
+		<I.CircleCheckBig class="feature-icon" />
+		<span class="feature-title">Write Markdown in Svelte templates.</span>
+		<span class="feature-content">
+			Write tables with ease just like you would with Markdown.
+			<span class="code-table">
+				<!-- md-start
+| Preprocessor                   | VS Code Extension               |
+| ------------------------------ | ------------------------------- |
+| @samplekit/preprocess-katex    | timothycohen.svelte-pp-katex    |
+| @samplekit/preprocess-markdown | timothycohen.svelte-pp-markdown |
+| @samplekit/preprocess-shiki    | timothycohen.svelte-pp-shiki    |
+md-end -->
+			</span>
+		</span>
+	</li>
 
-<p>
-	This preprocessor allows you to write Markdown blocks directly in Svelte templates. Whereas other packages like
-	<a href="https://mdsvex.pngwn.io/docs"> mdsvex </a> freely mix Svelte and Markdown, this package isolates the
-	preprocessing to blocks inside <!-- shiki-ts md-start shiki-ts --> and <!-- shiki-ts md-end shiki-ts --> tags. This lightweight
-	approach preserves your control over the DOM and lets you break out into Markdown for those annoying parts of HTML (tables).
-	There is a complementary preprocessor package which handles <a href="/docs/codeblocks">codeblock highlighting</a> using
-	injected css variables via shiki.
-</p>
+	<li class="feature">
+		<I.CircleCheckBig class="feature-icon" />
+		<span class="feature-title">Separate but Coexisting Languages</span>
+		<span class="feature-content">
+			Whereas other packages like <a data-external href="https://mdsvex.pngwn.io/docs"> mdsvex </a>
+			freely mix Svelte and Markdown, this package isolates the preprocessing to blocks inside
+			<code>md-start</code> and <code>md-end</code> tags. This lightweight approach preserves your control over the DOM
+			and lets you break out into Markdown for those annoying parts of HTML (tables). There is a complementary
+			preprocessor package which handles <a href="/docs/code-decoration">code block decoration</a> by using Shiki to inject
+			CSS variables.
+		</span>
+	</li>
+
+	<li class="feature">
+		<I.CircleCheckBig class="feature-icon" />
+		<span class="feature-title">Code with TextMate support.</span>
+		<span class="feature-content">
+			The <a
+				data-external
+				href="https://github.com/timothycohen/samplekit/tree/staging/packages/preprocess-markdown-vscode"
+			>
+				<span class="font-mono text-base">VS Code extension</span>
+			</a> provides you with full highlighting support. It injects the TextMate grammar scope between the delimiters to work
+			with your VS Code theme.
+		</span>
+	</li>
+</ul>
 
 <HAnchor tag="h2" title="Installation" />
 
-<ol>
-	<li>Install the preprocessor</li>
-	<div class="no-lines">
-		<!-- shiki-start
+<ol class="steps">
+	<li class="step">
+		<span class="step-title">Install the preprocessor</span>
+		<span class="step-content">
+			<span class="lg:text-lg">
+				<!-- shiki-start
+p c"no-lines"
 ```sh
 pnpm add -D @samplekit/preprocess-markdown
 ```
 shiki-end -->
-	</div>
-	<li>Add to <!-- shiki-ts svelte.config.js shiki-ts --></li>
-	<!-- shiki-start
+			</span>
+		</span>
+	</li>
+
+	<li class="step">
+		<span class="step-title">Add to <code>svelte.config.js</code></span>
+		<span class="step-content">
+			<span class="lg:text-lg">
+				<!-- shiki-start
+d"diff-add" l"1" l"5-6" l"11-14"
 ```ts
+import { processMarkdown, createMdLogger } from '@samplekit/preprocess-markdown';
 import adapter from '@sveltejs/adapter-auto';
 import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
-import { processMarkdown } from '@samplekit/preprocess-markdown'; // [!diff-add]
 
-const preprocessorRoot = `${import.meta.dirname}/src/routes/`; // [!diff-add]
+const preprocessorRoot = `${import.meta.dirname}/src/routes/`;
+const formatFilename = (/** @type {string} */ filename) => filename.replace(preprocessorRoot, '');
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
 	preprocess: [
-		processMarkdown({ include: (filename) => filename.startsWith(preprocessorRoot) }),  // [!diff-add]
+		processMarkdown({
+			include: (filename) => filename.startsWith(preprocessorRoot),
+			logger: createMdLogger(formatFilename),
+		}),
 		vitePreprocess(),
 	],
 	kit: {
@@ -67,38 +122,47 @@ const config = {
 export default config;
 ```
 shiki-end -->
-	<li>Install the VS Code extension (for snippets and syntax highlighting)</li>
-	<a href="https://marketplace.visualstudio.com/items?itemName=svelte.svelte-markdown-vscode">
-		timothycohen.svelte-markdown-vscode
-	</a>
+			</span>
+		</span>
+	</li>
+
+	<li class="step">
+		<span class="step-title">Install the VS Code extension (for snippets and syntax highlighting)</span>
+		<span class="step-content">
+			<a data-external href="https://marketplace.visualstudio.com/items?itemName=timothycohen.svelte-pp-markdown">
+				timothycohen.svelte-pp-markdown
+			</a>
+		</span>
+	</li>
 </ol>
 
 <HAnchor tag="h2" title="Example Usage" />
 
-<div class="grid gap-4 lg:grid-cols-2">
-	<div>
+<div class="grid grid-cols-1 lg:grid-cols-2 lg:gap-4">
+	<span>
 		<p>Author with the highlighting extension:</p>
+		<!-- shiki-start
+t-md-block
+```md
+### A markdown table.
 
-		<!-- prettier-ignore -->
-		<div class="code-wrapper"><pre style="--h-darker:#D4D4D4;--h-rose-pine-dawn:#575279;--h-darker-bg:#000;--h-rose-pine-dawn-bg:#faf4ed"><code><span data-line="1"><span style="--h-darker:#6A9955;--h-rose-pine-dawn:#797593;--h-darker-font-style:italic;--h-rose-pine-dawn-font-style:italic">&lt;!--</span><span style="--h-darker:#6A9955;--h-rose-pine-dawn:#9893A5;--h-darker-font-style:italic;--h-rose-pine-dawn-font-style:italic"> md-start</span></span>
-<span data-line="2"><span style="--h-darker:#569CD6;--h-rose-pine-dawn:#797593;--h-darker-font-weight:bold;--h-rose-pine-dawn-font-weight:bold">###</span><span style="--h-darker:#569CD6;--h-rose-pine-dawn:#56949F;--h-darker-font-weight:bold;--h-rose-pine-dawn-font-weight:bold"> A markdown table.</span></span>
-<span data-line="3"></span>
-<span data-line="4"><span style="--h-darker:#D4D4D4;--h-rose-pine-dawn:#575279">Style however you want.</span></span>
-<span data-line="5"><span style="--h-darker:#D4D4D4;--h-rose-pine-dawn:#575279">Here's what it looks like with </span><span style="--h-darker:#D4D4D4;--h-rose-pine-dawn:#797593">[</span><span style="--h-darker:#CE9178;--h-rose-pine-dawn:#EA9D34">Tailwind Typography</span><span style="--h-darker:#D4D4D4;--h-rose-pine-dawn:#797593">](</span><span style="--h-darker:#D4D4D4;--h-rose-pine-dawn:#575279;--h-darker-text-decoration:underline;--h-rose-pine-dawn-text-decoration:inherit">https://github.com/tailwindlabs/tailwindcss-typography</span><span style="--h-darker:#D4D4D4;--h-rose-pine-dawn:#797593">)</span><span style="--h-darker:#D4D4D4;--h-rose-pine-dawn:#575279">.</span></span>
-<span data-line="6"></span>
-<span data-line="7"><span style="--h-darker:#D4D4D4;--h-rose-pine-dawn:#797593">|</span><span style="--h-darker:#D4D4D4;--h-rose-pine-dawn:#575279"> Heading 1 </span><span style="--h-darker:#D4D4D4;--h-rose-pine-dawn:#797593">|</span><span style="--h-darker:#D4D4D4;--h-rose-pine-dawn:#575279"> Heading 2         </span><span style="--h-darker:#D4D4D4;--h-rose-pine-dawn:#797593">|</span></span>
-<span data-line="8"><span style="--h-darker:#D4D4D4;--h-rose-pine-dawn:#797593">|</span><span style="--h-darker:#D4D4D4;--h-rose-pine-dawn:#797593"> ---------</span><span style="--h-darker:#D4D4D4;--h-rose-pine-dawn:#797593"> |</span><span style="--h-darker:#D4D4D4;--h-rose-pine-dawn:#797593"> -----------------</span><span style="--h-darker:#D4D4D4;--h-rose-pine-dawn:#797593"> |</span></span>
-<span data-line="9"><span style="--h-darker:#D4D4D4;--h-rose-pine-dawn:#797593">|</span><span style="--h-darker:#D4D4D4;--h-rose-pine-dawn:#575279"> cell 1    </span><span style="--h-darker:#D4D4D4;--h-rose-pine-dawn:#797593">|</span><span style="--h-darker:#D4D4D4;--h-rose-pine-dawn:#575279"> cell 2            </span><span style="--h-darker:#D4D4D4;--h-rose-pine-dawn:#797593">|</span></span>
-<span data-line="10"><span style="--h-darker:#D4D4D4;--h-rose-pine-dawn:#797593">|</span><span style="--h-darker:#D4D4D4;--h-rose-pine-dawn:#575279"> cell 3    </span><span style="--h-darker:#D4D4D4;--h-rose-pine-dawn:#797593">|</span><span style="--h-darker:#D4D4D4;--h-rose-pine-dawn:#797593"> [</span><span style="--h-darker:#CE9178;--h-rose-pine-dawn:#EA9D34">cell 4</span><span style="--h-darker:#D4D4D4;--h-rose-pine-dawn:#797593">](</span><span style="--h-darker:#D4D4D4;--h-rose-pine-dawn:#575279;--h-darker-text-decoration:underline;--h-rose-pine-dawn-text-decoration:inherit">/cell-4</span><span style="--h-darker:#D4D4D4;--h-rose-pine-dawn:#797593">)</span><span style="--h-darker:#D4D4D4;--h-rose-pine-dawn:#797593"> |</span></span>
-<span data-line="11"></span>
-<span data-line="12"><span style="--h-darker:#6796E6;--h-rose-pine-dawn:#797593">-</span><span style="--h-darker:#D4D4D4;--h-rose-pine-dawn:#797593"> [</span><span style="--h-darker:#CE9178;--h-rose-pine-dawn:#EA9D34">x</span><span style="--h-darker:#D4D4D4;--h-rose-pine-dawn:#797593">]</span><span style="--h-darker:#D4D4D4;--h-rose-pine-dawn:#575279"> Markdown</span></span>
-<span data-line="13"><span style="--h-darker:#6796E6;--h-rose-pine-dawn:#797593">-</span><span style="--h-darker:#D4D4D4;--h-rose-pine-dawn:#797593"> [</span><span style="--h-darker:#CE9178;--h-rose-pine-dawn:#EA9D34">x</span><span style="--h-darker:#D4D4D4;--h-rose-pine-dawn:#797593">]</span><span style="--h-darker:#D4D4D4;--h-rose-pine-dawn:#575279"> Syntax Highlighting</span></span>
-<span data-line="14"></span>
-<span data-line="15"><span style="--h-darker:#569CD6;--h-rose-pine-dawn:#797593;--h-darker-font-weight:bold;--h-rose-pine-dawn-font-weight:bold">###</span><span style="--h-darker:#569CD6;--h-rose-pine-dawn:#56949F;--h-darker-font-weight:bold;--h-rose-pine-dawn-font-weight:bold"> Reactivity</span></span>
-<span data-line="16"></span>
-<span data-line="17"><span style="--h-darker:#808080;--h-rose-pine-dawn:#9893A5">&lt;</span><span style="--h-darker:#569CD6;--h-rose-pine-dawn:#56949F">button</span><span style="--h-darker:#9CDCFE;--h-rose-pine-dawn:#907AA9;--h-darker-font-style:italic;--h-rose-pine-dawn-font-style:italic"> class</span><span style="--h-darker:#D4D4D4;--h-rose-pine-dawn:#797593">=</span><span style="--h-darker:#CE9178;--h-rose-pine-dawn:#EA9D34">"btn btn-accent"</span><span style="--h-darker:#9CDCFE;--h-rose-pine-dawn:#907AA9;--h-darker-font-style:italic;--h-rose-pine-dawn-font-style:italic"> onclick</span><span style="--h-darker:#D4D4D4;--h-rose-pine-dawn:#797593">=</span><span style="--h-darker:#569CD6;--h-rose-pine-dawn:#797593">&#123;</span><span style="--h-darker:#9CDCFE;--h-rose-pine-dawn:#575279;--h-darker-font-style:inherit;--h-rose-pine-dawn-font-style:italic">increaseCount</span><span style="--h-darker:#569CD6;--h-rose-pine-dawn:#797593">&#125;</span><span style="--h-darker:#808080;--h-rose-pine-dawn:#9893A5">&gt;</span><span style="--h-darker:#D4D4D4;--h-rose-pine-dawn:#575279">Increase Count: </span><span style="--h-darker:#569CD6;--h-rose-pine-dawn:#797593">&#123;</span><span style="--h-darker:#9CDCFE;--h-rose-pine-dawn:#575279;--h-darker-font-style:inherit;--h-rose-pine-dawn-font-style:italic">count</span><span style="--h-darker:#569CD6;--h-rose-pine-dawn:#797593">&#125;</span><span style="--h-darker:#808080;--h-rose-pine-dawn:#9893A5">&lt;/</span><span style="--h-darker:#569CD6;--h-rose-pine-dawn:#56949F">button</span><span style="--h-darker:#808080;--h-rose-pine-dawn:#9893A5">&gt;</span></span>
-<span data-line="18"><span style="--h-darker:#6A9955;--h-rose-pine-dawn:#9893A5;--h-darker-font-style:italic;--h-rose-pine-dawn-font-style:italic">md-end </span><span style="--h-darker:#6A9955;--h-rose-pine-dawn:#797593;--h-darker-font-style:italic;--h-rose-pine-dawn-font-style:italic">--&gt;</span></span></code></pre></div>
-	</div>
+Style however you want.
+Here's what it looks like with [Tailwind Typography](https://github.com/tailwindlabs/tailwindcss-typography).
+
+| Heading 1 | Heading 2                |
+| --------- | ------------------------ |
+| cell 1    | count: {count}           |
+| cell 3    | [cell 4](#example-usage) |
+
+- [x] Markdown
+- [x] Syntax Highlighting
+
+### Reactivity
+
+<button class="btn btn-accent" onclick={increaseCount}>Increase Count: {count}</button>
+```
+shiki-end -->
+	</span>
 
 	<div>
 		<p>Author without the highlighting extension:</p>
@@ -111,10 +175,10 @@ shiki-end -->
 Style however you want.
 Here's what it looks like with [Tailwind Typography](https://github.com/tailwindlabs/tailwindcss-typography).
 
-| Heading 1 | Heading 2         |
-| --------- | ----------------- |
-| cell 1    | cell 2            |
-| cell 3    | [cell 4](/cell-4) |
+| Heading 1 | Heading 2                |
+| --------- | ------------------------ |
+| cell 1    | count: {count}           |
+| cell 3    | [cell 4](#example-usage) |
 
 - [x] Markdown
 - [x] Syntax Highlighting
@@ -129,13 +193,13 @@ shiki-end -->
 </div>
 
 <div>
-	<p>The preprocessor transpiles to HTML:</p>
+	<p>The transpiled HTML:</p>
 	<!-- shiki-start
 ```html
-<h3>A markdown table.</h3>
+<h3 id="a-markdown-table">A markdown table.</h3>
 <p>
 	Style however you want. Here's what it looks like with
-	<a href="https://github.com/tailwindlabs/tailwindcss-typography">Tailwind Typography</a>.
+	<a  data-external href="https://github.com/tailwindlabs/tailwindcss-typography">Tailwind Typography</a>.
 </p>
 <table>
 	<thead>
@@ -147,12 +211,12 @@ shiki-end -->
 	<tbody>
 		<tr>
 			<td>cell 1</td>
-			<td>cell 2</td>
+			<td>count: {count}</td>
 		</tr>
 		<tr>
 			<td>cell 3</td>
 			<td>
-				<a href="/cell-4">cell 4</a>
+				<a href="#example-usage">cell 4</a>
 			</td>
 		</tr>
 	</tbody>
@@ -161,7 +225,7 @@ shiki-end -->
 	<li><input checked="" disabled="" type="checkbox" /> Markdown</li>
 	<li><input checked="" disabled="" type="checkbox" /> Syntax Highlighting</li>
 </ul>
-<h3>Reactivity</h3>
+<h3 id="reactivity">Reactivity</h3>
 <p><button class="btn btn-accent" onclick={increaseCount}>Increase Count: {count}</button></p>
 ```
 shiki-end -->
@@ -176,10 +240,10 @@ shiki-end -->
 Style however you want.
 Here's what it looks like with [Tailwind Typography](https://github.com/tailwindlabs/tailwindcss-typography).
 
-| Heading 1 | Heading 2         |
-| --------- | ----------------- |
-| cell 1    | cell 2            |
-| cell 3    | [cell 4](/cell-4) |
+| Heading 1 | Heading 2                |
+| --------- | ------------------------ |
+| cell 1    | count: {count}           |
+| cell 3    | [cell 4](#example-usage) |
 
 - [x] Markdown
 - [x] Syntax Highlighting
@@ -191,12 +255,19 @@ Here's what it looks like with [Tailwind Typography](https://github.com/tailwind
 md-end -->
 </div>
 
-<HAnchor tag="h2" title="Scope Hints" />
+<HAnchor tag="h2" title="Scope" />
 
-<p>
-	Marked, the package this preprocessor wraps, is a Markdown to HTML parser. There's no guarantee, or even effort, to
-	handle Svelte syntax. The only two things the author of this package finds easier to write in Markdown than HTML are
-	tables and highlighted codeblocks. This package is perfect for the former. If you're looking for the latter, see
-	<a href="/docs/codeblocks">codeblock highlighting</a>. If you're looking for a full Svelte in Markdown experience,
-	<a href="https://mdsvex.pngwn.io/docs"> mdsvex </a> may be a better fit.
-</p>
+<div class="p">
+	<a data-external href="https://github.com/markedjs/marked">Marked</a>, the package this preprocessor wraps, is a
+	Markdown to HTML parser. As in the example above, it's possible to use Svelte mustache tags. However, there's no
+	effort to handle Svelte syntax. Things like <!-- shiki-svelte <button onclick={() => { count++ }}> shiki-svelte -->
+	won't work. These preprocessor packages are intended for authors who prefer Svelte / HTML and only want to escape into
+	Markdown for short sprints. If you're looking to spend most of your time in Markdown, check out
+	<a data-external href="https://mdsvex.pngwn.io/docs">MDsveX</a>.
+</div>
+
+<style lang="postcss">
+	.code-table :global(td) {
+		@apply font-mono;
+	}
+</style>

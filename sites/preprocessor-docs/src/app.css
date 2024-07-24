@@ -1,46 +1,85 @@
-@import './lib/styles/css/colorThemes.css';
-@import './lib/styles/css/code-block.css';
+@import './lib/styles/css/tokens.css';
+@import './lib/styles/css/themes.css';
+@import './lib/styles/css/code.css';
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Resets ####################### */
+/*#region Resets ############################# */
 * {
 	-webkit-tap-highlight-color: transparent;
 }
+
 select {
 	-moz-appearance: none;
 	-webkit-appearance: none;
 	appearance: none;
 }
 
-.lucide {
+.lucide-icon,
+.custom-icon {
 	@apply stroke-[1.25];
 }
+/*#endregion Resets ########################## */
 
-/* Base Colors ####################### */
+/*#region Base Colors ######################## */
 ::selection {
-	@apply bg-accent-9 text-accent-9-contrast;
+	@apply bg-accent-9/80 text-accent-9-contrast;
 }
 * {
 	@apply outline-2 outline-offset-2 outline-accent-7 focus-visible:outline;
 }
 html {
-	@apply accent-accent-9;
-	scroll-behavior: smooth;
+	@apply bg-app-bg text-gray-12 accent-accent-9;
+}
+.light {
+	color-scheme: light;
+}
+.dark {
+	color-scheme: dark;
+}
+/*#endregion Base Colors ##################### */
+
+/*#region Layout ############################# */
+html {
+	height: 100vh;
+	width: 100vw;
+	overflow: hidden;
 }
 body {
-	@apply bg-app-bg text-gray-12;
+	height: 100%;
+	overflow: auto;
+	position: relative;
 }
 
-/* Fonts ####################### */
+::view-transition-old(root),
+::view-transition-new(root) {
+	animation: none;
+	mix-blend-mode: normal;
+}
+::view-transition-old(root) {
+	z-index: 1;
+}
+::view-transition-new(root) {
+	z-index: 9999;
+}
+.dark::view-transition-old(root) {
+	z-index: 9999;
+}
+.dark::view-transition-new(root) {
+	z-index: 1;
+}
+/*#endregion Layout ########################## */
+
+/*#region Fonts ############################## */
 body,
 html {
 	@apply font-serif;
 }
+/*#endregion Fonts ########################### */
 
-/* Katex ####################### */
+/*#region Katex ############################## */
 .katex-display > .katex > .katex-html > .tag {
 	right: 0.15rem;
 }
@@ -48,3 +87,32 @@ html {
 	position: relative;
 	z-index: -1;
 }
+/*#endregion Katex ########################### */
+
+/*#region Scrollbar ########################## */
+/*
+Not styled on Safari bc they have a bug where switching the theme doesn't update the scrollbar color
+::-webkit-scrollbar-thumb
+::-webkit-scrollbar-track
+*/
+[data-theme='daffodil'] {
+	scrollbar-color: hsl(var(--iris-7) / 70%) transparent;
+}
+[data-theme='bellflower'] {
+	scrollbar-color: hsl(var(--iris-7)) transparent;
+}
+[data-theme='amethyst'] {
+	scrollbar-color: hsl(var(--iris-5)) hsl(var(--iris-2));
+}
+[data-theme='desert'] {
+	scrollbar-color: hsl(var(--amber-5)) hsl(var(--amber-2));
+}
+/*#endregion Scrollbar ####################### */
+
+/*#region Media Queries ###################### */
+@media (prefers-reduced-motion) {
+	html {
+		scroll-behavior: auto !important;
+	}
+}
+/*#endregion Media Queries ################### */

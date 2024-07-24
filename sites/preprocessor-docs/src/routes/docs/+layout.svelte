@@ -1,30 +1,71 @@
+<script lang="ts" context="module">
+	import { defineCtx } from '$lib/utils/client';
+	import type { ThemeController } from '$lib/styles';
+
+	const [get, set] = defineCtx<{ name: string; href: string }>();
+
+	const createCodeThemeCtx = (themeController: ThemeController) => {
+		const cssVarToThemeName = {
+			daffodil: {
+				name: 'Rosé Pine Dawn',
+				href: 'https://marketplace.visualstudio.com/items?itemName=mvllow.rose-pine',
+			},
+			amethyst: { name: 'Darker', href: 'https://github.com/timothycohen/darker-theme' },
+			desert: { name: 'Darker', href: 'https://github.com/timothycohen/darker-theme' },
+			bellflower: {
+				name: 'catppuccin-latte',
+				href: 'https://marketplace.visualstudio.com/items?itemName=Siris01.catppuccin-theme',
+			},
+		};
+		const codeTheme = $derived(cssVarToThemeName[themeController.theme]);
+
+		set({
+			get href() {
+				return codeTheme.href;
+			},
+			get name() {
+				return codeTheme.name;
+			},
+		});
+	};
+
+	const useCodeThemeCtx = get;
+
+	export { createCodeThemeCtx, useCodeThemeCtx };
+</script>
+
 <script lang="ts">
+	import I from '$lib/icons';
 	import {
-		createSidebarContext,
-		createMenubarContext,
-		useSidebarContext,
-		useMenubarContext,
+		createSidebarCtx,
+		createMenubarCtx,
+		useSidebarCtx,
+		useMenubarCtx,
 		MenubarContent,
 		SidebarContent,
 		navbarHeightPx,
 		contentMaxWidthPx,
 		sidebarWidthPx,
 	} from '$lib/nav';
-	import { Icon } from '$lib/styles';
+	import { useThemeControllerCtx } from '$lib/styles';
+	import type { LayoutData } from './$types';
+	import type { Snippet } from 'svelte';
 
-	const { children, data } = $props();
+	const { children, data }: { data: LayoutData; children: Snippet } = $props();
 
-	createSidebarContext(data.initialSidebarState);
-	const sidebar = useSidebarContext();
-	createMenubarContext({
+	createSidebarCtx(data.initialSidebarState);
+	const sidebar = useSidebarCtx();
+	createMenubarCtx({
 		get value() {
 			return sidebar.open;
 		},
 	});
-	const menubar = useMenubarContext();
+	const menubar = useMenubarCtx();
 
 	const toggleChecked = (e: Event & { currentTarget: EventTarget & HTMLInputElement }) =>
 		(sidebar.open = e.currentTarget.checked);
+
+	createCodeThemeCtx(useThemeControllerCtx());
 </script>
 
 <div
@@ -32,7 +73,8 @@
 	class="layout-wrapper"
 	style="--menubar-top: {menubar.topPx}px;
 				 --menubar-border: {menubar.border ? 'hsl(var(--gray-5))' : 'transparent'};
-				 --nav-height: {navbarHeightPx}px;
+				 --open-nav-height: {navbarHeightPx}px;
+				 --derived-nav-height: {sidebar.open ? `${navbarHeightPx}px` : '0px'};
 				 --sidebar-width: {sidebarWidthPx}px;
 				 --content-max-width: {contentMaxWidthPx}px;
 		"
@@ -52,14 +94,16 @@
 					aria-label="Toggle Table of Contents"
 					aria-controls="sidebar"
 				>
-					<Icon icon="hamburger" />
+					<I.Menu />
 				</label>
 				<MenubarContent />
 			</div>
 		</div>
 
-		<main class="main-content prose prose-lg prose-radix">
-			{@render children()}
+		<main>
+			<article class="main-content prose prose-radix lg:prose-lg">
+				{@render children()}
+			</article>
 		</main>
 	</div>
 </div>
@@ -79,7 +123,16 @@
 		background-color: theme(colors.accent.2);
 		transition: transform 0.3s;
 		z-index: 50;
-		@apply shadow-3;
+		border-right: 1px solid theme(colors.gray.5);
+		@apply respect-reduced-motion;
+	}
+
+	/* match rose-pine-dawn and catppuccin-latte */
+	:global([data-theme='daffodil']) .sidebar {
+		background-color: hsl(32deg 56% 95%);
+	}
+	:global([data-theme='bellflower']) .sidebar {
+		background-color: hsl(214deg 26% 95%);
 	}
 
 	/* hide sidebar */
@@ -93,7 +146,7 @@
 	}
 
 	/* fit main content on desktop */
-	@media (min-width: 620px) {
+	@media (min-width: 640px) {
 		#sidebar-toggler:checked ~ .page-wrapper {
 			transform: none;
 			margin-inline-start: var(--sidebar-width);
@@ -120,18 +173,27 @@
 		transition:
 			transform 0.3s ease,
 			margin-left 0.3s ease;
+		@apply respect-reduced-motion;
 	}
 
 	.menubar-wrapper {
 		@apply sticky z-40 flex w-full flex-wrap items-center gap-4 bg-app-bg;
 		top: var(--menubar-top);
-		height: var(--nav-height);
+		height: var(--open-nav-height);
 	}
 
 	.menubar {
 		@apply absolute inset-px flex items-center justify-center gap-4 border-b px-4;
 		transition: border-color 300ms ease;
 		border-color: var(--menubar-border);
+	}
+
+	:global(.no-js) .menubar {
+		border-color: hsl(var(--gray-5));
+	}
+
+	:global(.no-js) .layout-wrapper {
+		--derived-nav-height: var(--open-nav-height);
 	}
 
 	.main-content {

@@ -1,6 +1,9 @@
-import toc from '$lib/generated/toc.json';
 import { getOnServer } from '$lib/nav';
+import toc from './generated/toc';
 
 export const load = async ({ cookies }) => {
-	return { initialSidebarState: getOnServer(cookies), toc };
+	return {
+		initialSidebarState: getOnServer(cookies),
+		toc,
+	};
 };

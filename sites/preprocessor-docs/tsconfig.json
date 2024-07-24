@@ -10,7 +10,6 @@
 		"postcss.config.js",
 		"prettier.config.js",
 		"svelte.config.js",
-		"tailwind.config.ts",
 		"vite.config.ts",
 		"src/**/*",
 		".svelte-kit/ambient.d.ts",

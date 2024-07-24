@@ -1,26 +1,26 @@
 <script lang="ts">
-	type Item = {
+	type TocItem = {
 		title: string;
 		href: string;
-		children?: Item[];
+		children?: TocItem[];
 	};
 
 	interface Props {
-		tree?: Item[];
-		level?: number;
+		tree: TocItem[];
+		level: number;
 	}
 
-	const { tree = [], level = 1 }: Props = $props();
+	const { tree, level }: Props = $props();
 </script>
 
-{#if tree && tree.length}
-	<ul class="space-y-1 {level !== 1 ? 'pl-4' : ''}">
+{#if tree.length}
+	<ul class="space-y-.5 {level !== 1 ? 'pl-4' : ''}">
 		{#each tree as heading, i (i)}
-			<li>
-				<a href={heading.href} class="transition-colors duration-300 hover:text-accent-12">
+			<li class="space-y-.5">
+				<a href={heading.href} class="inline-block w-full transition-colors duration-300 hover:text-accent-12">
 					{heading.title}
 				</a>
-				{#if heading.children && heading.children.length}
+				{#if heading.children?.length}
 					<svelte:self tree={heading.children} level={level + 1} />
 				{/if}
 			</li>
