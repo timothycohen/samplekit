@@ -27,7 +27,10 @@ export class ThemeController {
 		 */
 		const allowTransition =
 			// @ts-expect-error – experimental
-			document.startViewTransition && !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+			document.startViewTransition &&
+			!window.matchMedia('(prefers-reduced-motion: reduce)').matches &&
+			// Too buggy on mobile. The clip path is offset by the status bar height and it causes some elements to be cut off
+			window.innerWidth >= 620;
 
 		const el: SVGElement | null = document.querySelector('#palette-menu-btn');
 
@@ -47,7 +50,7 @@ export class ThemeController {
 		const x = rect.left + rect.width / 2;
 		const y = rect.top + rect.height / 2;
 
-		const endRadius = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y));
+		const endRadius = Math.hypot(Math.max(x, window.innerWidth - x), Math.max(y, window.innerHeight - y));
 		const clipPath = [`circle(0px at ${x}px ${y}px)`, `circle(${endRadius}px at ${x}px ${y}px)`];
 
 		transition.ready.then(() => {

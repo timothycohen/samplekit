@@ -11,16 +11,16 @@
 	createThemeControllerCtx();
 
 	const smoothNavigationOnlyOnSamePage = () => {
-		if (browser) document.body.style.scrollBehavior = 'smooth';
+		if (browser) document.documentElement.style.scrollBehavior = 'smooth';
 
 		beforeNavigate(({ from, to }) => {
 			if (from?.route.id === to?.route.id) return;
-			document.body.style.scrollBehavior = 'auto';
+			document.documentElement.style.scrollBehavior = 'auto';
 		});
 
 		afterNavigate(() => {
 			tick().then(() => {
-				document.body.style.scrollBehavior = 'smooth';
+				document.documentElement.style.scrollBehavior = 'smooth';
 			});
 		});
 	};

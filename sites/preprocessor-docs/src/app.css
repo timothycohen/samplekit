@@ -42,17 +42,6 @@ html {
 /*#endregion Base Colors ##################### */
 
 /*#region Layout ############################# */
-html {
-	height: 100vh;
-	width: 100vw;
-	overflow: hidden;
-}
-body {
-	height: 100%;
-	overflow: auto;
-	position: relative;
-}
-
 ::view-transition-old(root),
 ::view-transition-new(root) {
 	animation: none;
