@@ -291,6 +291,12 @@ shiki-end -->
 
 <div class="grid grid-cols-1 lg:grid-cols-2 lg:gap-4">
 	<div>
+		<p>With highlighting extension:</p>
+		<!-- eslint-disable-next-line svelte/no-at-html-tags -->
+		{@html data.jsTemplateLiteralExample}
+	</div>
+
+	<div>
 		<p>Without highlighting extension:</p>
 		<!-- shiki-start
 ```ts
@@ -299,12 +305,6 @@ const eq1 = LaTeX`
 `;
 ```
 shiki-end -->
-	</div>
-
-	<div>
-		<p>With highlighting extension:</p>
-		<!-- eslint-disable-next-line svelte/no-at-html-tags -->
-		{@html data.jsTemplateLiteralExample}
 	</div>
 </div>
 

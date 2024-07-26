@@ -200,9 +200,6 @@ importers:
 
   sites/preprocessor-docs:
     devDependencies:
-      '@melt-ui/svelte':
-        specifier: ^0.83.0
-        version: 0.83.0(svelte@5.0.0-next.199)
       '@samplekit/preprocess-katex':
         specifier: workspace:^
         version: link:../../packages/preprocess-katex
@@ -9471,16 +9468,6 @@ snapshots:
       focus-trap: 7.5.4
       nanoid: 5.0.5
       svelte: 5.0.0-next.164
-
-  '@melt-ui/svelte@0.83.0(svelte@5.0.0-next.199)':
-    dependencies:
-      '@floating-ui/core': 1.5.3
-      '@floating-ui/dom': 1.5.4
-      '@internationalized/date': 3.5.1
-      dequal: 2.0.3
-      focus-trap: 7.5.4
-      nanoid: 5.0.5
-      svelte: 5.0.0-next.199
 
   '@nodelib/fs.scandir@2.1.5':
     dependencies:

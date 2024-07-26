@@ -8,10 +8,6 @@ declare global {
 		// interface PageState {}
 		// interface Platform {}
 	}
-	module '*.svx' {
-		const component: import('svelte').ComponentType<import('svelte').SvelteComponent>;
-		export default component;
-	}
 }
 
 export {};

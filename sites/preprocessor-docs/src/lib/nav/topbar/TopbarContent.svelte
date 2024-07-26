@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-	import LogoIcon from '$lib/components/LogoIcon.svelte';
+	import { LogoIcon } from '$lib/components';
 	import I from '$lib/icons';
 	import { PaletteMenu } from '$lib/styles';
 

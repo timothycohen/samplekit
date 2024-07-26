@@ -4,7 +4,7 @@ import type { Handle } from '@sveltejs/kit';
 /**
  * Prevents FOUC by rendering the correct theme on the server according to user cookies.
  *
- * Expects `app.html` `<html updateThemeFromCookies>`
+ * Will replace `updateThemeFromCookies` on the `<html>` tag in `app.html` with data-theme="${name}" class="no-js ${scheme}"
  *
  * Could instead compile the themeUtils and run `setThemeOnDoc(getStoredThemeOnClient)` in `app.html`
  *
@@ -17,8 +17,8 @@ export const updateThemeFromCookies: Handle = async ({ event, resolve }) => {
 			const { name, scheme } = getStoredThemeOnServer(event.cookies);
 
 			return html.replace(
-				/<html updateThemeFromCookies>/,
-				`<html lang="en" data-theme="${name}" class="no-js ${scheme}">`,
+				/<html(\s+[^>]*)?\supdateThemeFromCookies(\s+[^>]*)?>/,
+				`<html$1data-theme="${name}" class="no-js ${scheme}"$2>`,
 			);
 		},
 	});

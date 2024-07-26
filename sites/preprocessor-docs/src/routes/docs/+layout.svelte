@@ -35,59 +35,59 @@
 </script>
 
 <script lang="ts">
+	import { page } from '$app/stores';
 	import I from '$lib/icons';
 	import {
-		createSidebarCtx,
-		createMenubarCtx,
+		createTopbarCtx,
 		useSidebarCtx,
-		useMenubarCtx,
-		MenubarContent,
+		useTopbarCtx,
+		TopbarContent,
 		SidebarContent,
-		navbarHeightPx,
-		contentMaxWidthPx,
-		sidebarWidthPx,
+		createSidebarCtx,
 	} from '$lib/nav';
 	import { useThemeControllerCtx } from '$lib/styles';
 	import type { LayoutData } from './$types';
+	import type { Pathname } from '$lib/nav/sidebar/generated/toc';
 	import type { Snippet } from 'svelte';
 
-	const { children, data }: { data: LayoutData; children: Snippet } = $props();
+	const { children, data }: { children: Snippet; data: LayoutData } = $props();
 
 	createSidebarCtx(data.initialSidebarState);
 	const sidebar = useSidebarCtx();
-	createMenubarCtx({
+	createTopbarCtx({
 		get value() {
 			return sidebar.open;
 		},
 	});
-	const menubar = useMenubarCtx();
-
-	const toggleChecked = (e: Event & { currentTarget: EventTarget & HTMLInputElement }) =>
-		(sidebar.open = e.currentTarget.checked);
+	const topbar = useTopbarCtx();
 
 	createCodeThemeCtx(useThemeControllerCtx());
+	$effect(() =>
+		document.documentElement.style.setProperty('--nav-height', `${sidebar.open ? `var(--full-nav-height)` : '0px'}`),
+	);
+	$effect(() => document.documentElement.style.setProperty('--topbar-top', `${topbar.topPx}px`));
+	$effect(() =>
+		document.documentElement.style.setProperty(
+			'--topbar-border',
+			`${topbar.borderVisible ? 'var(--visible-topbar-border)' : 'var(--hidden-topbar-border)'}`,
+		),
+	);
+
+	const toggleChecked = (e: Event & { currentTarget: EventTarget & HTMLInputElement }) => {
+		sidebar.open = e.currentTarget.checked;
+	};
 </script>
 
-<div
-	data-toc-wrapper
-	class="layout-wrapper"
-	style="--menubar-top: {menubar.topPx}px;
-				 --menubar-border: {menubar.border ? 'hsl(var(--gray-5))' : 'transparent'};
-				 --open-nav-height: {navbarHeightPx}px;
-				 --derived-nav-height: {sidebar.open ? `${navbarHeightPx}px` : '0px'};
-				 --sidebar-width: {sidebarWidthPx}px;
-				 --content-max-width: {contentMaxWidthPx}px;
-		"
->
+<div data-toc-wrapper class="layout-wrapper">
 	<input id="sidebar-toggler" type="checkbox" checked={sidebar.open} onchange={toggleChecked} />
 
 	<nav class="sidebar" aria-label="Table of Contents">
-		<SidebarContent toc={data.toc} />
+		<SidebarContent pathname={$page.url.pathname as Pathname} />
 	</nav>
 
 	<div class="page-wrapper">
-		<div class="menubar-wrapper">
-			<div class="menubar">
+		<div class="topbar-wrapper">
+			<div class="topbar">
 				<label
 					for="sidebar-toggler"
 					title="Toggle Table of Contents"
@@ -96,7 +96,7 @@
 				>
 					<I.Menu />
 				</label>
-				<MenubarContent />
+				<TopbarContent />
 			</div>
 		</div>
 
@@ -156,7 +156,7 @@
 	/* make sure tabbing over the toggler doesn't scroll to the top of the page */
 	#sidebar-toggler {
 		@apply sticky flex h-0 w-0 opacity-0;
-		top: var(--menubar-top);
+		top: var(--topbar-top);
 	}
 
 	/* highlight the icon when tabbing over the invisible toggler */
@@ -176,24 +176,24 @@
 		@apply respect-reduced-motion;
 	}
 
-	.menubar-wrapper {
+	.topbar-wrapper {
 		@apply sticky z-40 flex w-full flex-wrap items-center gap-4 bg-app-bg;
-		top: var(--menubar-top);
-		height: var(--open-nav-height);
+		top: var(--topbar-top);
+		height: var(--full-nav-height);
 	}
 
-	.menubar {
+	.topbar {
 		@apply absolute inset-px flex items-center justify-center gap-4 border-b px-4;
 		transition: border-color 300ms ease;
-		border-color: var(--menubar-border);
+		border-color: var(--topbar-border);
 	}
 
-	:global(.no-js) .menubar {
+	:global(.no-js) .topbar {
 		border-color: hsl(var(--gray-5));
 	}
 
 	:global(.no-js) .layout-wrapper {
-		--derived-nav-height: var(--open-nav-height);
+		--nav-height: var(--full-nav-height);
 	}
 
 	.main-content {

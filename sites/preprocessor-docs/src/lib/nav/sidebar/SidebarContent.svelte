@@ -1,38 +1,35 @@
 <script lang="ts">
-	import { createTableOfContents } from '@melt-ui/svelte';
 	import { page } from '$app/stores';
-	import { navbarHeightPx } from '../consts';
-	import TOCBase from './TOCBase.svelte';
-	import TOCMelt from './TOCMelt.svelte';
+	import { toc } from '$lib/nav/sidebar';
+	import TOCActive from './TOCActive.svelte';
+	import TOCInactive from './TOCInactive.svelte';
 	import { useSidebarCtx } from './context.svelte';
-
-	type TocItem = { title: string; href: string; children?: TocItem[] };
-
-	const { toc }: { toc: Record<string, TocItem[]> } = $props();
+	import { TocObserver } from './observeToc.svelte';
+	import type { Pathname } from './generated/toc';
 
 	const sidebar = useSidebarCtx();
 
+	const { pathname }: { pathname: Pathname } = $props();
+
 	const pages = [
-		{ href: '/docs/code-decoration', title: 'Code Decoration' },
-		{ href: '/docs/markdown', title: 'Markdown' },
-		{ href: '/docs/math', title: 'Math' },
-	];
+		{ href: '/docs/code-decoration/', title: 'Code Decoration' },
+		{ href: '/docs/markdown/', title: 'Markdown' },
+		{ href: '/docs/math/', title: 'Math' },
+	] satisfies Array<{ href: Pathname; title: string }>;
 
-	const {
-		elements: { item },
-		states: { activeHeadingIdxs, headingsTree },
-	} = createTableOfContents({
-		selector: '[data-toc-wrapper]',
-		activeType: 'all',
-		scrollOffset: navbarHeightPx,
-		headingFilterFn: (heading) => !!heading.dataset['toc'],
+	const tocObserver = new TocObserver();
+	const tocTree = $derived(toc[pathname]);
+
+	$effect(() => {
+		tocObserver.observe({ tocTree, wrappingSelector: '[data-toc-wrapper]' });
+		return () => {
+			tocObserver.disconnect();
+		};
 	});
-
-	const tocReady = $derived(!!$activeHeadingIdxs.length);
 </script>
 
 <div class="absolute inset-0 ml-4 overflow-y-auto overflow-x-hidden overscroll-contain">
-	<div style="height: var(--open-nav-height);" class="flex items-center">
+	<div style="height: var(--full-nav-height);" class="flex items-center">
 		<h2 class="text-xl font-bold">Docs</h2>
 	</div>
 	<div class="mb-8 mt-6 space-y-8">
@@ -47,10 +44,10 @@
 					{title}
 				</a>
 				<div class="pl-4 pt-1 text-gray-11">
-					{#if current && tocReady}
-						<TOCMelt tree={$headingsTree} activeHeadingIdxs={$activeHeadingIdxs} {item} level={1} />
+					{#if current}
+						<TOCActive {tocTree} isActive={tocObserver.isActive} level={1} />
 					{:else if toc[href]}
-						<TOCBase tree={toc[href]!} level={1} />
+						<TOCInactive tocTree={toc[href]!} level={1} />
 					{/if}
 				</div>
 			</div>

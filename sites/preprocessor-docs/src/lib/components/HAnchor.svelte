@@ -11,7 +11,7 @@
 	const href = '#' + id;
 </script>
 
-<svelte:element this={tag} data-toc={dataToc} {id} style="scroll-margin-top: var(--derived-nav-height);">
+<svelte:element this={tag} data-toc={dataToc} {id} style="scroll-margin-top: var(--nav-height);">
 	<a {href} class="group relative -mr-8 pr-8">
 		<span class="text-gray-12 group-hover:text-accent-12">{title}</span>
 		<span

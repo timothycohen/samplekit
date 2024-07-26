@@ -2,9 +2,9 @@ import fs from 'fs';
 import path from 'path';
 import process from 'process';
 import { fileURLToPath } from 'url';
+import type { TocItem } from '../src/lib/nav/sidebar/types';
 
 type FlatTocItem = { depth: number; title: string; href: string };
-type TocItem = { title: string; href: string; children?: TocItem[] };
 
 const createToc = (filenames: { absolute: string; pathname: string }[]) => {
 	const toc: Record<string, TocItem[]> = {};
@@ -22,7 +22,7 @@ const createToc = (filenames: { absolute: string; pathname: string }[]) => {
 			const depth = +match[1]!.slice(1);
 
 			const title = match[2]!;
-			const href = pathname + '/#' + title.toLowerCase().replace(/\s+/g, '-');
+			const href = pathname + '#' + title.toLowerCase().replace(/\s+/g, '-');
 
 			results.push({ depth, title, href });
 		}
@@ -63,7 +63,8 @@ function createTree(items: FlatTocItem[]): TocItem[] {
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
 	const root = path.join(import.meta.dirname, '..');
-	const out = path.join(root, 'src', 'routes', 'docs', 'generated', 'toc.ts');
+	const generatedDirPath = path.join(root, 'src', 'lib', 'nav', 'sidebar', 'generated');
+	const out = path.join(generatedDirPath, 'toc.ts');
 	const docs = path.join(root, 'src', 'routes', 'docs');
 
 	const filenames = fs
@@ -72,16 +73,18 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
 		.filter((p) => p.endsWith('+page.svelte'))
 		.map((relative) => ({
 			absolute: path.join(docs, relative),
-			pathname: path.join('/docs', relative.replace('+page.svelte', '')).slice(0, -1),
+			pathname: path.join('/docs', relative.replace('+page.svelte', '')),
 		}));
 
 	const toc = createToc(filenames);
 
+	fs.mkdirSync(generatedDirPath, { recursive: true });
+
 	fs.writeFileSync(
 		out,
-		`import type { LayoutRouteId } from '../$types'
-type TocItem = { title: string; href: string; children?: TocItem[] };
+		`import type { TocItem } from '$lib/nav';
 
-export default ${JSON.stringify(toc)} satisfies Record<Exclude<LayoutRouteId, '/docs'>, TocItem[]>`,
+export type Pathname = '/docs/code-decoration/' | '/docs/markdown/' | '/docs/math/';
+export const toc = ${JSON.stringify(toc)} as const satisfies Record<Pathname, TocItem[]>;`,
 	);
 }

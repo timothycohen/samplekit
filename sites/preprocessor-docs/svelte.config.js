@@ -3,7 +3,7 @@ import { processMarkdown, createMdLogger } from '@samplekit/preprocess-markdown'
 import { createShikiLogger, processCodeblockSync } from '@samplekit/preprocess-shiki';
 import adapter from '@sveltejs/adapter-node';
 import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
-import { opts } from './shiki.config.js';
+import { opts } from './src/lib/shiki/index.js';
 
 const preprocessorRoot = `${import.meta.dirname}/src/routes/`;
 const formatFilename = (/** @type {string} */ filename) => filename.replace(preprocessorRoot, '');

@@ -1,10 +1,10 @@
 import { untrack } from 'svelte';
 import { browser } from '$app/environment';
-import { navbarHeightPx } from '../consts';
+import { OPEN_NAV_HEIGHT_PX } from '../consts';
 
-export class MenubarController {
+export class TopbarController {
 	#topPx = $state(0);
-	#border = $state(browser ? document.documentElement.scrollTop > navbarHeightPx : false);
+	#borderVisible = $state(browser ? document.documentElement.scrollTop > OPEN_NAV_HEIGHT_PX : false);
 	#destroyTopListener = $state(() => {});
 	#destroyBorderListener = $state(() => {});
 
@@ -39,11 +39,11 @@ export class MenubarController {
 			const scrollDownDistance = scrollTop - lastScrollTop;
 
 			if (scrollDownDistance > 0) {
-				topPosition = Math.max(topPosition - scrollDownDistance, -navbarHeightPx);
-				if (scrollTop > navbarHeightPx) this.#border = true;
+				topPosition = Math.max(topPosition - scrollDownDistance, -OPEN_NAV_HEIGHT_PX);
+				if (scrollTop > OPEN_NAV_HEIGHT_PX) this.#borderVisible = true;
 			} else {
 				topPosition = Math.min(topPosition - scrollDownDistance, 0);
-				if (scrollTop <= 0) this.#border = false;
+				if (scrollTop <= 0) this.#borderVisible = false;
 			}
 
 			this.#topPx = topPosition;
@@ -66,9 +66,9 @@ export class MenubarController {
 			const scrollDownDistance = scrollTop - lastScrollTop;
 
 			if (scrollDownDistance > 0) {
-				if (scrollTop >= (threshold === 'one' ? 1 : navbarHeightPx)) this.#border = true;
+				if (scrollTop >= (threshold === 'one' ? 1 : OPEN_NAV_HEIGHT_PX)) this.#borderVisible = true;
 			} else {
-				if (scrollTop <= 0) this.#border = false;
+				if (scrollTop <= 0) this.#borderVisible = false;
 			}
 			lastScrollTop = scrollTop;
 		};
@@ -76,7 +76,7 @@ export class MenubarController {
 		window.addEventListener('scroll', scrollHandler, { passive: true });
 		this.#destroyBorderListener = () => {
 			window.removeEventListener('scroll', scrollHandler);
-			this.#border = browser ? document.documentElement.scrollTop > navbarHeightPx : false;
+			this.#borderVisible = browser ? document.documentElement.scrollTop > OPEN_NAV_HEIGHT_PX : false;
 			this.#destroyBorderListener = () => {};
 		};
 	}
@@ -84,7 +84,7 @@ export class MenubarController {
 	get topPx() {
 		return this.#topPx;
 	}
-	get border() {
-		return this.#border;
+	get borderVisible() {
+		return this.#borderVisible;
 	}
 }

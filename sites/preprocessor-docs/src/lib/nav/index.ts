@@ -1,3 +1,3 @@
 export * from './sidebar';
-export * from './menubar';
+export * from './topbar';
 export * from './consts';

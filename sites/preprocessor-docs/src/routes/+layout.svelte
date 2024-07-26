@@ -6,9 +6,9 @@
 	import { beforeNavigate, afterNavigate } from '$app/navigation';
 	import { createThemeControllerCtx } from '$lib/styles';
 
-	const { children } = $props();
+	const { children, data } = $props();
 
-	createThemeControllerCtx();
+	createThemeControllerCtx(data.initialTheme);
 
 	const smoothNavigationOnlyOnSamePage = () => {
 		if (browser) document.documentElement.style.scrollBehavior = 'smooth';

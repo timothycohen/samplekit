@@ -1,6 +1,6 @@
 import { tick } from 'svelte';
-import { dev } from '$app/environment';
-import { THEMES, getStoredThemeOnClient, storeThemeOnClient, setThemeOnDoc, type Theme } from './themeUtils';
+import { browser, dev } from '$app/environment';
+import { THEMES, storeThemeOnClient, setThemeOnDoc, type Theme } from './themeUtils';
 
 /**
  * stores theme_fixed_name and theme_fixed_scheme in document.cookies
@@ -10,7 +10,12 @@ import { THEMES, getStoredThemeOnClient, storeThemeOnClient, setThemeOnDoc, type
  * provides an optional view transition when changing the theme
  */
 export class ThemeController {
-	#theme: Theme = $state(getStoredThemeOnClient());
+	#theme: Theme = $state() as Theme;
+
+	constructor(initialTheme: Theme) {
+		this.#theme = initialTheme;
+		if (browser) setThemeOnDoc(this.#theme);
+	}
 
 	get scheme() {
 		return this.#theme.scheme;

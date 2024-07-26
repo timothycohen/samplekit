@@ -42,6 +42,15 @@ html {
 /*#endregion Base Colors ##################### */
 
 /*#region Layout ############################# */
+:root {
+	--open-topbar-top: 0px;
+	--closed-topbar-top: calc(var(--full-nav-height) * -1);
+	--hidden-topbar-border: transparent;
+	--visible-topbar-border: hsl(var(--gray-5));
+	--sidebar-width: 288px;
+	--full-nav-height: 56px;
+	--content-max-width: 1024px;
+}
 ::view-transition-old(root),
 ::view-transition-new(root) {
 	animation: none;
