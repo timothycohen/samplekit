@@ -35,6 +35,7 @@
 </script>
 
 <script lang="ts">
+	import { onMount, type Snippet } from 'svelte';
 	import { page } from '$app/stores';
 	import I from '$lib/icons';
 	import {
@@ -44,15 +45,14 @@
 		TopbarContent,
 		SidebarContent,
 		createSidebarCtx,
+		getStoredSidebarOnClient,
 	} from '$lib/nav';
 	import { useThemeControllerCtx } from '$lib/styles';
-	import type { LayoutData } from './$types';
 	import type { Pathname } from '$lib/nav/sidebar/generated/toc';
-	import type { Snippet } from 'svelte';
 
-	const { children, data }: { children: Snippet; data: LayoutData } = $props();
+	const { children }: { children: Snippet } = $props();
 
-	createSidebarCtx(data.initialSidebarState);
+	createSidebarCtx(getStoredSidebarOnClient());
 	const sidebar = useSidebarCtx();
 	createTopbarCtx({
 		get value() {
@@ -62,6 +62,7 @@
 	const topbar = useTopbarCtx();
 
 	createCodeThemeCtx(useThemeControllerCtx());
+
 	$effect(() =>
 		document.documentElement.style.setProperty('--nav-height', `${sidebar.open ? `var(--full-nav-height)` : '0px'}`),
 	);
@@ -72,6 +73,9 @@
 			`${topbar.borderVisible ? 'var(--visible-topbar-border)' : 'var(--hidden-topbar-border)'}`,
 		),
 	);
+	onMount(() => {
+		document.documentElement.removeAttribute('data-pre-hydration-sidebar');
+	});
 
 	const toggleChecked = (e: Event & { currentTarget: EventTarget & HTMLInputElement }) => {
 		sidebar.open = e.currentTarget.checked;
@@ -135,14 +139,32 @@
 		background-color: hsl(214deg 26% 95%);
 	}
 
-	/* hide sidebar */
+	/* show/hide sidebar */
+	#sidebar-toggler:checked ~ .sidebar {
+		transform: translateX(0px);
+	}
+	:global([data-pre-hydration-sidebar='true']) .sidebar {
+		transform: translateX(0px) !important;
+	}
 	#sidebar-toggler:not(:checked) ~ .sidebar {
 		transform: translateX(calc(0px - var(--sidebar-width)));
+	}
+	:global([data-pre-hydration-sidebar='false']) .sidebar {
+		transform: translateX(calc(0px - var(--sidebar-width))) !important;
 	}
 
 	/* push main content on mobile */
 	#sidebar-toggler:checked ~ .page-wrapper {
 		transform: translateX(var(--sidebar-width));
+	}
+	:global([data-pre-hydration-sidebar='true']) .page-wrapper {
+		transform: translateX(var(--sidebar-width)) !important;
+	}
+	#sidebar-toggler:not(:checked) ~ .page-wrapper {
+		transform: translateX(0px);
+	}
+	:global([data-pre-hydration-sidebar='false']) .page-wrapper {
+		transform: translateX(0px) !important;
 	}
 
 	/* fit main content on desktop */
@@ -150,6 +172,10 @@
 		#sidebar-toggler:checked ~ .page-wrapper {
 			transform: none;
 			margin-inline-start: var(--sidebar-width);
+		}
+		:global([data-pre-hydration-sidebar='true']) .page-wrapper {
+			transform: none !important;
+			margin-inline-start: var(--sidebar-width) !important;
 		}
 	}
 

@@ -19,14 +19,14 @@
 		"build:site": "vite build",
 		"dev": "vite dev",
 		"build": "pnpm build:dependencies && pnpm build:site",
-		"preview": "node build/index.js",
+		"preview": "vite preview",
 		"generate:toc": "npx tsx ./scripts/generate-toc.ts"
 	},
 	"devDependencies": {
 		"@samplekit/preprocess-katex": "workspace:^",
 		"@samplekit/preprocess-markdown": "workspace:^",
 		"@samplekit/preprocess-shiki": "workspace:^",
-		"@sveltejs/adapter-node": "^5.2.0",
+		"@sveltejs/adapter-static": "^3.0.2",
 		"@sveltejs/kit": "^2.5.18",
 		"@sveltejs/vite-plugin-svelte": "^3.1.1",
 		"@tailwindcss/typography": "^0.5.13",

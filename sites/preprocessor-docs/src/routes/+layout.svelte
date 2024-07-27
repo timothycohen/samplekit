@@ -4,11 +4,11 @@
 	import { tick } from 'svelte';
 	import { browser } from '$app/environment';
 	import { beforeNavigate, afterNavigate } from '$app/navigation';
-	import { createThemeControllerCtx } from '$lib/styles';
+	import { getStoredThemeOnClient, createThemeControllerCtx } from '$lib/styles';
 
-	const { children, data } = $props();
+	const { children } = $props();
 
-	createThemeControllerCtx(data.initialTheme);
+	createThemeControllerCtx(getStoredThemeOnClient());
 
 	const smoothNavigationOnlyOnSamePage = () => {
 		if (browser) document.documentElement.style.scrollBehavior = 'smooth';

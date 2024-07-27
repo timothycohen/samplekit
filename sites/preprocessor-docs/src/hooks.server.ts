@@ -1,6 +1,8 @@
+// Note: this file will not be used in adapter-static
+// redirects will need to be done with the nginx config
+
 import { redirect, type Handle } from '@sveltejs/kit';
 import { sequence } from '@sveltejs/kit/hooks';
-import { updateThemeFromCookies } from '$lib/styles';
 import type { LayoutRouteId } from './routes/$types';
 
 const routes: LayoutRouteId[] = ['/docs/code-decoration', '/docs/markdown', '/docs/math'];
@@ -12,4 +14,4 @@ const redirects: Handle = async ({ event, resolve }) => {
 	return resolve(event);
 };
 
-export const handle = sequence(redirects, updateThemeFromCookies);
+export const handle = sequence(redirects);

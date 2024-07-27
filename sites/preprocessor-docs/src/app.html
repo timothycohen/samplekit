@@ -1,6 +1,5 @@
 <!doctype html>
 <html
-	updateThemeFromCookies
 	lang="en"
 	style="
 		--nav-height: var(--full-nav-height);
@@ -9,6 +8,11 @@
 	"
 >
 	<head>
+		<!-- init scripts to prevent FOUC -->
+		<script src="/cookies.js"></script>
+		<script src="/initTheme.js"></script>
+		<script src="/initSidebar.js"></script>
+
 		<!-- theme (see updateThemeFromCookies for FOUC prevention)-->
 		<meta name="theme-color" media="(prefers-color-scheme: light)" content="#FFFFFF" />
 		<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#000000" />

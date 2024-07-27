@@ -1,21 +1,13 @@
-// this is imported into tailwind.config.ts so don't use $lib alias
-import { getBrowserCookie, setBrowserCookie } from '../utils/client';
-
-export const STORAGE_KEY_THEME_FIXED_NAME = 'theme_fixed_name';
-export const STORAGE_KEY_THEME_FIXED_SCHEME = 'theme_fixed_scheme';
-
-export const THEMES = [
+const STORAGE_KEY_THEME_FIXED_NAME = 'theme_fixed_name';
+const STORAGE_KEY_THEME_FIXED_SCHEME = 'theme_fixed_scheme';
+const THEMES = [
 	{ name: 'daffodil', scheme: 'light' },
 	{ name: 'desert', scheme: 'dark' },
 	{ name: 'bellflower', scheme: 'light' },
 	{ name: 'amethyst', scheme: 'dark' },
-] as const satisfies { name: string; scheme: 'light' | 'dark' }[];
-
-export type Theme = (typeof THEMES)[number];
-
-export const DEFAULT_THEME = { name: 'amethyst', scheme: 'dark' } as const satisfies Theme;
-
-export const getStoredThemeOnClient = (): Theme => {
+];
+const DEFAULT_THEME = { name: 'amethyst', scheme: 'dark' };
+const getStoredThemeOnClient = () => {
 	if (typeof window === 'undefined') return DEFAULT_THEME;
 	const name = getBrowserCookie(STORAGE_KEY_THEME_FIXED_NAME);
 	if (!name) return DEFAULT_THEME;
@@ -23,8 +15,7 @@ export const getStoredThemeOnClient = (): Theme => {
 	if (!scheme) return DEFAULT_THEME;
 	return THEMES.find((t) => t.name === name && t.scheme === scheme) ?? DEFAULT_THEME;
 };
-
-export const setThemeOnDoc = ({ name, scheme }: Theme) => {
+const setThemeOnDoc = ({ name, scheme }) => {
 	if (scheme === 'dark') {
 		document.documentElement.classList.remove('light');
 		document.documentElement.classList.add('dark');
@@ -36,7 +27,4 @@ export const setThemeOnDoc = ({ name, scheme }: Theme) => {
 	}
 };
 
-export const storeThemeOnClient = ({ theme }: { theme: Theme }) => {
-	setBrowserCookie(STORAGE_KEY_THEME_FIXED_NAME, theme.name);
-	setBrowserCookie(STORAGE_KEY_THEME_FIXED_SCHEME, theme.scheme);
-};
+setThemeOnDoc(getStoredThemeOnClient());

@@ -1,15 +1,14 @@
 import { browser } from '$app/environment';
-import { setBrowserCookie } from '$lib/utils/client';
-import type { Cookies } from '@sveltejs/kit';
+import { getBrowserCookie, setBrowserCookie } from '$lib/utils/client';
 
 export const STORAGE_KEY_SIDEBAR_STATE = 'sidebar_state';
-export const DEFAULT_SIDEBAR_STATE = browser ? window.matchMedia('(min-width: 768px)').matches : false;
 
-export const getOnServer = (cookies: Cookies): boolean => {
-	const str = cookies.get(STORAGE_KEY_SIDEBAR_STATE);
-	if (str === 'true') return true;
-	if (str === 'false') return false;
-	return DEFAULT_SIDEBAR_STATE;
+export const getStoredSidebarOnClient = () => {
+	if (!browser) return false;
+	const desired = getBrowserCookie('sidebar_state');
+	if (desired === 'true') return true;
+	if (desired === 'false') return false;
+	return window.matchMedia('(min-width: 1024px)').matches;
 };
 
 export const storeOnClient = (state: boolean) => {

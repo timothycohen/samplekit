@@ -1,7 +1,7 @@
 import { processKatex, createKatexLogger } from '@samplekit/preprocess-katex';
 import { processMarkdown, createMdLogger } from '@samplekit/preprocess-markdown';
 import { createShikiLogger, processCodeblockSync } from '@samplekit/preprocess-shiki';
-import adapter from '@sveltejs/adapter-node';
+import adapter from '@sveltejs/adapter-static';
 import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
 import { opts } from './src/lib/shiki/index.js';
 
