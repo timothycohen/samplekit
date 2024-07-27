@@ -29,33 +29,13 @@ const syntaxes = {
 	fileTypes: [],
 	patterns: [
 		{
-			begin: '<!--(?=\\s*shiki-start)',
-			end: '(?<=shiki-end)\\s*-->',
+			begin: '<!--\\s*(shiki-start($|\\s+))',
+			end: '\\s*(shiki-end)\\s*-->',
 			name: 'source.pp-svelte',
-			patterns: [
-				{
-					begin: '(?<=<!--\\s*)shiki-start',
-					beginCaptures: { 0: { name: 'keyword.control.pp-svelte' } },
-					end: '.*(shiki-end)(?=\\s*-->)',
-					endCaptures: { 1: { name: 'keyword.control.pp-svelte' } },
-					name: 'shiki.pp-svelte',
-					patterns: [{ include: '#standard-code-block' }],
-					// patterns: [
-					// 	{
-					// 		begin: '(?<=shiki-start)',
-					// 		end: '(?=```)',
-					// 		contentName: 'pp.opts.svelte',
-					// 		patterns: [{ include: 'sql' }],
-					// 	},
-					// 	{
-					// 		end: '```',
-					// 		contentName: 'fenced_code.block.language.markdown',
-
-					// 		patterns: [{ include: 'text.html.markdown' }],
-					// 	},
-					// ],
-				},
-			],
+			contentName: 'shiki.pp-svelte',
+			beginCaptures: { 1: { name: 'keyword.control.svelte' } },
+			endCaptures: { 1: { name: 'keyword.control.svelte' } },
+			patterns: [],
 		},
 	],
 	repository: {
@@ -65,7 +45,7 @@ const syntaxes = {
 
 // https://github.com/sveltejs/language-tools/blob/master/packages/svelte-vscode/syntaxes/markdown-svelte.json
 for (const lang of ['svelte', 'vue', 'graphql']) {
-	syntaxes.patterns[0].patterns[0].patterns.push({ include: `#${lang}-code-block` });
+	syntaxes.patterns[0].patterns.push({ include: `#${lang}-code-block` });
 	syntaxes.repository[`${lang}-code-block`] = {
 		name: 'markup.fenced_code.block.markdown',
 		begin: '(^|\\G)(\\s*)(\\`{3,}|~{3,})\\s*(?i:(' + lang + ')(\\s+[^`~]*)?$)',
@@ -88,5 +68,7 @@ for (const lang of ['svelte', 'vue', 'graphql']) {
 		],
 	};
 }
+
+syntaxes.patterns[0].patterns.push({ include: '#standard-code-block' });
 
 fs.writeFileSync('./syntaxes/generated/shiki-block.pp-svelte.tmLanguage.json', JSON.stringify(syntaxes));
