@@ -1,5 +1,12 @@
 {
-	"extends": ["./.svelte-kit/tsconfig.json", "../../tsconfig.site.json"],
+	"extends": ["./.svelte-kit/tsconfig.json", "../../tsconfig.base.json"],
+	"compilerOptions": {
+		"target": "ES2022",
+		"lib": ["ES2022", "DOM", "DOM.Iterable"],
+		"module": "ES2022",
+		"moduleResolution": "Bundler",
+		"noEmit": true
+	},
 	"include": [
 		"drizzle.gen.ts",
 		"drizzle.studio.ts",

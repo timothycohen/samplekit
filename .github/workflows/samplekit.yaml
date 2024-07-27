@@ -14,15 +14,18 @@ name: Check, build image, and publish to registry. Trigger the CapRover server t
 on:
   push:
     branches: [main, staging]
+    paths:
+      - 'Dockerfile.samplekit.gh'
+      - 'tsconfig.base.json'
+      - '.github/workflows/samplekit.yaml'
+      - 'packages/auth/**'
+      - 'packages/preprocess-katex/**'
+      - 'packages/preprocess-markdown/**'
+      - 'packages/preprocess-shiki/**'
+      - 'packages/svelte-crop-window/**'
+      - 'sites/samplekit.dev/**'
 
 jobs:
-  check:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v3
-      - run: pnpm install && pnpm build:packages && grep -o '^[^#]\+=' sites/samplekit.dev/.env.example > sites/samplekit.dev/.env && pnpm sync && pnpm validate
-
   setup:
     runs-on: ubuntu-latest
     outputs:
@@ -32,16 +35,16 @@ jobs:
       - name: Create Image Tags
         id: create_image_tags
         run: |
-          echo "IMAGE_TAG_SHA=${{ vars.DOCKER_REGISTRY }}/${{ github.repository }}:${{ github.ref_name}}_$(echo ${{ github.sha }} | cut -c1-7)" >> $GITHUB_OUTPUT
+          echo "IMAGE_TAG_SHA=${{ vars.DOCKER_REGISTRY }}/${{ github.repository }}:${{ github.ref_name}}_sk_$(echo ${{ github.sha }} | cut -c1-7)" >> $GITHUB_OUTPUT
           if [ "${{ github.ref_name }}" = "main" ]; then
-            echo "IMAGE_TAG=${{ vars.DOCKER_REGISTRY }}/${{ github.repository }}:latest" >> $GITHUB_OUTPUT
+            echo "IMAGE_TAG=${{ vars.DOCKER_REGISTRY }}/${{ github.repository }}:sk-latest" >> $GITHUB_OUTPUT
           else
-            echo "IMAGE_TAG=${{ vars.DOCKER_REGISTRY }}/${{ github.repository }}:${{ github.ref_name }}" >> $GITHUB_OUTPUT
+            echo "IMAGE_TAG=${{ vars.DOCKER_REGISTRY }}/${{ github.repository }}:sk-${{ github.ref_name }}" >> $GITHUB_OUTPUT
           fi
 
   build-publish:
     runs-on: ubuntu-latest
-    needs: [check, setup]
+    needs: [setup]
     steps:
       - name: Log in to the container registry
         uses: docker/login-action@v3
@@ -55,7 +58,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           build-args: |
-            "ENV_FILE=${{ secrets.ENV_FILE_PRODUCTION }}"
+            "ENV_FILE=${{ secrets.SK_PROD_ENV_FILE }}"
             "MODE=production"
           push: true
           file: Dockerfile.samplekit.gh
@@ -66,7 +69,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           build-args: |
-            "ENV_FILE=${{ secrets.ENV_FILE_STAGING }}"
+            "ENV_FILE=${{ secrets.SK_STAGING_ENV_FILE }}"
             "MODE=staging"
           push: true
           file: Dockerfile.samplekit.gh
@@ -80,16 +83,16 @@ jobs:
         if: github.ref_name == 'main'
         uses: caprover/deploy-from-github@v1.1.2
         with:
-          app: ${{ vars.CR_APP }}
+          app: ${{ vars.SK_PROD_CR_APP }}
+          token: ${{ secrets.SK_PROD_CR_APP_TOKEN }}
           server: ${{ vars.CR_SERVER }}
-          token: ${{ secrets.CR_APP_TOKEN }}
           image: ${{ needs.setup.outputs.IMAGE_TAG }}
 
       - name: Deploy CapRover App – staging
         if: github.ref_name == 'staging'
         uses: caprover/deploy-from-github@v1.1.2
         with:
-          app: ${{ vars.CR_APP_STAGING }}
+          app: ${{ vars.SK_STAGING_CR_APP }}
+          token: ${{ secrets.SK_STAGING_CR_APP_TOKEN }}
           server: ${{ vars.CR_SERVER }}
-          token: ${{ secrets.CR_APP_TOKEN_STAGING }}
           image: ${{ needs.setup.outputs.IMAGE_TAG }}
