@@ -40,7 +40,7 @@ export const codeToDecoratedHtmlSync = ({
 			});
 		}
 
-		const highlightedHtml = opts.highlighterCore.codeToHtml(opts.escapePreprocessor({ code }), {
+		const highlightedHtml = opts.highlighterCore.codeToHtml(code, {
 			lang,
 			themes: opts.cssVarToThemeName,
 			defaultColor: false,

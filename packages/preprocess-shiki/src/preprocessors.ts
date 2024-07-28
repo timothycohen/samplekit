@@ -34,7 +34,9 @@ export function processCodeblockSync({
 						s.remove(node.start, node.end);
 
 						const prepared = stripOptions(
-							trimmed.slice(opts.delimiters.fenced.startLoc, opts.delimiters.fenced.endLoc),
+							opts.escapePreprocessor({
+								code: trimmed.slice(opts.delimiters.fenced.startLoc, opts.delimiters.fenced.endLoc),
+							}),
 							(e: Error) => logger?.warn?.(e, filename),
 						);
 						if (prepared instanceof Error) {
@@ -96,7 +98,7 @@ export function processCodeblockSync({
 							s.remove(node.start, node.end);
 
 							const { error, data } = codeToDecoratedHtmlSync({
-								code: trimmed.slice(delimLoc.start, delimLoc.end),
+								code: opts.escapePreprocessor({ code: trimmed.slice(delimLoc.start, delimLoc.end) }),
 								lang,
 								opts,
 								transformName: 'inline',
