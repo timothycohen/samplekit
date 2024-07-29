@@ -1,0 +1,26 @@
+{
+	"name": "Svelte Component LaTeX Injection",
+	"scopeName": "katex.pp-svelte",
+	"injectionSelector": "L:source.svelte -comment",
+	"fileTypes": [],
+	"patterns": [
+		{
+			"begin": "<!--(?=\\s*\\\\\\[)",
+			"end": "(?<=\\])\\s*-->",
+			"beginCaptures": { "0": { "name": "keyword.control.pp-svelte" } },
+			"endCaptures": { "0": { "name": "keyword.control.pp-svelte" } },
+			"name": "source.pp-svelte",
+			"contentName": "katex.pp-svelte",
+			"patterns": [{ "include": "text.tex.latex" }]
+		},
+		{
+			"begin": "<!--(?=\\s*\\\\\\()",
+			"end": "(?<=\\))\\s*-->",
+			"beginCaptures": { "0": { "name": "keyword.control.pp-svelte" } },
+			"endCaptures": { "0": { "name": "keyword.control.pp-svelte" } },
+			"name": "source.pp-svelte",
+			"contentName": "katex.pp-svelte",
+			"patterns": [{ "include": "text.tex.latex" }]
+		}
+	]
+}

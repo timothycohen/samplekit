@@ -1,20 +1,30 @@
 {
 	"name": "samplekit-monorepo",
 	"description": "Monorepo for SampleKit",
-	"private": true,
 	"type": "module",
 	"author": "Tim Cohen <contact@timcohen.dev>",
+	"private": true,
+	"packageManager": "pnpm@9.5.0",
+	"engines": {
+		"node": "~20.14"
+	},
 	"scripts": {
 		"format": "prettier --check .",
 		"format:fix": "prettier --list-different --write .",
 		"lint:auth": "eslint --max-warnings 0 packages/auth/",
 		"lint:auth:fix": "pnpm lint:auth --fix",
-		"lint:markdown": "eslint --max-warnings 0 packages/markdown/",
-		"lint:markdown:fix": "pnpm lint:markdown --fix",
+		"lint:preprocess-katex": "eslint --max-warnings 0 packages/preprocess-katex/",
+		"lint:preprocess-katex:fix": "pnpm lint:preprocess-katex --fix",
+		"lint:preprocess-markdown": "eslint --max-warnings 0 packages/preprocess-markdown/",
+		"lint:preprocess-markdown:fix": "pnpm lint:preprocess-markdown --fix",
+		"lint:preprocess-shiki": "eslint --max-warnings 0 packages/preprocess-shiki/",
+		"lint:preprocess-shiki:fix": "pnpm lint:preprocess-shiki --fix",
 		"lint:svelte-crop-window": "eslint --max-warnings 0 packages/svelte-crop-window/",
 		"lint:svelte-crop-window:fix": "pnpm lint:svelte-crop-window --fix",
 		"lint:samplekit": "eslint --max-warnings 0 sites/samplekit.dev/",
 		"lint:samplekit:fix": "pnpm lint:samplekit --fix",
+		"lint:preprocessor-docs": "eslint --max-warnings 0 sites/preprocessor-docs/",
+		"lint:preprocessor-docs:fix": "pnpm lint:preprocessor-docs --fix",
 		"lint": "eslint --max-warnings 0 .",
 		"lint:fix": "pnpm sync && pnpm lint --fix",
 		"check": "pnpm --recursive --no-bail check",
@@ -22,25 +32,23 @@
 		"build:packages": "pnpm --filter './packages/**' build",
 		"sync": "pnpm --recursive sync",
 		"validate": "./scripts/.githooks/pre-commit --write",
+		"install:extensions": "fd .vsix -I | xargs -I {} code --install-extension {}",
 		"githooks:init": "git config core.hookspath ./scripts/.githooks"
 	},
 	"devDependencies": {
 		"@types/node": "~20.14",
 		"caprover": "^2.3.1",
+		"cspell": "^8.12.1",
 		"eslint": "^9.7.0",
 		"eslint-config-prettier": "^9.1.0",
 		"eslint-plugin-disable-autofix": "^5.0.1",
 		"eslint-plugin-import": "^2.29.1",
-		"eslint-plugin-svelte": "^2.42.0",
+		"eslint-plugin-svelte": "^2.43.0",
 		"globals": "^15.8.0",
 		"prettier": "^3.3.3",
-		"prettier-plugin-svelte": "^3.2.5",
+		"prettier-plugin-svelte": "^3.2.6",
 		"prettier-plugin-tailwindcss": "^0.6.5",
 		"typescript": "^5.5.3",
 		"typescript-eslint": "^8.0.0-alpha.20"
-	},
-	"packageManager": "pnpm@9.5.0",
-	"engines": {
-		"node": "~20.14"
 	}
 }

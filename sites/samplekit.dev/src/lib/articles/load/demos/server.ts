@@ -1,5 +1,5 @@
-import { isMdLang, mdCodeBlockToRawHtml } from '@samplekit/markdown';
-import { logger } from '$lib/logging/server';
+import { codeToDecoratedHtmlSync } from '@samplekit/preprocess-shiki';
+import { opts } from '$lib/shiki';
 import { splitAndProcess } from './common';
 import type { CodeProcessed, ModuleDefinitions } from './types';
 
@@ -7,19 +7,20 @@ export const processCode = (moduleDefinitions: ModuleDefinitions): Array<CodePro
 	return moduleDefinitions.reduce<Array<CodeProcessed>>((acc, curr, index) => {
 		if (!curr.loadRaw) return acc;
 
-		const lang = curr.lang ?? curr.title.split('.').pop();
-		if (!isMdLang(lang)) {
-			logger.error(`Invalid language for code block ${curr.title}: ${lang}`);
-			return acc;
-		}
+		const lang = curr.lang ?? curr.title.split('.').pop() ?? '';
 
 		const rawHTML = (curr.loadRaw() as Promise<{ default: string }>)
 			.then(({ default: rawCode }) => {
 				if (!rawCode) {
-					return { error: new Error('Unable to load raw string') } as ReturnType<typeof mdCodeBlockToRawHtml>;
+					return { error: new Error('Unable to load raw string') } as ReturnType<typeof codeToDecoratedHtmlSync>;
 				}
 
-				return mdCodeBlockToRawHtml({ lang, rawCode });
+				return codeToDecoratedHtmlSync({
+					lang,
+					code: rawCode,
+					opts,
+					transformName: 'block',
+				});
 			})
 			.then(({ data, error }) => {
 				if (error) throw error;

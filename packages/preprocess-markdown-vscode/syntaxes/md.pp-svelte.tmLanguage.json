@@ -1,0 +1,24 @@
+{
+	"name": "Svelte Component Markdown Injection",
+	"scopeName": "md.pp-svelte",
+	"injectionSelector": "L:source.svelte",
+	"fileTypes": [],
+	"patterns": [
+		{
+			"begin": "<!--(?=\\s*md-start)",
+			"end": "(?<=.*?md-end)\\s*-->",
+			"name": "source.pp-svelte",
+			"patterns": [
+				{
+					"begin": "md-start",
+					"beginCaptures": { "0": { "name": "keyword.control.pp-svelte" } },
+					"end": ".*?(md-end)",
+					"endCaptures": { "1": { "name": "keyword.control.pp-svelte" } },
+					"name": "markdown.pp-svelte",
+					"contentName": "text.html.markdown",
+					"patterns": [{ "include": "text.html.markdown" }]
+				}
+			]
+		}
+	]
+}

@@ -40,7 +40,6 @@
 
 <script lang="ts">
 	import { page } from '$app/stores';
-	page; // https://github.com/sveltejs/eslint-plugin-svelte/issues/652#issuecomment-2087008855
 
 	interface Props {
 		meta?: Partial<SEOMeta>;

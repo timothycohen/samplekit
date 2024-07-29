@@ -1,0 +1,187 @@
+/* #region shared semantic scales */
+:root {
+	--success-1: var(--green-1);
+	--success-2: var(--green-2);
+	--success-3: var(--green-3);
+	--success-4: var(--green-4);
+	--success-5: var(--green-5);
+	--success-6: var(--green-6);
+	--success-7: var(--green-7);
+	--success-8: var(--green-8);
+	--success-9: var(--green-9);
+	--success-9-contrast: var(--green-9-contrast);
+	--success-10: var(--green-10);
+	--success-11: var(--green-11);
+	--success-12: var(--green-12);
+
+	--error-1: var(--red-1);
+	--error-2: var(--red-2);
+	--error-3: var(--red-3);
+	--error-4: var(--red-4);
+	--error-5: var(--red-5);
+	--error-6: var(--red-6);
+	--error-7: var(--red-7);
+	--error-8: var(--red-8);
+	--error-9: var(--red-9);
+	--error-9-contrast: var(--red-9-contrast);
+	--error-10: var(--red-10);
+	--error-11: var(--red-11);
+	--error-12: var(--red-12);
+
+	--warning-1: var(--amber-1);
+	--warning-2: var(--amber-2);
+	--warning-3: var(--amber-3);
+	--warning-4: var(--amber-4);
+	--warning-5: var(--amber-5);
+	--warning-6: var(--amber-6);
+	--warning-7: var(--amber-7);
+	--warning-8: var(--amber-8);
+	--warning-9: var(--amber-9);
+	--warning-9-contrast: var(--amber-9-contrast);
+	--warning-10: var(--amber-10);
+	--warning-11: var(--amber-11);
+	--warning-12: var(--amber-12);
+
+	--info-1: var(--blue-1);
+	--info-2: var(--blue-2);
+	--info-3: var(--blue-3);
+	--info-4: var(--blue-4);
+	--info-5: var(--blue-5);
+	--info-6: var(--blue-6);
+	--info-7: var(--blue-7);
+	--info-8: var(--blue-8);
+	--info-9: var(--blue-9);
+	--info-9-contrast: var(--blue-9-contrast);
+	--info-10: var(--blue-10);
+	--info-11: var(--blue-11);
+	--info-12: var(--blue-12);
+}
+/* #endregion shared semantic scales */
+
+/* #region light/dark yellowish theme */
+[data-theme='daffodil'],
+[data-theme='desert'] {
+	--accent-1: var(--amber-1);
+	--accent-2: var(--amber-2);
+	--accent-3: var(--amber-3);
+	--accent-4: var(--amber-4);
+	--accent-5: var(--amber-5);
+	--accent-6: var(--amber-6);
+	--accent-7: var(--amber-7);
+	--accent-8: var(--amber-8);
+	--accent-9: var(--amber-9);
+	--accent-9-contrast: var(--amber-9-contrast);
+	--accent-10: var(--amber-10);
+	--accent-11: var(--amber-11);
+	--accent-12: var(--amber-12);
+
+	--gray-1: var(--sand-1);
+	--gray-2: var(--sand-2);
+	--gray-3: var(--sand-3);
+	--gray-4: var(--sand-4);
+	--gray-5: var(--sand-5);
+	--gray-6: var(--sand-6);
+	--gray-7: var(--sand-7);
+	--gray-8: var(--sand-8);
+	--gray-9: var(--sand-9);
+	--gray-10: var(--sand-10);
+	--gray-11: var(--sand-11);
+	--gray-12: var(--sand-12);
+
+	--gray-a1: var(--sand-a1);
+	--gray-a2: var(--sand-a2);
+	--gray-a3: var(--sand-a3);
+	--gray-a4: var(--sand-a4);
+	--gray-a5: var(--sand-a5);
+	--gray-a6: var(--sand-a6);
+	--gray-a7: var(--sand-a7);
+	--gray-a8: var(--sand-a8);
+	--gray-a9: var(--sand-a9);
+	--gray-a10: var(--sand-a10);
+	--gray-a11: var(--sand-a11);
+	--gray-a12: var(--sand-a12);
+
+	--radius-factor: 0.5;
+	--radius-tab: var(--radius-2);
+	--radius-badge: var(--radius-2);
+	--radius-btn: var(--radius-4);
+	--radius-card: var(--radius-4);
+}
+/* #endregion light/dark yellowish theme */
+
+/* #region light/dark purplish theme */
+[data-theme='bellflower'],
+[data-theme='amethyst'] {
+	--accent-1: var(--iris-1);
+	--accent-2: var(--iris-2);
+	--accent-3: var(--iris-3);
+	--accent-4: var(--iris-4);
+	--accent-5: var(--iris-5);
+	--accent-6: var(--iris-6);
+	--accent-7: var(--iris-7);
+	--accent-8: var(--iris-8);
+	--accent-9: var(--iris-9);
+	--accent-9-contrast: var(--iris-9-contrast);
+	--accent-10: var(--iris-10);
+	--accent-11: var(--iris-11);
+	--accent-12: var(--iris-12);
+
+	--gray-1: var(--mauve-1);
+	--gray-2: var(--mauve-2);
+	--gray-3: var(--mauve-3);
+	--gray-4: var(--mauve-4);
+	--gray-5: var(--mauve-5);
+	--gray-6: var(--mauve-6);
+	--gray-7: var(--mauve-7);
+	--gray-8: var(--mauve-8);
+	--gray-9: var(--mauve-9);
+	--gray-10: var(--mauve-10);
+	--gray-11: var(--mauve-11);
+	--gray-12: var(--mauve-12);
+
+	--gray-a1: var(--mauve-a1);
+	--gray-a2: var(--mauve-a2);
+	--gray-a3: var(--mauve-a3);
+	--gray-a4: var(--mauve-a4);
+	--gray-a5: var(--mauve-a5);
+	--gray-a6: var(--mauve-a6);
+	--gray-a7: var(--mauve-a7);
+	--gray-a8: var(--mauve-a8);
+	--gray-a9: var(--mauve-a9);
+	--gray-a10: var(--mauve-a10);
+	--gray-a11: var(--mauve-a11);
+	--gray-a12: var(--mauve-a12);
+
+	--radius-factor: 1.5;
+	--radius-tab: var(--radius-2);
+	--radius-badge: var(--radius-2);
+	--radius-btn: var(--radius-4);
+	--radius-card: var(--radius-4);
+}
+/* #endregion light/dark purplish theme */
+
+/* #region misc. */
+:root {
+	--logo: var(--accent-9);
+	--sun-moon: var(--amber-9);
+	--black: 0deg 0% 0%;
+	--white: 0deg 0% 100%;
+	--svelte: 14.6deg 100% 50%;
+	--app-bg-daffodil: 50deg 40% 99.3%;
+	--app-bg-bellflower: 270deg 60% 99.3%;
+	--app-bg-desert: 48deg 75% 3%;
+	--app-bg-amethyst: 255deg 75% 3%;
+}
+[data-theme='daffodil'] {
+	--app-bg: var(--app-bg-daffodil);
+}
+[data-theme='desert'] {
+	--app-bg: var(--app-bg-desert);
+}
+[data-theme='bellflower'] {
+	--app-bg: var(--app-bg-bellflower);
+}
+[data-theme='amethyst'] {
+	--app-bg: var(--app-bg-amethyst);
+}
+/* #endregion misc. */

@@ -1,0 +1,20 @@
+{
+	"extends": ["./.svelte-kit/tsconfig.json", "../../tsconfig.base.json"],
+	"compilerOptions": {
+		"module": "ES2022",
+		"moduleResolution": "Bundler",
+		"lib": ["ES2022", "DOM", "DOM.Iterable"],
+		"noEmit": true,
+		"target": "ES2022"
+	},
+	"include": [
+		"postcss.config.js",
+		"prettier.config.js",
+		"svelte.config.js",
+		"vite.config.ts",
+		"src/**/*",
+		".svelte-kit/ambient.d.ts",
+		".svelte-kit/non-ambient.d.ts",
+		".svelte-kit/./types/**/$types.d.ts"
+	]
+}

@@ -66,9 +66,14 @@ const config = [
 		languageOptions: { parserOptions: { project: 'packages/auth/tsconfig.json' } },
 	},
 	{
-		name: 'typescript-eslint/custom – @samplekit/markdown',
-		files: ['packages/markdown/src'],
-		languageOptions: { parserOptions: { project: 'packages/markdown/tsconfig.json' } },
+		name: 'typescript-eslint/custom – @samplekit/preprocess-markdown',
+		files: ['packages/preprocess-markdown/src'],
+		languageOptions: { parserOptions: { project: 'packages/preprocess-markdown/tsconfig.json' } },
+	},
+	{
+		name: 'typescript-eslint/custom – @samplekit/preprocess-shiki',
+		files: ['packages/preprocess-shiki/src'],
+		languageOptions: { parserOptions: { project: 'packages/preprocess-shiki/tsconfig.json' } },
 	},
 	{
 		name: 'typescript-eslint/custom – @samplekit/svelte-crop-window',
@@ -82,7 +87,12 @@ const config = [
 		files: ['sites/samplekit.dev/**'],
 		ignores: ['**/*.svelte'],
 		languageOptions: { parserOptions: { project: 'sites/samplekit.dev/tsconfig.json' } },
-		rules: { '@typescript-eslint/no-unused-expressions': 'off' }, // https://github.com/sveltejs/eslint-plugin-svelte/issues/652#issuecomment-2087008855
+	},
+	{
+		name: 'typescript-eslint/custom – svelte-katex',
+		files: ['sites/svelte-katex/**'],
+		ignores: ['**/*.svelte'],
+		languageOptions: { parserOptions: { project: 'sites/svelte-katex/tsconfig.json' } },
 	},
 	// svelte
 	...svelte.configs['flat/recommended'].map((c, i) => ({ ...c, name: 'svelte/flat/recommended/' + (c.name ?? i) })),
@@ -91,7 +101,6 @@ const config = [
 		name: 'svelte/custom',
 		files: ['**/*.svelte'],
 		languageOptions: { parserOptions: { parser: ts.parser } },
-		rules: { '@typescript-eslint/no-unused-expressions': 'off' }, // https://github.com/sveltejs/eslint-plugin-svelte/issues/652#issuecomment-2087008855
 	},
 	// globals
 	{
@@ -143,6 +152,7 @@ const config = [
 	{
 		name: 'ignores',
 		ignores: [
+			'sites/samplekit.dev/vite.config.ts',
 			'sites/*/build/',
 			'sites/*/.svelte-kit/',
 			'packages/*/dist/',

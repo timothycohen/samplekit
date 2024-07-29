@@ -1,4 +1,5 @@
-import { mdCodeBlockToRawHtml } from '@samplekit/markdown';
+import { codeToDecoratedHtmlSync } from '@samplekit/preprocess-shiki';
+import { opts } from '$lib/shiki';
 
 const typedVariantFiles = (() => {
 	const titles = ['Shared', 'String', 'Bool And Flag', 'Number', 'Select', 'MinMax'];
@@ -17,7 +18,17 @@ const typedVariantFiles = (() => {
 
 	return titles.map((title, i) => ({
 		title,
-		rawHTML: rawCode.then((r) => r[i]!).then((rawCode) => mdCodeBlockToRawHtml({ lang: 'ts', rawCode }).data!),
+		rawHTML: rawCode
+			.then((r) => r[i]!)
+			.then(
+				(rawCode) =>
+					codeToDecoratedHtmlSync({
+						lang: 'ts',
+						code: rawCode,
+						opts,
+						transformName: 'block',
+					}).data!,
+			),
 	}));
 })();
 

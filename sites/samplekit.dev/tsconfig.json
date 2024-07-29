@@ -1,15 +1,27 @@
 {
-	"extends": ["./.svelte-kit/tsconfig.json", "../../tsconfig.site.json"],
+	"extends": ["./.svelte-kit/tsconfig.json", "../../tsconfig.base.json"],
+	"compilerOptions": {
+		"target": "ES2022",
+		"lib": ["ES2022", "DOM", "DOM.Iterable"],
+		"module": "ES2022",
+		"moduleResolution": "Bundler",
+		"noEmit": true
+	},
 	"include": [
-		"*",
+		"drizzle.gen.ts",
+		"drizzle.studio.ts",
+		".graphqlrc.ts",
+		"cspell.json",
+		"postcss.config.js",
+		"prettier.config.js",
+		"svelte.config.js",
+		"tailwind.config.ts",
 		"generated/**/*",
 		"scripts/**/*",
 		"src/**/*",
 		".svelte-kit/ambient.d.ts",
 		".svelte-kit/non-ambient.d.ts",
 		".svelte-kit/./types/**/$types.d.ts",
-		".graphqlrc.ts",
 		"src/routes/(api)/.well-known/security.txt/+server.ts"
-	],
-	"exclude": ["static/**", "vite.config.ts.timestamp-*", "vite.config.js.timestamp-*"]
+	]
 }

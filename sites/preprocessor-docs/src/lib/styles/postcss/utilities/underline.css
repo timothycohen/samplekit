@@ -1,0 +1,37 @@
+@layer utilities {
+	.underline--header:before {
+		content: '';
+		position: absolute;
+		height: 0.125rem;
+		width: 6rem;
+		background-color: theme('colors.accent.10');
+		bottom: -0.75rem;
+	}
+	.dark .underline--header:before {
+		background-color: theme('colors.accent.7');
+	}
+	.underline--hidden {
+		position: relative;
+		z-index: 2;
+	}
+	.underline--hidden:before {
+		transition: width 0.3s;
+		content: '';
+		position: absolute;
+		display: block;
+		background-color: theme('colors.accent.10');
+		left: 0;
+		width: 0%;
+		height: 0.125rem;
+		bottom: -0.175rem;
+		z-index: -1;
+		border-radius: 1rem;
+		@apply respect-reduced-motion;
+	}
+	.dark .underline--hidden:before {
+		background-color: theme('colors.accent.7');
+	}
+	.underline--show.underline--hidden:before {
+		width: 100%;
+	}
+}

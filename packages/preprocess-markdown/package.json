@@ -1,0 +1,26 @@
+{
+	"name": "@samplekit/preprocess-markdown",
+	"description": "Svelte preprocessor for Markdown using Marked.",
+	"type": "module",
+	"author": "Tim Cohen <contact@timcohen.dev>",
+	"scripts": {
+		"format": "prettier --ignore-path ../../.prettierignore --check .",
+		"format:fix": "prettier --ignore-path ../../.prettierignore --list-different --write .",
+		"lint": "pnpm -w run lint:preprocess-markdown",
+		"lint:fix": "pnpm -w run lint:preprocess-markdown:fix",
+		"check": "tsc --noEmit",
+		"validate": "pnpm install --frozen-lockfile && pnpm format && pnpm lint && pnpm check",
+		"clean": "rm -rf dist",
+		"build": "pnpm clean && tsc"
+	},
+	"exports": {
+		".": "./dist/index.js",
+		"./package.json": "./package.json"
+	},
+	"dependencies": {
+		"estree-walker": "^3.0.3",
+		"magic-string": "^0.30.10",
+		"marked": "^12.0.0",
+		"svelte": "5.0.0-next.164"
+	}
+}

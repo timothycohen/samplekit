@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { nameSchema } from '$routes/(auth)/validators';
+	import { type nameSchema } from '$routes/(auth)/validators';
 	import EditableAvatar from './EditableAvatar.svelte';
 	import EditableName from './EditableName.svelte';
 	import type { SuperValidated } from '$lib/superforms/client';

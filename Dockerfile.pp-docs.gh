@@ -1,0 +1,14 @@
+FROM node:20.14-alpine AS build
+WORKDIR /usr/src/app
+
+COPY . /usr/src/app
+
+RUN corepack enable pnpm
+RUN pnpm install
+RUN pnpm --filter preprocessor-docs build
+
+FROM nginx:alpine
+RUN rm -rf /usr/share/nginx/html/*
+COPY --from=build /usr/src/app/sites/preprocessor-docs/build /usr/share/nginx/html
+RUN chown -R nginx:nginx /usr/share/nginx/html && chmod -R 755 /usr/share/nginx/html
+COPY --from=build /usr/src/app/sites/preprocessor-docs/nginx-default.conf /etc/nginx/conf.d/default.conf

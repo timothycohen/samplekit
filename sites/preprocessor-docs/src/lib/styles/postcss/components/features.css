@@ -1,0 +1,14 @@
+@layer components {
+	.feature {
+		@apply relative list-none;
+	}
+	.feature-icon {
+		@apply absolute -left-8 top-1 h-5 w-5 stroke-success-9;
+	}
+	.feature-title {
+		@apply text-xl text-gray-12;
+	}
+	.feature-content {
+		@apply my-5 block text-base lg:my-6;
+	}
+}

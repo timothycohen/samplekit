@@ -28,9 +28,9 @@ const colors = [
 	'accent',
 	'gray',
 ] as const;
-const grays = ['gray', 'mauve', 'sand'] as const;
-type Grayish = (typeof grays)[number];
-const isGrayish = (color: string): color is Grayish => ['gray', 'mauve', 'sand'].includes(color);
+type Grayish = 'gray' | 'mauve' | 'sand';
+const grays = ['gray', 'mauve', 'sand'];
+const isGrayish = (color: string): color is Grayish => grays.includes(color);
 
 export default {
 	darkMode: ['class'],

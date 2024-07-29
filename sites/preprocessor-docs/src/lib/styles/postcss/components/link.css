@@ -1,0 +1,33 @@
+@layer components {
+	.link {
+		@apply font-light text-accent-11 decoration-accent-6 underline-offset-2 hover:underline;
+	}
+
+	/*
+		stroke is text-accent-11 unable to use css vars in content
+		--amber-11-light: 35.1deg 100% 33.5%;
+		--amber-11-dark: 46.4deg 100% 54.3%;
+		--iris-11-light: 242.1deg 50.2% 55.1%;
+		--iris-11-dark: 245.6deg 100% 83.1%;
+	*/
+
+	[data-theme='daffodil'] a[data-external] {
+		--content: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='transparent' stroke='hsl(35.1deg 100% 33.5%)' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' class='lucide lucide-external-link'%3E%3Cpath d='M15 3h6v6'/%3E%3Cpath d='M10 12 21 3'/%3E%3Cpath d='M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6'/%3E%3C/svg%3E");
+	}
+	[data-theme='desert'] a[data-external] {
+		--content: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='transparent' stroke='hsl(46.4deg 100% 54.3%)' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' class='lucide lucide-external-link'%3E%3Cpath d='M15 3h6v6'/%3E%3Cpath d='M10 12 21 3'/%3E%3Cpath d='M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6'/%3E%3C/svg%3E");
+	}
+	[data-theme='bellflower'] a[data-external] {
+		--content: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='transparent' stroke='hsl(242.1deg 50.2% 55.1%)' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' class='lucide lucide-external-link'%3E%3Cpath d='M15 3h6v6'/%3E%3Cpath d='M10 12 21 3'/%3E%3Cpath d='M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6'/%3E%3C/svg%3E");
+	}
+	[data-theme='amethyst'] a[data-external] {
+		--content: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='transparent' stroke='hsl(245.6deg 100% 83.1%)' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' class='lucide lucide-external-link'%3E%3Cpath d='M15 3h6v6'/%3E%3Cpath d='M10 12 21 3'/%3E%3Cpath d='M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6'/%3E%3C/svg%3E");
+	}
+
+	a[data-external]::after {
+		position: relative;
+		top: 0.05rem;
+		left: 0.05rem;
+		content: var(--content);
+	}
+}

@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { CodeTopper } from '$lib/articles/components';
 	import { TabPanels, TabPanelItem } from '$lib/components';
-	import AvatarEditor from './AvatarEditor.svx';
-	import CropImgUploadController from './CropImgUploadController.svx';
-	import IAM from './IAM.svx';
-	import Misc from './Misc.svx';
+	import AvatarEditor from './AvatarEditor.svelte';
+	import CropImgUploadController from './CropImgUploadController.svelte';
+	import IAM from './IAM.svelte';
+	import Misc from './Misc.svelte';
 	import img_uploaderFlow from './assets/image-uploader-flow-q30.webp';
 
 	const { data } = $props();

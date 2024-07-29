@@ -1,0 +1,56 @@
+{
+	"name": "svelte-pp-markdown",
+	"displayName": "Svelte Markdown Preprocessor",
+	"publisher": "timothycohen",
+	"description": "Syntax highlighting for Markdown in Svelte HTML comments.",
+	"license": "MIT",
+	"type": "module",
+	"author": "Tim Cohen <contact@timcohen.dev>",
+	"private": true,
+	"scripts": {
+		"format": "prettier --ignore-path ../../.prettierignore --check .",
+		"format:fix": "prettier --ignore-path ../../.prettierignore --list-different --write .",
+		"validate": "pnpm format",
+		"clean": "rm -f *.vsix",
+		"build": "pnpm clean && vsce package"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/timothycohen/samplekit/tree/staging/packages/preprocess-markdown-vscode"
+	},
+	"icon": "static/sk-md.png",
+	"bugs": {
+		"url": "https://github.com/timothycohen/samplekit/tree/staging/packages/preprocess-markdown-vscode/issues"
+	},
+	"engines": {
+		"vscode": "^1.9.0"
+	},
+	"categories": [
+		"Programming Languages"
+	],
+	"keywords": [
+		"markdown",
+		"md",
+		"svelte",
+		"preprocess",
+		"samplekit",
+		"preprocess-markdown"
+	],
+	"contributes": {
+		"grammars": [
+			{
+				"scopeName": "md.pp-svelte",
+				"injectTo": [
+					"source.svelte"
+				],
+				"path": "./syntaxes/md.pp-svelte.tmLanguage.json"
+			}
+		],
+		"snippets": [
+			{
+				"language": "svelte",
+				"path": "./snippets/md.pp-svelte.code-snippets"
+			}
+		]
+	}
+}

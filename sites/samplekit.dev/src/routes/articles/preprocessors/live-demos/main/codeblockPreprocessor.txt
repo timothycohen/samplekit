@@ -205,7 +205,7 @@ const parseAndRemoveWrapper = (
 	return { rawCode, lang };
 };
 
-export function preprocessCodeblock({
+export function processCodeblock({
 	include,
 	logger,
 	formatLogFilename,
