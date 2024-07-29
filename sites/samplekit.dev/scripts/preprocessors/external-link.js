@@ -3,6 +3,25 @@ import MagicString from 'magic-string';
 import { parse } from 'svelte/compiler';
 
 /**
+ * @typedef {Object} Logger
+ * @property {(detail: { skip: number }, filename: string) => void} [debug]
+ * @property {(detail: { count: number }, filename: string) => void} [info]
+ */
+
+/**
+ * @param {function(string): string} [formatFilename] - Function to format the filename (optional).
+ * @returns {Logger} Logger object with debug and info methods.
+ */
+export const createExternalLinkLogger = (formatFilename = (filename) => filename) => {
+	return {
+		debug: (detail, filename) =>
+			console.debug(`[PREPROCESS] | Anchor | Debug | ${formatFilename(filename)} | skip: ${detail.skip}`),
+		info: (detail, filename) =>
+			console.info(`[PREPROCESS] | Anchor | Info | ${formatFilename(filename)} | count: ${detail.count}`),
+	};
+};
+
+/**
  * Adds `target="_blank"` and `rel="noreferrer noopener"` to external links if those attributes are not already present.
  *
  * A link is external if it starts with `tel:`, `mailto:`, `http:`, or `https:`.
@@ -12,7 +31,7 @@ import { parse } from 'svelte/compiler';
  * Limitations: this preprocessor ignores dynamic hrefs. href="https://example.com/" is processed, but href="{url}" and href="mailto:{email}" are not.
  *
  * @param {Object} options
- * @param {{ debug: (s: string) => void, formatFilename?: (filename: string) => string }} [options.logger]
+ * @param {Logger} [options.logger]
  * @param {(filename: string) => boolean} [options.include]
  *
  * @returns {import('svelte/compiler').PreprocessorGroup}
@@ -79,13 +98,8 @@ export function preprocessExternalLinks({ include, logger } = {}) {
 				},
 			});
 
-			if (logger && (count || skip)) {
-				const msg =
-					count && skip ? `{ count: ${count}, skip: ${skip} }` : count ? `{ count: ${count} }` : `{ skip: ${skip} }`;
-				logger.debug(
-					`[PREPROCESS] | ${logger.formatFilename ? logger.formatFilename(filename) : filename} | Anchor | Success | ${msg}`,
-				);
-			}
+			if (skip) logger?.debug?.({ skip }, filename);
+			if (count) logger?.info?.({ count }, filename);
 
 			return { code: s.toString() };
 		},

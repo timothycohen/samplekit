@@ -1,5 +1,5 @@
 <script lang="ts" generics="SvelteGeneric extends object">
-	import { createSelect, melt } from '@melt-ui/svelte';
+	import { type createSelect, melt } from '@melt-ui/svelte';
 	import { Check, ChevronDown } from '$lib/styles/icons';
 
 	type Option = { label: string; value: SvelteGeneric };

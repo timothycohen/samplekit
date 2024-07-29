@@ -326,7 +326,7 @@ shiki-end -->
 
 <h4>Writing the Preprocessor</h4>
 
-<p>Again, no need to reinvent the wheel. Let's use <a href="https://github.com/shikijs/shiki">shiki</a>.</p>
+<p>Again, no need to reinvent the wheel. Let's use <a href="https://github.com/shikijs/shiki">Shiki</a>.</p>
 
 <p>First, let's decide on the languages we want to load.</p>
 

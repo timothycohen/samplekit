@@ -4,8 +4,8 @@ import type { ProductFilter } from '$generated/shopify-graphql-types/storefront.
 import type { Product, SearchQuery, SortKey } from '../../types';
 
 // prettier-ignore
-const productCollectionSortKeys = ['BEST_SELLING', 'COLLECTION_DEFAULT', 'CREATED', 'ID', 'MANUAL', 'PRICE', 'RELEVANCE', 'TITLE'] as const
-const sortKeyToProductCollectionSortKey = (sortKey?: SortKey): (typeof productCollectionSortKeys)[number] => {
+type ProductCollectionSortKeys = 'BEST_SELLING' | 'COLLECTION_DEFAULT' | 'CREATED' | 'ID' | 'MANUAL' | 'PRICE' | 'RELEVANCE' | 'TITLE'
+const sortKeyToProductCollectionSortKey = (sortKey?: SortKey): ProductCollectionSortKeys => {
 	switch (sortKey) {
 		case undefined:
 			return 'RELEVANCE';
@@ -17,8 +17,8 @@ const sortKeyToProductCollectionSortKey = (sortKey?: SortKey): (typeof productCo
 };
 
 // prettier-ignore
-const productSortKeys = ['BEST_SELLING' ,'CREATED_AT' ,'ID' ,'PRICE' ,'PRODUCT_TYPE' ,'RELEVANCE' ,'TITLE' ,'UPDATED_AT' ,'VENDOR'] as const
-const sortKeyToProductSortKey = (sortKey?: SortKey): (typeof productSortKeys)[number] => {
+type ProductSortKeys = 'BEST_SELLING' | 'CREATED_AT' | 'ID' | 'PRICE' | 'PRODUCT_TYPE' | 'RELEVANCE' | 'TITLE' | 'UPDATED_AT' | 'VENDOR'
+const sortKeyToProductSortKey = (sortKey?: SortKey): ProductSortKeys => {
 	switch (sortKey) {
 		case undefined:
 			return 'RELEVANCE';

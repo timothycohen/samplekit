@@ -1,9 +1,9 @@
 {
 	"name": "samplekit.dev",
 	"description": "A collection of SvelteKit design pattern examples.",
-	"private": true,
 	"type": "module",
 	"author": "Tim Cohen <contact@timcohen.dev>",
+	"private": true,
 	"scripts": {
 		"format": "prettier --ignore-path ../../.prettierignore --check .",
 		"format:fix": "prettier --ignore-path ../../.prettierignore --list-different --write .",
@@ -79,6 +79,7 @@
 		"magic-string": "^0.30.10",
 		"postcss": "^8.4.39",
 		"postcss-js": "^4.0.1",
+		"shiki": "^1.12.0",
 		"svelte": "5.0.0-next.164",
 		"svelte-check": "^3.8.4",
 		"sveltekit-superforms": "^2.16.0",

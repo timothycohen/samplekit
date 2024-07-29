@@ -1,12 +1,11 @@
 import type { WrapperProps } from '$lib/components/PatternWrapper.svelte';
 import type { NoPropComponent } from '$lib/utils/common';
-import type { MdLang } from '@samplekit/preprocess-shiki';
 
 export type CodeDefined = {
 	title: string;
 
 	loadRaw: () => Promise<unknown>;
-	lang?: MdLang;
+	lang?: string;
 
 	loadComponent?: never;
 	wrapperProps?: never;
@@ -31,7 +30,7 @@ export type CodeProcessed = {
 	index: number;
 
 	rawHTML: string | Promise<string>;
-	lang: MdLang;
+	lang: string;
 
 	wrapperProps?: never;
 	icon?: never;
