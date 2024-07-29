@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-	page; // https://github.com/sveltejs/eslint-plugin-svelte/issues/652#issuecomment-2087008855
 	import { Trash2, BadgeCheck, Loader2 } from '$lib/styles/icons';
 
 	const { data } = $props();

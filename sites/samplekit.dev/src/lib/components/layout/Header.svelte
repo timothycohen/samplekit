@@ -1,10 +1,8 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { page } from '$app/stores';
-	page; // https://github.com/sveltejs/eslint-plugin-svelte/issues/652#issuecomment-2087008855
 	import { keyboard } from '$lib/actions';
 	import { themeController, ThemeSwitchDayNightSystem } from '$lib/styles';
-	themeController; // https://github.com/sveltejs/eslint-plugin-svelte/issues/652#issuecomment-2087008855
 	import { Logo } from '..';
 	import DesktopNavItem from './nav/DesktopNavItem.svelte';
 	import MobileNav from './nav/MobileNav.svelte';

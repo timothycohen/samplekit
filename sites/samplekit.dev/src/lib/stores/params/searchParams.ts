@@ -2,7 +2,6 @@ import { derived, get, type Readable } from 'svelte/store';
 import { browser } from '$app/environment';
 import { goto } from '$app/navigation';
 import { page } from '$app/stores';
-page; // https://github.com/sveltejs/eslint-plugin-svelte/issues/652#issuecomment-2087008855
 import { assertUnreachable } from '$lib/utils/common';
 
 type GoOpts = { absolute?: string };

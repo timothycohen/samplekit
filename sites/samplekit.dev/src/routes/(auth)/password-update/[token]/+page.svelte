@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-	page; // https://github.com/sveltejs/eslint-plugin-svelte/issues/652#issuecomment-2087008855
 	import { Logo, InputMessage } from '$lib/components';
 	import { Loader2 } from '$lib/styles/icons';
 	import { superForm, zodClient } from '$lib/superforms/client';

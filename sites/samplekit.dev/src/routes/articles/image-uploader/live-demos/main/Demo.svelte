@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { createDialog, melt } from '@melt-ui/svelte';
 	import { page } from '$app/stores';
-	page; // https://github.com/sveltejs/eslint-plugin-svelte/issues/652#issuecomment-2087008855
 	import { Avatar } from '$lib/components';
 	import AvatarEditor from '$routes/account/profile/AvatarEditor.svelte';
 	import Mock from './Mock.svelte';

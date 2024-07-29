@@ -2,7 +2,6 @@
 	import { derived } from 'svelte/store';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
-	page; // https://github.com/sveltejs/eslint-plugin-svelte/issues/652#issuecomment-2087008855
 	import { searchParam, searchParams } from '$lib/stores';
 	import FilterInputs from './FilterInputs.svelte';
 	import Posts from './Posts.svelte';
