@@ -2,14 +2,14 @@
 	import { LoadingDots } from '$lib/components';
 	import { logger } from '$lib/logging/client';
 	import { Minus, Plus } from '$lib/styles/icons';
-	import { useCartService } from '$routes/shop/services';
+	import { useCartCtx } from '$routes/shop/services';
 	import type { CartItem } from '$lib/shop';
 
 	interface Props {
 		props: {
 			item: CartItem;
 			type: 'plus' | 'minus';
-			handle?: (res: Awaited<ReturnType<typeof updatingCartItemQty.send>>) => void;
+			handle?: (res: Awaited<ReturnType<typeof cart.updateItemQty.send>>) => void;
 		};
 	}
 
@@ -17,15 +17,15 @@
 
 	let localPending = $state(false);
 
-	const { cart, updatingCartItemQty, pending } = useCartService();
+	const cart = useCartCtx();
 </script>
 
 <button
 	type="button"
 	onclick={async () => {
-		if ($pending) return;
+		if (cart.submitting) return;
 		localPending = true;
-		updatingCartItemQty
+		cart.updateItemQty
 			.send({
 				lineId: props.item.id,
 				quantity: props.type === 'plus' ? props.item.quantity + 1 : props.item.quantity - 1,
@@ -39,9 +39,9 @@
 			});
 	}}
 	aria-label={props.type === 'plus' ? 'Increase item quantity' : 'Reduce item quantity'}
-	aria-disabled={$pending}
+	aria-disabled={cart.submitting}
 	class="flex h-full min-w-[36px] max-w-[36px] flex-none items-center justify-center rounded-full px-2 transition-all duration-200 hover:opacity-80
-      {$pending ? 'cursor-not-allowed' : ''}
+      {cart.submitting ? 'cursor-not-allowed' : ''}
       {props.type === 'minus' ? 'ml-auto' : ''}
   "
 >

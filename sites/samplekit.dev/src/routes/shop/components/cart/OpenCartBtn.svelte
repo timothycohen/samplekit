@@ -1,23 +1,23 @@
 <script lang="ts">
-	import { melt } from '@melt-ui/svelte';
 	import { ShoppingBag } from '$lib/styles/icons';
-	import { useCartService } from '$routes/shop/services';
+	import { useCartCtx } from '$routes/shop/services';
 
-	const {
-		cart,
-		drawerProps: {
-			elements: { trigger },
-		},
-	} = useCartService();
+	const cart = useCartCtx();
 </script>
 
-<button aria-label="Open cart" use:melt={$trigger} class="btn btn-ghost relative p-2">
+<button
+	aria-label="Open cart"
+	aria-haspopup="dialog"
+	aria-expanded={cart.drawer}
+	onclick={() => (cart.drawer = true)}
+	class="btn btn-ghost relative p-2"
+>
 	<ShoppingBag />
-	{#if $cart?.totalQuantity}
+	{#if cart.value?.totalQuantity}
 		<div
 			class="absolute right-0 top-0 -mr-2 -mt-2 h-4 w-4 rounded-full bg-accent-9 text-xs font-medium text-accent-9-contrast"
 		>
-			{$cart.totalQuantity}
+			{cart.value.totalQuantity}
 		</div>
 	{/if}
 </button>

@@ -9,12 +9,12 @@
 		useSearchAndFilterService,
 		createNavService,
 		useNavService,
-		createCartService,
+		createCartCtx,
 	} from '$routes/shop/services';
 
 	createSearchAndFilterService();
 	createNavService();
-	createCartService();
+	createCartCtx();
 
 	const { reset, pullFromUrl } = useSearchAndFilterService();
 	const { closeOnNavListener } = useNavService();

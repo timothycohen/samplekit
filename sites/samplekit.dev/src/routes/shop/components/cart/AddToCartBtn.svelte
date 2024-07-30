@@ -2,7 +2,7 @@
 	import { LoadingDots } from '$lib/components';
 	import { logger } from '$lib/logging/client';
 	import { PlusIcon } from '$lib/styles/icons';
-	import { useCartService } from '$routes/shop/services';
+	import { useCartCtx } from '$routes/shop/services';
 	import type { Result } from '$lib/utils/common';
 
 	interface Props {
@@ -14,14 +14,7 @@
 
 	const { props }: Props = $props();
 
-	const {
-		cart,
-		addingCartItem,
-		pending,
-		drawerProps: {
-			states: { open },
-		},
-	} = useCartService();
+	const cart = useCartCtx();
 
 	const buttonClasses =
 		'relative flex w-full items-center justify-center rounded-full bg-accent-9 text-accent-9-contrast p-4 tracking-wide';
@@ -41,20 +34,20 @@
 	<button
 		type="button"
 		onclick={async () => {
-			if ($pending || !props.selectedVariant) return;
-			addingCartItem.send({ id: props.selectedVariant.id }).then((res) => {
+			if (cart.submitting || !props.selectedVariant) return;
+			cart.addItem.send({ id: props.selectedVariant.id }).then((res) => {
 				if (props.handle) return props.handle(res);
 				if (res.error) return logger.error(res.error);
 				cart.refresh();
-				open.set(true);
+				cart.drawer = true;
 			});
 		}}
 		aria-label="Add to cart"
-		aria-disabled={$pending}
-		class="{buttonClasses} {$pending ? disabledClasses : 'hover:opacity-90'}"
+		aria-disabled={cart.submitting}
+		class="{buttonClasses} {cart.submitting ? disabledClasses : 'hover:opacity-90'}"
 	>
 		<div class="absolute left-0 ml-4">
-			{#if $addingCartItem}
+			{#if cart.addItem.submitting}
 				<LoadingDots class="mb-3 bg-gray-12" />
 			{:else}
 				<PlusIcon class="h-5" />

@@ -2,7 +2,7 @@
 	import { LoadingDots } from '$lib/components';
 	import { logger } from '$lib/logging/client';
 	import { X } from '$lib/styles/icons';
-	import { useCartService } from '$routes/shop/services';
+	import { useCartCtx } from '$routes/shop/services';
 	import type { Result } from '$lib/utils/common';
 
 	interface Props {
@@ -14,25 +14,25 @@
 
 	const { props }: Props = $props();
 
-	const { pending, removingCartItem, cart } = useCartService();
+	const cart = useCartCtx();
 </script>
 
 <button
 	type="button"
 	onclick={async () => {
-		if ($pending) return;
-		removingCartItem.send({ lineId: props.lineId }).then((res) => {
+		if (cart.submitting) return;
+		cart.removeItem.send({ lineId: props.lineId }).then((res) => {
 			if (props.handle) return props.handle(res);
 			if (res.error) logger.error(res.error);
 			else cart.refresh();
 		});
 	}}
 	aria-label="Remove cart item"
-	aria-disabled={$pending}
+	aria-disabled={cart.submitting}
 	class="ease flex h-4 items-center justify-center rounded-full bg-gray-5 transition-all duration-200 hover:bg-accent-9
-      {$pending ? 'cursor-not-allowed px-0' : ''}"
+      {cart.submitting ? 'cursor-not-allowed px-0' : ''}"
 >
-	{#if $removingCartItem}
+	{#if cart.removeItem.submitting}
 		<LoadingDots />
 	{:else}
 		<X class="mx-[1px] h-4 w-4 hover:text-accent-9-contrast" />

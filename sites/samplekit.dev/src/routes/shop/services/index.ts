@@ -1,3 +1,3 @@
 export * from './searchAndFilter';
 export * from './navAndDrawer';
-export * from './cart';
+export * from './cart.svelte';
