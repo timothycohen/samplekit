@@ -1,14 +1,12 @@
-@import './lib/styles/theme.css';
+@import './lib/styles/css/tokens.css';
+@import './lib/styles/css/themes.css';
+@import './lib/styles/css/code.css';
 
-/* The base layer is for things like reset rules or default styles applied to plain HTML elements. Generally not recommended because html should follow semantics, not styles */
 @tailwind base;
-/* The components layer is for class-based styles that you want to be able to override with utilities. Things like .btn, .card, etc. */
 @tailwind components;
-/* The utilities layer is for small, single-purpose classes that should always take precedence over any other styles. */
 @tailwind utilities;
-/* @layer <layername> is better than adding classes directly to the css because the classes will then support tailwind variants, like sm: or hover: */
 
-/* Resets ####################### */
+/*#region Resets ############################# */
 * {
 	-webkit-tap-highlight-color: transparent;
 }
@@ -21,33 +19,93 @@ select {
 .lucide {
 	@apply stroke-[1.25];
 }
+/*#endregion Resets ########################## */
 
-/* Base Colors ####################### */
+/*#region Base Colors ######################## */
 ::selection {
-	@apply bg-accent-9 text-accent-9-contrast;
+	@apply bg-accent-9/80 text-accent-9-contrast;
 }
 * {
 	@apply outline-2 outline-offset-2 outline-accent-7 focus-visible:outline;
 }
 html {
-	@apply accent-accent-9;
-	scroll-behavior: smooth;
+	@apply bg-app-bg text-gray-12 accent-accent-9;
 }
-body {
-	@apply bg-app-bg text-gray-12;
+.light {
+	color-scheme: light;
 }
+.dark {
+	color-scheme: dark;
+}
+/*#endregion Base Colors ##################### */
 
-/* Layout ####################### */
-html,
-body {
-	@apply h-full;
-}
+/*#region Layout ############################# */
 :root {
 	--nav-height: 3.5rem;
 }
+::view-transition-old(root),
+::view-transition-new(root) {
+	animation: none;
+	mix-blend-mode: normal;
+}
+::view-transition-old(root) {
+	z-index: 1;
+}
+::view-transition-new(root) {
+	z-index: 9999;
+}
+.dark::view-transition-old(root) {
+	z-index: 9999;
+}
+.dark::view-transition-new(root) {
+	z-index: 1;
+}
+/*#endregion Layout ########################## */
 
-/* Fonts ####################### */
+/*#region Fonts ############################## */
 body,
 html {
 	@apply font-sans;
 }
+/*#endregion Fonts ########################### */
+
+/*#region Katex ############################## */
+.katex-display > .katex > .katex-html > .tag {
+	right: 0.15rem;
+}
+/*#endregion Katex ########################### */
+
+/*#region Scrollbar ########################## */
+/*
+Not styled on Safari bc they have a bug where switching the theme doesn't update the scrollbar color
+::-webkit-scrollbar-thumb
+::-webkit-scrollbar-track
+*/
+[data-theme='daffodil'] {
+	scrollbar-color: hsl(var(--iris-7) / 70%) transparent;
+}
+[data-theme='bellflower'] {
+	scrollbar-color: hsl(var(--iris-7)) transparent;
+}
+[data-theme='amethyst'] {
+	scrollbar-color: hsl(var(--iris-5)) hsl(var(--iris-2));
+}
+[data-theme='desert'] {
+	scrollbar-color: hsl(var(--amber-5)) hsl(var(--amber-2));
+}
+/*#endregion Scrollbar ####################### */
+
+/*#region Blocking Init Scripts ############## */
+.showNight {
+	display: none;
+}
+[data-prefer-scheme='dark'] .showNight {
+	display: inline;
+}
+.showDay {
+	display: none;
+}
+[data-prefer-scheme='light'] .showDay {
+	display: inline;
+}
+/*#endregion Blocking Init Scripts ########### */

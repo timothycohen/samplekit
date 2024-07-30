@@ -110,9 +110,3 @@
 		</div>
 	{/each}
 </div>
-
-<style lang="postcss">
-	.tabpanel :global(> .code-wrapper) {
-		border-radius: 0 0 var(--radius-card) var(--radius-card);
-	}
-</style>

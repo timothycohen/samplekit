@@ -1,16 +1,32 @@
 <script lang="ts">
 	import '../app.css';
-	import { onMount } from 'svelte';
+	import { tick } from 'svelte';
+	import { browser } from '$app/environment';
+	import { beforeNavigate, afterNavigate } from '$app/navigation';
 	import { page } from '$app/stores';
 	import { Header, SEO } from '$lib/components';
-	import { themeController } from '$lib/styles';
+	import { createThemeControllerCtx } from '$lib/styles';
 
-	const { children } = $props();
+	const { children, data } = $props();
 
-	onMount(() => {
-		const { destroy } = themeController.listen('light-dark-system');
-		return destroy;
-	});
+	createThemeControllerCtx(data.initialTheme);
+
+	const smoothNavigationOnlyOnSamePage = () => {
+		if (browser) document.documentElement.style.scrollBehavior = 'smooth';
+
+		beforeNavigate(({ from, to }) => {
+			if (from?.route.id === to?.route.id) return;
+			document.documentElement.style.scrollBehavior = 'auto';
+		});
+
+		afterNavigate(() => {
+			tick().then(() => {
+				document.documentElement.style.scrollBehavior = 'smooth';
+			});
+		});
+	};
+
+	smoothNavigationOnlyOnSamePage();
 </script>
 
 <SEO meta={$page.data.meta} />

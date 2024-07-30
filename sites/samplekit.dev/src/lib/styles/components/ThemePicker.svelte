@@ -55,7 +55,7 @@
 				<Check class="h-5 text-success-9" />
 			</span>
 		{:else if saved === null && active}
-			<span in:fade class="flex items-center justify-end gap-2">
+			<span in:fade|global class="flex items-center justify-end gap-2">
 				<span>Active </span>
 				<Check class="h-5 text-success-9" />
 			</span>

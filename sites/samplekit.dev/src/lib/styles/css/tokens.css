@@ -2,30 +2,12 @@
  * https://github.com/radix-ui/colors/blob/main/src/dark.ts
  * https://github.com/radix-ui/colors/blob/main/src/light.ts
  *
- * Design colors (light/dark 1-12 + contrast):
- * Green
- * Jade
- * Red
- * Ruby
- * Yellow
- * Amber
- * Blue
- * Cyan
- * Iris
- * Mauve (light/dark 1-12 + alpha)
- * Sand (light/dark 1-12 + alpha)
- *
- * Theme aliases (light/dark 1-12 + contrast):
- * Success
- * Error
- * Warning
- * Info
- * Accent
- * Gray (light/dark 1-12 + alpha)
+ * Radii (require --radius-factor. 1-6 => 6 unique, 6 vars)
+ * Shadows (light/dark 1-6 => 12 unique, 12 vars)
 */
 
-/* #region design greens: Green & Jade */
 :root {
+	/* #region greens */
 	--green-9-contrast: 0deg 0% 100%;
 
 	--green-1-dark: 154.3deg 20% 6.9%;
@@ -53,38 +35,9 @@
 	--green-10-light: 151.9deg 56.3% 38.6%;
 	--green-11-light: 153.7deg 59.8% 32.2%;
 	--green-12-light: 155.3deg 40.5% 16.5%;
+	/* #endregion greens */
 
-	--jade-9-contrast: 0deg 0% 100%;
-
-	--jade-1-dark: 157.5deg 23.5% 6.7%;
-	--jade-2-dark: 156deg 21.7% 9%;
-	--jade-3-dark: 156.8deg 50.8% 12%;
-	--jade-4-dark: 161.3deg 68.6% 13.7%;
-	--jade-5-dark: 161.5deg 61.8% 17.5%;
-	--jade-6-dark: 162deg 52.6% 22.4%;
-	--jade-7-dark: 162.4deg 48.6% 27.5%;
-	--jade-8-dark: 164.3deg 50% 32.9%;
-	--jade-9-dark: 164.3deg 59.8% 40%;
-	--jade-10-dark: 163.8deg 63.7% 42.2%;
-	--jade-11-dark: 163.1deg 74.9% 48.4%;
-	--jade-12-dark: 154.9deg 69.1% 81%;
-
-	--jade-1-light: 160deg 60% 99%;
-	--jade-2-light: 145.7deg 46.7% 97.1%;
-	--jade-3-light: 144.7deg 51.5% 93.5%;
-	--jade-4-light: 148.9deg 49.1% 89.2%;
-	--jade-5-light: 151.6deg 46.3% 83.9%;
-	--jade-6-light: 153.6deg 43.1% 77.3%;
-	--jade-7-light: 158.5deg 40.6% 67.6%;
-	--jade-8-light: 163.8deg 42% 53.3%;
-	--jade-9-light: 164.3deg 59.8% 40%;
-	--jade-10-light: 164.3deg 60.2% 37.5%;
-	--jade-11-light: 163.6deg 60.7% 32%;
-	--jade-12-light: 160deg 34.1% 17.3%;
-}
-
-/* #region design reds: Red & Ruby */
-:root {
+	/* #region reds */
 	--red-9-contrast: 0deg 0% 100%;
 
 	--red-1-dark: 0deg 19% 8.2%;
@@ -112,66 +65,9 @@
 	--red-10-light: 358.5deg 69.3% 55.3%;
 	--red-11-light: 358.1deg 64.8% 49%;
 	--red-12-light: 350.6deg 62.6% 24.1%;
+	/* #endregion reds */
 
-	--ruby-9-contrast: 0deg 0% 100%;
-
-	--ruby-1-dark: 345deg 19% 8.2%;
-	--ruby-2-dark: 346.7deg 17.6% 10%;
-	--ruby-3-dark: 344.2deg 48.7% 15.3%;
-	--ruby-4-dark: 341.7deg 60.8% 19%;
-	--ruby-5-dark: 342.4deg 56.7% 23.5%;
-	--ruby-6-dark: 343.8deg 50% 29%;
-	--ruby-7-dark: 346.4deg 44.7% 36.9%;
-	--ruby-8-dark: 348.1deg 44.9% 48.4%;
-	--ruby-9-dark: 347.9deg 75.4% 58.6%;
-	--ruby-10-dark: 350.1deg 79.3% 63.9%;
-	--ruby-11-dark: 355deg 100% 79%;
-	--ruby-12-dark: 339.5deg 95.7% 91%;
-
-	--ruby-1-light: 340deg 100% 99.4%;
-	--ruby-2-light: 352.5deg 100% 98.4%;
-	--ruby-3-light: 351deg 90.9% 95.7%;
-	--ruby-4-light: 351.4deg 100% 93.1%;
-	--ruby-5-light: 350.2deg 100% 90.4%;
-	--ruby-6-light: 350.5deg 80.3% 86.1%;
-	--ruby-7-light: 349.3deg 67.7% 80.6%;
-	--ruby-8-light: 347.7deg 61.5% 73.5%;
-	--ruby-9-light: 347.9deg 75.4% 58.6%;
-	--ruby-10-light: 347.3deg 69.7% 54.7%;
-	--ruby-11-light: 345.2deg 69.7% 46.7%;
-	--ruby-12-light: 344.4deg 62.6% 24.1%;
-}
-
-/* #region yellows: Yellow & Amber */
-:root {
-	--yellow-9-contrast: 48deg 8.2% 12%; /* light mode sand 12 */
-
-	--yellow-1-dark: 46.7deg 29% 6.1%;
-	--yellow-2-dark: 45deg 28.6% 8.2%;
-	--yellow-3-dark: 45deg 80% 9.8%;
-	--yellow-4-dark: 47.8deg 100% 10.6%;
-	--yellow-5-dark: 47.5deg 100% 13.1%;
-	--yellow-6-dark: 48deg 95.2% 16.5%;
-	--yellow-7-dark: 46.3deg 63.2% 24.5%;
-	--yellow-8-dark: 44.7deg 59.8% 32.2%;
-	--yellow-9-dark: 53deg 100% 58%;
-	--yellow-10-dark: 60deg 100% 67.1%;
-	--yellow-11-dark: 53.1deg 89.7% 62%;
-	--yellow-12-dark: 52.7deg 78.6% 83.5%;
-
-	--yellow-1-light: 60deg 50% 98.4%;
-	--yellow-2-light: 54.3deg 91.3% 95.5%;
-	--yellow-3-light: 55.8deg 100% 86.1%;
-	--yellow-4-light: 53.3deg 100% 79%;
-	--yellow-5-light: 49.9deg 100% 72%;
-	--yellow-6-light: 47.9deg 85.3% 68%;
-	--yellow-7-light: 46.1deg 69.8% 64.9%;
-	--yellow-8-light: 45deg 65% 52.9%;
-	--yellow-9-light: 53deg 100% 58%;
-	--yellow-10-light: 51.8deg 100% 50%;
-	--yellow-11-light: 41deg 100% 31%;
-	--yellow-12-light: 42deg 39.2% 20%;
-
+	/* #region yellows */
 	--amber-9-contrast: 48deg 8.2% 12%; /* light mode sand 12 */
 
 	--amber-1-dark: 36deg 29.4% 6.7%;
@@ -199,10 +95,9 @@
 	--amber-10-light: 42.1deg 100% 54.7%;
 	--amber-11-light: 35.1deg 100% 33.5%;
 	--amber-12-light: 24deg 39.8% 22.2%;
-}
+	/* #endregion yellows */
 
-/* #region blues and purples: Blue & Cyan & Iris */
-:root {
+	/* #region blues and purples */
 	--blue-9-contrast: 0deg 0% 100%;
 
 	--blue-1-dark: 214.7deg 42.2% 8.8%;
@@ -231,34 +126,6 @@
 	--blue-11-light: 208deg 88.1% 42.9%;
 	--blue-12-light: 216.1deg 70.9% 22.9%;
 
-	--cyan-9-contrast: 0deg 0% 100%;
-
-	--cyan-1-dark: 196deg 40.5% 7.3%;
-	--cyan-2-dark: 198.8deg 33.3% 9.4%;
-	--cyan-3-dark: 193deg 74.2% 12.2%;
-	--cyan-4-dark: 193.3deg 100% 14.1%;
-	--cyan-5-dark: 193deg 100% 17.3%;
-	--cyan-6-dark: 192deg 92.6% 21.2%;
-	--cyan-7-dark: 192.8deg 75% 28.2%;
-	--cyan-8-dark: 192.1deg 80.3% 33.9%;
-	--cyan-9-dark: 191.2deg 100% 39%;
-	--cyan-10-dark: 191.4deg 71.2% 47.6%;
-	--cyan-11-dark: 190.1deg 75.5% 60%;
-	--cyan-12-dark: 190.2deg 80.2% 84.1%;
-
-	--cyan-1-light: 195deg 66.7% 98.8%;
-	--cyan-2-light: 186.7deg 52.9% 96.7%;
-	--cyan-3-light: 184.4deg 69.2% 92.4%;
-	--cyan-4-light: 186.8deg 71% 87.8%;
-	--cyan-5-light: 187.1deg 66.3% 82.5%;
-	--cyan-6-light: 188.1deg 60.7% 76.1%;
-	--cyan-7-light: 188.8deg 57.6% 67.6%;
-	--cyan-8-light: 189deg 60.3% 52.5%;
-	--cyan-9-light: 191.2deg 100% 39%;
-	--cyan-10-light: 191.5deg 92.7% 37.6%;
-	--cyan-11-light: 191.9deg 81% 32.9%;
-	--cyan-12-light: 192.2deg 69.4% 16.7%;
-
 	--iris-9-contrast: 0deg 0% 100%;
 
 	--iris-1-dark: 240deg 22.4% 9.6%;
@@ -286,10 +153,9 @@
 	--iris-10-light: 240deg 55.4% 56.1%;
 	--iris-11-light: 242.1deg 50.2% 55.1%;
 	--iris-12-light: 238deg 43.1% 26.9%;
-}
+	/* #endregion blues and purples */
 
-/* #region design grays: Mauve & Sand */
-:root {
+	/* #region grays */
 	--mauve-1-dark: 270deg 5.6% 7.1%;
 	--mauve-2-dark: 270deg 3.8% 10.2%;
 	--mauve-3-dark: 260deg 4.2% 13.9%;
@@ -393,10 +259,18 @@
 	--sand-a10-light: #0c0c0080;
 	--sand-a11-light: #08080099;
 	--sand-a12-light: #060500e6;
-}
+	/* #endregion grays */
 
-/* #region design shadows */
-:root {
+	/* #region radii */
+	--radius-1: calc(3px * var(--radius-factor));
+	--radius-2: calc(4px * var(--radius-factor));
+	--radius-3: calc(6px * var(--radius-factor));
+	--radius-4: calc(8px * var(--radius-factor));
+	--radius-5: min(calc(12px * var(--radius-factor)), 24px);
+	--radius-6: min(calc(16px * var(--radius-factor)), 32px);
+	/* #endregion radii */
+
+	/* #region shadows */
 	--shadow-1-dark: inset 0 1px var(--gray-a4), inset 0 0 0.5px var(--gray-a3), inset 0 -1px 0px var(--gray-a3),
 		inset 0 0 0 1px var(--gray-a6), inset 0 1px 3px 0 rgba(0, 0, 0, 0.8), inset 0 1px 3px 0 rgba(0, 0, 0, 0.95);
 	--shadow-2-dark: 0 0 0 1px var(--gray-a5), 0 0 0 0.5px rgba(0, 0, 0, 0.2), 0px 2px 1px -1px rgba(0, 0, 0, 0.7),
@@ -415,21 +289,11 @@
 	--shadow-4-light: 0 0 0 1px var(--gray-a3), 0px 8px 40px var(--gray-a3), 0px 12px 32px -16px rgba(0, 0, 0, 0.15);
 	--shadow-5-light: 0 0 0 1px var(--gray-a3), 0px 12px 60px var(--gray-a6), 0px 12px 32px -16px rgba(0, 0, 0, 0.4);
 	--shadow-6-light: 0 0 0 1px var(--gray-a3), 0px 16px 64px var(--gray-a7), 0px 16px 36px -20px var(--gray-a7);
+	/* #endregion shadows */
 }
 
-/* #region logo and bg colors */
-:root {
-	--logo: var(--accent-9);
-	/* --app-bg is halfway between --gray-1 and --accent-1 */
-	--app-bg-daffodil: 50deg 40% 99%;
-	--app-bg-bellflower: 270deg 60% 99.3%;
-	--app-bg-desert: 48deg 16.2% 6.6%;
-	--app-bg-amethyst: 255deg 14% 8.35%;
-}
-
+/* #region adaptive light/dark schemes */
 .light {
-	color-scheme: light;
-
 	--green-1: var(--green-1-light);
 	--green-2: var(--green-2-light);
 	--green-3: var(--green-3-light);
@@ -443,19 +307,6 @@
 	--green-11: var(--green-11-light);
 	--green-12: var(--green-12-light);
 
-	--jade-1: var(--jade-1-light);
-	--jade-2: var(--jade-2-light);
-	--jade-3: var(--jade-3-light);
-	--jade-4: var(--jade-4-light);
-	--jade-5: var(--jade-5-light);
-	--jade-6: var(--jade-6-light);
-	--jade-7: var(--jade-7-light);
-	--jade-8: var(--jade-8-light);
-	--jade-9: var(--jade-9-light);
-	--jade-10: var(--jade-10-light);
-	--jade-11: var(--jade-11-light);
-	--jade-12: var(--jade-12-light);
-
 	--red-1: var(--red-1-light);
 	--red-2: var(--red-2-light);
 	--red-3: var(--red-3-light);
@@ -468,32 +319,6 @@
 	--red-10: var(--red-10-light);
 	--red-11: var(--red-11-light);
 	--red-12: var(--red-12-light);
-
-	--ruby-1: var(--ruby-1-light);
-	--ruby-2: var(--ruby-2-light);
-	--ruby-3: var(--ruby-3-light);
-	--ruby-4: var(--ruby-4-light);
-	--ruby-5: var(--ruby-5-light);
-	--ruby-6: var(--ruby-6-light);
-	--ruby-7: var(--ruby-7-light);
-	--ruby-8: var(--ruby-8-light);
-	--ruby-9: var(--ruby-9-light);
-	--ruby-10: var(--ruby-10-light);
-	--ruby-11: var(--ruby-11-light);
-	--ruby-12: var(--ruby-12-light);
-
-	--yellow-1: var(--yellow-1-light);
-	--yellow-2: var(--yellow-2-light);
-	--yellow-3: var(--yellow-3-light);
-	--yellow-4: var(--yellow-4-light);
-	--yellow-5: var(--yellow-5-light);
-	--yellow-6: var(--yellow-6-light);
-	--yellow-7: var(--yellow-7-light);
-	--yellow-8: var(--yellow-8-light);
-	--yellow-9: var(--yellow-9-light);
-	--yellow-10: var(--yellow-10-light);
-	--yellow-11: var(--yellow-11-light);
-	--yellow-12: var(--yellow-12-light);
 
 	--amber-1: var(--amber-1-light);
 	--amber-2: var(--amber-2-light);
@@ -520,19 +345,6 @@
 	--blue-10: var(--blue-10-light);
 	--blue-11: var(--blue-11-light);
 	--blue-12: var(--blue-12-light);
-
-	--cyan-1: var(--cyan-1-light);
-	--cyan-2: var(--cyan-2-light);
-	--cyan-3: var(--cyan-3-light);
-	--cyan-4: var(--cyan-4-light);
-	--cyan-5: var(--cyan-5-light);
-	--cyan-6: var(--cyan-6-light);
-	--cyan-7: var(--cyan-7-light);
-	--cyan-8: var(--cyan-8-light);
-	--cyan-9: var(--cyan-9-light);
-	--cyan-10: var(--cyan-10-light);
-	--cyan-11: var(--cyan-11-light);
-	--cyan-12: var(--cyan-12-light);
 
 	--iris-1: var(--iris-1-light);
 	--iris-2: var(--iris-2-light);
@@ -608,8 +420,6 @@
 }
 
 .dark {
-	color-scheme: dark;
-
 	--green-1: var(--green-1-dark);
 	--green-2: var(--green-2-dark);
 	--green-3: var(--green-3-dark);
@@ -623,19 +433,6 @@
 	--green-11: var(--green-11-dark);
 	--green-12: var(--green-12-dark);
 
-	--jade-1: var(--jade-1-dark);
-	--jade-2: var(--jade-2-dark);
-	--jade-3: var(--jade-3-dark);
-	--jade-4: var(--jade-4-dark);
-	--jade-5: var(--jade-5-dark);
-	--jade-6: var(--jade-6-dark);
-	--jade-7: var(--jade-7-dark);
-	--jade-8: var(--jade-8-dark);
-	--jade-9: var(--jade-9-dark);
-	--jade-10: var(--jade-10-dark);
-	--jade-11: var(--jade-11-dark);
-	--jade-12: var(--jade-12-dark);
-
 	--red-1: var(--red-1-dark);
 	--red-2: var(--red-2-dark);
 	--red-3: var(--red-3-dark);
@@ -648,32 +445,6 @@
 	--red-10: var(--red-10-dark);
 	--red-11: var(--red-11-dark);
 	--red-12: var(--red-12-dark);
-
-	--ruby-1: var(--ruby-1-dark);
-	--ruby-2: var(--ruby-2-dark);
-	--ruby-3: var(--ruby-3-dark);
-	--ruby-4: var(--ruby-4-dark);
-	--ruby-5: var(--ruby-5-dark);
-	--ruby-6: var(--ruby-6-dark);
-	--ruby-7: var(--ruby-7-dark);
-	--ruby-8: var(--ruby-8-dark);
-	--ruby-9: var(--ruby-9-dark);
-	--ruby-10: var(--ruby-10-dark);
-	--ruby-11: var(--ruby-11-dark);
-	--ruby-12: var(--ruby-12-dark);
-
-	--yellow-1: var(--yellow-1-dark);
-	--yellow-2: var(--yellow-2-dark);
-	--yellow-3: var(--yellow-3-dark);
-	--yellow-4: var(--yellow-4-dark);
-	--yellow-5: var(--yellow-5-dark);
-	--yellow-6: var(--yellow-6-dark);
-	--yellow-7: var(--yellow-7-dark);
-	--yellow-8: var(--yellow-8-dark);
-	--yellow-9: var(--yellow-9-dark);
-	--yellow-10: var(--yellow-10-dark);
-	--yellow-11: var(--yellow-11-dark);
-	--yellow-12: var(--yellow-12-dark);
 
 	--amber-1: var(--amber-1-dark);
 	--amber-2: var(--amber-2-dark);
@@ -700,19 +471,6 @@
 	--blue-10: var(--blue-10-dark);
 	--blue-11: var(--blue-11-dark);
 	--blue-12: var(--blue-12-dark);
-
-	--cyan-1: var(--cyan-1-dark);
-	--cyan-2: var(--cyan-2-dark);
-	--cyan-3: var(--cyan-3-dark);
-	--cyan-4: var(--cyan-4-dark);
-	--cyan-5: var(--cyan-5-dark);
-	--cyan-6: var(--cyan-6-dark);
-	--cyan-7: var(--cyan-7-dark);
-	--cyan-8: var(--cyan-8-dark);
-	--cyan-9: var(--cyan-9-dark);
-	--cyan-10: var(--cyan-10-dark);
-	--cyan-11: var(--cyan-11-dark);
-	--cyan-12: var(--cyan-12-dark);
 
 	--iris-1: var(--iris-1-dark);
 	--iris-2: var(--iris-2-dark);
@@ -786,238 +544,4 @@
 	--shadow-5: var(--shadow-5-dark);
 	--shadow-6: var(--shadow-6-dark);
 }
-
-[data-theme='daffodil'],
-[data-theme='desert'] {
-	--success-1: var(--green-1);
-	--success-2: var(--green-2);
-	--success-3: var(--green-3);
-	--success-4: var(--green-4);
-	--success-5: var(--green-5);
-	--success-6: var(--green-6);
-	--success-7: var(--green-7);
-	--success-8: var(--green-8);
-	--success-9: var(--green-9);
-	--success-9-contrast: var(--green-9-contrast);
-	--success-10: var(--green-10);
-	--success-11: var(--green-11);
-	--success-12: var(--green-12);
-
-	--error-1: var(--red-1);
-	--error-2: var(--red-2);
-	--error-3: var(--red-3);
-	--error-4: var(--red-4);
-	--error-5: var(--red-5);
-	--error-6: var(--red-6);
-	--error-7: var(--red-7);
-	--error-8: var(--red-8);
-	--error-9: var(--red-9);
-	--error-9-contrast: var(--red-9-contrast);
-	--error-10: var(--red-10);
-	--error-11: var(--red-11);
-	--error-12: var(--red-12);
-
-	--warning-1: var(--yellow-1);
-	--warning-2: var(--yellow-2);
-	--warning-3: var(--yellow-3);
-	--warning-4: var(--yellow-4);
-	--warning-5: var(--yellow-5);
-	--warning-6: var(--yellow-6);
-	--warning-7: var(--yellow-7);
-	--warning-8: var(--yellow-8);
-	--warning-9: var(--yellow-9);
-	--warning-9-contrast: var(--yellow-9-contrast);
-	--warning-10: var(--yellow-10);
-	--warning-11: var(--yellow-11);
-	--warning-12: var(--yellow-12);
-
-	--info-1: var(--blue-1);
-	--info-2: var(--blue-2);
-	--info-3: var(--blue-3);
-	--info-4: var(--blue-4);
-	--info-5: var(--blue-5);
-	--info-6: var(--blue-6);
-	--info-7: var(--blue-7);
-	--info-8: var(--blue-8);
-	--info-9: var(--blue-9);
-	--info-9-contrast: var(--blue-9-contrast);
-	--info-10: var(--blue-10);
-	--info-11: var(--blue-11);
-	--info-12: var(--blue-12);
-
-	--accent-1: var(--amber-1);
-	--accent-2: var(--amber-2);
-	--accent-3: var(--amber-3);
-	--accent-4: var(--amber-4);
-	--accent-5: var(--amber-5);
-	--accent-6: var(--amber-6);
-	--accent-7: var(--amber-7);
-	--accent-8: var(--amber-8);
-	--accent-9: var(--amber-9);
-	--accent-9-contrast: var(--amber-9-contrast);
-	--accent-10: var(--amber-10);
-	--accent-11: var(--amber-11);
-	--accent-12: var(--amber-12);
-
-	--gray-1: var(--sand-1);
-	--gray-2: var(--sand-2);
-	--gray-3: var(--sand-3);
-	--gray-4: var(--sand-4);
-	--gray-5: var(--sand-5);
-	--gray-6: var(--sand-6);
-	--gray-7: var(--sand-7);
-	--gray-8: var(--sand-8);
-	--gray-9: var(--sand-9);
-	--gray-10: var(--sand-10);
-	--gray-11: var(--sand-11);
-	--gray-12: var(--sand-12);
-
-	--gray-a1: var(--sand-a1);
-	--gray-a2: var(--sand-a2);
-	--gray-a3: var(--sand-a3);
-	--gray-a4: var(--sand-a4);
-	--gray-a5: var(--sand-a5);
-	--gray-a6: var(--sand-a6);
-	--gray-a7: var(--sand-a7);
-	--gray-a8: var(--sand-a8);
-	--gray-a9: var(--sand-a9);
-	--gray-a10: var(--sand-a10);
-	--gray-a11: var(--sand-a11);
-	--gray-a12: var(--sand-a12);
-
-	--radius-factor: 0.5; /* For example: 0, 0.5, 1, 1.5, 9999 */
-	--radius-1: calc(3px * var(--radius-factor));
-	--radius-2: calc(4px * var(--radius-factor));
-	--radius-3: calc(6px * var(--radius-factor));
-	--radius-4: calc(8px * var(--radius-factor));
-	--radius-5: min(calc(12px * var(--radius-factor)), 24px);
-	--radius-6: min(calc(16px * var(--radius-factor)), 32px);
-	--radius-tab: var(--radius-2);
-	--radius-badge: var(--radius-2);
-	--radius-btn: var(--radius-4);
-	--radius-card: var(--radius-4);
-}
-
-[data-theme='bellflower'],
-[data-theme='amethyst'] {
-	--success-1: var(--jade-1);
-	--success-2: var(--jade-2);
-	--success-3: var(--jade-3);
-	--success-4: var(--jade-4);
-	--success-5: var(--jade-5);
-	--success-6: var(--jade-6);
-	--success-7: var(--jade-7);
-	--success-8: var(--jade-8);
-	--success-9: var(--jade-9);
-	--success-9-contrast: var(--jade-9-contrast);
-	--success-10: var(--jade-10);
-	--success-11: var(--jade-11);
-	--success-12: var(--jade-12);
-
-	--error-1: var(--ruby-1);
-	--error-2: var(--ruby-2);
-	--error-3: var(--ruby-3);
-	--error-4: var(--ruby-4);
-	--error-5: var(--ruby-5);
-	--error-6: var(--ruby-6);
-	--error-7: var(--ruby-7);
-	--error-8: var(--ruby-8);
-	--error-9: var(--ruby-9);
-	--error-9-contrast: var(--ruby-9-contrast);
-	--error-10: var(--ruby-10);
-	--error-11: var(--ruby-11);
-	--error-12: var(--ruby-12);
-
-	--warning-1: var(--amber-1);
-	--warning-2: var(--amber-2);
-	--warning-3: var(--amber-3);
-	--warning-4: var(--amber-4);
-	--warning-5: var(--amber-5);
-	--warning-6: var(--amber-6);
-	--warning-7: var(--amber-7);
-	--warning-8: var(--amber-8);
-	--warning-9: var(--amber-9);
-	--warning-9-contrast: var(--amber-9-contrast);
-	--warning-10: var(--amber-10);
-	--warning-11: var(--amber-11);
-	--warning-12: var(--amber-12);
-
-	--info-1: var(--cyan-1);
-	--info-2: var(--cyan-2);
-	--info-3: var(--cyan-3);
-	--info-4: var(--cyan-4);
-	--info-5: var(--cyan-5);
-	--info-6: var(--cyan-6);
-	--info-7: var(--cyan-7);
-	--info-8: var(--cyan-8);
-	--info-9: var(--cyan-9);
-	--info-9-contrast: var(--cyan-9-contrast);
-	--info-10: var(--cyan-10);
-	--info-11: var(--cyan-11);
-	--info-12: var(--cyan-12);
-
-	--accent-1: var(--iris-1);
-	--accent-2: var(--iris-2);
-	--accent-3: var(--iris-3);
-	--accent-4: var(--iris-4);
-	--accent-5: var(--iris-5);
-	--accent-6: var(--iris-6);
-	--accent-7: var(--iris-7);
-	--accent-8: var(--iris-8);
-	--accent-9: var(--iris-9);
-	--accent-9-contrast: var(--iris-9-contrast);
-	--accent-10: var(--iris-10);
-	--accent-11: var(--iris-11);
-	--accent-12: var(--iris-12);
-
-	--gray-1: var(--mauve-1);
-	--gray-2: var(--mauve-2);
-	--gray-3: var(--mauve-3);
-	--gray-4: var(--mauve-4);
-	--gray-5: var(--mauve-5);
-	--gray-6: var(--mauve-6);
-	--gray-7: var(--mauve-7);
-	--gray-8: var(--mauve-8);
-	--gray-9: var(--mauve-9);
-	--gray-10: var(--mauve-10);
-	--gray-11: var(--mauve-11);
-	--gray-12: var(--mauve-12);
-
-	--gray-a1: var(--mauve-a1);
-	--gray-a2: var(--mauve-a2);
-	--gray-a3: var(--mauve-a3);
-	--gray-a4: var(--mauve-a4);
-	--gray-a5: var(--mauve-a5);
-	--gray-a6: var(--mauve-a6);
-	--gray-a7: var(--mauve-a7);
-	--gray-a8: var(--mauve-a8);
-	--gray-a9: var(--mauve-a9);
-	--gray-a10: var(--mauve-a10);
-	--gray-a11: var(--mauve-a11);
-	--gray-a12: var(--mauve-a12);
-
-	--radius-factor: 1.5; /* For example: 0, 0.5, 1, 1.5, 9999 */
-	--radius-1: calc(3px * var(--radius-factor));
-	--radius-2: calc(4px * var(--radius-factor));
-	--radius-3: calc(6px * var(--radius-factor));
-	--radius-4: calc(8px * var(--radius-factor));
-	--radius-5: min(calc(12px * var(--radius-factor)), 24px);
-	--radius-6: min(calc(16px * var(--radius-factor)), 32px);
-	--radius-tab: var(--radius-2);
-	--radius-badge: var(--radius-2);
-	--radius-btn: var(--radius-4);
-	--radius-card: var(--radius-5);
-}
-
-[data-theme='daffodil'] {
-	--app-bg: var(--app-bg-daffodil);
-}
-[data-theme='desert'] {
-	--app-bg: var(--app-bg-desert);
-}
-[data-theme='bellflower'] {
-	--app-bg: var(--app-bg-bellflower);
-}
-[data-theme='amethyst'] {
-	--app-bg: var(--app-bg-amethyst);
-}
+/* #endregion adaptive light/dark schemes */

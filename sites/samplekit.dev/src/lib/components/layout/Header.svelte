@@ -1,9 +1,8 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { page } from '$app/stores';
-	import { keyboard } from '$lib/actions';
-	import { themeController, ThemeSwitchDayNightSystem } from '$lib/styles';
 	import { Logo } from '..';
+	import ThemeToggler from './ThemeToggler.svelte';
 	import DesktopNavItem from './nav/DesktopNavItem.svelte';
 	import MobileNav from './nav/MobileNav.svelte';
 	import MobileNavToggler from './nav/MobileNavToggler.svelte';
@@ -32,9 +31,6 @@
 			mobileNavController.destroy();
 		};
 	});
-
-	// todo svelte-5-prettier inline definition breaks prettier
-	type AfterMenuProps = { prev: (e: KeyboardEvent) => void; next: (e: KeyboardEvent) => void };
 </script>
 
 <header
@@ -56,25 +52,8 @@
 				</ul>
 			</nav>
 
-			<span class="js-only block h-6 w-6 shrink-0 animate-[fadeIn_100ms_ease-in-out_forwards]">
-				<ThemeSwitchDayNightSystem
-					schemeSystem={$themeController.schemeSystem}
-					mode={$themeController.mode}
-					modeApplied={$themeController.modeApplied}
-					onModeChange={themeController.setMode}
-				>
-					{#snippet afterMenu({ prev, next }: AfterMenuProps)}
-						<a
-							tabindex="-1"
-							href="/appearance"
-							class="flex items-center rounded-b-card p-2 pl-4 text-xs font-light text-gray-11 decoration-accent-6 underline-offset-2 hover:bg-gray-4 hover:underline focus-visible:bg-gray-4"
-							use:keyboard={{ ArrowUp: [prev], ArrowDown: [next] }}
-						>
-							Customize appearance
-						</a>
-					{/snippet}
-				</ThemeSwitchDayNightSystem>
-			</span>
+			<ThemeToggler />
+
 			<span class="flex items-center justify-center md:hidden">
 				<MobileNavToggler toggle={mobileNavController.toggle} mobileNavOpen={$mobileNavOpen} />
 				<MobileNav

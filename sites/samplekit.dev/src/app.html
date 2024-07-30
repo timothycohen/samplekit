@@ -1,10 +1,10 @@
 <!doctype html>
-<html lang="en" data-theme="amethyst" class="dark">
+<html lang="en" data-theme="amethyst" class="no-js dark">
 	<head>
 		<!-- theme -->
 		<script src="/themeUtils.js"></script>
 		<script>
-			_initTheme();
+			initTheme();
 		</script>
 
 		<meta name="theme-color" media="(prefers-color-scheme: light)" content="#FFFFFF" />
@@ -59,6 +59,7 @@
 
 		<!-- JS indicator -->
 		<script>
+			document.documentElement.classList.remove('no-js');
 			document.documentElement.classList.add('js-enabled');
 		</script>
 

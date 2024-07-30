@@ -380,7 +380,7 @@ shiki-end -->
 
 <p>We'll first need to choose our storage system. If using <code>localStorage</code>, it can be as simple as:</p>
 
-<CodeTopper title="colorThemeUtils.ts">
+<CodeTopper title="themeUtils.ts">
 	<!-- shiki-start
 ```ts
 const STORAGE_KEY_THEME_DAY = 'theme_day';
@@ -422,7 +422,7 @@ export const load: LayoutServerLoad = async ({ cookies }) => {
 ```
 shiki-end -->
 
-<CodeTopper title="colorThemeUtils.ts">
+<CodeTopper title="themeUtils.ts">
 	<!-- shiki-start
 ```ts
 function getStorage(name: Key): string | null {
@@ -463,7 +463,7 @@ shiki-end -->
 
 <p>For this demo, we'll have two light themes and two dark themes.</p>
 
-<CodeTopper title="colorThemeUtils.ts">
+<CodeTopper title="themeUtils.ts">
 	<!-- shiki-start
 ```ts
 export type Theme = { name: string; scheme: 'light' | 'dark' };
@@ -488,7 +488,7 @@ export const getSystemScheme = (): SystemScheme => {
 	return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
 };
 
-export const getStoredThemeMode = (): Mode => {
+export const getStoredThemeModeClient = (): Mode => {
 	if (typeof window === 'undefined') return DEFAULT_THEME_SYNC_MODE;
 	const val = getStorage(STORAGE_KEY_THEME_SYNC_MODE);
 	if (!val) return DEFAULT_THEME_SYNC_MODE;
@@ -496,7 +496,7 @@ export const getStoredThemeMode = (): Mode => {
 	return DEFAULT_THEME_SYNC_MODE;
 };
 
-export const getStoredThemeDay = (): Theme => {
+export const getStoredThemeDayClient = (): Theme => {
 	if (typeof window === 'undefined') return DEFAULT_THEME_DAY;
 	const name = getStorage(`${STORAGE_KEY_THEME_DAY}_name`);
 	if (!name) return DEFAULT_THEME_DAY;
@@ -505,7 +505,7 @@ export const getStoredThemeDay = (): Theme => {
 	return THEMES.find((t) => t.name === name && t.scheme === scheme) ?? DEFAULT_THEME_DAY;
 };
 
-export const getStoredThemeNight = (): Theme => {
+export const getStoredThemeNightClient = (): Theme => {
 	if (typeof window === 'undefined') return DEFAULT_THEME_NIGHT;
 	const name = getStorage(`${STORAGE_KEY_THEME_NIGHT}_name`);
 	if (!name) return DEFAULT_THEME_NIGHT;
@@ -526,13 +526,13 @@ export const setThemeOnDoc = ({ name, scheme }: Theme) => {
 	}
 };
 
-export const setThemeInStorage = ({ kind, theme }: { kind: ModeApplied; theme: Theme }) => {
+export const storeTheme = ({ kind, theme }: { kind: ModeApplied; theme: Theme }) => {
 	const storageKey: typeof STORAGE_KEY_THEME_DAY | typeof STORAGE_KEY_THEME_NIGHT = `theme_${kind}`;
 	setStorage(`${storageKey}_name`, theme.name);
 	setStorage(`${storageKey}_scheme`, theme.scheme);
 };
 
-export const setModeInStorage = (mode: Mode) => {
+export const storeMode = (mode: Mode) => {
 	setStorage(STORAGE_KEY_THEME_SYNC_MODE, mode);
 };
 ```
@@ -543,23 +543,23 @@ shiki-end -->
 
 <p>We now have all the building blocks to implement the controller. Here's one possible implementation.</p>
 
-<CodeTopper title="colorThemeController.ts">
+<CodeTopper title="themeController.ts">
 	<!-- shiki-start
 ```ts
 import { get, writable } from 'svelte/store';
 import {
-	getStoredThemeDay,
-	getStoredThemeMode,
-	getStoredThemeNight,
+	getStoredThemeDayClient,
+	getStoredThemeModeClient,
+	getStoredThemeNightClient,
 	getSystemScheme,
-	setModeInStorage,
-	setThemeInStorage,
+	storeMode,
+	storeTheme,
 	setThemeOnDoc,
 	type ModeApplied,
 	type Mode,
 	type SystemScheme,
 	type Theme,
-} from './colorThemeUtils';
+} from './themeUtils';
 
 const calcApplied = (a: { mode: Mode; schemeSystem: SystemScheme; themeNight: Theme; themeDay: Theme }) => {
 	const modeApplied: ModeApplied =
@@ -573,9 +573,9 @@ const calcApplied = (a: { mode: Mode; schemeSystem: SystemScheme; themeNight: Th
 const createThemeController = () => {
 	const store = (() => {
 		const schemeSystem: 'light' | 'dark' = getSystemScheme();
-		const mode: 'fixed_day' | 'fixed_night' | 'sync_system' = getStoredThemeMode();
-		const themeDay = getStoredThemeDay();
-		const themeNight = getStoredThemeNight();
+		const mode: 'fixed_day' | 'fixed_night' | 'sync_system' = getStoredThemeModeClient();
+		const themeDay = getStoredThemeDayClient();
+		const themeNight = getStoredThemeNightClient();
 		const { modeApplied, themeApplied } = calcApplied({ schemeSystem, mode, themeDay, themeNight });
 
 		return writable({
@@ -595,7 +595,7 @@ const createThemeController = () => {
 			else if (kind === 'night') s.themeNight = theme;
 			s = { ...s, ...calcApplied(s) };
 
-			setThemeInStorage({ kind, theme });
+			storeTheme({ kind, theme });
 			setThemeOnDoc(s.themeApplied);
 
 			return s;
@@ -607,7 +607,7 @@ const createThemeController = () => {
 			s.mode = mode;
 			s = { ...s, ...calcApplied(s) };
 
-			setModeInStorage(s.mode);
+			storeMode(s.mode);
 			setThemeOnDoc(s.themeApplied);
 
 			return s;
@@ -626,7 +626,7 @@ const createThemeController = () => {
 
 			if (type === 'light-dark') {
 				const mode = schemeSystem === 'dark' ? 'fixed_night' : 'fixed_day';
-				setModeInStorage(mode);
+				storeMode(mode);
 
 				const modeApplied = schemeSystem === 'dark' ? 'night' : 'day';
 				const themeApplied = schemeSystem === 'dark' ? s.themeNight : s.themeDay;
@@ -687,18 +687,18 @@ shiki-end -->
 <p>We can completely eliminate this by calling some (blocking) init logic in <code>app.html</code>.</p>
 
 <p>
-	I prefer to write a short script inside <code>colorThemeUtils.ts</code>, compile it with a script into
+	I prefer to write a short script inside <code>themeUtils.ts</code>, compile it with a script into
 	<code>/static</code>, and call it in <code>app.html</code>.
 </p>
 
-<CodeTopper title="colorThemeUtils.ts">
+<CodeTopper title="themeUtils.ts">
 	<!-- shiki-start
 ```ts
 export const _initTheme = () => {
-	const mode = getStoredThemeMode();
+	const mode = getStoredThemeModeClient();
 	const appliedMode =
 		mode === 'fixed_day' ? 'day' : mode === 'fixed_night' ? 'night' : getSystemScheme() === 'dark' ? 'night' : 'day';
-	const themeApplied = appliedMode === 'night' ? getStoredThemeNight() : getStoredThemeDay();
+	const themeApplied = appliedMode === 'night' ? getStoredThemeNightClient() : getStoredThemeDayClient();
 	setThemeOnDoc(themeApplied);
 };
 ```
@@ -717,7 +717,7 @@ shiki-end -->
 	<!-- shiki-start
 ```sh
 cd src/lib/styles &&
-	cp colorThemeUtils.ts themeUtils.ts &&
+	cp themeUtils.ts themeUtils.ts &&
 	sed -i '' 's/export //g' themeUtils.ts &&
 	npx tsc themeUtils.ts &&
 	mv themeUtils.js ../../../static/themeUtils.js &&

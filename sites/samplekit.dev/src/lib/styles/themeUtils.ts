@@ -1,11 +1,13 @@
 // Compile this to /static/themeUtils.js and import into app.html to prevent FOUC
 
-const STORAGE_KEY_THEME_DAY = 'theme_day';
-const STORAGE_KEY_THEME_NIGHT = 'theme_night';
-const STORAGE_KEY_THEME_SYNC_MODE = 'theme_sync_mode';
-type Key = `${typeof STORAGE_KEY_THEME_DAY | typeof STORAGE_KEY_THEME_NIGHT}_${'name' | 'scheme'}` | 'theme_sync_mode';
+export const STORAGE_KEY_THEME_DAY = 'theme_day';
+export const STORAGE_KEY_THEME_NIGHT = 'theme_night';
+export const STORAGE_KEY_THEME_SYNC_MODE = 'theme_sync_mode';
+export type StorageKey =
+	| `${typeof STORAGE_KEY_THEME_DAY | typeof STORAGE_KEY_THEME_NIGHT}_${'name' | 'scheme'}`
+	| 'theme_sync_mode';
 
-function getStorage(name: Key): string | null {
+function getStorageClient(name: StorageKey): string | null {
 	const nameEQ = `${name}=`;
 	const cookies = document.cookie.split(';');
 
@@ -22,37 +24,8 @@ function getStorage(name: Key): string | null {
 	return null;
 }
 
-function setStorage(name: Key, value: string, days?: number): void {
-	let expires = '';
-
-	if (days) {
-		const date = new Date();
-		date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
-		expires = `; expires=${date.toUTCString()}`;
-	}
-
-	document.cookie = `${name}=${value}${expires}; path=/`;
-}
-
 export type Theme = { name: string; scheme: 'light' | 'dark' };
 
-/**
- * #### bellflower / amethyst
- * - success: Jade
- * - info: Cyan
- * - error: Ruby
- * - warning: Amber
- * - accent: Iris
- * - gray: Mauve
- *
- * #### daffodil / desert
- * - success: Green
- * - info: Blue
- * - error: Red
- * - warning: Yellow
- * - accent: Amber
- * - gray: Sand
- */
 export const THEMES = [
 	{ name: 'daffodil', scheme: 'light' },
 	{ name: 'desert', scheme: 'dark' },
@@ -73,30 +46,42 @@ export const getSystemScheme = (): SystemScheme => {
 	return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
 };
 
-export const getStoredThemeMode = (): Mode => {
-	if (typeof window === 'undefined') return DEFAULT_THEME_SYNC_MODE;
-	const val = getStorage(STORAGE_KEY_THEME_SYNC_MODE);
+export const normalizeThemeMode = (val: string | null | undefined): Mode => {
 	if (!val) return DEFAULT_THEME_SYNC_MODE;
 	if (val === 'fixed_day' || val === 'fixed_night' || val === 'sync_system') return val;
 	return DEFAULT_THEME_SYNC_MODE;
 };
 
-export const getStoredThemeDay = (): Theme => {
-	if (typeof window === 'undefined') return DEFAULT_THEME_DAY;
-	const name = getStorage(`${STORAGE_KEY_THEME_DAY}_name`);
+export const normalizeThemeDay = (
+	name: string | null | undefined,
+	getter: (key: StorageKey) => string | null | undefined,
+): Theme => {
 	if (!name) return DEFAULT_THEME_DAY;
-	const scheme = getStorage(`${STORAGE_KEY_THEME_DAY}_scheme`);
+	const scheme = getter(`${STORAGE_KEY_THEME_DAY}_scheme`);
 	if (!scheme) return DEFAULT_THEME_DAY;
 	return THEMES.find((t) => t.name === name && t.scheme === scheme) ?? DEFAULT_THEME_DAY;
 };
 
-export const getStoredThemeNight = (): Theme => {
-	if (typeof window === 'undefined') return DEFAULT_THEME_NIGHT;
-	const name = getStorage(`${STORAGE_KEY_THEME_NIGHT}_name`);
+export const normalizeThemeNight = (
+	name: string | null | undefined,
+	getter: (key: StorageKey) => string | null | undefined,
+): Theme => {
 	if (!name) return DEFAULT_THEME_NIGHT;
-	const scheme = getStorage(`${STORAGE_KEY_THEME_NIGHT}_scheme`);
+	const scheme = getter(`${STORAGE_KEY_THEME_NIGHT}_scheme`);
 	if (!scheme) return DEFAULT_THEME_NIGHT;
 	return THEMES.find((t) => t.name === name && t.scheme === scheme) ?? DEFAULT_THEME_NIGHT;
+};
+
+export const getStoredThemeModeClient = (): Mode => {
+	return normalizeThemeMode(getStorageClient(STORAGE_KEY_THEME_SYNC_MODE));
+};
+
+export const getStoredThemeDayClient = (): Theme => {
+	return normalizeThemeDay(getStorageClient(`${STORAGE_KEY_THEME_DAY}_name`), getStorageClient);
+};
+
+export const getStoredThemeNightClient = (): Theme => {
+	return normalizeThemeNight(getStorageClient(`${STORAGE_KEY_THEME_NIGHT}_name`), getStorageClient);
 };
 
 export const setThemeOnDoc = ({ name, scheme }: Theme) => {
@@ -111,20 +96,16 @@ export const setThemeOnDoc = ({ name, scheme }: Theme) => {
 	}
 };
 
-export const setThemeInStorage = ({ kind, theme }: { kind: ModeApplied; theme: Theme }) => {
-	const storageKey: typeof STORAGE_KEY_THEME_DAY | typeof STORAGE_KEY_THEME_NIGHT = `theme_${kind}`;
-	setStorage(`${storageKey}_name`, theme.name);
-	setStorage(`${storageKey}_scheme`, theme.scheme);
+export const setSystemSchemeOnDoc = (systemScheme: SystemScheme) => {
+	document.documentElement.setAttribute('data-prefer-scheme', systemScheme);
 };
 
-export const setModeInStorage = (mode: Mode) => {
-	setStorage(STORAGE_KEY_THEME_SYNC_MODE, mode);
-};
-
-export const _initTheme = () => {
-	const mode = getStoredThemeMode();
+export const initTheme = () => {
+	const mode = getStoredThemeModeClient();
+	const systemScheme = getSystemScheme();
 	const appliedMode =
-		mode === 'fixed_day' ? 'day' : mode === 'fixed_night' ? 'night' : getSystemScheme() === 'dark' ? 'night' : 'day';
-	const themeApplied = appliedMode === 'night' ? getStoredThemeNight() : getStoredThemeDay();
+		mode === 'fixed_day' ? 'day' : mode === 'fixed_night' ? 'night' : systemScheme === 'dark' ? 'night' : 'day';
+	const themeApplied = appliedMode === 'night' ? getStoredThemeNightClient() : getStoredThemeDayClient();
 	setThemeOnDoc(themeApplied);
+	setSystemSchemeOnDoc(systemScheme);
 };

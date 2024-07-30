@@ -70,13 +70,13 @@
 			</hgroup>
 
 			{#if article.demos?.main}
-				<span class="prose prose-lg prose-radix">
+				<span class="prose lg:prose-lg prose-radix">
 					<h2 class="my-4" id="interactive-demo" data-auto-slug-anchor-position="prepend" data-auto-slug="">
 						<a href="#interactive-demo" aria-hidden="true" tabindex="-1" data-auto-slug-anchor="">#</a>
 						Interactive Demo
 					</h2>
 				</span>
-				<div class="main-demo">
+				<div class="main-demo prose-pre">
 					<TabPanels files={article.demos.main} />
 				</div>
 			{/if}
@@ -88,7 +88,7 @@
 		</div>
 
 		<div class="flex gap-[clamp(2.5rem,8vw,4rem)]">
-			<div class="prose prose-lg prose-radix min-w-0 max-w-none flex-1" bind:this={articleContentWrapper} id="use-toc">
+			<div class="prose lg:prose-lg prose-radix min-w-0 max-w-none flex-1" bind:this={articleContentWrapper} id="use-toc">
 				{@render children?.()}
 			</div>
 
@@ -170,7 +170,7 @@
 		<div class="mb-6-9 flex flex-col gap-8 md:flex-row {sidebarOpen ? 'lg:hidden' : ''}">
 			{#if article.prev}
 				<div class="w-full md:max-w-md">
-					<div class="prose prose-lg prose-radix mb-4"><h2>Previous Article</h2></div>
+					<div class="prose lg:prose-lg prose-radix mb-4"><h2>Previous Article</h2></div>
 					{#if !(article.prev.imgSmGif ?? article.prev.imgSm)}
 						<FeatureCard feature={article.prev} />
 					{:else}
@@ -182,7 +182,7 @@
 
 			{#if article.next}
 				<div class="w-full md:max-w-md">
-					<div class="prose prose-lg prose-radix mb-4"><h2>Next Article</h2></div>
+					<div class="prose lg:prose-lg prose-radix mb-4"><h2>Next Article</h2></div>
 					{#if !(article.next.imgSmGif ?? article.next.imgSm)}
 						<FeatureCard feature={article.next} />
 					{:else}
@@ -193,7 +193,7 @@
 			{/if}
 		</div>
 
-		<div class="prose prose-lg prose-radix">
+		<div class="prose lg:prose-lg prose-radix">
 			<Changelog updates={article.updates} />
 			<p>
 				Have a suggestion? File an
@@ -217,21 +217,11 @@
 		display: none;
 	}
 
-	article :global(.table-wrapper) {
-		overflow-x: auto;
-	}
-
 	article :global(a[data-auto-slug-anchor]) {
 		position: absolute;
 		left: calc(0% - 1rem);
 		width: calc(100% + 2rem);
 		text-decoration: none;
 		opacity: 0;
-	}
-
-	article .main-demo :global(.tabpanel > .code-wrapper) {
-		padding: 1rem 1.5rem;
-		margin: 0;
-		font-size: 0.9rem;
 	}
 </style>

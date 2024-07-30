@@ -56,8 +56,8 @@ require.extensions['.css'] = function (module, cssFilePath) {
 	module.exports = buildPluginCreator(cssFilePath);
 };
 
+// these are relative to the file which imports them (tailwindConfig.ts)
 export const componentPaths = ['alert', 'btn', 'input', 'link', 'modal', 'radio', 'swap-flip', 'typography'].map(
-	(p) => `./src/lib/styles/postcss/components/${p}.css`,
+	(p) => `./postcss/components/${p}.css`,
 );
-
-export const utilityPaths = ['underline'].map((p) => `./src/lib/styles/postcss/utilities/${p}.css`);
+export const utilityPaths = ['underline'].map((p) => `./postcss/utilities/${p}.css`);
