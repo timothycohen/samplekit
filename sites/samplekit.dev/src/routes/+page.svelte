@@ -5,12 +5,12 @@
 </script>
 
 <section class="page">
-	<div class="cross-dots absolute -top-[var(--nav-height)] bottom-0 left-0 right-0 -z-20 hidden dark:block"></div>
+	<div class="cross-dots absolute -top-[var(--open-nav-height)] bottom-0 left-0 right-0 -z-20 hidden dark:block"></div>
 	<div
-		class="absolute -top-[var(--nav-height)] left-0 right-0 -z-10 hidden h-96 w-full bg-gradient-to-t from-app-bg/50 to-accent-3/50 opacity-60 dark:block"
+		class="absolute -top-[var(--open-nav-height)] left-0 right-0 -z-10 hidden h-96 w-full bg-gradient-to-t from-app-bg/50 to-accent-3/50 opacity-60 dark:block"
 	></div>
 	<div
-		class="absolute -top-[var(--nav-height)] left-0 right-0 -z-10 hidden h-96 w-full bg-gradient-to-tr from-app-bg/30 via-app-bg/50 to-transparent dark:block"
+		class="absolute -top-[var(--open-nav-height)] left-0 right-0 -z-10 hidden h-96 w-full bg-gradient-to-tr from-app-bg/30 via-app-bg/50 to-transparent dark:block"
 	></div>
 
 	<div>

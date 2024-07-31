@@ -25,7 +25,7 @@
 
 	onMount(() => {
 		mobileNavController.listen();
-		document.documentElement.style.setProperty('scroll-padding-top', 'calc(var(--nav-height) + 1rem)');
+		document.documentElement.style.setProperty('scroll-padding-top', 'calc(var(--open-nav-height) + 1rem)');
 		return () => {
 			document.documentElement.style.removeProperty('scroll-padding-top');
 			mobileNavController.destroy();

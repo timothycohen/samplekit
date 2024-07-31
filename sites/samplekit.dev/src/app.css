@@ -41,7 +41,7 @@ html {
 
 /*#region Layout ############################# */
 :root {
-	--nav-height: 3.5rem;
+	--open-nav-height: 3.5rem;
 }
 ::view-transition-old(root),
 ::view-transition-new(root) {

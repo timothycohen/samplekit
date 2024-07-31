@@ -99,8 +99,8 @@
 					<Series series={article.series} />
 
 					<div class="flex-1">
-						<div class="sticky top-[calc(var(--nav-height)_+_2rem)] overflow-y-auto">
-							<div class="max-h-[calc(98vh-calc(var(--nav-height)_+_2rem))] py-2">
+						<div class="sticky top-[calc(var(--open-nav-height)_+_2rem)] overflow-y-auto">
+							<div class="max-h-[calc(98vh-calc(var(--open-nav-height)_+_2rem))] py-2">
 								<TOC tree={data.tree}>
 									<div class="flex w-full items-center justify-between">
 										<h2 class="t-h3 font-bold text-accent-12">Table of Contents</h2>

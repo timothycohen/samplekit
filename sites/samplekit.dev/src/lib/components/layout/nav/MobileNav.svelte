@@ -29,7 +29,7 @@
 
 <nav
 	id="nav--mobile"
-	class="fixed left-0 top-[var(--nav-height)] -z-40 h-screen-nav w-full overflow-y-auto
+	class="fixed left-0 top-[var(--open-nav-height)] -z-40 h-screen-nav w-full overflow-y-auto
 		{position === 'center' ? 'place-items-center' : 'p-page'}"
 >
 	<ul aria-label="main navigation" class="flex flex-col space-y-6">

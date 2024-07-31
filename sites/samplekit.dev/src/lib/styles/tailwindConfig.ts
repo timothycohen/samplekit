@@ -146,7 +146,7 @@ export const config = {
 
 			// layout
 			height: {
-				nav: 'var(--nav-height)',
+				nav: 'var(--open-nav-height)',
 				'screen-nav': 'calc(100vh - 3.5rem)',
 			},
 			minHeight: {
@@ -157,7 +157,7 @@ export const config = {
 				'6-9': 'clamp(1.5rem, 0.25rem + 3.125vw, 2.25rem)',
 			},
 			padding: {
-				nav: 'var(--nav-height)',
+				nav: 'var(--open-nav-height)',
 				page: 'clamp(1rem, -2.3333rem + 8.3333vw, 3rem)',
 			},
 
