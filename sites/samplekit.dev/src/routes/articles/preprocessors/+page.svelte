@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { CodeTopper } from '$lib/articles/components';
 	import { TabPanelItem } from '$lib/components';
+	import { HAnchor } from '$lib/components';
 	import DiffProcess from './DiffProcess.svelte';
 	import DiffRender from './DiffRender.svelte';
 	import DiffWrite from './DiffWrite.svelte';
@@ -27,9 +28,9 @@
 	<li class="list-disc">not have to wait for compatibility when Svelte 5 is released</li>
 </ul>
 
-<h2>Evaluating the Options</h2>
+<HAnchor tag="h2" title="Evaluating the Options" />
 
-<h3>0.1: Unified</h3>
+<HAnchor tag="h3" title="0.1: Unified" />
 
 <p>
 	Unified is an ecosystem of packages that all accept a standardized abstract syntax tree (AST). The uniformity means
@@ -138,12 +139,13 @@ shiki-end -->
 	components where needed?
 </p>
 
-<h3>0.2: MDsveX</h3>
+<HAnchor tag="h3" title="0.2: MDsveX" />
 <p>
-	<a href="https://MDsveX.pngwn.io/docs/">MDsveX</a> – a Markdown preprocessor for Svelte – solves the embedded Svelte
-	problem.
-	<a href="https://kit.svelte.dev/docs/integrations#preprocessors">Preprocessors</a> transform the input files before passing
-	them to the Svelte compiler, and this particular preprocessor enables writing Markdown and Svelte in the same file.
+	<a href="https://MDsveX.pngwn.io/docs/" data-external>MDsveX</a> – a Markdown preprocessor for Svelte – solves the
+	embedded Svelte problem.
+	<a href="https://kit.svelte.dev/docs/integrations#preprocessors" data-external>Preprocessors</a> transform the input files
+	before passing them to the Svelte compiler, and this particular preprocessor enables writing Markdown and Svelte in the
+	same file.
 </p>
 
 <p>
@@ -158,7 +160,7 @@ shiki-end -->
 	very appealing.
 </p>
 
-<h3>0.3: Preprocessors</h3>
+<HAnchor tag="h3" title="0.3: Preprocessors" />
 
 <p>
 	We can easily customize our supported functionality by writing simple preprocessors for each feature we want to add.
@@ -166,20 +168,20 @@ shiki-end -->
 	a dedicated package and call it when some special syntax is detected.
 </p>
 
-<h2>Integrating Preprocessors</h2>
+<HAnchor tag="h2" title="Integrating Preprocessors" />
 
-<h3>Setup</h3>
+<HAnchor tag="h3" title="Setup" />
 
 <p>
 	First, we'll want a different file extension so that we can instruct our preprocessors to not waste time on regular
 	<code>.svelte</code> files. It will also make it easier to write invalid Svelte syntax without triggering lint errors.
-	<a href="https://github.com/sveltejs/svelte/issues/9039#issuecomment-1650599142">
+	<a href="https://github.com/sveltejs/svelte/issues/9039#issuecomment-1650599142" data-external>
 		(&lt;script&gt; tags in HTML are especially troublesome.)
 	</a>
 	Using <code>.svx</code> (the extension used by MDsveX) is natural because our preprocessor syntax will be trivially
 	different from a subset of their syntax and would allow us to switch easily if desired. It also comes with the benefit
 	of a (limited)
-	<a href="https://marketplace.visualstudio.com/items?itemName=sebsojeda.vscode-svx">
+	<a href="https://marketplace.visualstudio.com/items?itemName=sebsojeda.vscode-svx" data-external>
 		VS Code syntax highlighting extension
 	</a>.
 </p>
@@ -244,9 +246,9 @@ shiki-end -->
 	</div>
 </div>
 
-<h3>Table Preprocessor</h3>
+<HAnchor tag="h3" title="Table Preprocessor" />
 
-<h4>Transformation Pipeline</h4>
+<HAnchor tag="h4" title="Transformation Pipeline" />
 
 <p>We want to write:</p>
 
@@ -266,7 +268,9 @@ shiki-end -->
 
 <div class="alert-wrapper alert-wrapper-info text-base">
 	<p class="alert-header my-0">Hint</p>
-	<p class="my-2">Styles via <a href="https://tailwindcss.com/docs/typography-plugin">Tailwind Typography</a>.</p>
+	<p class="my-2">
+		Styles via <a href="https://tailwindcss.com/docs/typography-plugin" data-external>Tailwind Typography</a>.
+	</p>
 </div>
 
 <p>
@@ -279,12 +283,12 @@ shiki-end -->
 	syntax highlighting.
 </p>
 
-<h4>Writing the Preprocessor</h4>
+<HAnchor tag="h4" title="Writing the Preprocessor" />
 
 <p>
 	We know what we want, so let's write a simple preprocessor that wraps a dedicated package. There are multiple packages
 	we could use to handle the heavy lifting of converting a Markdown table into HTML. We'll use
-	<a href="https://marked.js.org/">marked</a>.
+	<a href="https://marked.js.org/" data-external>marked</a>.
 </p>
 
 <p>We loop over the content, pull out anything between the start and end delimiters, process it, and put it back in.</p>
@@ -295,7 +299,7 @@ shiki-end -->
 
 <p>Easy and already halfway there!</p>
 
-<h3>Codeblock Preprocessor</h3>
+<HAnchor tag="h3" title="Codeblock Preprocessor" />
 
 <p>
 	We should be able to declare line properties at the top with <code>///diff-remove:3-10</code> or inline with
@@ -304,7 +308,7 @@ shiki-end -->
 	show only part of a function or class, but keep the syntax highlighting as if the hidden code were there.
 </p>
 
-<h4>Transformation Pipeline</h4>
+<HAnchor tag="h4" title="Transformation Pipeline" />
 
 <p>For this one, we want to write:</p>
 
@@ -324,9 +328,11 @@ shiki-end -->
 	<DiffRender />
 </CodeTopper>
 
-<h4>Writing the Preprocessor</h4>
+<HAnchor tag="h4" title="Writing the Preprocessor" />
 
-<p>Again, no need to reinvent the wheel. Let's use <a href="https://github.com/shikijs/shiki">Shiki</a>.</p>
+<p>
+	Again, no need to reinvent the wheel. Let's use <a href="https://github.com/shikijs/shiki" data-external>Shiki</a>.
+</p>
 
 <p>First, let's decide on the languages we want to load.</p>
 
@@ -459,10 +465,16 @@ shiki-end -->
 <p>
 	Next we'll need to choose a light and dark theme to create our highlighter. I'll use
 	<code>
-		<a href="https://textmate-grammars-themes.netlify.app/?theme=rose-pine-dawn&grammar=typescript">rose-pine-dawn</a>
+		<a href="https://textmate-grammars-themes.netlify.app/?theme=rose-pine-dawn&grammar=typescript" data-external
+			>rose-pine-dawn</a
+		>
 	</code>
 	for the light theme and
-	<code><a href="https://github.com/timothycohen/samplekit/blob/main/packages/markdown/src/darker.ts">darker</a></code>
+	<code
+		><a href="https://github.com/timothycohen/samplekit/blob/main/packages/markdown/src/darker.ts" data-external
+			>darker</a
+		></code
+	>
 	– my own modified version of VS Code <code>dark+</code> – for the dark theme.
 </p>
 
@@ -703,16 +715,16 @@ shiki-end -->
 	<TabPanelItem panel={{ rawHTML: codeBlocks }} />
 </CodeTopper>
 
-<h2>Conclusion</h2>
+<HAnchor tag="h2" title="Conclusion" />
 
 <p>
 	Svelte preprocessors are powerful even with a painless setup like we've implemented here. I'm grateful to
-	<a href="https://github.com/pngwn/MDsveX">MDsveX</a>,
-	<a href="https://github.com/vnphanquang/svelte-put">svelte-put</a>, and
-	<a href="https://melt-ui.com/docs/preprocessor">Melt UI</a>
+	<a href="https://github.com/pngwn/MDsveX" data-external>MDsveX</a>,
+	<a href="https://github.com/vnphanquang/svelte-put" data-external>svelte-put</a>, and
+	<a href="https://melt-ui.com/docs/preprocessor" data-external>Melt UI</a>
 	for introducing them to me, and I hope this article helps you get started with your own preprocessors. If you have a question
 	or want to share your preprocessor, share it in the
-	<a href="https://github.com/timothycohen/samplekit/discussions">GitHub discussions</a>!
+	<a href="https://github.com/timothycohen/samplekit/discussions" data-external>GitHub discussions</a>!
 </p>
 
 <p>Happy coding!</p>

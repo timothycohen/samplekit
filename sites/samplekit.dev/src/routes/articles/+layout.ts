@@ -22,5 +22,5 @@ export const load: LayoutLoad = async ({ route, data: serverData }) => {
 		meta.twitterImage = article.imgLg;
 	}
 
-	return { article, meta };
+	return { article, meta, tree: serverData.tree };
 };

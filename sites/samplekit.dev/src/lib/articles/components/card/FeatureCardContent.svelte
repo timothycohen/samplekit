@@ -70,8 +70,6 @@
 		href={feature.srcCodeHref}
 		aria-label="Source Code"
 		title="Source Code"
-		target="_blank"
-		rel="noopener noreferrer"
 	>
 		<Code />
 	</a>

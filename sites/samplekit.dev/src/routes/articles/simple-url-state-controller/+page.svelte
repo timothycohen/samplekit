@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { CodeTopper } from '$lib/articles/components';
+	import { HAnchor } from '$lib/components';
 	import { searchParam } from '$lib/stores';
 	import { ArrowUp, X, Check } from '$lib/styles/icons';
 
@@ -20,7 +21,7 @@
 	stores. We'll put them to use by storing the filter state of posts in the URL as in the demo above.
 </p>
 
-<h2>Thinking through the API</h2>
+<HAnchor tag="h2" title="Thinking through the API" />
 
 <p>
 	Odds are, we'll likely want to separate the API for single and multi-value search params. The stored values should be
@@ -70,11 +71,11 @@ const searchParams: (param: string) => {
 ```
 shiki-end -->
 
-<h2>Single value search param</h2>
+<HAnchor tag="h2" title="Single value search param" />
 
-<h3>API</h3>
+<HAnchor tag="h3" title="API" />
 
-<h4>Fulfilling the Store Contract</h4>
+<HAnchor tag="h4" title="Fulfilling the Store Contract" />
 
 <p>Our single value controller should be as simple to use as a regular store.</p>
 
@@ -103,7 +104,7 @@ interface SearchParamController {
 ```
 shiki-end -->
 
-<h4>Convenience Methods</h4>
+<HAnchor tag="h4" title="Convenience Methods" />
 
 <p>
 	Ideally we'd have a convenience function to toggle it too.
@@ -164,7 +165,7 @@ shiki-end -->
 	</fieldset>
 </div>
 
-<h4>Multiple Params</h4>
+<HAnchor tag="h4" title="Multiple Params" />
 
 <p>
 	We may want to update multiple params before actually navigating to the new page. This is especially important if we
@@ -185,7 +186,7 @@ interface SearchParamController {
 ```
 shiki-end -->
 
-<h4>Result</h4>
+<HAnchor tag="h4" title="Result" />
 
 <p>
 	We'll probably want to know whether the <code>set</code> or <code>toggle</code> functions were successful, and be able
@@ -207,7 +208,7 @@ interface SearchParamController {
 ```
 shiki-end -->
 
-<h4>Go Options</h4>
+<HAnchor tag="h4" title="Go Options" />
 
 <p>
 	And lastly, if the input (for example a search bar) is in a layout, we may or may not need to change the
@@ -232,7 +233,7 @@ interface SearchParamController {
 ```
 shiki-end -->
 
-<h3>Implementation</h3>
+<HAnchor tag="h3" title="Implementation" />
 
 <p>We've got a solid API, so let's write the implementation.</p>
 
@@ -242,7 +243,7 @@ shiki-end -->
 	<code>goto</code> to update the url.
 </p>
 
-<h4>Helpers</h4>
+<HAnchor tag="h4" title="Helpers" />
 
 <p>
 	<code>goto</code> takes a few options that we'll need to turn on for every call, so let's make a wrapper called
@@ -303,7 +304,7 @@ const cloneParams = () => new URLSearchParams(get(page).url.search);
 ```
 shiki-end -->
 
-<h4>searchParam</h4>
+<HAnchor tag="h4" title="searchParam" />
 
 <p>One possible implementation:</p>
 
@@ -349,7 +350,7 @@ export const searchParam = (name: string): SearchParamController => {
 ```
 shiki-end -->
 
-<h3>Adding Validation</h3>
+<HAnchor tag="h3" title="Adding Validation" />
 
 <p>
 	We now have a working implementation, but there's something we could add: bounds. This implementation expects the
@@ -453,7 +454,7 @@ export const searchParam = (
 shiki-end -->
 </CodeTopper>
 
-<h3>Demo</h3>
+<HAnchor tag="h3" title="Demo" />
 
 <p>Now let's use it! Try it out below.</p>
 
@@ -527,9 +528,9 @@ shiki-end -->
 	<code>?easter=🐰&egg=🐰</code> immediately as desired.
 </p>
 
-<h2>Multi-value search params</h2>
+<HAnchor tag="h2" title="Multi-value search params" />
 
-<h3>API</h3>
+<HAnchor tag="h3" title="API" />
 
 <p>Our multi-value controller's helper functions will be a little more detailed.</p>
 
@@ -564,7 +565,7 @@ interface SearchParamsController {
 ```
 shiki-end -->
 
-<h3>Implementation</h3>
+<HAnchor tag="h3" title="Implementation" />
 
 <p>The ideas are the same, so we'll skip straight to the code. Here's one possible implementation.</p>
 
@@ -712,13 +713,14 @@ export const searchParams = (
 shiki-end -->
 </CodeTopper>
 
-<h2>Conclusion</h2>
+<HAnchor tag="h2" title="Conclusion" />
 
 <p>
 	And that's it! We've created a simple wrapper around a derived store that syncs application state with the URL. This
 	is everything we need to write the demo at the top of the article.
 	<a
 		href="https://github.com/timothycohen/samplekit/tree/main/sites/samplekit.dev/src/routes/articles/simple-url-state-controller/live-demos/main"
+		data-external
 	>
 		Full code here
 	</a>.
@@ -746,6 +748,6 @@ shiki-end -->
 
 <p>
 	Have any questions or comments? Share it in the
-	<a href="https://github.com/timothycohen/samplekit/discussions">GitHub discussions</a>! Thanks for reading and see you
-	in the <a href="/articles/generic-url-state-controller">next one</a>!
+	<a href="https://github.com/timothycohen/samplekit/discussions" data-external>GitHub discussions</a>! Thanks for
+	reading and see you in the <a href="/articles/generic-url-state-controller">next one</a>!
 </p>

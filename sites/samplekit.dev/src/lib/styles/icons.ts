@@ -48,3 +48,4 @@ export { default as ArrowRightIcon } from 'lucide-svelte/icons/arrow-right';
 export { default as ShieldEllipsis } from 'lucide-svelte/icons/shield-ellipsis';
 export { default as KeySquare } from 'lucide-svelte/icons/key-square';
 export { default as Fingerprint } from 'lucide-svelte/icons/fingerprint';
+export { default as Link } from 'lucide-svelte/icons/link';

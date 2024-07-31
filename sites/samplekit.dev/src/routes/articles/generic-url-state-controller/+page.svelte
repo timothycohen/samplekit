@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { CodeTopper } from '$lib/articles/components';
 	import { TabPanels } from '$lib/components';
+	import { HAnchor } from '$lib/components';
 
 	interface Props {
 		data: { typedVariantFiles: { title: string; rawHTML: Promise<string> }[] };
@@ -44,10 +45,10 @@ shiki-end -->
 	/ store state are always in sync, but let's consider a more complex example to investigate the drawbacks.
 </p>
 
-<h2>Drawbacks of the derived store</h2>
+<HAnchor tag="h2" title="Drawbacks of the derived store" />
 
 <p>
-	We want to <a href="https://shopify.dev/docs/api/storefront/2023-10/objects/Product#query-products">
+	We want to <a href="https://shopify.dev/docs/api/storefront/2023-10/objects/Product#query-products" data-external>
 		query a shopify endpoint
 	</a>. The search and filter state should be stored in the url.
 	<code>?sort_by=latest-desc&availability=true&price.gte=10&price.lte=100&q=shirt</code> should be represented as:
@@ -90,8 +91,8 @@ shiki-end -->
 			</li>
 			<li class="list-decimal">
 				We can't use any apis that require another type, so
-				<a href="https://melt-ui.com/docs/builders/select"> passing the store into melt-ui </a>, for example, is
-				impossible.
+				<a href="https://melt-ui.com/docs/builders/select" data-external> passing the store into melt-ui </a>, for
+				example, is impossible.
 			</li>
 			<li class="list-decimal">
 				Logically linked states have no clean way of being stored together. For example,
@@ -116,7 +117,7 @@ shiki-end -->
 	</li>
 </ul>
 
-<h2>Single Value Generic Param</h2>
+<HAnchor tag="h2" title="Single Value Generic Param" />
 
 <p>
 	Like in the previous article, we'll start by deciding what we need and building up an interface, and like last time,
@@ -127,9 +128,9 @@ shiki-end -->
 	the simpler single param interface.
 </p>
 
-<h3>Building the Interface</h3>
+<HAnchor tag="h3" title="Building the Interface" />
 
-<h4>Getters</h4>
+<HAnchor tag="h4" title="Getters" />
 
 <p>
 	We know the base interface will definitely need to be generic over at least one type – our generic value type. That
@@ -183,7 +184,7 @@ interface ParamGeneric<Val, ParamName extends string> {
 ```
 shiki-end -->
 
-<h4>Serializers</h4>
+<HAnchor tag="h4" title="Serializers" />
 
 <p>
 	Since we'll be working with both <code>Val</code> and <code>ParamVal</code>, we'll need serialize
@@ -226,7 +227,7 @@ interface ParamGeneric<Val, ParamName extends string> {
 ```
 shiki-end -->
 
-<h4>Setters</h4>
+<HAnchor tag="h4" title="Setters" />
 
 <p>
 	We'll need a way to mutate a URL to add/delete our param without navigating, so we'll add a <code>pushToUrl</code>
@@ -294,7 +295,7 @@ interface ParamGeneric<Val, ParamName extends string> {
 ```
 shiki-end -->
 
-<h4>Sync State</h4>
+<HAnchor tag="h4" title="Sync State" />
 
 <p>
 	Unlike the implementation using <code>derive</code>, the store and url may be out of sync. We should add an
@@ -323,7 +324,7 @@ interface ParamGeneric<Val, ParamName extends string> {
 ```
 shiki-end -->
 
-<h3>Implementation</h3>
+<HAnchor tag="h3" title="Implementation" />
 
 <p>We know what we have to do. Here's one way of getting there:</p>
 
@@ -449,9 +450,9 @@ shiki-end -->
 	</li>
 </ul>
 
-<h2>Multi Value Generic Param</h2>
+<HAnchor tag="h2" title="Multi Value Generic Param" />
 
-<h3>Interface</h3>
+<HAnchor tag="h3" title="Interface" />
 
 <p>
 	This is not synonymous with <code>$page.url.searchParams.getAll</code>. Instead, we will map out grouped params and
@@ -501,7 +502,7 @@ interface ParamsGeneric<
 ```
 shiki-end -->
 
-<h3>Implementation</h3>
+<HAnchor tag="h3" title="Implementation" />
 
 <p>And a possible implementation:</p>
 
@@ -618,18 +619,18 @@ export const createParams = <Val, ParamName extends string = string>({
 shiki-end -->
 </CodeTopper>
 
-<h2>Concrete Types</h2>
+<HAnchor tag="h2" title="Concrete Types" />
 
 <p>Now that we have a generic factory, it's easy to create some concrete types:</p>
 
 <TabPanels files={data.typedVariantFiles} />
 
-<h2>Conclusion</h2>
+<HAnchor tag="h2" title="Conclusion" />
 
 <p>
 	We've created a more flexible, generic implementation for our url state controller and now we can compose multiple
 	together to create rich services like the one used in the demo. You can see it in action in the
 	<a href="/shop/collections/apparel">demo shop</a>. Hope the article has been useful for you! Have any questions,
 	comments, or want to share your own implementation? Reach out in the
-	<a href="https://github.com/timothycohen/samplekit/discussions">GitHub discussions</a>!
+	<a href="https://github.com/timothycohen/samplekit/discussions" data-external>GitHub discussions</a>!
 </p>

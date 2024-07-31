@@ -1,11 +1,12 @@
 <script lang="ts">
 	import { CodeTopper } from '$lib/articles/components';
+	import { HAnchor } from '$lib/components';
 	import { Sparkles } from '$lib/styles/icons';
 
 	let showQuizAnswer = $state(false);
 </script>
 
-<h2>Data in SvelteKit</h2>
+<HAnchor tag="h2" title="Data in SvelteKit" />
 
 <p>There are three ways to breach the client/server divide in SvelteKit:</p>
 
@@ -16,21 +17,21 @@
 				<td><span class="text-sm font-light">0.1</span> </td>
 				<td>Component Initialization</td>
 				<td>
-					<a href="https://kit.svelte.dev/docs/load">Load Functions</a>
+					<a href="https://kit.svelte.dev/docs/load" data-external>Load Functions</a>
 				</td>
 			</tr>
 			<tr>
 				<td><span class="text-sm font-light">0.2</span> </td>
 				<td>Form Submissions</td>
 				<td>
-					<a href="https://kit.svelte.dev/docs/form-actions">Form Actions</a>
+					<a href="https://kit.svelte.dev/docs/form-actions" data-external>Form Actions</a>
 				</td>
 			</tr>
 			<tr>
 				<td><span class="text-sm font-light">0.3</span></td>
 				<td>HTTP Requests</td>
 				<td>
-					<a href="https://kit.svelte.dev/docs/routing#server"> Request Handlers </a>
+					<a href="https://kit.svelte.dev/docs/routing#server" data-external> Request Handlers </a>
 				</td>
 			</tr>
 		</tbody>
@@ -44,7 +45,7 @@
 
 <p>Let's have a quick look at each of the three ways to communicate between client and server to find our answer.</p>
 
-<h3>Load Functions</h3>
+<HAnchor tag="h3" title="Load Functions" />
 
 <p>
 	SvelteKit does the heavy lifting here. We return data and the client automatically
@@ -70,7 +71,7 @@ shiki-end -->
 ```
 shiki-end -->
 
-<h3>Form Actions</h3>
+<HAnchor tag="h3" title="Form Actions" />
 
 <p>
 	Like <code>PageData</code>, <code>ActionData</code> is typed the same way and applies to <code>export let form;</code>
@@ -78,7 +79,7 @@ shiki-end -->
 
 <p>
 	There are also packages which expand on this with more features and the ability to easily handle multiple forms on a
-	single page. My favorite is <a href="https://superforms.rocks/">SuperForms</a>.
+	single page. My favorite is <a href="https://superforms.rocks/" data-external>SuperForms</a>.
 </p>
 
 <!-- shiki-start
@@ -91,7 +92,7 @@ if (!verifySMSTokenForm.valid) {
 ```
 shiki-end -->
 
-<h3>Endpoints</h3>
+<HAnchor tag="h3" title="Endpoints" />
 
 <p>By now you probably already know the answer to our little quiz.</p>
 
@@ -178,9 +179,9 @@ shiki-end -->
 ```
 shiki-end -->
 
-<h2>Thinking through the API</h2>
+<HAnchor tag="h2" title="Thinking through the API" />
 
-<h3>Server / Client Separation</h3>
+<HAnchor tag="h3" title="Server / Client Separation" />
 <p>
 	Server endpoint handlers and client fetch wrappers should be co-located, but fully distinct and impossible to mix up.
 </p>
@@ -215,7 +216,7 @@ export const addNamesToList = createClientFetch()
 shiki-end -->
 </CodeTopper>
 
-<h3>Hiding the route / method / types</h3>
+<HAnchor tag="h3" title="Hiding the route / method / types" />
 
 <p>
 	The caller shouldn't need to know the route or the method. That should be defined by the wrapper. Also, the body and
@@ -240,7 +241,7 @@ export const addNamesToList = createClientFetch<RouteId, PutRes, PutReq>('PUT', 
 shiki-end -->
 </CodeTopper>
 
-<h3>Enforce server / client type consistency</h3>
+<HAnchor tag="h3" title="Enforce server / client type consistency" />
 
 <p>How do we enforce that we actually return the type we say we're returning from the endpoint?</p>
 
@@ -335,7 +336,7 @@ export const PUT: RequestHandler = addNamesToList;
 shiki-end -->
 </CodeTopper>
 
-<h3>Dynamic Routes</h3>
+<HAnchor tag="h3" title="Dynamic Routes" />
 
 <p>
 	We're almost done designing the API. The only other consideration is how to handle routes that aren't static? What if
@@ -357,7 +358,7 @@ export const addNamesToList = createDynClientFetch<PutRes, PutReq, { id: string 
 shiki-end -->
 </CodeTopper>
 
-<h2>Implementation</h2>
+<HAnchor tag="h2" title="Implementation" />
 
 <p>
 	Let's implement the API we just designed and add in a couple options to control whether to <code>invalidateAll</code> after
@@ -459,14 +460,14 @@ export const createDynClientFetch = <ResponseData, RequestData = void, URLProps 
 shiki-end -->
 </CodeTopper>
 
-<h2>Bonus</h2>
+<HAnchor tag="h2" title="Bonus" />
 
 <p>
 	Superforms has a few nice features that are worth copying over to our fetch API. Currently, our function switches
 	<code>fetching</code> to <code>true</code> as soon as the request is sent.
-	<a href="https://superforms.rocks/concepts/timers#loading-indicators">As they explain</a>, it's often better to wait a
-	bit before showing the loading indicator. This is especially true for fast requests, where the loading indicator can
-	be more distracting than helpful. With that in mind, let's imitate their <code>delay</code> and
+	<a href="https://superforms.rocks/concepts/timers#loading-indicators" data-external>As they explain</a>, it's often
+	better to wait a bit before showing the loading indicator. This is especially true for fast requests, where the
+	loading indicator can be more distracting than helpful. With that in mind, let's imitate their <code>delay</code> and
 	<code>timeout</code> stores.
 </p>
 
@@ -600,11 +601,11 @@ export const createDynClientFetch = <ResponseData, RequestData = void, URLProps 
 shiki-end -->
 </CodeTopper>
 
-<h2>Conclusion</h2>
+<HAnchor tag="h2" title="Conclusion" />
 
 <p>
 	I really enjoy working with this API. With only around a hundred lines of code, loading states are baked in, errors
 	are accounted for, and type / route / method checks are all moved to compile time. Do you use something similar? Have
 	you found an even better way? Share it in the
-	<a href="https://github.com/timothycohen/samplekit/discussions">GitHub discussions</a>!
+	<a href="https://github.com/timothycohen/samplekit/discussions" data-external>GitHub discussions</a>!
 </p>

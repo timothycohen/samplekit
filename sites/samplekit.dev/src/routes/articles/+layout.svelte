@@ -3,6 +3,7 @@
 	import { fly } from 'svelte/transition';
 	import { Changelog, DateLine, FeatureCard, FeatureSwapCard, Series, TOC } from '$lib/articles/components';
 	import { TabPanels } from '$lib/components';
+	import { HAnchor } from '$lib/components';
 	import { createCollapsedService, useCollapsedService } from '$lib/components/collapsedService';
 	import { ArrowRight, PanelRightDashed, UnfoldVertical, FoldVertical } from '$lib/styles/icons';
 	import { pluralize } from '$lib/utils/common';
@@ -70,12 +71,9 @@
 			</hgroup>
 
 			{#if article.demos?.main}
-				<span class="prose lg:prose-lg prose-radix">
-					<h2 class="my-4" id="interactive-demo" data-auto-slug-anchor-position="prepend" data-auto-slug="">
-						<a href="#interactive-demo" aria-hidden="true" tabindex="-1" data-auto-slug-anchor="">#</a>
-						Interactive Demo
-					</h2>
-				</span>
+				<div class="prose prose-radix my-4 lg:prose-lg">
+					<HAnchor tag="h2" title="Interactive Demo" />
+				</div>
 				<div class="main-demo prose-pre">
 					<TabPanels files={article.demos.main} />
 				</div>
@@ -84,11 +82,15 @@
 
 		<div class="mb-6-9 flex flex-col gap-8 lg:hidden">
 			<Series series={article.series} />
-			<TOC />
+			<TOC tree={data.tree} />
 		</div>
 
 		<div class="flex gap-[clamp(2.5rem,8vw,4rem)]">
-			<div class="prose lg:prose-lg prose-radix min-w-0 max-w-none flex-1" bind:this={articleContentWrapper} id="use-toc">
+			<div
+				class="prose prose-radix min-w-0 max-w-none flex-1 lg:prose-lg"
+				bind:this={articleContentWrapper}
+				data-toc-wrapper
+			>
 				{@render children?.()}
 			</div>
 
@@ -99,7 +101,7 @@
 					<div class="flex-1">
 						<div class="sticky top-[calc(var(--nav-height)_+_2rem)] overflow-y-auto">
 							<div class="max-h-[calc(98vh-calc(var(--nav-height)_+_2rem))] py-2">
-								<TOC>
+								<TOC tree={data.tree}>
 									<div class="flex w-full items-center justify-between">
 										<h2 class="t-h3 font-bold text-accent-12">Table of Contents</h2>
 										<button
@@ -170,7 +172,7 @@
 		<div class="mb-6-9 flex flex-col gap-8 md:flex-row {sidebarOpen ? 'lg:hidden' : ''}">
 			{#if article.prev}
 				<div class="w-full md:max-w-md">
-					<div class="prose lg:prose-lg prose-radix mb-4"><h2>Previous Article</h2></div>
+					<div class="prose prose-radix mb-4 lg:prose-lg"><h2>Previous Article</h2></div>
 					{#if !(article.prev.imgSmGif ?? article.prev.imgSm)}
 						<FeatureCard feature={article.prev} />
 					{:else}
@@ -182,7 +184,7 @@
 
 			{#if article.next}
 				<div class="w-full md:max-w-md">
-					<div class="prose lg:prose-lg prose-radix mb-4"><h2>Next Article</h2></div>
+					<div class="prose prose-radix mb-4 lg:prose-lg"><h2>Next Article</h2></div>
 					{#if !(article.next.imgSmGif ?? article.next.imgSm)}
 						<FeatureCard feature={article.next} />
 					{:else}
@@ -193,35 +195,12 @@
 			{/if}
 		</div>
 
-		<div class="prose lg:prose-lg prose-radix">
+		<div class="prose prose-radix lg:prose-lg">
 			<Changelog updates={article.updates} />
 			<p>
 				Have a suggestion? File an
-				<a href="https://github.com/timothycohen/samplekit/issues">issue</a>.
+				<a href="https://github.com/timothycohen/samplekit/issues" data-external>issue</a>.
 			</p>
 		</div>
 	</footer>
 </div>
-
-<style lang="postcss">
-	article :global([data-auto-slug]) {
-		position: relative;
-		width: fit-content;
-	}
-
-	article :global([data-auto-slug]:not([data-auto-slug-ignore]):hover a[data-auto-slug-anchor]) {
-		opacity: 1;
-	}
-
-	article :global([data-auto-slug-ignore] a[data-auto-slug-anchor]) {
-		display: none;
-	}
-
-	article :global(a[data-auto-slug-anchor]) {
-		position: absolute;
-		left: calc(0% - 1rem);
-		width: calc(100% + 2rem);
-		text-decoration: none;
-		opacity: 0;
-	}
-</style>

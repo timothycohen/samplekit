@@ -1,11 +1,12 @@
 <script lang="ts">
 	import { CodeTopper } from '$lib/articles/components';
+	import { HAnchor } from '$lib/components';
 </script>
 
 <p>
 	When given the opportunity, I nearly always switch to dark mode. From cursory Googling, it seems a majority of people
 	share that preference. For example, an
-	<a href="https://www.androidauthority.com/dark-mode-poll-results-1090716/">Android Authority poll</a>
+	<a href="https://www.androidauthority.com/dark-mode-poll-results-1090716/" data-external>Android Authority poll</a>
 	showed 81.9% of their users choose dark mode.
 </p>
 
@@ -16,7 +17,7 @@
 	in this article we're going to overcome them.
 </p>
 
-<h2>Goals</h2>
+<HAnchor tag="h2" title="Goals" />
 
 <p>Let's build a color theming system for SvelteKit with all these benefits:</p>
 
@@ -25,10 +26,10 @@
 		<span class="text-gray-9">☐</span>
 		<span class="text-left">
 			Compatibility with design tokens from popular sources like
-			<a href="https://www.radix-ui.com/colors">Radix</a>,
-			<a href="https://designsystem.digital.gov/utilities/color/">USWDS</a>,
-			<a href="https://daisyui.com/docs/themes/">DaisyUI</a>, or
-			<a href="https://tailwindcss.com/docs/customizing-colors">TailwindCSS</a>
+			<a href="https://www.radix-ui.com/colors" data-external>Radix</a>,
+			<a href="https://designsystem.digital.gov/utilities/color/" data-external>USWDS</a>,
+			<a href="https://daisyui.com/docs/themes/" data-external>DaisyUI</a>, or
+			<a href="https://tailwindcss.com/docs/customizing-colors" data-external>TailwindCSS</a>
 		</span>
 	</div>
 	<div class="grid grid-cols-[48px_1fr]">
@@ -71,10 +72,12 @@
 <p>
 	This website shows one such implementation using the methods described here. The complete source code can be found at
 
-	<a href="https://github.com/timothycohen/samplekit/tree/main/sites/samplekit.dev/src/lib/styles"> $lib/styles </a>
+	<a href="https://github.com/timothycohen/samplekit/tree/main/sites/samplekit.dev/src/lib/styles" data-external>
+		$lib/styles
+	</a>
 </p>
 
-<h2>Organizing the CSS</h2>
+<HAnchor tag="h2" title="Organizing the CSS" />
 
 <p>
 	Before we create the components and logic to handle multiple themes, we should think about how we want to implement
@@ -85,9 +88,9 @@
 	Let's consider two ways to organize our color design tokens that will make it easy to use in CSS (and later Tailwind).
 </p>
 
-<h3>Two design token sets for each theme</h3>
+<HAnchor tag="h3" title="Two design token sets for each theme" />
 
-<p>First an example using <a href="https://github.com/radix-ui/colors">Radix UI Colors</a>:</p>
+<p>First an example using <a href="https://github.com/radix-ui/colors" data-external>Radix UI Colors</a>:</p>
 
 <CodeTopper title="adaptiveColorThemes.css">
 	<!-- shiki-start
@@ -149,9 +152,9 @@ shiki-end -->
 shiki-end -->
 </CodeTopper>
 
-<h3>One design token set for each theme</h3>
+<HAnchor tag="h3" title="One design token set for each theme" />
 
-<p>Now lets look at an example using a <a href="https://daisyui.com/docs/themes/">DaisyUI</a> theme:</p>
+<p>Now lets look at an example using a <a href="https://daisyui.com/docs/themes/" data-external>DaisyUI</a> theme:</p>
 
 <CodeTopper title="staticColorThemes.css">
 	<!-- shiki-start
@@ -198,7 +201,7 @@ shiki-end -->
 
 <p>With this organization, the theme is always fixed to either a light or dark mode.</p>
 
-<h3>Lifting design tokens up</h3>
+<HAnchor tag="h3" title="Lifting design tokens up" />
 
 <p>If we look back at our Radix UI example:</p>
 
@@ -262,7 +265,7 @@ shiki-end -->
 shiki-end -->
 </CodeTopper>
 
-<h3>Choosing an organization method</h3>
+<HAnchor tag="h3" title="Choosing an organization method" />
 
 <p>
 	Both methods of organization work equally, but one might be more convenient depending on where the design tokens are
@@ -270,7 +273,7 @@ shiki-end -->
 	tokens per theme" or "Radix UI" approach.
 </p>
 
-<h2>Controller Components</h2>
+<HAnchor tag="h2" title="Controller Components" />
 
 <p>
 	Now that we've pulled in some design tokens into our css, we can control the entire theme using just
@@ -312,9 +315,9 @@ md-end -->
 	with any.
 </p>
 
-<h2>Controller</h2>
+<HAnchor tag="h2" title="Controller" />
 
-<h3>Interface</h3>
+<HAnchor tag="h3" title="Interface" />
 
 <p>
 	The controller should handle both theme organization methods and all four presentation options. If we choose our API
@@ -376,7 +379,7 @@ shiki-end -->
 	different implementations depending on whether a two or three way switch is supported.
 </p>
 
-<h3>Storage</h3>
+<HAnchor tag="h3" title="Storage" />
 
 <p>We'll first need to choose our storage system. If using <code>localStorage</code>, it can be as simple as:</p>
 
@@ -457,7 +460,7 @@ function setStorage(name: Key, value: string, days?: number): void {
 shiki-end -->
 </CodeTopper>
 
-<h3>Utils</h3>
+<HAnchor tag="h3" title="Utils" />
 
 <p>And now we can implement the getters and setters consumed by the controller.</p>
 
@@ -539,7 +542,7 @@ export const storeMode = (mode: Mode) => {
 shiki-end -->
 </CodeTopper>
 
-<h3>Implementation</h3>
+<HAnchor tag="h3" title="Implementation" />
 
 <p>We now have all the building blocks to implement the controller. Here's one possible implementation.</p>
 
@@ -680,7 +683,7 @@ shiki-end -->
 shiki-end -->
 </CodeTopper>
 
-<h3>Prevent FOUC</h3>
+<HAnchor tag="h3" title="Prevent FOUC" />
 
 <p>The only thing left on our checklist is to remove the flash of the wrong theme when the user refreshes.</p>
 
@@ -745,9 +748,9 @@ shiki-end -->
 shiki-end -->
 </CodeTopper>
 
-<h2>Using our theme</h2>
+<HAnchor tag="h2" title="Using our theme" />
 
-<h3>CSS</h3>
+<HAnchor tag="h3" title="CSS" />
 
 <p>In our css, we can write:</p>
 
@@ -782,7 +785,7 @@ shiki-end -->
 	trustworthy, and definitely belong in the theme.
 </p>
 
-<h3>Tailwind</h3>
+<HAnchor tag="h3" title="Tailwind" />
 
 <p>
 	Getting this working with Tailwind is easy! This is for Radix UI, so each Tailwind class references one of its 12 css
@@ -883,7 +886,7 @@ shiki-end -->
 	<span class="w-fit border border-red-7 bg-red-5">I'm red!</span>
 </p>
 
-<h2>Conclusion</h2>
+<HAnchor tag="h2" title="Conclusion" />
 <p>
 	This is just one way of implementing a theming system in SvelteKit, but we can safely say we've checked all the boxes
 	we set out to check.
@@ -933,6 +936,6 @@ shiki-end -->
 
 <p>
 	Do you have an even better way? I'd love it hear it! Share it in the
-	<a href="https://github.com/timothycohen/samplekit/discussions">GitHub discussions</a>
+	<a href="https://github.com/timothycohen/samplekit/discussions" data-external>GitHub discussions</a>
 	!
 </p>

@@ -5,6 +5,7 @@ export { default as TabPanels } from './TabPanels.svelte';
 export { default as LoadingDots } from './LoadingDots.svelte';
 export { default as Icon } from './Icon.svelte';
 export { default as SEO } from './SEO.svelte';
+export { default as HAnchor } from './HAnchor.svelte';
 
 export * from './input';
 export * from './layout';

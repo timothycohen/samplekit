@@ -1,25 +1,29 @@
 <script lang="ts">
 	import { createTableOfContents } from '@melt-ui/svelte';
-	import TOCTree from './TOCTree.svelte';
+	import TOCBase from './TOCBase.svelte';
+	import TOCMelt from './TOCMelt.svelte';
+
+	type TocItem = { title: string; href: string; children?: TocItem[] };
 
 	interface Props {
 		children?: import('svelte').Snippet;
+		tree: TocItem[];
 	}
 
-	const { children }: Props = $props();
+	const { children, tree }: Props = $props();
 
 	const {
 		elements: { item },
 		states: { activeHeadingIdxs, headingsTree },
 	} = createTableOfContents({
-		selector: '#use-toc',
-		exclude: ['h1'],
+		selector: '[data-toc-wrapper]',
 		activeType: 'all',
 		scrollOffset: 56 + 16,
 		scrollBehaviour: 'smooth',
-		headingFilterFn: (heading) =>
-			heading.dataset['autoSlug'] !== undefined && heading.dataset['autoSlugIgnore'] === undefined,
+		headingFilterFn: (heading) => !!heading.dataset['toc'],
 	});
+
+	const tocReady = $derived(!!$activeHeadingIdxs.length);
 </script>
 
 <div class="lg:w-80">
@@ -30,6 +34,10 @@
 	{/if}
 	<div class="mb-6 h-px w-full bg-gray-9"></div>
 	<nav>
-		<TOCTree tree={$headingsTree} activeHeadingIdxs={$activeHeadingIdxs} {item} />
+		{#if tocReady}
+			<TOCMelt tree={$headingsTree} activeHeadingIdxs={$activeHeadingIdxs} {item} level={1} />
+		{:else}
+			<TOCBase {tree} level={1} />
+		{/if}
 	</nav>
 </div>
