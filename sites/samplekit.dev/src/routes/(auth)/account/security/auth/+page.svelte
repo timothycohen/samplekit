@@ -3,7 +3,7 @@
 	import { slide } from 'svelte/transition';
 	import { goto } from '$app/navigation';
 	import { mfaLabels } from '$lib/auth/client';
-	import { Icon } from '$lib/components';
+	import { Admonition, Icon } from '$lib/components';
 	import {
 		Check,
 		Eraser,
@@ -122,24 +122,23 @@
 		{/if}
 	</div>
 
-	<div class="alert-wrapper alert-wrapper-info">
-		{#if method === 'oauth'}
-			<p class="alert-header">Your MFA is managed by your Google Account.</p>
-			<p class="mb-2">Visit your Google Account to change your MFA settings.</p>
-			<p>Or unlink your Google Account to create a password and set up MFA (optional).</p>
-		{:else}
-			<p class="alert-header">Prefer Google Sign In and MFA?</p>
-			<p class="mb-2">Remove existing MFA methods and an option will appear to link with Google Authentication.</p>
-			<p>Password authentication will be disabled and Google will handle your MFA.</p>
-		{/if}
-	</div>
+	{#if method === 'oauth'}
+		<Admonition kind="hint" title="MFA Managed by Google">
+			<p class="mb-2">
+				Your login and MFA settings are managed by Google. To change your MFA settings, visit your Google Account.
+			</p>
+			<p>
+				If you prefer password authentication, unlink your Google Account to create a password and set up optional MFA.
+			</p>
+		</Admonition>
+	{/if}
 
 	<div class="space-y-6 rounded-card p-8 shadow-3">
 		<div>
 			<h2 class="mb-2 font-bold">Multi-Factor Authentication (MFA)</h2>
 			<p class="text-sm font-light">
 				{#if method === 'oauth'}
-					Unlink your Google Account to use MFA.
+					<strong>Disabled.</strong> Unlink your Google Account to use MFA.
 				{:else if mfaCount < 2}
 					Tip: Enable two MFA methods to avoid lock-out if you lose access to your first.
 				{/if}
@@ -194,6 +193,13 @@
 		</div>
 	</div>
 
+	{#if method !== 'oauth'}
+		<Admonition kind="hint" title="Prefer Google Sign In?">
+			<p class="mb-2">Remove existing MFA methods and an option will appear to link with Google Authentication.</p>
+			<p>Password authentication will be disabled and Google will handle your MFA.</p>
+		</Admonition>
+	{/if}
+
 	<div class="grid grid-cols-1 gap-4 sm:grid-cols-[2fr,_1fr]">
 		<div class="flex flex-wrap justify-between gap-4 sm:justify-start">
 			<form action="/logout?/logoutCurrent" method="post" onsubmit={() => (signingOut = 'current')}>
@@ -227,13 +233,10 @@
 					You'll be prompted for authentication on the next screen.
 				</p>
 
-				<div class="alert-wrapper alert-wrapper-error">
-					<p class="alert-header">
-						<strong>Final MFA Method</strong>
-					</p>
+				<Admonition bold kind="caution" title="Final MFA Method">
 					<p class="mb-2">This will remove your final MFA method.</p>
-					<p>Enable two MFA methods to fully secure your account.</p>
-				</div>
+					<p>Keep two MFA methods enabled to fully secure your account.</p>
+				</Admonition>
 
 				<div class="modal-btns-wrapper">
 					<button class="btn btn-hollow" use:melt={$delMFAClose}>Cancel</button>
@@ -255,12 +258,12 @@
 				You'll be prompted for authentication on the next screen.
 			</p>
 
-			<div class="alert-wrapper alert-wrapper-warning">
-				<p class="alert-header">
-					Delete <strong class="font-extrabold text-accent-9 underline">{data.email}</strong>?
-				</p>
-				<p>There is no going back. Please be certain.</p>
-			</div>
+			<Admonition bold kind="caution">
+				<div class="text-gray-11">
+					<div>Delete <strong class="text-gray-12">{data.email}</strong>?</div>
+					<div>There is no going back. Please be certain.</div>
+				</div>
+			</Admonition>
 
 			<div class="modal-btns-wrapper">
 				<button onclick={() => goto('/account/delete')} class="btn btn-hollow text-sm">

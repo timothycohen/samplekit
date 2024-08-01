@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/stores';
+	import { Admonition } from '$lib/components';
 	import { Trash2, BadgeCheck, Loader2 } from '$lib/styles/icons';
 
 	const { data } = $props();
@@ -44,8 +45,7 @@
 		</div>
 	{/each}
 
-	<div class="alert-wrapper alert-wrapper-info">
-		<p class="alert-header text-lg">How long is a device logged in?</p>
+	<Admonition kind="security" title="How long is a device logged in?">
 		<p class="mb-2">
 			The <span class="italic">“Remember me”</span> option stores a session for {data.expirationDuration}
 			without any activity. Logging in extends the duration.
@@ -55,7 +55,7 @@
 			and are not displayed here.
 		</p>
 		<p>You can log out of a remembered device at any time.</p>
-	</div>
+	</Admonition>
 
 	<div class="flex flex-wrap justify-between gap-4">
 		<form action="/logout?/logoutCurrent" method="post" onsubmit={() => (submitting = 'all')}>

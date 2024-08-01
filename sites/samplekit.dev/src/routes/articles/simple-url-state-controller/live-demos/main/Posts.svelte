@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { Admonition } from '$lib/components';
+
 	interface Props {
 		posts: { author: string; date: Date; message: string; avatar: number }[];
 		resetFilters: () => void;
@@ -24,8 +26,8 @@
 			</div>
 		</div>
 	{:else}
-		<div class="my-8 w-full space-y-4">
-			<div class="w-full alert-wrapper alert-wrapper-warning">No messages found.</div>
+		<div class="my-8 mr-auto flex gap-2 items-center">
+			<Admonition kind="error" title="No messages found." />
 			<button class="btn btn-hollow" onclick={resetFilters}>Clear All Filters</button>
 		</div>
 	{/each}

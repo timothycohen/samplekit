@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { Admonition } from '$lib/components/index.js';
 	import { Loader2 } from '$lib/styles/icons';
 	import { Verifier } from '$routes/(auth)/components';
 
@@ -16,13 +17,12 @@
 	<div class="space-y-8 rounded-card p-8 shadow-3">
 		<h2 class="t-base-lg font-medium">Step 2: Confirm</h2>
 
-		<div class="alert-wrapper alert-wrapper-error mt-12">
-			<div class="alert-header"><strong>Permanently</strong> delete your account.</div>
+		<Admonition bold kind="caution" title="Permanently delete your account">
 			<ul class="ml-4">
 				<li class="list-disc">All data will be removed.</li>
 				<li class="list-disc">There is no chance of recovery.</li>
 			</ul>
-		</div>
+		</Admonition>
 
 		<form
 			action="/account/delete?/deleteUserWithSeshConf"

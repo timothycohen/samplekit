@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { Admonition } from '$lib/components';
 	import { ThemePicker, THEMES, useThemeControllerCtx } from '$lib/styles';
 
 	const optionsArr = ['fixed_day', 'fixed_night', 'sync_system'] as const;
@@ -10,7 +11,7 @@
 	<h1 class="text-h4">Appearance</h1>
 
 	<noscript>
-		<div class="alert-wrapper alert-wrapper-warning mt-6">Please enable JavaScript to continue.</div>
+		<Admonition bold kind="important" title="JS Required">Enable JavaScript to continue.</Admonition>
 	</noscript>
 
 	<div class="js-only space-y-6">

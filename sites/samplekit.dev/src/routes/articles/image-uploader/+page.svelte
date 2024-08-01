@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { CodeTopper } from '$lib/articles/components';
-	import { TabPanels, TabPanelItem } from '$lib/components';
-	import { HAnchor } from '$lib/components';
+	import { TabPanels, TabPanelItem, HAnchor, Admonition } from '$lib/components';
 	import AvatarEditor from './AvatarEditor.svelte';
 	import CropImgUploadController from './CropImgUploadController.svelte';
 	import IAM from './IAM.svelte';
@@ -71,8 +70,7 @@
 	and kv store, which will be hosted directly on the server.
 </p>
 
-<div class="alert-wrapper alert-wrapper-info text-base">
-	<p class="alert-header my-0">Bring Your Own Database</p>
+<Admonition kind="info" title="Bring Your Own Database">
 	<p class="my-2">
 		This article focuses on the SvelteKit logic and integrating the AWS services. Setting up each AWS service will be
 		detailed, but it's assumed you have a database.
@@ -81,7 +79,7 @@
 		If not, you can use the <code class="text-info-11">dev:db:*</code> and <code class="text-info-11">dev:kv:*</code>
 		scripts in <code class="text-info-11">package.json</code> to create docker containers.
 	</p>
-</div>
+</Admonition>
 
 <HAnchor tag="h2" title="Upload Flow Options" />
 
@@ -453,14 +451,13 @@
 	will serve the images, and IAM will manage access.
 </p>
 
-<div class="alert-wrapper alert-wrapper-warning text-base">
-	<p class="alert-header my-0">Pay Per Use</p>
+<Admonition kind="warning" title="Pay Per Use">
 	<p class="my-2">These services are pay per use and cost cents to test.</p>
 	<p class="my-2">
 		However, if they are not properly protected, a malicious user could use them to rack up a large bill.
 	</p>
 	<p class="my-0">Be sure to protect your keys, limit access methods, rate limit, and set up billing alerts.</p>
-</div>
+</Admonition>
 
 <HAnchor tag="h3" title="Install AWS SDKs" />
 

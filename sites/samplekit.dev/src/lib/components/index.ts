@@ -6,6 +6,8 @@ export { default as LoadingDots } from './LoadingDots.svelte';
 export { default as Icon } from './Icon.svelte';
 export { default as SEO } from './SEO.svelte';
 export { default as HAnchor } from './HAnchor.svelte';
+export { default as Admonition } from './Admonition.svelte';
+export { default as AdmonitionIcon } from './AdmonitionIcon.svelte';
 
 export * from './input';
 export * from './layout';

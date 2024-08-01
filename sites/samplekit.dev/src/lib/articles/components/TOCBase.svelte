@@ -17,7 +17,7 @@
 	<ul class="space-y-.5 {level !== 1 ? 'pl-4' : ''}">
 		{#each tree as heading, i (i)}
 			<li class="space-y-.5">
-				<a href={heading.href} class="transition-colors duration-300 hover:text-accent-12">
+				<a href={heading.href} class="inline-block w-full transition-colors duration-300 hover:text-accent-12">
 					{heading.title}
 				</a>
 				{#if heading.children?.length}

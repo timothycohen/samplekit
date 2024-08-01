@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { CodeTopper } from '$lib/articles/components';
-	import { TabPanels } from '$lib/components';
-	import { HAnchor } from '$lib/components';
+	import { HAnchor, Admonition, TabPanels } from '$lib/components';
 
 	interface Props {
 		data: { typedVariantFiles: { title: string; rawHTML: Promise<string> }[] };
@@ -138,12 +137,10 @@ shiki-end -->
 	else that will be presented to the user via a single input. Let's call that generic type <code>Val</code>.
 </p>
 
-<div class="alert-wrapper alert-wrapper-info my-8 text-base">
-	<p class="my-2">
-		We'll consider objects that will be presented to the user with multiple inputs – think
-		<code>&lbrace; min, max &rbrace;</code> price – later.
-	</p>
-</div>
+<Admonition kind="note">
+	We'll consider objects that will be presented to the user with multiple inputs – think
+	<code>&lbrace; min, max &rbrace;</code> price – later.
+</Admonition>
 
 <!-- shiki-start
 ```ts

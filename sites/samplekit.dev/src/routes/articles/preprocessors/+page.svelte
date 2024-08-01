@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { CodeTopper } from '$lib/articles/components';
-	import { TabPanelItem } from '$lib/components';
+	import { Admonition, TabPanelItem } from '$lib/components';
 	import { HAnchor } from '$lib/components';
 	import DiffProcess from './DiffProcess.svelte';
 	import DiffRender from './DiffRender.svelte';
@@ -230,12 +230,12 @@ shiki-end -->
 	<code>&ltscript lang="ts"&gt</code>.
 </p>
 
-<div class="alert-wrapper alert-wrapper-info pb-2 text-base">
-	<p class="alert-header my-0">Tip</p>
+<Admonition kind="tip">
 	<p class="mb-6 mt-2">Add emmet completions for <code>.svx</code> files in VS Code for your sanity!</p>
 	<div class="text-lg">
 		<CodeTopper title=".vscode/settings.json">
 			<!-- shiki-start
+p c"no-lines"
 ```json
 {
 	"emmet.includeLanguages": { ..., "svx": "html" }
@@ -244,7 +244,7 @@ shiki-end -->
 shiki-end -->
 		</CodeTopper>
 	</div>
-</div>
+</Admonition>
 
 <HAnchor tag="h3" title="Table Preprocessor" />
 
@@ -266,12 +266,9 @@ shiki-end -->
 
 <TableRender />
 
-<div class="alert-wrapper alert-wrapper-info text-base">
-	<p class="alert-header my-0">Hint</p>
-	<p class="my-2">
-		Styles via <a href="https://tailwindcss.com/docs/typography-plugin" data-external>Tailwind Typography</a>.
-	</p>
-</div>
+<Admonition kind="note">
+	Styles via <a href="https://tailwindcss.com/docs/typography-plugin" data-external>Tailwind Typography</a>.
+</Admonition>
 
 <p>
 	We <span class="italic">could</span> write some complicated logic to parse the file and determine where a table might start

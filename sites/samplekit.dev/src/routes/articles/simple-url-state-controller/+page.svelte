@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { CodeTopper } from '$lib/articles/components';
-	import { HAnchor } from '$lib/components';
+	import { HAnchor, Admonition } from '$lib/components';
 	import { searchParam } from '$lib/stores';
 	import { ArrowUp, X, Check } from '$lib/styles/icons';
 
@@ -275,17 +275,15 @@ shiki-end -->
 	simply mutate the <code>searchParams</code>. It must be a new reference.
 </p>
 
-<div class="alert-wrapper alert-wrapper-warning mb-6 text-base">
-	<p class="alert-header">
-		<strong>Svelte 4 subscriptions are notified on assignment changes, not internal mutations.</strong>
-	</p>
+<Admonition kind="important">
+	<strong>Svelte 4 subscriptions are notified on assignment changes, not internal mutations.</strong>
 	<p class="flex items-center gap-4">
 		<X class="text-error-9" /> Mutable reference to $page.url.searchParams
 	</p>
 	<p class="flex items-center gap-4">
 		<Check class="text-success-9" /> <span>New object created from $page.url.searchParams</span>
 	</p>
-</div>
+</Admonition>
 
 <!-- shiki-start
 ```ts

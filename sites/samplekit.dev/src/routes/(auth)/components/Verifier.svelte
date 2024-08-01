@@ -25,6 +25,7 @@
 </script>
 
 <script lang="ts">
+	import { Admonition } from '$lib/components';
 	import { VerifyEmailForm, VerifyMFAForm, VerifyPWForm } from '$routes/(auth)/components';
 
 	interface Props {
@@ -40,9 +41,7 @@
 	</h2>
 
 	{#if veri.verified}
-		<div class="alert-wrapper alert-wrapper-success">
-			{veri.expirationMsg}
-		</div>
+		<Admonition kind="tip" title={veri.expirationMsg}></Admonition>
 	{:else if veri.kind === 'Email'}
 		<VerifyEmailForm
 			email={veri.email}

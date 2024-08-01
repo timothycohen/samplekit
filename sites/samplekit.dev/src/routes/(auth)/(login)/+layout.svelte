@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { Turnstile, createTurnstileService, useTurnstileService } from '$lib/botProtection/turnstile/client';
-	import { Logo } from '$lib/components';
+	import { Admonition, Logo } from '$lib/components';
 	import { DotPattern } from '$routes/(auth)/(login)/components';
 
 	const { children } = $props();
@@ -33,7 +33,9 @@
 				</div>
 
 				<noscript>
-					<div class="alert-wrapper alert-wrapper-warning mt-6">Please enable JavaScript to continue.</div>
+					<Admonition bold kind="security" title="JS Required">
+						Enable JavaScript to continue with email / password.
+					</Admonition>
 				</noscript>
 				<div class="text-center text-sm text-gray-11">This is a demo site. The database is reset every 24 hours.</div>
 			</div>
