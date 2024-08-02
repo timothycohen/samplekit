@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { useTurnstileService } from '$lib/botProtection/turnstile/client';
 	import { InputMessage } from '$lib/components';
-	import { Loader2 } from '$lib/styles/icons';
+	import I from '$lib/icons';
 	import { superForm, zodClient } from '$lib/superforms/client';
 	import { GoogleFormButton, Or } from '$routes/(auth)/(login)/components';
 	import { PassInput } from '$routes/(auth)/components';
@@ -104,7 +104,7 @@
 
 	<button class="btn btn-accent h-10 w-full py-0 transition-colors" disabled={$submitting || !$turnstile} type="submit">
 		{#if $submitting}
-			<Loader2 class="inline h-5 w-5 animate-spin" />
+			<I.LoaderCircle class="inline h-5 w-5 animate-spin" />
 			Creating...
 		{:else}
 			Sign up

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { AlertTriangle, Check, Info, Moon, X } from '$lib/styles/icons';
+	import I from '$lib/icons';
 
 	interface Props {
 		displayTheme: { name: string; scheme: 'light' | 'dark' };
@@ -17,7 +17,7 @@
 				<span class="text-sm font-bold text-accent-9">SampleKit</span>
 				<div class="flex items-center gap-4">
 					<span class="text-xs font-light">Profile</span>
-					<Moon class="h-3 w-3 fill-amber-9 stroke-transparent" />
+					<I.Moon class="h-3 w-3 fill-amber-9 stroke-transparent" />
 				</div>
 			</div>
 			<div class="absolute top-12 h-[calc(100%-3rem)] w-full px-[8%]">
@@ -39,12 +39,12 @@
 							{/each}
 						</div>
 						<div class="flex items-center justify-around gap-[2%]">
-							<X class="w-[25%] fill-error-5 stroke-error-9" />
-							<Info class="w-[25%] fill-info-5 stroke-info-9" />
+							<I.X class="w-[25%] fill-error-5 stroke-error-9" />
+							<I.Info class="w-[25%] fill-info-5 stroke-info-9" />
 						</div>
 						<div class="flex items-center justify-around gap-[2%]">
-							<Check class="w-[25%] stroke-success-9" />
-							<AlertTriangle class="w-[25%] stroke-warning-10" />
+							<I.Check class="w-[25%] stroke-success-9" />
+							<I.TriangleAlert class="w-[25%] stroke-warning-10" />
 						</div>
 					</div>
 				</div>

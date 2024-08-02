@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { FeatureCard, FeatureSwapCard } from '$lib/articles/components';
 	import { allPostData } from '$lib/articles/load';
-	import { BookOpenText, Boxes, Code } from '$lib/styles/icons';
+	import I from '$lib/icons';
 </script>
 
 <section class="page">
@@ -28,21 +28,21 @@
 		<div class="mx-auto my-[clamp(1.875rem,_4.5vw,_3rem)] max-w-4xl">
 			<ul class="mx-auto flex w-[17rem] flex-col items-center justify-between gap-4 md:w-full md:flex-row">
 				<li class="flex w-full items-center gap-6 sm:flex-col sm:gap-3">
-					<BookOpenText class="h-10 w-10 text-accent-12" />
+					<I.BookOpenText class="h-10 w-10 text-accent-12" />
 					<div class="flex flex-col sm:items-center">
 						<p class="text-h3-min font-bold">Articles</p>
 						<p>Full implementation details</p>
 					</div>
 				</li>
 				<li class="flex w-full items-center gap-6 sm:flex-col sm:gap-3">
-					<Boxes class="h-10 w-10 text-accent-12" />
+					<I.Boxes class="h-10 w-10 text-accent-12" />
 					<div class="flex flex-col sm:items-center">
 						<p class="text-h3-min font-bold">Demos</p>
 						<p>Embedded examples</p>
 					</div>
 				</li>
 				<li class="flex w-full items-center gap-6 sm:flex-col sm:gap-3">
-					<Code class="h-10 w-10 text-accent-12" />
+					<I.Code class="h-10 w-10 text-accent-12" />
 					<div class="flex flex-col sm:items-center">
 						<p class="text-h3-min font-bold">Code</p>
 						<p>Open source on GitHub</p>

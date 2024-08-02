@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { clickOn } from '$lib/actions';
-	import { BookOpenText, Boxes, Code } from '$lib/styles/icons';
+	import I from '$lib/icons';
 	import type { KeyboardEventHandler, MouseEventHandler } from 'svelte/elements';
 
 	interface Props {
@@ -46,7 +46,7 @@
 		aria-label="Tutorial"
 		title="Tutorial"
 	>
-		<BookOpenText />
+		<I.BookOpenText />
 	</a>
 	<a
 		{tabindex}
@@ -58,7 +58,7 @@
 		aria-label="Implementation"
 		title="Implementation"
 	>
-		<Boxes />
+		<I.Boxes />
 	</a>
 	<a
 		{tabindex}
@@ -71,6 +71,6 @@
 		aria-label="Source Code"
 		title="Source Code"
 	>
-		<Code />
+		<I.Code />
 	</a>
 </div>

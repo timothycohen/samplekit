@@ -5,7 +5,7 @@
 	import { TabPanels } from '$lib/components';
 	import { HAnchor } from '$lib/components';
 	import { createCollapsedService, useCollapsedService } from '$lib/components/collapsedService';
-	import { ArrowRight, PanelRightDashed, UnfoldVertical, FoldVertical } from '$lib/styles/icons';
+	import I from '$lib/icons';
 	import { pluralize } from '$lib/utils/common';
 
 	const { data, children } = $props();
@@ -108,7 +108,7 @@
 											class="btn btn-ghost mr-1 rounded-badge px-2 py-1"
 											onclick={() => (sidebarOpen = !sidebarOpen)}
 										>
-											<ArrowRight class="h-5 w-5" />
+											<I.ArrowRight class="h-5 w-5" />
 										</button>
 									</div>
 								</TOC>
@@ -146,7 +146,7 @@
 					class="fixed bottom-20 right-4 hidden h-12 w-12 items-center justify-center rounded-full border border-gray-5 bg-app-bg/75 text-gray-11 backdrop-blur-md lg:flex"
 					onclick={() => (sidebarOpen = !sidebarOpen)}
 				>
-					<PanelRightDashed class="h-6 w-6" />
+					<I.PanelRightDashed class="h-6 w-6" />
 				</button>
 			{/if}
 
@@ -156,9 +156,9 @@
 				onclick={() => toggleAllOpen()}
 			>
 				{#if allOpen}
-					<UnfoldVertical class="h-6 w-6" />
+					<I.UnfoldVertical class="h-6 w-6" />
 				{:else}
-					<FoldVertical class="h-6 w-6" />
+					<I.FoldVertical class="h-6 w-6" />
 				{/if}
 			</button>
 		</div>

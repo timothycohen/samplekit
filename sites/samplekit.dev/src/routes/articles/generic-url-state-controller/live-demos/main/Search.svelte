@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Search } from '$lib/styles/icons';
+	import I from '$lib/icons';
 	import { useSearchAndFilterService } from '$routes/shop/services';
 
 	const {
@@ -24,7 +24,7 @@
 			value={$query}
 		/>
 		<button type="submit" class="absolute right-0 top-0 mr-3 flex h-full items-center">
-			<Search class="h-4" />
+			<I.Search class="h-4" />
 		</button>
 	</form>
 </div>

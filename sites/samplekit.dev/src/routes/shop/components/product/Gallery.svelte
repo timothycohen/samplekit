@@ -1,6 +1,6 @@
 <script lang="ts">
+	import I from '$lib/icons';
 	import { createNumParam } from '$lib/stores';
-	import { ArrowLeftIcon, ArrowRightIcon } from '$lib/styles/icons';
 	import { GridTileImage } from '..';
 	import type { Image } from '$lib/shop';
 
@@ -33,7 +33,7 @@
 					aria-label="Previous product image"
 					onclick={imageIndex.prev}
 				>
-					<ArrowLeftIcon class="h-5 w-5 group-hover:h-6 group-hover:w-6 group-hover:text-gray-12" />
+					<I.ArrowLeft class="h-5 w-5 group-hover:h-6 group-hover:w-6 group-hover:text-gray-12" />
 				</button>
 
 				<div class="mx-1 h-6 w-px bg-gray-7"></div>
@@ -43,7 +43,7 @@
 					aria-label="Next product image"
 					onclick={imageIndex.next}
 				>
-					<ArrowRightIcon class="h-5 w-5 group-hover:h-6 group-hover:w-6 group-hover:text-gray-12" />
+					<I.ArrowRight class="h-5 w-5 group-hover:h-6 group-hover:w-6 group-hover:text-gray-12" />
 				</button>
 			</div>
 		</div>

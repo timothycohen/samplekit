@@ -2,7 +2,7 @@
 	import { onMount } from 'svelte';
 	import { beforeNavigate, afterNavigate } from '$app/navigation';
 	import { page } from '$app/stores';
-	import { ArrowLeft, ArrowRight } from '$lib/styles/icons';
+	import I from '$lib/icons';
 	import { DesktopNav, Sidebar, MobileNav, Cart } from '$routes/shop/components';
 	import {
 		createSearchAndFilterService,
@@ -47,7 +47,7 @@
 		<div class="grid grid-cols-2 gap-2 bg-accent-3 px-2 text-sm">
 			<div class="flex justify-start">
 				<a href="/" class="group btn-sizing link p-2 text-accent-12">
-					<ArrowLeft class="h-4 w-4 transition-transform group-hover:-translate-x-1" />
+					<I.ArrowLeft class="h-4 w-4 transition-transform group-hover:-translate-x-1" />
 					Back to SampleKit
 				</a>
 			</div>
@@ -55,7 +55,7 @@
 			<div class="flex justify-end">
 				<a href="https://demo.vercel.store" class="group btn-sizing link p-2 text-accent-12">
 					Layout from Vercel Commerce
-					<ArrowRight class="h-4 w-4 transition-transform group-hover:translate-x-1" />
+					<I.ArrowRight class="h-4 w-4 transition-transform group-hover:translate-x-1" />
 				</a>
 			</div>
 		</div>
@@ -76,7 +76,7 @@
 
 <footer class="mt-8">
 	<a href="/" class="group btn btn-ghost p-2 text-sm">
-		<ArrowLeft class="h-4 w-4 transition-transform group-hover:-translate-x-1" />
+		<I.ArrowLeft class="h-4 w-4 transition-transform group-hover:-translate-x-1" />
 		Leave Demo
 	</a>
 </footer>

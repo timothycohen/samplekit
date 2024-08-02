@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { AlertTriangle, ImageIcon, Loader } from '$lib/styles/icons';
+	import I from '$lib/icons';
 	import type { CropValue } from '$lib/image/client';
 
 	interface Props {
@@ -46,8 +46,8 @@
 	<div class="absolute inset-0 animate-pulse bg-gray-3" aria-label="Loading"></div>
 	<div class="absolute inset-0 grid place-items-center">
 		<div class="flex flex-wrap gap-4">
-			<Loader class="h-14 w-14 animate-spin-slow" />
-			<ImageIcon class="h-14 w-14" />
+			<I.Loader class="h-14 w-14 animate-spin-slow" />
+			<I.Image class="h-14 w-14" />
 		</div>
 	</div>
 {/if}
@@ -62,7 +62,7 @@
 	<div class="absolute inset-0 grid place-content-center text-center">
 		<div class="flex flex-col gap-1 rounded-card bg-gray-2 p-4 text-gray-12">
 			<p class="text-2xl font-bold">{errorMsgs[0]}</p>
-			<div class="flex justify-center"><AlertTriangle class="h-16 w-16" /></div>
+			<div class="flex justify-center"><I.TriangleAlert class="h-16 w-16" /></div>
 			{#if errorMsgs[1]}
 				<p>{errorMsgs[1]}</p>
 			{/if}

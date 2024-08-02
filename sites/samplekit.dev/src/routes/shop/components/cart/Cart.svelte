@@ -2,7 +2,7 @@
 	import { fade, fly } from 'svelte/transition';
 	import { windowEscape } from '$lib/actions';
 	import { Notice } from '$lib/components';
-	import { ShoppingCartIcon, X } from '$lib/styles/icons';
+	import I from '$lib/icons';
 	import { RemoveFromCartBtn } from '$routes/shop/components';
 	import { useCartCtx } from '$routes/shop/services';
 	import { DEFAULT_SELECTED_OPTION, formatPrice } from '$routes/shop/utils';
@@ -36,13 +36,13 @@
 					class="btn-ghost grid h-6 w-6 place-content-center"
 					onclick={() => (cart.drawer = false)}
 				>
-					<X />
+					<I.X />
 				</button>
 			</div>
 
 			{#if !cart.value || cart.value.lines.length === 0}
 				<div class="mt-20 flex w-full flex-col items-center justify-center overflow-hidden">
-					<ShoppingCartIcon class="h-16" />
+					<I.ShoppingCart class="h-16" />
 					<p class="mt-6 text-center text-2xl font-bold">Your cart is empty.</p>
 				</div>
 			{:else}

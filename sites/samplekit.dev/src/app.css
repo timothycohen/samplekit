@@ -16,7 +16,8 @@ select {
 	appearance: none;
 }
 
-.lucide {
+.lucide-icon,
+.custom-icon {
 	@apply stroke-[1.25];
 }
 /*#endregion Resets ########################## */

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { useCollapsedService } from '$lib/components/collapsedService';
-	import { ChevronUp } from '$lib/styles/icons';
+	import I from '$lib/icons';
 	import Copy from './Copy.svelte';
 	import type { Snippet } from 'svelte';
 
@@ -53,7 +53,7 @@
 				class="grid min-h-10 w-10 place-content-center rounded-tr-card bg-gray-3 text-gray-10 -outline-offset-1 hover:bg-gray-4"
 			>
 				<div class="transition-transform {collapsed ? 'rotate-180' : ''}">
-					<ChevronUp />
+					<I.ChevronUp />
 				</div>
 			</button>
 		{/if}

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Loader2 } from '$lib/styles/icons';
+	import I from '$lib/icons';
 	import { superForm, zodClient, type SuperValidated } from '$lib/superforms/client';
 	import { confirmPassSchema } from '$routes/(auth)/validators';
 	import PassInput from './PassInput.svelte';
@@ -48,7 +48,7 @@
 			<button type="button" class="btn btn-hollow" onclick={() => history.back()}>Cancel</button>
 			<button type="submit" class="btn btn-accent" disabled={$submitting}>
 				{#if $submitting}
-					<Loader2 class="inline h-5 w-5 animate-spin" />
+					<I.LoaderCircle class="inline h-5 w-5 animate-spin" />
 					Verifying...
 				{:else}
 					Verify

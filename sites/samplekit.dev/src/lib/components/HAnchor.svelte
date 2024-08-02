@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Link } from '$lib/styles/icons';
+	import I from '$lib/icons';
 
 	const {
 		title,
@@ -18,7 +18,7 @@
 			class="absolute bottom-0 right-0 top-0 grid content-center
 			opacity-0 transition-opacity group-hover:opacity-100"
 		>
-			<small><Link class="!stroke-2 text-accent-12" /></small></span
+			<small><I.Link class="!stroke-2 text-accent-12" /></small></span
 		>
 	</a>
 </svelte:element>

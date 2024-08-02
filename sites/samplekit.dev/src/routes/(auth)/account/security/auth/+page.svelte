@@ -3,26 +3,16 @@
 	import { slide } from 'svelte/transition';
 	import { goto } from '$app/navigation';
 	import { mfaLabels } from '$lib/auth/client';
-	import { Admonition, Icon } from '$lib/components';
-	import {
-		Check,
-		Eraser,
-		Fingerprint,
-		// MessageCircle,
-		Pencil,
-		ShieldEllipsis,
-		Trash2,
-		KeySquare,
-		X,
-	} from '$lib/styles/icons';
+	import { Admonition } from '$lib/components';
+	import I from '$lib/icons';
 	import UpdatePassForm from './UpdatePassForm.svelte';
 
 	const { data } = $props();
 
 	const { method, mfasEnabled, mfaCount } = $derived(data);
 	const authMethods = $derived([
-		{ AuthIcon: Fingerprint, enabled: mfasEnabled.passkeys, next: 'passkeys' as DB.MFAs.Kind },
-		{ AuthIcon: ShieldEllipsis, enabled: mfasEnabled.authenticator, next: 'authenticator' as DB.MFAs.Kind },
+		{ AuthIcon: I.Fingerprint, enabled: mfasEnabled.passkeys, next: 'passkeys' as DB.MFAs.Kind },
+		{ AuthIcon: I.ShieldEllipsis, enabled: mfasEnabled.authenticator, next: 'authenticator' as DB.MFAs.Kind },
 		// { AuthIcon: MessageCircle, enabled: mfasEnabled.sms, next: 'sms' as DB.MFAs.Kind },
 	]);
 
@@ -73,7 +63,7 @@
 				<p>{data.email}</p>
 				{#if method === 'oauth'}
 					<div class="flex gap-2">
-						<Icon icon="google" class="h-6 w-6" attrs={{ 'aria-label': 'Google' }} />
+						<I.Google class="h-6 w-6" aria-label="Google" />
 						<span>Linked</span>
 					</div>
 				{/if}
@@ -84,10 +74,10 @@
 			<div class="flex justify-between">
 				<h2 class="mb-2 font-bold">Password</h2>
 				{#if editingPassword}
-					<button onclick={() => (editingPassword = false)}><Eraser class="h-4 w-4" /></button>
+					<button onclick={() => (editingPassword = false)}><I.Eraser class="h-4 w-4" /></button>
 					<small class="sr-only">Open Password Editor</small>
 				{:else if method === 'pass'}
-					<button onclick={() => (editingPassword = true)}><Pencil class="h-4 w-4" /></button>
+					<button onclick={() => (editingPassword = true)}><I.Pencil class="h-4 w-4" /></button>
 					<small class="sr-only">Close Password Editor</small>
 				{/if}
 			</div>
@@ -111,12 +101,12 @@
 
 		{#if method === 'oauth'}
 			<a href="/change-to-password" class="btn btn-hollow gap-2 text-sm sm:w-fit">
-				<KeySquare class="h-4 w-4" />
+				<I.KeySquare class="h-4 w-4" />
 				<span>Enable Password</span>
 			</a>
 		{:else if mfaCount === 0}
 			<a href="/change-to-google" class="btn btn-hollow gap-2 text-sm sm:w-fit">
-				<Icon icon="google" class="h-4 w-4" />
+				<I.Google class="h-4 w-4" />
 				<span>Link Google</span>
 			</a>
 		{/if}
@@ -158,7 +148,7 @@
 									<small class="hidden sm:block">(●●●) ●●●-{data.phoneNumberLast4}</small>
 								{/if}
 								<div class="rounded-badge bg-success-4/40 text-success-12">
-									<Check class="p-1" />
+									<I.Check class="p-1" />
 								</div>
 								<a
 									href="/mfa/update?next=remove-{next}"
@@ -173,7 +163,7 @@
 									class:btn-disabled={method === 'oauth'}
 									class="btn btn-hollow rounded-badge p-1"
 								>
-									<Trash2 class="h-4 w-4" />
+									<I.Trash2 class="h-4 w-4" />
 								</a>
 							</span>
 						{:else if method === 'pass'}
@@ -271,7 +261,7 @@
 				</button>
 			</div>
 
-			<button class="modal-x-btn" use:melt={$delAccountClose}><X /></button>
+			<button class="modal-x-btn" use:melt={$delAccountClose}><I.X /></button>
 		</div>
 	{/if}
 </div>

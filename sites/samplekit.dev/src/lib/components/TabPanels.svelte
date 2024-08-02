@@ -13,8 +13,7 @@
 <script lang="ts">
 	import { createTabs, melt } from '@melt-ui/svelte';
 	import { useCollapsedService } from '$lib/components/collapsedService';
-	import { ChevronUp } from '$lib/styles/icons';
-	import Icon from './Icon.svelte';
+	import I from '$lib/icons';
 	import PatternWrapper from './PatternWrapper.svelte';
 	import TabPanelItem from './TabPanelItem.svelte';
 	import type { NoPropComponent } from '$lib/utils/common';
@@ -67,8 +66,8 @@
 						class="flex items-center gap-2 text-nowrap text-base
 						{active ? 'text-gray-12' : 'text-gray-10 group-hover:text-gray-11'}"
 					>
-						{#if triggerItem.icon}
-							<Icon class="h-5 w-5" icon={triggerItem.icon} />
+						{#if triggerItem.icon === 'svelte'}
+							<I.Svelte class="h-5 w-5" />
 						{/if}
 
 						<span class="relative">
@@ -91,7 +90,7 @@
 			class="grid min-h-10 w-10 shrink-0 place-content-center rounded-tr-card border-l border-gray-9 bg-gray-3 text-gray-10 -outline-offset-1 hover:bg-gray-4 dark:border-gray-5"
 		>
 			<div class="transition-transform {collapsed ? 'rotate-180' : ''}">
-				<ChevronUp />
+				<I.ChevronUp />
 			</div>
 		</button>
 	</div>

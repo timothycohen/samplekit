@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
 	import { InputMessage } from '$lib/components';
-	import { MailCheck } from '$lib/styles/icons';
+	import I from '$lib/icons';
 
 	const { form, data } = $props();
 </script>
@@ -11,7 +11,7 @@
 		<div class="relative rounded-card px-4 shadow-4">
 			<div class="flex-auto p-6">
 				<div class="mb-10 flex items-center justify-center overflow-hidden">
-					<MailCheck class="h-12 w-12 stroke-accent-9" />
+					<I.MailCheck class="h-12 w-12 stroke-accent-9" />
 				</div>
 
 				<h1 class="mb-2 text-xl font-medium">Verify {data.unverifiedEmail}</h1>

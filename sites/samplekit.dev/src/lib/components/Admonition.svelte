@@ -1,8 +1,9 @@
 <script lang="ts">
-	import { default as Icon, type AdmonitionIconName } from './AdmonitionIcon.svelte';
+	import I, { type Icon } from '$lib/icons';
+	import { assertUnreachable, cap } from '$lib/utils/common';
 	import type { Snippet } from 'svelte';
 
-	type AdmonitionType =
+	type Kind =
 		| 'note'
 		| 'info'
 		| 'tip'
@@ -15,81 +16,113 @@
 		| 'error'
 		| 'security';
 
-	type AdmonitionColor = 'info' | 'success' | 'warning' | 'error' | 'important';
+	type Color = 'info' | 'success' | 'warning' | 'error' | 'important';
 
-	const {
-		kind,
-		title,
-		color,
-		icon,
-		children,
-		childrenClasses,
-		bold = false,
-	}: {
-		kind: AdmonitionType;
-		title?: string;
-		color?: AdmonitionColor;
-		icon?: AdmonitionIconName;
+	const kindToIcon = (kind: Kind): Icon => {
+		switch (kind) {
+			case 'note':
+				return I.StickyNote;
+			case 'caution':
+				return I.OctagonAlert;
+			case 'experimental':
+				return I.FlaskConical;
+			case 'important':
+				return I.MessageSquareWarning;
+			case 'success':
+				return I.CircleCheck;
+			case 'security':
+				return I.ShieldAlert;
+			case 'tip':
+				return I.Lightbulb;
+			case 'warning':
+				return I.TriangleAlert;
+			case 'error':
+				return I.CircleX;
+			case 'info':
+				return I.Info;
+			case 'hint':
+				return I.Lightbulb;
+		}
+		assertUnreachable(kind);
+	};
+
+	const kindToColor = (kind: Kind): Color => {
+		switch (kind) {
+			case 'note':
+			case 'info':
+			case 'hint':
+				return 'info';
+			case 'tip':
+			case 'success':
+				return 'success';
+			case 'warning':
+				return 'warning';
+			case 'caution':
+			case 'error':
+				return 'error';
+			case 'security':
+			case 'experimental':
+			case 'important':
+				return 'important';
+		}
+		assertUnreachable(kind);
+	};
+
+	const kindToTitle = (kind: Kind): Capitalize<Kind> => cap(kind);
+
+	type Props = (
+		| {
+				kind: Kind;
+				title?: string;
+				color?: Color;
+				icon?: Icon;
+		  }
+		| {
+				kind?: never;
+				title: string;
+				color: Color;
+				icon: Icon;
+		  }
+	) & {
 		children?: Snippet;
-		childrenClasses?: string;
+		childrenClass?: string;
 		bold?: boolean;
-	} = $props();
+	};
 
-	const _title = $derived(title ?? kind);
+	const { kind, title, color, icon, children, childrenClass, bold = false }: Props = $props();
 
-	const _icon: AdmonitionIconName = $derived.by(() => {
-		if (icon) return icon;
-		if (kind === 'note') return 'note';
-		if (kind === 'caution') return 'octagon-alert';
-		if (kind === 'experimental') return 'flask';
-		if (kind === 'important') return 'warning-message';
-		if (kind === 'success') return 'check-circle';
-		if (kind === 'security') return 'shield-alert';
-		if (kind === 'tip') return 'lightbulb';
-		if (kind === 'warning') return 'triangle-alert';
-		if (kind === 'error') return 'x-circle';
-		if (kind === 'info') return 'info-circle';
-		if (kind === 'hint') return 'lightbulb';
-		return 'note';
-	});
+	// not sure why TS can't figure out that if the left doesn't exist, kind must exist
+	const IconD = $derived(icon ?? kindToIcon(kind as Kind));
+	const titleD = $derived(title ?? kindToTitle(kind as Kind));
+	const colorD = $derived(color ?? kindToColor(kind as Kind));
 
-	const _color: AdmonitionColor = $derived.by(() => {
-		if (color) return color;
-		if (['info', 'note', 'hint'].includes(kind)) return 'info';
-		if (['tip', 'success'].includes(kind)) return 'success';
-		if (kind === 'warning') return 'warning';
-		if (['caution', 'error'].includes(kind)) return 'error';
-		if (['security', 'experimental', 'important'].includes(kind)) return 'important';
-		return 'info';
-	});
-
-	const border = $derived.by(() => {
-		if (_color === 'info') return bold ? 'border-info-9' : 'border-info-5';
-		if (_color === 'success') return bold ? 'border-success-9' : 'border-success-5';
-		if (_color === 'warning') return bold ? 'border-warning-9' : 'border-warning-5';
-		if (_color === 'error') return bold ? 'border-error-9' : 'border-error-5';
-		if (_color === 'important') return bold ? 'border-iris-9' : 'border-iris-5';
+	const borderClass = $derived.by(() => {
+		if (colorD === 'info') return bold ? 'border-info-9' : 'border-info-5';
+		if (colorD === 'success') return bold ? 'border-success-9' : 'border-success-5';
+		if (colorD === 'warning') return bold ? 'border-warning-9' : 'border-warning-5';
+		if (colorD === 'error') return bold ? 'border-error-9' : 'border-error-5';
+		if (colorD === 'important') return bold ? 'border-iris-9' : 'border-iris-5';
 		return 'border-info-9';
 	});
 
-	const text = $derived.by(() => {
-		if (_color === 'info') return bold ? 'bg-info-7/20 text-info-11' : 'bg-info-6/20 text-info-11/80';
-		if (_color === 'success') return bold ? 'bg-success-7/20 text-success-11' : 'bg-success-6/20 text-success-11/80';
-		if (_color === 'warning') return bold ? 'bg-warning-7/20 text-warning-11' : 'bg-warning-6/20 text-warning-11/80';
-		if (_color === 'error') return bold ? 'bg-error-7/20 text-error-11' : 'bg-error-6/20 text-error-11/80';
-		if (_color === 'important') return bold ? 'bg-iris-7/20 text-iris-11' : 'bg-iris-6/20 text-iris-11/80';
+	const textClass = $derived.by(() => {
+		if (colorD === 'info') return bold ? 'bg-info-7/20 text-info-11' : 'bg-info-6/20 text-info-11/80';
+		if (colorD === 'success') return bold ? 'bg-success-7/20 text-success-11' : 'bg-success-6/20 text-success-11/80';
+		if (colorD === 'warning') return bold ? 'bg-warning-7/20 text-warning-11' : 'bg-warning-6/20 text-warning-11/80';
+		if (colorD === 'error') return bold ? 'bg-error-7/20 text-error-11' : 'bg-error-6/20 text-error-11/80';
+		if (colorD === 'important') return bold ? 'bg-iris-7/20 text-iris-11' : 'bg-iris-6/20 text-iris-11/80';
 		return 'text-info-11';
 	});
 </script>
 
-<div class="mx-auto my-8 rounded-card {bold ? 'border-2' : 'border'} {border}">
-	<div class="flex items-center gap-2 p-2 pl-4 {text}">
-		<span class="flex-none"><Icon icon={_icon} class="h-4 w-4 !stroke-2" /></span>
-		<span class:capitalize={!title}>{_title}</span>
+<div class="mx-auto my-8 rounded-card {bold ? 'border-2' : 'border'} {borderClass}">
+	<div class="flex items-center gap-2 p-2 pl-4 {textClass}">
+		<span class="flex-none"><IconD class="h-4 w-4 !stroke-2" /></span>
+		<span>{titleD}</span>
 	</div>
 
 	{#if children}
-		<div class="{childrenClasses ?? 'px-4 py-3'}{bold ? '' : ' text-gray-11'}">
+		<div class="{childrenClass ?? 'px-4 py-3'}{bold ? '' : ' text-gray-11'}">
 			{@render children()}
 		</div>
 	{/if}

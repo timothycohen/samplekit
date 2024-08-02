@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { melt } from '@melt-ui/svelte';
 	import { page } from '$app/stores';
-	import { MenuIcon } from '$lib/styles/icons';
+	import I from '$lib/icons';
 	import { SearchBar, OpenCartBtn } from '$routes/shop/components';
 	import { useNavService } from '$routes/shop/services';
 	import { handleToPath, type MenuWithPath } from '$routes/shop/utils';
@@ -60,7 +60,7 @@
 			<div class="flex justify-end gap-3">
 				{#if $desktopNav.showDrawerToggle}
 					<button use:melt={$trigger} class="btn btn-ghost animate-fade-up-and-in p-2">
-						<MenuIcon />
+						<I.Menu />
 					</button>
 				{/if}
 				<OpenCartBtn />

@@ -1,5 +1,6 @@
 <script lang="ts">
-	import { Admonition, Icon } from '$lib/components';
+	import { Admonition } from '$lib/components';
+	import I from '$lib/icons';
 	import { VerifyPWForm } from '$routes/(auth)/components';
 
 	const { data } = $props();
@@ -36,7 +37,7 @@
 					<div class="flex flex-wrap gap-4">
 						<a class="btn btn-hollow sm:w-fit" href="/account/security/auth">Cancel</a>
 						<button type="submit" class="btn btn-hollow h-10 w-full py-0 sm:w-fit" {disabled}>
-							<Icon icon="google" />
+							<I.Google />
 							<span>Continue with Google</span>
 						</button>
 					</div>

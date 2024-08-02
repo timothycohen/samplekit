@@ -1,6 +1,6 @@
 <script lang="ts" generics="SvelteGeneric extends object">
 	import { type createSelect, melt } from '@melt-ui/svelte';
-	import { Check, ChevronDown } from '$lib/styles/icons';
+	import I from '$lib/icons';
 
 	type Option = { label: string; value: SvelteGeneric };
 
@@ -30,7 +30,7 @@
 		{$selected?.label ?? $selected?.value}
 	</div>
 
-	<ChevronDown class="h-4 w-4" />
+	<I.ChevronDown class="h-4 w-4" />
 </button>
 
 {#if $open}
@@ -56,7 +56,7 @@
 						use:melt={$option({ value, label })}
 					>
 						<div class="check {selected ? 'block' : 'hidden'} {noKey ? 'right' : 'left'}">
-							<Check class="h-4 w-4" />
+							<I.Check class="h-4 w-4" />
 						</div>
 						{label ?? value}
 					</div>

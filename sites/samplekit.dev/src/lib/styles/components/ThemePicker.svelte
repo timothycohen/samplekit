@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { fade } from 'svelte/transition';
-	import { Check, Moon, Sun } from '$lib/styles/icons';
+	import I from '$lib/icons';
 	import { debounce } from '$lib/utils/common';
 	import ThemeDemo from './ThemeDemo.svelte';
 
@@ -15,7 +15,7 @@
 
 	const { mode, themes, active, preference, setTheme }: Props = $props();
 
-	const Icon = mode === 'day' ? Sun : Moon;
+	const Icon = mode === 'day' ? I.Sun : I.Moon;
 	let hovered: null | Theme = $state(null);
 	const displayTheme = $derived(hovered ?? preference);
 
@@ -52,12 +52,12 @@
 				class="flex items-center justify-end gap-2"
 			>
 				<span>Saved </span>
-				<Check class="h-5 text-success-9" />
+				<I.Check class="h-5 text-success-9" />
 			</span>
 		{:else if saved === null && active}
 			<span in:fade|global class="flex items-center justify-end gap-2">
 				<span>Active </span>
-				<Check class="h-5 text-success-9" />
+				<I.Check class="h-5 text-success-9" />
 			</span>
 		{/if}
 	</div>

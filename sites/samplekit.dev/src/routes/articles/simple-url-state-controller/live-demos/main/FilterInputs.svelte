@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { minMaxVal } from '$lib/actions';
-	import { BadgeIcon } from '$lib/styles/icons';
+	import I from '$lib/icons';
 	import type { SearchParam, SearchParams } from '$lib/stores';
 
 	interface Props {
@@ -18,7 +18,7 @@
 	<span class="relative">
 		Authors
 		{#if $authors.length}
-			<span class="absolute -right-6 -top-2 h-5 w-5"> <BadgeIcon class="h-full w-full fill-accent-9" /> </span>
+			<span class="absolute -right-6 -top-2 h-5 w-5"> <I.Badge class="h-full w-full fill-accent-9" /> </span>
 			<span class="absolute -right-6 -top-2 grid h-5 w-5 place-content-center text-sm text-accent-9-contrast">
 				{$authors.length}
 			</span>

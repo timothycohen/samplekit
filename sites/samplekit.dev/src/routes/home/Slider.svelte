@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { createSlider } from '$lib/components';
-	import { Pause, Play } from '$lib/styles/icons';
+	import I from '$lib/icons';
 
 	const items: Array<{ title: string; description: string; img: { src: string; alt: string } }> = $state([]);
 
@@ -64,7 +64,7 @@
 								use:playPauseBtn.action
 								class="inline-flex h-5 w-5 items-center justify-center"
 							>
-								{#if $isPaused}<Play />{:else}<Pause />{/if}
+								{#if $isPaused}<I.Play />{:else}<I.Pause />{/if}
 							</button>
 						{/if}
 					</div>

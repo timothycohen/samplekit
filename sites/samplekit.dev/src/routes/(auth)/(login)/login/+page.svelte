@@ -2,7 +2,7 @@
 	import { createDialog, melt } from '@melt-ui/svelte';
 	import { useTurnstileService } from '$lib/botProtection/turnstile/client';
 	import { InputMessage } from '$lib/components';
-	import { KeyRound, Loader2, X } from '$lib/styles/icons';
+	import I from '$lib/icons';
 	import { superForm, zodClient } from '$lib/superforms/client.js';
 	import { GoogleFormButton, Or } from '$routes/(auth)/(login)/components';
 	import { PassInput } from '$routes/(auth)/components';
@@ -93,7 +93,7 @@
 
 	<button class="btn btn-accent h-10 w-full py-0 transition-colors" disabled={signinDisabled} type="submit">
 		{#if $signinSubmitting}
-			<Loader2 class="inline h-5 w-5 animate-spin" />
+			<I.LoaderCircle class="inline h-5 w-5 animate-spin" />
 			Signing in...
 		{:else}
 			Sign in
@@ -114,7 +114,7 @@
 				use:turnstileInput={{ form: resetForm }}
 			>
 				<div class="modal-icon-wrapper">
-					<KeyRound class="h-full w-full" />
+					<I.KeyRound class="h-full w-full" />
 				</div>
 
 				<h2 use:melt={$title} class="modal-title">Reset your password.</h2>
@@ -142,7 +142,7 @@
 					type="submit"
 				>
 					{#if $resetSubmitting}
-						<Loader2 class="inline h-5 w-5 animate-spin" />
+						<I.LoaderCircle class="inline h-5 w-5 animate-spin" />
 						Sending
 					{:else if $resetMessage?.success}
 						Sent!
@@ -152,7 +152,7 @@
 				</button>
 			</form>
 
-			<button use:melt={$close} class="modal-x-btn"><X /></button>
+			<button use:melt={$close} class="modal-x-btn"><I.X /></button>
 		</div>
 	{/if}
 </div>

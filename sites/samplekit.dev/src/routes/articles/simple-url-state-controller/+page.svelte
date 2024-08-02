@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { CodeTopper } from '$lib/articles/components';
 	import { HAnchor, Admonition } from '$lib/components';
+	import I from '$lib/icons';
 	import { searchParam } from '$lib/stores';
-	import { ArrowUp, X, Check } from '$lib/styles/icons';
 
 	const setSwitch = searchParam('set-switch');
 	const toggleSwitch = searchParam('toggle-switch');
@@ -278,10 +278,10 @@ shiki-end -->
 <Admonition kind="important">
 	<strong>Svelte 4 subscriptions are notified on assignment changes, not internal mutations.</strong>
 	<p class="flex items-center gap-4">
-		<X class="text-error-9" /> Mutable reference to $page.url.searchParams
+		<I.X class="text-error-9" /> Mutable reference to $page.url.searchParams
 	</p>
 	<p class="flex items-center gap-4">
-		<Check class="text-success-9" /> <span>New object created from $page.url.searchParams</span>
+		<I.Check class="text-success-9" /> <span>New object created from $page.url.searchParams</span>
 	</p>
 </Admonition>
 
@@ -471,7 +471,7 @@ shiki-end -->
 shiki-end -->
 
 <div class="space-y-4">
-	<label for="single-search-param" class="input-label flex gap-2"><ArrowUp class="h-4 w-4" /> Check the URL</label>
+	<label for="single-search-param" class="input-label flex gap-2"><I.ArrowUp class="h-4 w-4" /> Check the URL</label>
 	<input type="text" bind:value={$singleSearchParam} id="single-search-param" class="peer input-text max-w-48" />
 
 	<label for="easter" class="input-label flex gap-2">Try to type "egg" or use your browser to go to ?easter=egg.</label>

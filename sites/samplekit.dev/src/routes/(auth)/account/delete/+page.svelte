@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { Admonition } from '$lib/components/index.js';
-	import { Loader2 } from '$lib/styles/icons';
+	import I from '$lib/icons';
 	import { Verifier } from '$routes/(auth)/components';
 
 	const { data } = $props();
@@ -48,7 +48,7 @@
 				class="btn btn-hollow mt-6 w-full"
 			>
 				{#if submitting}
-					<Loader2 class="h-4 w-4 animate-spin text-accent-9" />
+					<I.LoaderCircle class="h-4 w-4 animate-spin text-accent-9" />
 				{/if}
 				<small>Permanently Delete</small>
 			</button>

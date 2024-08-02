@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/stores';
 	import { keyboard } from '$lib/actions';
-	import { ChevronUp } from '$lib/styles/icons';
+	import I from '$lib/icons';
 	import type { RouteLeaf, RouteGroup } from './routes';
 
 	interface Props {
@@ -54,7 +54,7 @@
 		<span
 			class="pointer-events-none absolute right-0 top-0 grid h-10 w-10 place-content-center transition-transform peer-checked:rotate-180"
 		>
-			<ChevronUp class="h-4 w-4" />
+			<I.ChevronUp class="h-4 w-4" />
 		</span>
 
 		<ul class="hidden peer-checked:block">

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/stores';
 	import { Logo, InputMessage } from '$lib/components';
-	import { Loader2 } from '$lib/styles/icons';
+	import I from '$lib/icons';
 	import { superForm, zodClient } from '$lib/superforms/client';
 	import { PassInput } from '$routes/(auth)/components';
 	import { createNewPassSchema } from '$routes/(auth)/validators';
@@ -73,7 +73,7 @@
 
 					<button class="btn btn-accent h-10 w-full py-0" disabled={$submitting} type="submit">
 						{#if $submitting}
-							<Loader2 class="inline h-5 w-5 animate-spin" />
+							<I.LoaderCircle class="inline h-5 w-5 animate-spin" />
 							Updating...
 						{:else}
 							Update Password

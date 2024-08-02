@@ -1,6 +1,5 @@
 <script lang="ts">
-	import { Icon } from '$lib/components';
-	import { Loader2 } from '$lib/styles/icons';
+	import I from '$lib/icons';
 
 	interface Props {
 		submitGoogle?: boolean;
@@ -16,9 +15,9 @@
 	<input type="hidden" name="persistent" value={persistent} />
 	<button type="submit" class="btn btn-hollow h-10 w-full py-0" disabled={submitGoogle}>
 		{#if submitGoogle}
-			<Loader2 class="h-6 w-6 animate-spin text-accent-9" />
+			<I.LoaderCircle class="animate-spin text-accent-9" />
 		{:else}
-			<Icon icon="google" />
+			<I.Google />
 		{/if}
 		<span>Continue with Google</span>
 	</button>

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Loader2 } from '$lib/styles/icons';
+	import I from '$lib/icons';
 	import LangSelect from './LangSelect.svelte';
 	import { getRandomColor, langOptions, type Lang } from '.';
 
@@ -28,7 +28,7 @@
 	>
 		{#if $delayed}
 			<span class="grid w-[1.625rem] place-content-center" aria-label="Delayed">
-				<Loader2 class="inline h-5 w-5 animate-spin" />
+				<I.LoaderCircle class="inline h-5 w-5 animate-spin" />
 			</span>
 		{:else}
 			<span class="w-[1.625rem]">Get</span>

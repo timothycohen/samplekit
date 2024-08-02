@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { LoadingDots } from '$lib/components';
+	import I from '$lib/icons';
 	import { logger } from '$lib/logging/client';
-	import { Minus, Plus } from '$lib/styles/icons';
 	import { useCartCtx } from '$routes/shop/services';
 	import type { CartItem } from '$lib/shop';
 
@@ -48,8 +48,8 @@
 	{#if localPending}
 		<LoadingDots />
 	{:else if props.type === 'plus'}
-		<Plus class="h-4 w-4" />
+		<I.Plus class="h-4 w-4" />
 	{:else}
-		<Minus class="h-4 w-4" />
+		<I.Minus class="h-4 w-4" />
 	{/if}
 </button>

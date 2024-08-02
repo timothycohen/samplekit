@@ -2,8 +2,8 @@
 	import { fly } from 'svelte/transition';
 	import { Switch } from '$lib/components';
 	import { LoadingDots } from '$lib/components';
+	import I from '$lib/icons';
 	import { createTempStore } from '$lib/stores';
-	import { Check, Loader2 } from '$lib/styles/icons';
 	import LangSelect from './LangSelect.svelte';
 	import { getRandomColor, langOptions, type Lang } from '.';
 
@@ -51,7 +51,7 @@
 				</span>
 			{:else if $delayed}
 				<span class="grid w-[1.625rem] place-content-center" aria-label="Delayed">
-					<Loader2 class="inline h-5 w-5 animate-spin" />
+					<I.LoaderCircle class="inline h-5 w-5 animate-spin" />
 				</span>
 			{:else if $success}
 				<span
@@ -59,7 +59,7 @@
 					class="grid w-[1.625rem] place-content-center"
 					aria-label="Succeeded"
 				>
-					<Check class="inline h-5 w-5" />
+					<I.Check class="inline h-5 w-5" />
 				</span>
 			{:else}
 				<span in:fly={{ y: '4px', duration: 400 }} class="w-[1.625rem]">Get</span>

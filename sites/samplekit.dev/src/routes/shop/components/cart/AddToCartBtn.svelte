@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { LoadingDots } from '$lib/components';
+	import I from '$lib/icons';
 	import { logger } from '$lib/logging/client';
-	import { PlusIcon } from '$lib/styles/icons';
 	import { useCartCtx } from '$routes/shop/services';
 	import type { Result } from '$lib/utils/common';
 
@@ -24,7 +24,7 @@
 {#if !props.selectedVariant}
 	<button type="button" aria-label="Please select an option" class="{buttonClasses} {disabledClasses}">
 		<div class="absolute left-0 ml-4">
-			<PlusIcon class="h-5" />
+			<I.Plus class="h-5" />
 		</div>
 		Add To Cart
 	</button>
@@ -50,7 +50,7 @@
 			{#if cart.addItem.submitting}
 				<LoadingDots class="mb-3 bg-gray-12" />
 			{:else}
-				<PlusIcon class="h-5" />
+				<I.Plus class="h-5" />
 			{/if}
 		</div>
 		Add To Cart

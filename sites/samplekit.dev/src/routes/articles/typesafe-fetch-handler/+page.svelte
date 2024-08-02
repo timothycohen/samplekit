@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { CodeTopper } from '$lib/articles/components';
 	import { HAnchor } from '$lib/components';
-	import { Sparkles } from '$lib/styles/icons';
+	import I from '$lib/icons';
 
 	let showQuizAnswer = $state(false);
 </script>
@@ -49,7 +49,7 @@
 
 <p>
 	SvelteKit does the heavy lifting here. We return data and the client automatically
-	<Sparkles class="inline-block h-4 w-4 text-sun-moon" /> has full type safety. It works because SvelteKit writes
+	<I.Sparkles class="inline-block h-4 w-4 text-sun-moon" /> has full type safety. It works because SvelteKit writes
 	<code>PageData</code> to a <code>$types.d.ts</code> file in the <code>.svelte-kit</code> folder. That folder is
 	included by <code>.svelte-kit/tsconfig.json</code> which is itself included by your app's
 	<code>tsconfig.json</code>.

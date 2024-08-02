@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { LoadingDots } from '$lib/components';
+	import I from '$lib/icons';
 	import { logger } from '$lib/logging/client';
-	import { X } from '$lib/styles/icons';
 	import { useCartCtx } from '$routes/shop/services';
 	import type { Result } from '$lib/utils/common';
 
@@ -35,6 +35,6 @@
 	{#if cart.removeItem.submitting}
 		<LoadingDots />
 	{:else}
-		<X class="mx-[1px] h-4 w-4 hover:text-accent-9-contrast" />
+		<I.X class="mx-[1px] h-4 w-4 hover:text-accent-9-contrast" />
 	{/if}
 </button>

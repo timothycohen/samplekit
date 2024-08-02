@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { BadgeCheck, ImagePlus, Loader, Trash2, XCircle } from '$lib/styles/icons';
+	import I from '$lib/icons';
 
 	interface Props {
 		disabled?: boolean;
@@ -33,7 +33,7 @@
 				}}
 				aria-label="Cancel"
 			>
-				<XCircle />
+				<I.CircleX />
 			</button>
 		{/if}
 
@@ -46,7 +46,7 @@
 				}}
 				aria-label="New"
 			>
-				<ImagePlus />
+				<I.ImagePlus />
 			</button>
 		{/if}
 	</div>
@@ -63,19 +63,19 @@
 				}}
 				aria-label="Delete"
 			>
-				<Trash2 />
+				<I.Trash2 />
 			</button>
 		{/if}
 
 		{#if loader}
 			<span aria-label="Loading" class="inline-block">
-				<Loader class="animate-spin-slow" aria-label="Loading" />
+				<I.Loader class="animate-spin-slow" aria-label="Loading" />
 			</span>
 		{/if}
 
 		{#if badgeCheck}
 			<span aria-label="Complete" class="inline-block">
-				<BadgeCheck class="fill-black-9/30" aria-label="Complete " />
+				<I.BadgeCheck class="fill-black-9/30" aria-label="Complete " />
 			</span>
 		{/if}
 	</div>
