@@ -1,6 +1,5 @@
 import { dev } from '$app/environment';
-import type { MiddlewareContext } from '@samplekit/auth/server';
-import type { Handle } from '@sveltejs/kit';
+import type { Cookies, MiddlewareContext } from '@samplekit/auth/server';
 
 const sessionCookie = {
 	name: 'samplekit_session' as const,
@@ -12,17 +11,21 @@ const sessionCookie = {
 	},
 };
 
-export const createAuthMiddleware = ({ event }: { event: Parameters<Handle>['0']['event'] }): MiddlewareContext => ({
-	requestCookie: event.cookies.get(sessionCookie.name) ?? null,
+export const createAuthMiddleware = ({
+	cookies,
+}: {
+	cookies: Pick<Cookies, 'get' | 'set' | 'delete'>;
+}): MiddlewareContext => ({
+	requestCookie: cookies.get(sessionCookie.name) ?? null,
 	cookie: {
 		setPersistent: ({ sessionId, expires }: { sessionId: string; expires: Date }): void => {
-			event.cookies.set(sessionCookie.name, sessionId, { ...sessionCookie.attributes, expires });
+			cookies.set(sessionCookie.name, sessionId, { ...sessionCookie.attributes, expires });
 		},
 		setSession: ({ sessionId }: { sessionId: string }): void => {
-			event.cookies.set(sessionCookie.name, sessionId, { ...sessionCookie.attributes });
+			cookies.set(sessionCookie.name, sessionId, { ...sessionCookie.attributes });
 		},
 		delete: () => {
-			event.cookies.delete(sessionCookie.name, { path: '/' });
+			cookies.delete(sessionCookie.name, { path: '/' });
 		},
 	},
 });

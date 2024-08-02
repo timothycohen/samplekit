@@ -1,7 +1,7 @@
 import '$lib/initServer';
 
 import { sentryHandle, handleErrorWithSentry } from '@sentry/sveltekit';
-import { type HandleServerError, type Handle, redirect, error } from '@sveltejs/kit';
+import { type HandleServerError, type Handle, redirect, error, type Cookies } from '@sveltejs/kit';
 import { sequence } from '@sveltejs/kit/hooks';
 import { dev } from '$app/environment';
 import { PUBLIC_ORIGIN } from '$env/static/public';
@@ -10,9 +10,7 @@ import { logger } from '$lib/logging/server';
 import { handleAccountRedirects } from '$routes/account/hooks.server';
 import { deploymentAccessController } from '$routes/deployment-access/controller';
 
-export type SessionHandler = ReturnType<
-	(typeof import('./lib/auth/server/createAuth').auth)['createSessionHandler']
-> & {
+export type SessionHandler = ReturnType<(typeof auth)['createSessionHandler']> & {
 	/**
 	 * if (logged in && email verified && not awaiting MFA) -> `User`
 	 *
@@ -27,19 +25,19 @@ export type SessionHandler = ReturnType<
 	userOrRedirect: (a?: { skipCache?: true }) => Promise<never | { user: DB.User; session: DB.Session }>;
 };
 
-const populateLocals: Handle = async ({ event, resolve }) => {
-	const seshHandler = auth.createSessionHandler(createAuthMiddleware({ event })) as SessionHandler;
+const createSeshHandler = ({ cookies }: { cookies: Cookies }): SessionHandler => {
+	const seshHandler = auth.createSessionHandler(createAuthMiddleware({ cookies }));
 
-	seshHandler.getVerifiedUser = async ({ skipCache }: { skipCache?: true } = {}) => {
-		const seshUser = await event.locals.seshHandler.getSessionUser({ skipCache });
+	const getVerifiedUser = async ({ skipCache }: { skipCache?: true } = {}) => {
+		const seshUser = await seshHandler.getSessionUser({ skipCache });
 
 		if (!seshUser || seshUser.session.awaitingEmailVeri || seshUser.session.awaitingMFA) return null;
 
 		return seshUser.user;
 	};
 
-	seshHandler.userOrRedirect = async ({ skipCache }: { skipCache?: true } = {}) => {
-		const seshUser = await event.locals.seshHandler.getSessionUser({ skipCache });
+	const userOrRedirect = async ({ skipCache }: { skipCache?: true } = {}) => {
+		const seshUser = await seshHandler.getSessionUser({ skipCache });
 
 		let sanitizedPath: null | string = null;
 		if (!seshUser) sanitizedPath = '/login';
@@ -53,8 +51,11 @@ const populateLocals: Handle = async ({ event, resolve }) => {
 		return seshUser!;
 	};
 
-	event.locals.seshHandler = seshHandler;
+	return Object.assign(seshHandler, { getVerifiedUser, userOrRedirect });
+};
 
+const populateLocals: Handle = async ({ event, resolve }) => {
+	event.locals.seshHandler = createSeshHandler({ cookies: event.cookies });
 	return await resolve(event);
 };
 
