@@ -5,11 +5,13 @@
 	import { beforeNavigate, afterNavigate } from '$app/navigation';
 	import { page } from '$app/stores';
 	import { Header, SEO } from '$lib/components';
+	import { createMobileNavCtx } from '$lib/components/layout/nav/context.svelte';
 	import { createThemeControllerCtx } from '$lib/styles';
 
 	const { children, data } = $props();
 
 	createThemeControllerCtx(data.initialTheme);
+	createMobileNavCtx();
 
 	const smoothNavigationOnlyOnSamePage = () => {
 		if (browser) document.documentElement.style.scrollBehavior = 'smooth';

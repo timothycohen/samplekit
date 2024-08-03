@@ -1,5 +1,12 @@
-import { tweened, type TweenedOptions } from 'svelte/motion';
+import { tweened } from 'svelte/motion';
 import { get, writable, type Unsubscriber } from 'svelte/store';
+
+interface TweenedOptions<T> {
+	delay?: number;
+	duration?: number | ((from: T, to: T) => number);
+	easing?: (t: number) => number;
+	interpolate?: (a: T, b: T) => (t: number) => T;
+}
 
 export function createPausableTweened(
 	initial: number = 0,

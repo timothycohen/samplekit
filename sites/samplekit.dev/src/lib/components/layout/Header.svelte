@@ -6,29 +6,18 @@
 	import DesktopNavItem from './nav/DesktopNavItem.svelte';
 	import MobileNav from './nav/MobileNav.svelte';
 	import MobileNavToggler from './nav/MobileNavToggler.svelte';
-	import { MobileNavController } from './nav/mobileNavController';
+	import { useMobileNavCtx } from './nav/context.svelte';
 	import { getDesktopNavRoutes, getMobileNavRoutes } from './nav/routes';
 
-	const mobileNavPosition: 'left' | 'center' = 'left';
+	const { mobileNav, position } = useMobileNavCtx();
 
-	const mobileNavController = new MobileNavController({
-		transitionWidth: 768,
-		animationDuration: 0,
-		trapFocus: { selectorsBefore: ['#mobile-nav-btn'], selectorsAfter: ['#theme-switch-btn'] },
-		getMobileNavEl: () => (document.querySelector('#nav--mobile') as HTMLElement) || null,
-		getHeaderEl: () => (document.querySelector('#header') as HTMLElement) || null,
-	});
-
-	const mobileNavOpen = $derived(mobileNavController.isOpen);
 	const desktopNavPages = $derived(getDesktopNavRoutes(!!$page.data['user']));
 	const mobileNavPages = $derived(getMobileNavRoutes(!!$page.data['user']));
 
 	onMount(() => {
-		mobileNavController.listen();
 		document.documentElement.style.setProperty('scroll-padding-top', 'calc(var(--open-nav-height) + 1rem)');
 		return () => {
 			document.documentElement.style.removeProperty('scroll-padding-top');
-			mobileNavController.destroy();
 		};
 	});
 </script>
@@ -40,7 +29,7 @@
 	style="padding-right: var(--scrollbar-width);"
 >
 	<span class="pl-4 sm:pl-2">
-		<LogoLink onAnchorClick={() => mobileNavController.close()} textClass="hidden sm:block" />
+		<LogoLink onAnchorClick={() => (mobileNav.open = false)} textClass="hidden sm:block" />
 	</span>
 
 	<div
@@ -62,12 +51,8 @@
 			<ThemeToggler />
 
 			<span class="flex items-center justify-center md:hidden">
-				<MobileNavToggler toggle={mobileNavController.toggle} mobileNavOpen={$mobileNavOpen} />
-				<MobileNav
-					position={mobileNavPosition}
-					onNavItemClick={() => mobileNavController.close()}
-					routes={mobileNavPages}
-				/>
+				<MobileNavToggler toggle={mobileNav.toggle} mobileNavOpen={mobileNav.open} />
+				<MobileNav {position} onNavItemClick={() => (mobileNav.open = false)} routes={mobileNavPages} />
 			</span>
 		</span>
 	</span>
