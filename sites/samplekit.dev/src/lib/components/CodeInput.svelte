@@ -1,87 +1,131 @@
 <script lang="ts">
-	import { createPinInput, melt } from '@melt-ui/svelte';
+	/*
+	 * bug-svelte-5
+
+	 * Was using Melt-UI but it was buggy: https://github.com/melt-ui/melt-ui/issues/1245
+	 *
+	 * This seems simpler
+	 */
 
 	interface Props {
 		onChange?: ((a: { filled: true; code: string } | { filled: false; code?: never }) => void) | undefined;
 		namePrefix: string;
+		codeLength?: number;
 	}
 
-	const { onChange = undefined, namePrefix }: Props = $props();
+	const { namePrefix, onChange, codeLength = 6 }: Props = $props();
 
-	const codeLength = $state(6);
+	const value = $state(Array.from({ length: codeLength }).map(() => ''));
+	const filled = $derived(value.every((v) => v !== ''));
 
-	let rootEl: HTMLElement;
-
-	const overrideUpAndDownArrow = (
-		e: KeyboardEvent & { currentTarget: EventTarget & HTMLInputElement },
-		index: number,
-	) => {
-		if (['ArrowUp', 'ArrowDown'].includes(e.key)) {
-			e.preventDefault();
-
-			const offset = e.key === 'ArrowUp' ? 1 : -1;
-			const bounds: [string, string] = e.key === 'ArrowUp' ? ['9', '0'] : ['0', '9'];
-
-			let newStr = '';
-			if (['', bounds[0]].includes(e.currentTarget.value)) newStr = bounds[1];
-			else {
-				const num = parseInt(e.currentTarget.value, 10);
-				if (!isNaN(num)) newStr = (num + offset).toString();
-			}
-			if (newStr) {
-				e.currentTarget.value = newStr;
-				value.update((v) => {
-					v[index] = newStr;
-					return v;
-				});
-			}
-		}
-	};
-
-	// melt-ui lets all alphanumeric keys through. It's easier to do this here than in the keydown function
-	const replaceCorruptValues = ({ next }: { next: string[] }): string[] => {
-		let lastCorruptedIndex: number | null = null;
-		for (let i = 0; i < next.length; i++) {
-			const c = next[i]!;
-			if (c === '') continue;
-			const num = parseInt(c, 10);
-			if (isNaN(num)) {
-				next[i] = '';
-				lastCorruptedIndex = i;
-			}
-		}
-
-		if (lastCorruptedIndex !== null) {
-			const input = rootEl.querySelector(`input:nth-child(${lastCorruptedIndex + 1})`) as HTMLInputElement | null;
-			if (input) input.focus();
-		}
-
-		return next;
-	};
-
-	const {
-		elements: { root, input },
-		states: { value, valueStr },
-	} = createPinInput({ onValueChange: replaceCorruptValues });
-
-	value.subscribe(($value) => {
+	$effect(() => {
 		if (onChange) {
-			if ($value.every((v) => v !== '')) onChange({ filled: true, code: $valueStr });
+			if (filled) onChange({ filled: true, code: value.join('') });
 			else onChange({ filled: false });
 		}
 	});
+
+	type Valid = '' | '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9';
+	const isValid = (data: unknown): data is Valid => {
+		if (typeof data !== 'string') return false;
+		return ['', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'].includes(data);
+	};
+
+	type KeyEvent = KeyboardEvent & { currentTarget: EventTarget & HTMLInputElement };
+	type PasteEvent = ClipboardEvent & { currentTarget: EventTarget & HTMLInputElement };
+
+	const enterValid = (e: KeyEvent, index: number) => {
+		value[index] = e.key;
+		focusNext(e.currentTarget);
+	};
+
+	const focusPrev = (currentTarget: KeyEvent['currentTarget']) => {
+		const input = currentTarget.previousElementSibling as HTMLInputElement | null;
+		if (input) input.focus();
+		return input;
+	};
+
+	const focusNext = (currentTarget: KeyEvent['currentTarget']) => {
+		const input = currentTarget.nextElementSibling as HTMLInputElement | null;
+		if (input) input.focus();
+		return input;
+	};
+
+	const focusNextN = (currentTarget: KeyEvent['currentTarget'], n: number) => {
+		let input = currentTarget;
+		if (!input) return;
+		let next = input.nextElementSibling;
+		let i = 0;
+		while (i < n && next) {
+			input = next as HTMLInputElement;
+			next = input.nextElementSibling;
+			i++;
+		}
+		if (input) input.focus();
+		return input;
+	};
+
+	const deleteBackward = (currentTarget: KeyEvent['currentTarget'], i: number) => {
+		const input = currentTarget.value;
+		if (!input.length) focusPrev(currentTarget);
+		else value[i] = input.substring(0, input.length - 1);
+	};
+
+	const deleteForward = (currentTarget: KeyEvent['currentTarget'], i: number) => {
+		const input = currentTarget.value;
+		if (!input.length) focusNext(currentTarget);
+		else value[i] = input.substring(1);
+	};
+
+	const increment = (currentTarget: KeyEvent['currentTarget'], i: number) => {
+		const val = currentTarget.value;
+		if (val === '9' || val === '') value[i] = '0';
+		else value[i] = (parseInt(val, 10) + 1).toString();
+	};
+
+	const decrement = (currentTarget: KeyEvent['currentTarget'], i: number) => {
+		const val = currentTarget.value;
+		if (val === '0' || val === '') value[i] = '9';
+		else value[i] = (parseInt(val, 10) - 1).toString();
+	};
+
+	const onpaste = (e: PasteEvent, i: number) => {
+		const data = e.clipboardData?.getData('text') ?? '';
+		e.preventDefault();
+		let j = i;
+		for (; j < i + data.length && j <= codeLength; j++) {
+			const val = data[j - i];
+			if (isValid(val)) value[j] = val;
+			else break;
+		}
+		focusNextN(e.currentTarget, j - i);
+	};
 </script>
 
-<div use:melt={$root} class="flex items-center gap-1" bind:this={rootEl}>
+<div class="flex items-center gap-1">
 	{#each Array.from({ length: codeLength }) as _, i}
 		<input
-			class="h-16 w-9 rounded-badge border border-gray-7 text-center placeholder-gray-8 {i === 2 ? 'mr-10' : ''}"
-			onkeydown={(e) => overrideUpAndDownArrow(e, i)}
-			use:melt={$input()}
+			class="h-16 w-9 rounded-badge border border-gray-7 text-center placeholder-gray-5 focus:placeholder:text-transparent
+			{i === 2 ? 'mr-10' : ''}"
+			type="text"
 			inputmode="numeric"
+			placeholder="○"
 			pattern="[0-9]"
-			name="{namePrefix}-{i}"
 			autocomplete="off"
+			name="{namePrefix}-{i}"
+			value={value[i]}
+			onkeydown={(e) => {
+				if (e.metaKey || e.ctrlKey || ['Tab', 'Shift', 'Enter'].includes(e.key)) return;
+				e.preventDefault();
+				if (e.key === 'ArrowLeft') focusPrev(e.currentTarget);
+				else if (e.key === 'ArrowRight') focusNext(e.currentTarget);
+				else if (e.key === 'Backspace') deleteBackward(e.currentTarget, i);
+				else if (e.key === 'Delete') deleteForward(e.currentTarget, i);
+				else if (e.key === 'ArrowUp') increment(e.currentTarget, i);
+				else if (e.key === 'ArrowDown') decrement(e.currentTarget, i);
+				else if (isValid(e.key)) enterValid(e, i);
+			}}
+			onpaste={(e) => onpaste(e, i)}
 		/>
 	{/each}
 </div>
