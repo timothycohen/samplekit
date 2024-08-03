@@ -1,9 +1,8 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { fly } from 'svelte/transition';
-	import { Changelog, DateLine, FeatureCard, FeatureSwapCard, Series, TOC } from '$lib/articles/components';
-	import { TabPanels } from '$lib/components';
-	import { HAnchor } from '$lib/components';
+	import { Vaul, Changelog, DateLine, FeatureCard, FeatureSwapCard, Series, TOC } from '$lib/articles/components';
+	import { TabPanels, HAnchor, Portal } from '$lib/components';
 	import { createCollapsedService, useCollapsedService } from '$lib/components/collapsedService';
 	import I from '$lib/icons';
 	import { pluralize } from '$lib/utils/common';
@@ -82,7 +81,6 @@
 
 		<div class="mb-6-9 flex flex-col gap-8 lg:hidden">
 			<Series series={article.series} />
-			<TOC tree={data.tree} />
 		</div>
 
 		<div class="flex gap-[clamp(2.5rem,8vw,4rem)]">
@@ -94,8 +92,8 @@
 				{@render children?.()}
 			</div>
 
-			{#if sidebarOpen}
-				<div class="hidden flex-col gap-8 lg:flex">
+			<div class="hidden flex-col gap-8 lg:flex">
+				{#if sidebarOpen}
 					<Series series={article.series} />
 
 					<div class="flex-1">
@@ -139,20 +137,41 @@
 							</div>
 						{/if}
 					</div>
+				{:else}
+					<button
+						in:fly={{ x: 40, y: 40 }}
+						class="fixed bottom-20 h-12 w-12 items-center justify-center rounded-full border border-gray-5 bg-app-bg/75 text-gray-11 backdrop-blur-md lg:flex"
+						style="right: calc(var(--scrollbar-width, 0px) + 1rem);"
+						onclick={() => (sidebarOpen = !sidebarOpen)}
+					>
+						<I.PanelRightDashed class="h-6 w-6" />
+					</button>
+				{/if}
+			</div>
+
+			<Portal targetSelector="#portal-target-header">
+				<div class="contents lg:hidden">
+					<span class="flex h-4/5 items-center">
+						<Vaul>
+							{#snippet children({ closeVaul })}
+								<TOC tree={data.tree} onclick={closeVaul} />
+							{/snippet}
+						</Vaul>
+						<button class="btn btn-hollow rounded-l-none border-none px-3" onclick={() => toggleAllOpen()}>
+							{#if allOpen}
+								<I.FoldVertical class="h-6 w-6" />
+							{:else}
+								<I.UnfoldVertical class="h-6 w-6" />
+							{/if}
+						</button>
+					</span>
 				</div>
-			{:else}
-				<button
-					in:fly={{ x: 40, y: 40 }}
-					class="fixed bottom-20 right-4 hidden h-12 w-12 items-center justify-center rounded-full border border-gray-5 bg-app-bg/75 text-gray-11 backdrop-blur-md lg:flex"
-					onclick={() => (sidebarOpen = !sidebarOpen)}
-				>
-					<I.PanelRightDashed class="h-6 w-6" />
-				</button>
-			{/if}
+			</Portal>
 
 			<button
 				in:fly={{ x: 40, y: 40 }}
-				class="fixed bottom-4 right-4 z-10 flex h-12 w-12 items-center justify-center rounded-full border border-gray-5 bg-app-bg/75 text-gray-11 backdrop-blur-md"
+				class="fixed bottom-4 z-10 hidden h-12 w-12 items-center justify-center rounded-full border border-gray-5 bg-app-bg/75 text-gray-11 backdrop-blur-md lg:flex"
+				style="right: calc(var(--scrollbar-width, 0px) + 1rem);"
 				onclick={() => toggleAllOpen()}
 			>
 				{#if allOpen}

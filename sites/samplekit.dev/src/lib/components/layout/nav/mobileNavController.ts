@@ -4,7 +4,7 @@ import { keyboard, trapFocus } from '$lib/actions';
 /** ### Progressive enhancement for the mobile nav:
  * 1) Traps the tab focus in the opened menu.
  * 1) Locks the body from scrolling while the menu is open.
- * 1) Adds padding to the mobile nav to account for the scroll bar.
+ * 1) Adds --scrollbar-width to the document to account for the scroll bar.
  * 1) Makes the opening animation smoother by removing the overflow while animating.
  *
  * Call .listen() on the client to add the following functionality:
@@ -19,7 +19,6 @@ export class MobileNavController {
 	private animationDuration: number;
 	private trapFocus?: { selectorsBefore?: string[]; selectorsAfter?: string[] };
 	private getMobileNavEl: () => HTMLElement | null;
-	private getHeaderEl: () => HTMLElement | null;
 
 	private destroyTrapFocus: (() => void) | null;
 	private destroyKeyboardListener: (() => void) | null;
@@ -30,7 +29,6 @@ export class MobileNavController {
 		animationDuration: number;
 		trapFocus?: { selectorsBefore?: string[]; selectorsAfter?: string[] };
 		getMobileNavEl: () => HTMLElement | null;
-		getHeaderEl: () => HTMLElement | null;
 	}) {
 		this._open = writable(false);
 		this.isOpen = { subscribe: this._open.subscribe };
@@ -39,7 +37,6 @@ export class MobileNavController {
 		this.animationDuration = props.animationDuration;
 		this.trapFocus = props.trapFocus;
 		this.getMobileNavEl = props.getMobileNavEl;
-		this.getHeaderEl = props.getHeaderEl;
 
 		this.destroyTrapFocus = null;
 		this.destroyKeyboardListener = null;
@@ -69,14 +66,14 @@ export class MobileNavController {
 			}
 		}
 
-		this.getHeaderEl()?.style.setProperty('padding-right', `${scrollBarGap}px`);
+		document.documentElement.style.setProperty('--scrollbar-width', `${scrollBarGap}px`);
 	};
 
 	close = () => {
 		if (!get(this._open)) return;
 		this._open.set(false);
 		this.destroyTrapFocus?.();
-		this.getHeaderEl()?.style.removeProperty('padding-right');
+		document.documentElement.style.removeProperty('--scrollbar-width');
 	};
 
 	toggle = () => (get(this._open) ? this.close() : this.open());

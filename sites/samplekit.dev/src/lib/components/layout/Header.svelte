@@ -43,6 +43,12 @@
 		<LogoLink onAnchorClick={() => mobileNavController.close()} textClass="hidden sm:block" />
 	</span>
 
+	<div
+		class="fixed left-0 right-0 top-0 mx-auto flex h-nav w-fit items-center"
+		style="right: calc(var(--scrollbar-width, 0px) + 1rem);"
+		id="portal-target-header"
+	></div>
+
 	<span class="relative ml-auto flex flex-col justify-center px-page">
 		<span class="flex h-full items-center justify-end gap-8">
 			<nav id="nav--desktop" class="hidden md:block">

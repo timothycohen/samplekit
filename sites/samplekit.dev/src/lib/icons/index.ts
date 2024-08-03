@@ -26,6 +26,7 @@ import KeyRound from 'lucide-svelte/icons/key-round';
 import KeySquare from 'lucide-svelte/icons/key-square';
 import Lightbulb from 'lucide-svelte/icons/lightbulb';
 import Link from 'lucide-svelte/icons/link';
+import List from 'lucide-svelte/icons/list';
 import Loader from 'lucide-svelte/icons/loader';
 import LoaderCircle from 'lucide-svelte/icons/loader-circle';
 import MailCheck from 'lucide-svelte/icons/mail-check';
@@ -84,6 +85,7 @@ const I = {
 	KeySquare,
 	Lightbulb,
 	Link,
+	List,
 	Loader,
 	LoaderCircle,
 	MailCheck,

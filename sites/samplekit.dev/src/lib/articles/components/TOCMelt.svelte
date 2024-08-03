@@ -6,9 +6,10 @@
 		activeHeadingIdxs: number[];
 		item: TableOfContentsElements['item'];
 		level: number;
+		onclick?: () => void;
 	}
 
-	const { tree, activeHeadingIdxs, item, level }: Props = $props();
+	const { tree, activeHeadingIdxs, item, level, onclick }: Props = $props();
 
 	let meltFlickerPrevented = $state(false);
 	let mountedAndCanTransition = $state(false);
@@ -20,7 +21,7 @@
 	<ul class="space-y-.5 {level !== 1 ? 'pl-4' : ''}">
 		{#each tree as heading, i (i)}
 			<li class="space-y-.5">
-				<a href="#{heading.id}" class="inline-block w-full hover:text-accent-12">
+				<a href="#{heading.id}" class="inline-block w-full hover:text-accent-12" {onclick}>
 					<span
 						{...$item(heading.id)}
 						class="underline--hidden
@@ -31,7 +32,7 @@
 					</span>
 				</a>
 				{#if heading.children?.length}
-					<svelte:self tree={heading.children} level={level + 1} {activeHeadingIdxs} {item} />
+					<svelte:self {onclick} tree={heading.children} level={level + 1} {activeHeadingIdxs} {item} />
 				{/if}
 			</li>
 		{/each}

@@ -2,15 +2,17 @@
 	import { createTableOfContents } from '@melt-ui/svelte';
 	import TOCBase from './TOCBase.svelte';
 	import TOCMelt from './TOCMelt.svelte';
+	import type { Snippet } from 'svelte';
 
 	type TocItem = { title: string; href: string; children?: TocItem[] };
 
 	interface Props {
-		children?: import('svelte').Snippet;
+		children?: Snippet;
+		onclick?: () => void;
 		tree: TocItem[];
 	}
 
-	const { children, tree }: Props = $props();
+	const { children, tree, onclick }: Props = $props();
 
 	const {
 		elements: { item },
@@ -35,9 +37,9 @@
 	<div class="mb-6 h-px w-full bg-gray-9"></div>
 	<nav>
 		{#if tocReady}
-			<TOCMelt tree={$headingsTree} activeHeadingIdxs={$activeHeadingIdxs} {item} level={1} />
+			<TOCMelt {onclick} tree={$headingsTree} activeHeadingIdxs={$activeHeadingIdxs} {item} level={1} />
 		{:else}
-			<TOCBase {tree} level={1} />
+			<TOCBase {onclick} {tree} level={1} />
 		{/if}
 	</nav>
 </div>
