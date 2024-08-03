@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-	import { Logo, InputMessage } from '$lib/components';
+	import { LogoLink, InputMessage } from '$lib/components';
 	import I from '$lib/icons';
 	import { superForm, zodClient } from '$lib/superforms/client';
 	import { PassInput } from '$routes/(auth)/components';
@@ -20,7 +20,7 @@
 		<div class="relative rounded-card px-4 shadow-4">
 			<div class="flex-auto p-6">
 				<div class="mb-10 flex items-center justify-center overflow-hidden text-2xl">
-					<Logo link />
+					<LogoLink />
 				</div>
 
 				<h2 class="mb-6 text-xl font-medium">Update Password</h2>

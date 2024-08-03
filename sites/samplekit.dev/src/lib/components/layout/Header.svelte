@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { page } from '$app/stores';
-	import { Logo } from '..';
+	import LogoLink from '../LogoLink.svelte';
 	import ThemeToggler from './ThemeToggler.svelte';
 	import DesktopNavItem from './nav/DesktopNavItem.svelte';
 	import MobileNav from './nav/MobileNav.svelte';
@@ -37,10 +37,11 @@
 	id="header"
 	class="fixed left-0 top-0 z-30 flex
 	h-nav w-full bg-app-bg/80 drop-shadow backdrop-blur-md dark:shadow-2 dark:drop-shadow-none"
+	style="padding-right: var(--scrollbar-width);"
 >
-	<div class="flex h-full items-center px-page text-2xl">
-		<Logo link onAnchorClick={mobileNavController.close} />
-	</div>
+	<span class="pl-4 sm:pl-2">
+		<LogoLink onAnchorClick={() => mobileNavController.close()} textClass="hidden sm:block" />
+	</span>
 
 	<span class="relative ml-auto flex flex-col justify-center px-page">
 		<span class="flex h-full items-center justify-end gap-8">

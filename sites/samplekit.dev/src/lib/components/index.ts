@@ -1,4 +1,5 @@
-export { default as Logo } from './Logo.svelte';
+export { default as LogoIcon } from './LogoIcon.svelte';
+export { default as LogoLink } from './LogoLink.svelte';
 export { default as CodeInput } from './CodeInput.svelte';
 export { default as TabPanelItem } from './TabPanelItem.svelte';
 export { default as TabPanels } from './TabPanels.svelte';

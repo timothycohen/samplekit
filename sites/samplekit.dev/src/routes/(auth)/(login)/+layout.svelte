@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { Turnstile, createTurnstileService, useTurnstileService } from '$lib/botProtection/turnstile/client';
-	import { Admonition, Logo } from '$lib/components';
+	import { LogoLink, Admonition } from '$lib/components';
 	import { DotPattern } from '$routes/(auth)/(login)/components';
 
 	const { children } = $props();
@@ -23,7 +23,7 @@
 
 			<div class="z-10">
 				<div class="mb-8 flex items-center justify-center overflow-hidden text-3xl">
-					<Logo link />
+					<LogoLink />
 				</div>
 
 				{@render children()}

@@ -35,10 +35,10 @@
 					<a
 						href="/shop"
 						aria-label="go to shop home page"
-						class="font-black tracking-tight text-logo
-							{$desktopNav.menuUnderneath ? 'text-xl' : 'text-sm'}"
+						class="flex h-full font-serif text-gray-12
+						{$desktopNav.menuUnderneath ? 'text-xl' : 'text-sm'}"
 					>
-						SampleKit
+						<span>Sample.Kit.Shop</span>
 					</a>
 				</li>
 				{#each $desktopNav.menuUnderneath ? limitedMenu : menu as item}
