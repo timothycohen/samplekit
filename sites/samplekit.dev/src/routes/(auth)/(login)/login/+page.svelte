@@ -31,7 +31,7 @@
 	const { turnstile, turnstileInput } = useTurnstileService();
 
 	const {
-		elements: { portalled, overlay, content, title, description, close, trigger },
+		elements: { overlay, content, title, description, close, trigger },
 		states: { open: emailPassModal },
 	} = createDialog({ forceVisible: true });
 
@@ -103,7 +103,7 @@
 	<InputMessage message={signinMessage} />
 </form>
 
-<div use:melt={$portalled}>
+<div>
 	{#if $emailPassModal}
 		<div use:melt={$overlay} class="modal-overlay"></div>
 		<div class="modal-content" use:melt={$content}>
