@@ -1,12 +1,20 @@
+<script lang="ts" context="module">
+	import { Turnstile } from '$lib/botProtection/turnstile/client';
+	import { defineContext } from '$lib/utils/client';
+
+	const [get, set] = defineContext<Turnstile>();
+	export const createTurnstileCtx = () => set(new Turnstile());
+	export const useTurnstileCtx = get;
+</script>
+
 <script lang="ts">
-	import { Turnstile, createTurnstileService, useTurnstileService } from '$lib/botProtection/turnstile/client';
+	import { TurnstileEl } from '$lib/botProtection/turnstile/client';
 	import { LogoLink, Admonition } from '$lib/components';
 	import { DotPattern } from '$routes/(auth)/(login)/components';
 
+	createTurnstileCtx();
+	const turnstile = useTurnstileCtx();
 	const { children } = $props();
-
-	createTurnstileService();
-	const { turnstile } = useTurnstileService();
 </script>
 
 <section class="my-5-12 grid place-items-center page">
@@ -29,7 +37,7 @@
 				{@render children()}
 
 				<div class="mb-4 mt-2 h-[65px] w-full">
-					<Turnstile {turnstile} />
+					<TurnstileEl {turnstile} />
 				</div>
 
 				<noscript>

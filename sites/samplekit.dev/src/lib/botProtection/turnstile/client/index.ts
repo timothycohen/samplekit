@@ -1,8 +1,6 @@
 import { z } from 'zod';
 
 export const turnstileRequired = { 'turnstile-used': z.boolean() };
-
-export { turnstileInput, type TurnstileForm } from './actions';
-export { createTurnstile, type TurnstileStore } from './stores';
-export { default as Turnstile } from './Turnstile.svelte';
-export { createTurnstileService, useTurnstileService } from './service';
+export { default as TurnstileEl } from './TurnstileEl.svelte';
+export { Turnstile, type TurnstileForm, type TurnstileRenderOpts } from './turnstile.svelte';
+export { createTurnstileLoadedFlag, useTurnstileLoadedFlag } from './turnstileCtx.svelte';
