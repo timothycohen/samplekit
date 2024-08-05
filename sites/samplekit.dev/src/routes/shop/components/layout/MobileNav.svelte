@@ -24,7 +24,7 @@
 		aria-label="go to shop home page"
 		class="flex h-full items-center gap-2 rounded-none font-serif text-lg text-gray-12 dark:text-gray-12"
 	>
-		<LogoIcon wrapperClasses="h-6 w-6" />
+		<LogoIcon svgClasses="h-6 w-6" />
 		<span>Sample.Kit.Shop</span>
 	</a>
 
