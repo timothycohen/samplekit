@@ -1,3 +1,23 @@
+<script lang="ts" context="module">
+	import imgLg from './assets/simple-url-state-controller-q30.webp';
+	import imgSm from './assets/simple-url-state-controller-thumbnail-1200w.webp';
+	import type { RawFrontMatter } from '$lib/articles/schema';
+
+	export const metadata = {
+		title: 'Simple URL State Controller',
+		implementationPath: '/articles/simple-url-state-controller#interactive-demo',
+		srcCodeHref: 'https://github.com/timothycohen/samplekit/tree/main/sites/samplekit.dev/src/lib/stores/params',
+		description: 'Store state in the URL with a few simple svelte stores.',
+		publishedAt: new Date('2024-03-07 13:29:34 -0500'),
+		authors: [{ name: 'Tim Cohen', email: 'contact@timcohen.dev' }],
+		imgSm,
+		imgLg,
+		tags: ['url', 'state management'],
+		featured: true,
+		series: { name: 'URL State Controller', position: 1 },
+	} satisfies RawFrontMatter;
+</script>
+
 <script lang="ts">
 	import { CodeTopper } from '$lib/articles/components';
 	import { HAnchor, Admonition } from '$lib/components';
@@ -123,8 +143,9 @@ interface SearchParamController {
 shiki-end -->
 
 <p>
-	Great! But what if the url state is set to <code>?param=foo</code> and we call <code>paramStore.toggle('bar')</code>?
-	Should it be <code>?param=bar</code> or <code>null</code>? Most likely, we'll want to switch it to <code>'bar'</code>
+	Great! But what if the url state is set to <code>?param=foo</code> and we call
+	<code>paramStore.toggle('bar')</code>? Should it be <code>?param=bar</code> or <code>null</code>? Most likely, we'll
+	want to switch it to <code>'bar'</code>
 	and then another <code>.toggle('bar')</code> call will switch it to <code>null</code>.
 </p>
 
@@ -212,7 +233,8 @@ shiki-end -->
 
 <p>
 	And lastly, if the input (for example a search bar) is in a layout, we may or may not need to change the
-	<code>url.pathname</code> and not just the <code>url.search</code>. We'll add some go options to our <code>set</code>
+	<code>url.pathname</code> and not just the <code>url.search</code>. We'll add some go options to our
+	<code>set</code>
 	and <code>toggle</code> functions.
 </p>
 
@@ -374,8 +396,8 @@ interface SearchParamController {
 shiki-end -->
 
 <p>
-	As our initial value may also be unclean (for example if the user navigates to <code>?param=unclean</code> directly),
-	we'll also add an <code>init</code> function that invokes the clean function.
+	As our initial value may also be unclean (for example if the user navigates to <code>?param=unclean</code>
+	directly), we'll also add an <code>init</code> function that invokes the clean function.
 </p>
 
 <p>

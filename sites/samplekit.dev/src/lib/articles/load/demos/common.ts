@@ -1,5 +1,5 @@
+import type { ArticlePath } from '$lib/articles/schema';
 import type { ModuleDefinitions, DemoName, CodeProcessed, ComponentProcessed, MergedProcessed } from './types';
-import type { ArticleSlug } from '../types';
 
 /** @throws Error */
 export const demosMap = (() => {
@@ -7,19 +7,20 @@ export const demosMap = (() => {
 		import.meta.glob('/src/routes/articles/**/live-demos/**/meta.preview.ts', { eager: true }),
 	) as [string, { default: ModuleDefinitions }][];
 
-	const map: Partial<Record<ArticleSlug, { main?: ModuleDefinitions; lazy?: Record<DemoName, ModuleDefinitions> }>> =
+	const map: Partial<Record<ArticlePath, { main?: ModuleDefinitions; lazy?: Record<DemoName, ModuleDefinitions> }>> =
 		{};
 
 	for (const [url, loaded] of metaModules) {
-		const a = url.replace('/src/routes/articles/', '').split('/');
-		const slug = a.splice(0, 2)[0]! as ArticleSlug;
-		const demoName = a.splice(0, 1)[0]!;
-
-		if (!map[slug]) map[slug] = {};
-		if (demoName === 'main') map[slug]!.main = loaded.default;
+		const a = url.replace('/src/routes', '').split('/');
+		a.pop();
+		const demoIdx = a.indexOf('live-demos');
+		const articlePath = a.slice(0, demoIdx).join('/') as ArticlePath;
+		const demoName = a.slice(demoIdx + 1).join('/');
+		if (!map[articlePath]) map[articlePath] = {};
+		if (demoName === 'main') map[articlePath]!.main = loaded.default;
 		else {
-			if (!map[slug]!.lazy) map[slug]!.lazy = {};
-			map[slug]!.lazy![demoName] = loaded.default;
+			if (!map[articlePath]!.lazy) map[articlePath]!.lazy = {};
+			map[articlePath]!.lazy![demoName] = loaded.default;
 		}
 	}
 
@@ -27,9 +28,9 @@ export const demosMap = (() => {
 })();
 
 export const splitAndProcess = <T>(processor: (moduleDefinitions: ModuleDefinitions) => T[]) =>
-	Object.entries(demosMap).reduce<Partial<Record<ArticleSlug, { main?: T[]; lazy?: Record<DemoName, T[]> }>>>(
+	Object.entries(demosMap).reduce<Partial<Record<ArticlePath, { main?: T[]; lazy?: Record<DemoName, T[]> }>>>(
 		(acc, curr) => {
-			const [articleSlug, demos] = curr;
+			const [articlePath, demos] = curr;
 			const res: { main?: T[]; lazy?: Record<DemoName, T[]> } = {};
 
 			if (demos.main) {
@@ -42,7 +43,7 @@ export const splitAndProcess = <T>(processor: (moduleDefinitions: ModuleDefiniti
 					res.lazy[demoName] = processor(demo);
 				}
 			}
-			if (res.lazy || res.main) return { ...acc, [articleSlug]: res };
+			if (res.lazy || res.main) return { ...acc, [articlePath]: res };
 			return acc;
 		},
 		{},

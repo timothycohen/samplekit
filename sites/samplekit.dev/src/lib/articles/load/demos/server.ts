@@ -17,7 +17,7 @@ export const processCode = (moduleDefinitions: ModuleDefinitions): Array<CodePro
 
 				return codeToDecoratedHtmlSync({
 					lang,
-					code: rawCode,
+					code: rawCode.trim(),
 					opts,
 					transformName: 'block',
 				});

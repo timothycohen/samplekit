@@ -1,14 +1,13 @@
 import { merge } from '$lib/articles/load';
 import { processedComponentsMap } from '$lib/articles/load/demos/client';
-import type { ArticleSlug } from '$lib/articles/load';
 import type { ClientFrontMatter } from '$lib/articles/schema';
-import type { LayoutLoad } from './$types';
+import type { LayoutLoad, LayoutRouteId } from './$types';
 
 export const load: LayoutLoad = async ({ route, data: serverData }) => {
-	const slug = route.id.split('/').pop()! as ArticleSlug;
+	const articlePath = route.id as Exclude<LayoutRouteId, '/articles'>;
 	const article: ClientFrontMatter = {
 		...serverData.article,
-		demos: merge({ code: serverData.article.demos, components: processedComponentsMap[slug] }),
+		demos: merge({ code: serverData.article.demos, components: processedComponentsMap[articlePath] }),
 	};
 
 	const meta: App.PageData['meta'] = {
@@ -22,5 +21,5 @@ export const load: LayoutLoad = async ({ route, data: serverData }) => {
 		meta.twitterImage = article.imgLg;
 	}
 
-	return { article, meta, tree: serverData.tree };
+	return { article, meta };
 };

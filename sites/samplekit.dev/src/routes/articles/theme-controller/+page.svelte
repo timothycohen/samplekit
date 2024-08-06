@@ -1,3 +1,23 @@
+<script lang="ts" context="module">
+	import imgLg from './assets/theme-controller-q30.webp';
+	import imgSm from './assets/theme-controller-thumbnail-1200w.webp';
+	import type { RawFrontMatter } from '$lib/articles/schema';
+
+	export const metadata = {
+		title: 'Theme Controller',
+		implementationPath: '/appearance',
+		srcCodeHref: 'https://github.com/timothycohen/samplekit/tree/main/sites/samplekit.dev/src/lib/styles',
+		description:
+			'A theme controller that uses CSS variables to control light/dark mode with multiple themes, saves user preference to Cookies and avoids flashes of unstyled content.',
+		publishedAt: new Date('2024-03-06 13:36:17 -0500'),
+		authors: [{ name: 'Tim Cohen', email: 'contact@timcohen.dev' }],
+		imgSm,
+		imgLg,
+		tags: ['dark mode', 'multiple themes', 'tailwind', 'css variables', 'FOUC'],
+		featured: true,
+	} satisfies RawFrontMatter;
+</script>
+
 <script lang="ts">
 	import { CodeTopper } from '$lib/articles/components';
 	import { HAnchor } from '$lib/components';
@@ -124,7 +144,9 @@ shiki-end -->
 
 <p>Organizing the theme this way means each color variable has two separate design tokens for light and dark modes.</p>
 
-<p>By changing <code>class="light"</code> to <code>class="dark"</code>, all the themed color variables will change.</p>
+<p>
+	By changing <code>class="light"</code> to <code>class="dark"</code>, all the themed color variables will change.
+</p>
 
 <CodeTopper title="src/app.html">
 	<!-- shiki-start

@@ -1,3 +1,22 @@
+<script lang="ts" context="module">
+	import imgLg from './assets/typesafe-fetch-handler-q30.webp';
+	import imgSm from './assets/typesafe-fetch-handler-thumbnail-1200w.webp';
+	import type { RawFrontMatter } from '$lib/articles/schema';
+
+	export const metadata = {
+		title: 'TypeSafe Fetch Handler',
+		implementationPath: '/articles/typesafe-fetch-handler#interactive-demo',
+		srcCodeHref: 'https://github.com/timothycohen/samplekit/blob/main/sites/samplekit.dev/src/lib/http/client.ts',
+		description: 'A typesafe fetch handler that stores the route, method, res/req types, and fetch state.',
+		publishedAt: new Date('2024-03-05 20:39:38 -0500'),
+		authors: [{ name: 'Tim Cohen', email: 'contact@timcohen.dev' }],
+		imgSm,
+		imgLg,
+		tags: ['typescript', 'http', 'DX', 'client-server', 'request handlers', 'endpoints'],
+		featured: true,
+	} satisfies RawFrontMatter;
+</script>
+
 <script lang="ts">
 	import { CodeTopper } from '$lib/articles/components';
 	import { HAnchor } from '$lib/components';
@@ -74,7 +93,8 @@ shiki-end -->
 <HAnchor tag="h3" title="Form Actions" />
 
 <p>
-	Like <code>PageData</code>, <code>ActionData</code> is typed the same way and applies to <code>export let form;</code>
+	Like <code>PageData</code>, <code>ActionData</code> is typed the same way and applies to
+	<code>export let form;</code>
 </p>
 
 <p>
@@ -467,7 +487,8 @@ shiki-end -->
 	<code>fetching</code> to <code>true</code> as soon as the request is sent.
 	<a href="https://superforms.rocks/concepts/timers#loading-indicators" data-external>As they explain</a>, it's often
 	better to wait a bit before showing the loading indicator. This is especially true for fast requests, where the
-	loading indicator can be more distracting than helpful. With that in mind, let's imitate their <code>delay</code> and
+	loading indicator can be more distracting than helpful. With that in mind, let's imitate their <code>delay</code>
+	and
 	<code>timeout</code> stores.
 </p>
 

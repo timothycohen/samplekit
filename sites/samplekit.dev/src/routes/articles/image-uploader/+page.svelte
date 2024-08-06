@@ -1,3 +1,22 @@
+<script lang="ts" context="module">
+	import imgSm from './assets/image-uploader-thumbnail-1200w.webp';
+	import type { RawFrontMatter } from '$lib/articles/schema';
+
+	export const metadata = {
+		title: 'Image Cropper And Uploader',
+		implementationPath: '/account/profile',
+		srcCodeHref:
+			'https://github.com/timothycohen/samplekit/blob/main/sites/samplekit.dev/src/lib/cloudStorage/client/cropImgUploadController.ts',
+		description:
+			'Select an image, upload it to an AWS S3 Bucket with a progress indicator, moderate it with Rekognition, save it to the DB, and serve it via AWS Cloudfront.',
+		publishedAt: new Date('2024-03-20 16:37:01 -0400'),
+		authors: [{ name: 'Tim Cohen', email: 'contact@timcohen.dev' }],
+		imgSm,
+		tags: ['state controller', 'image uploads', 'aws', 'db', 's3', 'cloudfront', 'rekognition', 'rate limiting'],
+		featured: true,
+	} satisfies RawFrontMatter;
+</script>
+
 <script lang="ts">
 	import { CodeTopper } from '$lib/articles/components';
 	import { TabPanels, TabPanelItem, HAnchor, Admonition } from '$lib/components';
@@ -356,7 +375,9 @@
 
 <CodeTopper title="$lib/cloudStorage/client/cropImgUploadController.ts Full" initialCollapsed>
 	<TabPanelItem
-		panel={{ rawHTML: data.article.demos?.main?.find((d) => d.title === 'cropImgUploadController.ts')?.rawHTML ?? '' }}
+		panel={{
+			rawHTML: data.article.demos?.main?.find((d) => d.title === 'cropImgUploadController.ts')?.rawHTML ?? '',
+		}}
 	/>
 </CodeTopper>
 

@@ -1,10 +1,9 @@
-export * from './types';
 export * from './data/common';
 export * from './demos/common';
 export * from './demos/types';
 
 // Usage:
-// add article frontmatter in articles/[slug]/meta.data.ts
+// add article front matter in articles/[slug]/meta.data.ts
 // add previews for live-demos in articles/[slug]/live-demos/[demo-name]/meta.preview.ts
 // live-demos/main will show as the hero in the article (data.article.demos.main)
 // other demos will be loaded into data.article.demos.lazy[demo-name]
@@ -13,8 +12,8 @@ export * from './demos/types';
 // 1. Preprocessing:
 // The +page.svelte article wraps .svx files. .svx is preprocessed by transforming markdown code and tables into valid html – see svelte.config.js
 
-// 2. Frontmatter:
-// Frontmatter is loaded in articles/load/common/data.ts from all the meta.data.ts files in the articles/ folder, processed, and exported as allPostData: ProcessedFrontMatter[]
+// 2. Front matter:
+// Front matter is loaded in articles/load/common/data.ts from all the meta.data.ts files in the articles/ folder, processed, and exported as allPostData: ProcessedFrontMatter[]
 // that's used for previews and it's also used in +layout.server.ts to load the front matter for a specific article
 
 // 3. Demos:

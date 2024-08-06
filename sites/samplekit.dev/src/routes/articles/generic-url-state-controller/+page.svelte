@@ -1,3 +1,22 @@
+<script lang="ts" context="module">
+	import imgSm from './assets/generic-url-state-controller-thumbnail-1200w.webp';
+	import type { RawFrontMatter } from '$lib/articles/schema';
+
+	export const metadata = {
+		title: 'Generic URL State Controller',
+		implementationPath: '/articles/generic-url-state-controller#interactive-demo',
+		srcCodeHref:
+			'https://github.com/timothycohen/samplekit/tree/main/sites/samplekit.dev/src/routes/articles/generic-url-state-controller',
+		description: 'Sync validated, generic store state to the URL with a flexible API.',
+		publishedAt: new Date('2024-03-08 13:31:26 -0500'),
+		authors: [{ name: 'Tim Cohen', email: 'contact@timcohen.dev' }],
+		imgSm,
+		tags: ['url', 'state management', 'generics', 'context api', 'TypeScript'],
+		featured: false,
+		series: { name: 'URL State Controller', position: 2 },
+	} satisfies RawFrontMatter;
+</script>
+
 <script lang="ts">
 	import { CodeTopper } from '$lib/articles/components';
 	import { HAnchor, Admonition, TabPanels } from '$lib/components';
@@ -454,7 +473,8 @@ shiki-end -->
 <p>
 	This is not synonymous with <code>$page.url.searchParams.getAll</code>. Instead, we will map out grouped params and
 	assign them each a param name. For example, <code>{`{ foo: 'f', bar: 'b' }`}</code> will indicate the controller
-	stores an object <code>{`{ foo: Val, bar: Val }`}</code> and the url params will be <code>f</code> and <code>b</code>.
+	stores an object <code>{`{ foo: Val, bar: Val }`}</code> and the url params will be <code>f</code> and
+	<code>b</code>.
 </p>
 
 <!-- shiki-start

@@ -1,7 +1,7 @@
 <script>
 	import { page } from '$app/stores';
-	import { FeatureCard, FeatureSwapCard } from '$lib/articles/components';
-	import { allPostData } from '$lib/articles/load';
+	import CardList from '$lib/articles/components/card/CardList.svelte';
+	import { featureCards } from '$lib/articles/load';
 </script>
 
 <section class="page">
@@ -14,16 +14,6 @@
 
 	{#if $page.status === 404}
 		<p class="my-8 text-h4">Perhaps these might interest you?</p>
-
-		<div class="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
-			{#each allPostData.filter((f) => f.featured) as feature}
-				{#if !(feature.imgSmGif ?? feature.imgSm)}
-					<FeatureCard {feature} />
-				{:else}
-					<div class="block sm:hidden"><FeatureSwapCard {feature} /></div>
-					<div class="hidden sm:block"><FeatureCard {feature} /></div>
-				{/if}
-			{/each}
-		</div>
+		<CardList cards={featureCards.filter((c) => c.metadata.featured)} />
 	{/if}
 </section>

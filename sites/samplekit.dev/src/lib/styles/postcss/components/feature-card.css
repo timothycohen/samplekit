@@ -1,0 +1,11 @@
+@layer components {
+	.feature-card {
+		@apply relative h-fit overflow-hidden rounded-card border border-gray-4 bg-app-bg transition-[transform,shadow] duration-500 hover:z-10 hover:scale-[1.01] hover:shadow-3;
+	}
+	.feature-card-content {
+		@apply prose prose-sm prose-radix p-4 pb-3 text-base text-gray-11 marker:text-gray-11;
+	}
+	.feature-card-title {
+		@apply mb-4 mt-1.5 font-serif font-bold;
+	}
+}

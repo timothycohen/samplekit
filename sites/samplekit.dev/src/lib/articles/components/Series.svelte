@@ -4,7 +4,7 @@
 			| {
 					position: number;
 					name: string;
-					all: { title: string; articleSlug: string; position: number }[];
+					all: { title: string; articlePath: string; position: number }[];
 			  }
 			| undefined;
 	}
@@ -38,7 +38,7 @@
 					</li>
 				{:else}
 					<li class="group">
-						<a href={item.articleSlug} class="group">
+						<a href={item.articlePath} class="group">
 							<span>0{item.position}.</span>
 							<span class="underline--hidden group-hover:underline--show">{item.title}</span>
 						</a>

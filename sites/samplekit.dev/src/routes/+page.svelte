@@ -1,7 +1,8 @@
 <script lang="ts">
-	import { FeatureCard, FeatureSwapCard } from '$lib/articles/components';
-	import { allPostData } from '$lib/articles/load';
+	import { CardList } from '$lib/articles/components/card';
 	import I from '$lib/icons';
+
+	const { data } = $props();
 </script>
 
 <section class="page">
@@ -52,16 +53,7 @@
 		</div>
 	</div>
 
-	<div class="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
-		{#each allPostData as feature, i}
-			{#if !(feature.imgSmGif ?? feature.imgSm)}
-				<FeatureCard {feature} preview={i === 0} />
-			{:else}
-				<div class="block sm:hidden"><FeatureSwapCard {feature} preview={i === 0} /></div>
-				<div class="hidden sm:block"><FeatureCard {feature} preview={i === 0} /></div>
-			{/if}
-		{/each}
-	</div>
+	<CardList cards={data.featureCards} />
 </section>
 
 <style>
