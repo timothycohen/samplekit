@@ -4,7 +4,7 @@ import { createMdLogger, processMarkdown } from '@samplekit/preprocess-markdown'
 import { createShikiLogger, processCodeblockSync } from '@samplekit/preprocess-shiki';
 import adapter from '@sveltejs/adapter-node';
 import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
-import { opts } from './shiki.config.js';
+import { opts } from './src/lib/shiki/index.js';
 
 const root = join(new URL(import.meta.url).pathname, '..');
 const src = join(root, 'src');
