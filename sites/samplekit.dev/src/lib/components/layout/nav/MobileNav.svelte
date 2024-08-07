@@ -35,15 +35,17 @@
 	<ul aria-label="main navigation" class="flex flex-col space-y-6">
 		{#each routes as route, i}
 			<span class="route-item" style="--duration: {liftIn ? '150ms' : '0ms'}; --delay: {liftIn ? i * 50 : 0}ms;">
-				<MobileRoute {route} {onNavItemClick} />
-
-				{#if route.groupText === 'Security'}
-					<form action="/logout?/logoutCurrent" method="post">
-						<button type="submit" class="route-item btn btn-accent">
-							<small>{'Sign out'}</small>
-						</button>
-					</form>
-				{/if}
+				<MobileRoute {route} {onNavItemClick}>
+					{#snippet onGroupLine()}
+						{#if route.groupText === 'Security'}
+							<form action="/logout?/logoutCurrent" method="post">
+								<button type="submit" class="btn btn-ghost text-base">
+									<small>{'Sign out'}</small>
+								</button>
+							</form>
+						{/if}
+					{/snippet}
+				</MobileRoute>
 			</span>
 
 			{#if i !== routes.length - 1}

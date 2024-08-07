@@ -35,11 +35,13 @@ export const accountLayoutRoutes: (RouteLeaf | RouteGroup)[] = [
 ];
 
 const userDesktopRoutes: { title: string; url: string }[] = [
+	{ title: 'Preprocessors', url: 'https://preprocessors.samplekit.dev' },
 	{ title: 'Shop', url: '/shop' },
 	{ title: 'Account', url: '/account/profile' },
 ];
 
 const noUserDesktopRoutes: { title: string; url: string }[] = [
+	{ title: 'Preprocessors', url: 'https://preprocessors.samplekit.dev' },
 	{ title: 'Shop', url: '/shop' },
 	{ title: 'Login', url: '/login' },
 ];
@@ -52,6 +54,16 @@ const userNavRoutes: (RouteLeaf | RouteGroup)[] = [
 		children: [
 			{ path: '/', text: 'Articles', depth: 1 },
 			{ path: '/shop', text: 'Shop', depth: 1 },
+		],
+	},
+	{
+		depth: 0,
+		groupPath: 'https://preprocessors.samplekit.dev',
+		groupText: 'Preprocessors',
+		children: [
+			{ depth: 1, text: 'Code Decoration', path: 'https://preprocessors.samplekit.dev/docs/code-decoration' },
+			{ depth: 1, text: 'Math', path: 'https://preprocessors.samplekit.dev/docs/math' },
+			{ depth: 1, text: 'Markdown', path: 'https://preprocessors.samplekit.dev/docs/markdown' },
 		],
 	},
 	{
@@ -82,6 +94,16 @@ const noUserNavRoutes: (RouteLeaf | RouteGroup)[] = [
 		children: [
 			{ path: '/', text: 'Articles', depth: 1 },
 			{ path: '/shop', text: 'Shop', depth: 1 },
+		],
+	},
+	{
+		depth: 0,
+		groupPath: 'https://preprocessors.samplekit.dev',
+		groupText: 'Preprocessors',
+		children: [
+			{ depth: 1, text: 'Code Decoration', path: 'https://preprocessors.samplekit.dev/docs/code-decoration' },
+			{ depth: 1, text: 'Math', path: 'https://preprocessors.samplekit.dev/docs/math' },
+			{ depth: 1, text: 'Markdown', path: 'https://preprocessors.samplekit.dev/docs/markdown' },
 		],
 	},
 	{
