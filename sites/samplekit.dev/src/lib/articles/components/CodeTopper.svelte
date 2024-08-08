@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { useCollapsedService } from '$lib/components/collapsedService';
 	import I from '$lib/icons';
+	import { useCollapsedService } from '$lib/services/codeCollapse';
 	import Copy from './Copy.svelte';
 	import type { Snippet } from 'svelte';
 
@@ -24,12 +24,10 @@
 		return codeFragment?.textContent;
 	}
 
-	const service = useCollapsedService();
-	if (service) {
-		service.onTrigger((newState) => {
-			if (collapsible) collapsed = newState;
-		});
-	}
+	const globalCollapsed = useCollapsedService();
+	$effect(() => {
+		collapsed = globalCollapsed.true;
+	});
 </script>
 
 <div

@@ -12,8 +12,8 @@
 
 <script lang="ts">
 	import { createTabs, melt } from '@melt-ui/svelte';
-	import { useCollapsedService } from '$lib/components/collapsedService';
 	import I from '$lib/icons';
+	import { useCollapsedService } from '$lib/services/codeCollapse';
 	import PatternWrapper from './PatternWrapper.svelte';
 	import TabPanelItem from './TabPanelItem.svelte';
 	import type { NoPropComponent } from '$lib/utils/common';
@@ -36,10 +36,10 @@
 		},
 	});
 
-	const service = useCollapsedService();
-	if (service) {
-		service.onTrigger((newState) => (collapsed = newState));
-	}
+	const globalCollapsed = useCollapsedService();
+	$effect(() => {
+		collapsed = globalCollapsed.true;
+	});
 
 	// todo svelte-5 melt-ui hack to get rid of "state_unsafe_mutation" error
 	files.forEach((_t, i) => $trigger(`tab-${i}`));

@@ -4,19 +4,18 @@
 	import { Vaul, Changelog, DateLine, Series, TOC } from '$lib/articles/components';
 	import { FeatureCard } from '$lib/articles/components/card';
 	import { TabPanels, HAnchor, Portal } from '$lib/components';
-	import { createCollapsedService, useCollapsedService } from '$lib/components/collapsedService';
 	import I from '$lib/icons';
+	import { createCollapsedService, useCollapsedService } from '$lib/services/codeCollapse';
 	import { pluralize } from '$lib/utils/common';
-	import { updateLoadedFrontMatter } from './update-loaded-front-matter.json/index.js';
+	import { updateLoadedFrontMatter } from './update-loaded-front-matter.json';
 
 	const { data, children } = $props();
 	const article = $derived(data.article);
 
 	let sidebarOpen = $state(true);
 
-	createCollapsedService();
-	const { triggerAll } = useCollapsedService();
-	let allOpen = $state(false);
+	createCollapsedService(false);
+	const globalCollapsed = useCollapsedService();
 
 	if (dev) {
 		$effect(() => {
@@ -27,11 +26,6 @@
 			updatingReadingTimeMetadata.send({ wordCount, articlePath: article.articlePath });
 		});
 	}
-
-	const toggleAllOpen = () => {
-		allOpen = !allOpen;
-		triggerAll(allOpen);
-	};
 </script>
 
 <div class="page" style="max-width: 1440px; padding: clamp(1rem, -0.6rem + 4vw, 3rem);">
@@ -141,8 +135,8 @@
 								<TOC tree={data.article.toc} onclick={closeVaul} />
 							{/snippet}
 						</Vaul>
-						<button class="btn btn-hollow rounded-l-none border-none px-3" onclick={() => toggleAllOpen()}>
-							{#if allOpen}
+						<button class="btn btn-hollow rounded-l-none border-none px-3" onclick={() => globalCollapsed.toggle()}>
+							{#if globalCollapsed.true}
 								<I.FoldVertical class="h-6 w-6" />
 							{:else}
 								<I.UnfoldVertical class="h-6 w-6" />
@@ -156,12 +150,12 @@
 				in:fly={{ x: 40, y: 40 }}
 				class="fixed bottom-4 z-10 hidden h-12 w-12 items-center justify-center rounded-full border border-gray-5 bg-app-bg/75 text-gray-11 backdrop-blur-md lg:flex"
 				style="right: calc(var(--scrollbar-width, 0px) + 1rem);"
-				onclick={() => toggleAllOpen()}
+				onclick={() => globalCollapsed.toggle()}
 			>
-				{#if allOpen}
-					<I.UnfoldVertical class="h-6 w-6" />
-				{:else}
+				{#if globalCollapsed.true}
 					<I.FoldVertical class="h-6 w-6" />
+				{:else}
+					<I.UnfoldVertical class="h-6 w-6" />
 				{/if}
 			</button>
 		</div>
