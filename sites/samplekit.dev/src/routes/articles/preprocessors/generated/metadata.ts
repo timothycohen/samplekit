@@ -1,5 +1,6 @@
 import type { LoadedFrontMatter } from '$lib/articles/schema';
 import imgSm from '/src/routes/articles/preprocessors/assets/preprocessors-thumbnail-1200w.webp';
+import video from '/src/routes/articles/preprocessors/assets/2024-08-05_22-41-28_889x627.mp4';
 export default {
 	title: 'Blog with Preprocessors',
 	implementationPath: '/articles/preprocessors/#interactive-demo',
@@ -8,6 +9,7 @@ export default {
 	publishedAt: new Date('2024-03-06T21:16:15.000Z'),
 	authors: [{ name: 'Tim Cohen', email: 'contact@timcohen.dev' }],
 	imgSm,
+	video,
 	tags: ['preprocessors', 'blog', 'markdown', 'code highlighting', 'DX'],
 	featured: true,
 	updates: [

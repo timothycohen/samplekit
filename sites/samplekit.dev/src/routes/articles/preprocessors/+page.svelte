@@ -1,4 +1,5 @@
 <script lang="ts" context="module">
+	import video from './assets/2024-08-05_22-41-28_889x627.mp4';
 	import imgSm from './assets/preprocessors-thumbnail-1200w.webp';
 	import type { RawFrontMatter } from '$lib/articles/schema';
 
@@ -10,6 +11,7 @@
 		publishedAt: new Date('2024-03-06 16:16:15 -0500'),
 		authors: [{ name: 'Tim Cohen', email: 'contact@timcohen.dev' }],
 		imgSm,
+		video,
 		tags: ['preprocessors', 'blog', 'markdown', 'code highlighting', 'DX'],
 		featured: true,
 		updates: [
