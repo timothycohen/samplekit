@@ -13,6 +13,7 @@ import ChevronUp from 'lucide-svelte/icons/chevron-up';
 import CircleCheck from 'lucide-svelte/icons/circle-check';
 import CircleX from 'lucide-svelte/icons/circle-x';
 import Code from 'lucide-svelte/icons/code';
+import Dot from 'lucide-svelte/icons/dot';
 import Eraser from 'lucide-svelte/icons/eraser';
 import Eye from 'lucide-svelte/icons/eye';
 import EyeOff from 'lucide-svelte/icons/eye-off';
@@ -72,6 +73,7 @@ const I = {
 	CircleCheck,
 	CircleX,
 	Code,
+	Dot,
 	Eraser,
 	Eye,
 	EyeOff,

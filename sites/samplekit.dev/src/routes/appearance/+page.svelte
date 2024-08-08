@@ -32,8 +32,10 @@
 						/>
 						<label for={value}>
 							<span class={checked ? '' : 'font-light text-gray-10'}>
-								{#if value === 'fixed_day'}Always use day theme
-								{:else if value === 'fixed_night'}Always use night theme
+								{#if value === 'fixed_day'}
+									Always use day theme (<span class="capitalize">{themeController.themeDay.name}</span>)
+								{:else if value === 'fixed_night'}
+									Always use night theme (<span class="capitalize">{themeController.themeNight.name}</span>)
 								{:else}Sync with system
 									<span class="showDay">(currently day)</span>
 									<span class="showNight">(currently night)</span>
@@ -54,6 +56,7 @@
 				active={themeController.initializedOnClient && themeController.modeApplied === 'day'}
 				setTheme={(e) => themeController.setTheme({ ...e, animate: false })}
 				themes={THEMES}
+				switchToFromInactive={() => (themeController.mode = 'fixed_day')}
 			/>
 			<ThemePicker
 				mode="night"
@@ -61,6 +64,7 @@
 				active={themeController.initializedOnClient && themeController.modeApplied === 'night'}
 				setTheme={(e) => themeController.setTheme({ ...e, animate: false })}
 				themes={THEMES}
+				switchToFromInactive={() => (themeController.mode = 'fixed_night')}
 			/>
 		</div>
 	</div>
