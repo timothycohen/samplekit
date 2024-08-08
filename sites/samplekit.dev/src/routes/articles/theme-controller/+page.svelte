@@ -1,4 +1,5 @@
 <script lang="ts" context="module">
+	import video from './assets/2024-08-05_19-56-30_800x645.mp4';
 	import imgLg from './assets/theme-controller-q30.webp';
 	import imgSm from './assets/theme-controller-thumbnail-1200w.webp';
 	import type { RawFrontMatter } from '$lib/articles/schema';
@@ -13,6 +14,7 @@
 		authors: [{ name: 'Tim Cohen', email: 'contact@timcohen.dev' }],
 		imgSm,
 		imgLg,
+		video,
 		tags: ['dark mode', 'multiple themes', 'tailwind', 'css variables', 'FOUC'],
 		featured: true,
 	} satisfies RawFrontMatter;
