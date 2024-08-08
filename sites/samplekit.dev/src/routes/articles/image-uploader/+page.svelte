@@ -1,4 +1,5 @@
 <script lang="ts" context="module">
+	import video from './assets/2024-08-05_21-17-07_465x474_24fps.mp4';
 	import imgSm from './assets/image-uploader-thumbnail-1200w.webp';
 	import type { RawFrontMatter } from '$lib/articles/schema';
 
@@ -12,6 +13,7 @@
 		publishedAt: new Date('2024-03-20 16:37:01 -0400'),
 		authors: [{ name: 'Tim Cohen', email: 'contact@timcohen.dev' }],
 		imgSm,
+		video,
 		tags: ['state controller', 'image uploads', 'aws', 'db', 's3', 'cloudfront', 'rekognition', 'rate limiting'],
 		featured: true,
 	} satisfies RawFrontMatter;
