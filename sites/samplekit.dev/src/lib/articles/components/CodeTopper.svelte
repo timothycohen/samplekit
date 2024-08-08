@@ -9,9 +9,18 @@
 		copyable?: boolean;
 		initialCollapsed?: boolean;
 		children?: Snippet;
+		middleIcon?: Snippet<[{ classes: string }]>;
+		showMiddleIconOnCollapsed?: boolean;
 	}
 
-	const { title, copyable = true, initialCollapsed = false, children }: Props = $props();
+	const {
+		title,
+		copyable = true,
+		initialCollapsed = false,
+		children,
+		middleIcon,
+		showMiddleIconOnCollapsed = false,
+	}: Props = $props();
 
 	const collapsible = !!children;
 	let collapsed = $state(collapsible ? initialCollapsed : false);
@@ -28,6 +37,8 @@
 	$effect(() => {
 		collapsed = globalCollapsed.true;
 	});
+
+	const shouldRenderMiddle = $derived(middleIcon && (!collapsed || showMiddleIconOnCollapsed));
 </script>
 
 <div
@@ -39,16 +50,23 @@
 	<div class="flex">
 		{#if showCopy}
 			<span
-				class="{collapsible ? '' : 'rounded-tr-card'} min-h-10 w-10
-				border-l border-gray-9 bg-gray-3 text-gray-10 -outline-offset-1 hover:bg-gray-4 dark:border-gray-5"
+				class="{'border-l'} {!middleIcon && !collapsible ? 'rounded-tr-card' : ''}
+				grid min-h-10 w-10 place-content-center border-gray-9 bg-gray-3 text-gray-10 -outline-offset-1 hover:bg-gray-4 dark:border-gray-5"
 			>
 				<Copy {getTextContent} />
 			</span>
 		{/if}
+		{#if shouldRenderMiddle}
+			{@render middleIcon!({
+				classes: `${!showCopy ? 'border-l' : ''} ${!collapsible ? 'rounded-tr-card' : ''}
+					grid min-h-10 w-10 place-content-center border-gray-9 bg-gray-3 text-gray-10 -outline-offset-1 hover:bg-gray-4 dark:border-gray-5`,
+			})}
+		{/if}
 		{#if collapsible}
 			<button
 				onclick={() => (collapsed = !collapsed)}
-				class="grid min-h-10 w-10 place-content-center rounded-tr-card bg-gray-3 text-gray-10 -outline-offset-1 hover:bg-gray-4"
+				class="{!shouldRenderMiddle && !showCopy ? 'border-l' : ''} {'rounded-tr-card'}
+				grid min-h-10 w-10 place-content-center border-gray-9 bg-gray-3 text-gray-10 -outline-offset-1 hover:bg-gray-4 dark:border-gray-5"
 			>
 				<div class="transition-transform {collapsed ? 'rotate-180' : ''}">
 					<I.ChevronUp />
