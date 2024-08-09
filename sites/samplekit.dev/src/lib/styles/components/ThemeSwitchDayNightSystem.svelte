@@ -6,7 +6,7 @@
 
 	interface Props {
 		modeApplied: 'day' | 'night';
-		schemeSystem: 'dark' | 'light';
+		systemScheme: 'dark' | 'light';
 		mode: 'fixed_night' | 'fixed_day' | 'sync_system';
 		duration?: number;
 		version?: 'horizon' | 'expand';
@@ -18,7 +18,7 @@
 
 	const {
 		modeApplied,
-		schemeSystem,
+		systemScheme,
 		mode,
 		duration = 500,
 		version = 'expand',
@@ -178,7 +178,7 @@
 				use:keyboard={{ ArrowUp: [prev], ArrowDown: [next] }}
 			>
 				<I.MonitorSmartphone class="h-5" />
-				<span>System {schemeSystem === 'dark' ? ' (Night)' : ' (Day)'}</span>
+				<span>System {systemScheme === 'dark' ? ' (Night)' : ' (Day)'}</span>
 				{#if mode === 'sync_system'}
 					<I.Check class="ml-auto text-success-9" />
 				{/if}

@@ -3,7 +3,7 @@ import { storeMode, storeTheme } from './storeTheme';
 import { setThemeOnDoc, type ModeApplied, type Theme, setSystemSchemeOnDoc } from './themeUtils';
 
 export type InitialTheme = {
-	schemeSystem: 'light' | 'dark';
+	systemScheme: 'light' | 'dark';
 	mode: 'fixed_day' | 'fixed_night' | 'sync_system';
 	themeDay: Theme;
 	themeNight: Theme;
@@ -22,7 +22,7 @@ export type InitialTheme = {
  */
 export class ThemeController {
 	#initializedOnClient = $state() as boolean;
-	#schemeSystem = $state() as 'light' | 'dark';
+	#systemScheme = $state() as 'light' | 'dark';
 	#mode = $state() as 'fixed_day' | 'fixed_night' | 'sync_system';
 	#themeDay = $state() as Theme;
 	#themeNight = $state() as Theme;
@@ -35,26 +35,26 @@ export class ThemeController {
 				? 'day'
 				: this.#mode === 'fixed_night'
 					? 'night'
-					: this.#schemeSystem === 'light'
+					: this.#systemScheme === 'light'
 						? 'day'
 						: 'night';
 		this.#themeApplied = this.#modeApplied === 'day' ? this.#themeDay : this.#themeNight;
 	}
 
 	#listener = (prefersDark: MediaQueryListEvent) => {
-		const schemeSystem = prefersDark.matches ? 'dark' : 'light';
+		const systemScheme = prefersDark.matches ? 'dark' : 'light';
 
 		if (this.#mode === 'sync_system') {
-			const modeApplied = schemeSystem === 'dark' ? 'night' : 'day';
-			const themeApplied = schemeSystem === 'dark' ? this.#themeNight : this.#themeDay;
-			this.#schemeSystem = schemeSystem;
+			const modeApplied = systemScheme === 'dark' ? 'night' : 'day';
+			const themeApplied = systemScheme === 'dark' ? this.#themeNight : this.#themeDay;
+			this.#systemScheme = systemScheme;
 			this.#themeApplied = themeApplied;
 			this.#modeApplied = modeApplied;
 			setThemeOnDoc(themeApplied);
-			setSystemSchemeOnDoc(schemeSystem);
+			setSystemSchemeOnDoc(systemScheme);
 		} else {
-			this.#schemeSystem = schemeSystem;
-			setSystemSchemeOnDoc(schemeSystem);
+			this.#systemScheme = systemScheme;
+			setSystemSchemeOnDoc(systemScheme);
 		}
 	};
 
@@ -115,7 +115,7 @@ export class ThemeController {
 
 	constructor(initial: InitialTheme) {
 		this.#initializedOnClient = false;
-		this.#schemeSystem = initial.schemeSystem;
+		this.#systemScheme = initial.systemScheme;
 		this.#mode = initial.mode;
 		this.#themeDay = initial.themeDay;
 		this.#themeNight = initial.themeNight;
@@ -141,8 +141,8 @@ export class ThemeController {
 	get initializedOnClient() {
 		return this.#initializedOnClient;
 	}
-	get schemeSystem() {
-		return this.#schemeSystem;
+	get systemScheme() {
+		return this.#systemScheme;
 	}
 	get mode() {
 		return this.#mode;

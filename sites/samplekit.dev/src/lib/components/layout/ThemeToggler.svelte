@@ -9,7 +9,7 @@
 
 <span class="js-only block h-6 w-6 shrink-0 animate-[fadeIn_100ms_ease-in-out_forwards]">
 	<ThemeSwitchDayNightSystem
-		schemeSystem={themeController.schemeSystem}
+		systemScheme={themeController.systemScheme}
 		mode={themeController.mode}
 		modeApplied={themeController.modeApplied}
 		onModeChange={(mode) => themeController.setMode(mode, { animate: true })}

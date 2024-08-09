@@ -362,7 +362,7 @@ type SystemScheme = 'light' | 'dark';
 
 type ThemeStore = Writable<{
 	// the browser `prefers-color-scheme`
-	schemeSystem: SystemScheme;
+	systemScheme: SystemScheme;
 	// the toggle switch options
 	mode: Mode;
 	// the mode applied after converting sync_system to the user's preferred scheme
@@ -588,9 +588,9 @@ import {
 	type Theme,
 } from './themeUtils';
 
-const calcApplied = (a: { mode: Mode; schemeSystem: SystemScheme; themeNight: Theme; themeDay: Theme }) => {
+const calcApplied = (a: { mode: Mode; systemScheme: SystemScheme; themeNight: Theme; themeDay: Theme }) => {
 	const modeApplied: ModeApplied =
-		a.mode === 'fixed_day' ? 'day' : a.mode === 'fixed_night' ? 'night' : a.schemeSystem === 'dark' ? 'night' : 'day';
+		a.mode === 'fixed_day' ? 'day' : a.mode === 'fixed_night' ? 'night' : a.systemScheme === 'dark' ? 'night' : 'day';
 
 	const themeApplied: Theme = modeApplied === 'night' ? a.themeNight : a.themeDay;
 
@@ -599,15 +599,15 @@ const calcApplied = (a: { mode: Mode; schemeSystem: SystemScheme; themeNight: Th
 
 const createThemeController = () => {
 	const store = (() => {
-		const schemeSystem: 'light' | 'dark' = getSystemScheme();
+		const systemScheme: 'light' | 'dark' = getSystemScheme();
 		const mode: 'fixed_day' | 'fixed_night' | 'sync_system' = getStoredThemeModeClient();
 		const themeDay = getStoredThemeDayClient();
 		const themeNight = getStoredThemeNightClient();
-		const { modeApplied, themeApplied } = calcApplied({ schemeSystem, mode, themeDay, themeNight });
+		const { modeApplied, themeApplied } = calcApplied({ systemScheme, mode, themeDay, themeNight });
 
 		return writable({
 			initialized: false,
-			schemeSystem,
+			systemScheme,
 			mode,
 			themeDay,
 			themeNight,
@@ -648,26 +648,26 @@ const createThemeController = () => {
 		const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
 
 		const listener = (prefersDark: MediaQueryListEvent) => {
-			const schemeSystem = prefersDark.matches ? 'dark' : 'light';
+			const systemScheme = prefersDark.matches ? 'dark' : 'light';
 			const s = get(store);
 
 			if (type === 'light-dark') {
-				const mode = schemeSystem === 'dark' ? 'fixed_night' : 'fixed_day';
+				const mode = systemScheme === 'dark' ? 'fixed_night' : 'fixed_day';
 				storeMode(mode);
 
-				const modeApplied = schemeSystem === 'dark' ? 'night' : 'day';
-				const themeApplied = schemeSystem === 'dark' ? s.themeNight : s.themeDay;
+				const modeApplied = systemScheme === 'dark' ? 'night' : 'day';
+				const themeApplied = systemScheme === 'dark' ? s.themeNight : s.themeDay;
 				setThemeOnDoc(themeApplied);
 
-				store.update((s) => ({ ...s, schemeSystem, themeApplied, modeApplied, mode }));
+				store.update((s) => ({ ...s, systemScheme, themeApplied, modeApplied, mode }));
 			} else if (s.mode === 'sync_system') {
-				const modeApplied = schemeSystem === 'dark' ? 'night' : 'day';
-				const themeApplied = schemeSystem === 'dark' ? s.themeNight : s.themeDay;
+				const modeApplied = systemScheme === 'dark' ? 'night' : 'day';
+				const themeApplied = systemScheme === 'dark' ? s.themeNight : s.themeDay;
 				setThemeOnDoc(themeApplied);
 
-				store.update((s) => ({ ...s, schemeSystem, themeApplied, modeApplied }));
+				store.update((s) => ({ ...s, systemScheme, themeApplied, modeApplied }));
 			} else {
-				store.update((s) => ({ ...s, schemeSystem }));
+				store.update((s) => ({ ...s, systemScheme }));
 			}
 		};
 

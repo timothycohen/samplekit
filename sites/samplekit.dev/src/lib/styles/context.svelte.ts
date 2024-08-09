@@ -4,8 +4,8 @@ import { getSystemScheme } from './themeUtils';
 
 const [get, set] = defineContext<ThemeController>();
 
-const createThemeControllerCtx = (initialTheme: Omit<InitialTheme, 'schemeSystem'>) => {
-	set(new ThemeController({ schemeSystem: getSystemScheme(), ...initialTheme }));
+const createThemeControllerCtx = (initialTheme: Omit<InitialTheme, 'systemScheme'>) => {
+	set(new ThemeController({ systemScheme: getSystemScheme(), ...initialTheme }));
 };
 
 /**
