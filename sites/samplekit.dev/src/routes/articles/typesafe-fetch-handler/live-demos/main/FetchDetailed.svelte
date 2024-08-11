@@ -3,7 +3,7 @@
 	import { Switch } from '$lib/components';
 	import { LoadingDots } from '$lib/components';
 	import I from '$lib/icons';
-	import { createTempStore } from '$lib/stores';
+	import { TempValue } from '$lib/stores';
 	import LangSelect from './LangSelect.svelte';
 	import { getRandomColor, langOptions, type Lang } from '.';
 
@@ -17,12 +17,12 @@
 	let res: null | Awaited<ReturnType<(typeof gettingRandomColor)['send']>> = $state(null);
 	let selectedLang: Lang = $state(langOptions.language[0].value.lang);
 
-	const success = createTempStore<true>({ duration: 1500 });
+	const success = new TempValue<true>({ duration: 1500 });
 
 	const getColor = async () => {
 		if (selectedLang === undefined) return;
 		if ($gettingRandomColor) return;
-		success.clear();
+		success.value = null;
 		time = '';
 		const start = performance.now();
 		abortController = new AbortController();
@@ -35,7 +35,7 @@
 		const perf = performance.now() - start;
 		time = perf.toFixed(0);
 		if (res.error) return;
-		if (perf > 3000) success.set(true);
+		if (perf > 3000) success.value = true;
 		currentColor = res.data.color;
 	};
 </script>
@@ -53,7 +53,7 @@
 				<span class="grid w-[1.625rem] place-content-center" aria-label="Delayed">
 					<I.LoaderCircle class="inline h-5 w-5 animate-spin" />
 				</span>
-			{:else if $success}
+			{:else if success.value}
 				<span
 					in:fly={{ y: '4px', duration: 400 }}
 					class="grid w-[1.625rem] place-content-center"

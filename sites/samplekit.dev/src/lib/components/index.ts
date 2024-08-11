@@ -12,5 +12,3 @@ export { default as Portal } from './Portal.svelte';
 export * from './input';
 export * from './layout';
 export * from './user';
-
-export * from './builders';
