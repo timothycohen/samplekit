@@ -977,7 +977,7 @@ shiki-end -->
 
 <!-- shiki-start
 ```ts
-type PropertyArrays = { classes: string[]; datas: string[] };
+type PropertyArrays = { classes: string[]; datas: Array<string | [string, string]> };
 
 type CodeToDecoratedHtml = {
 	code: string;

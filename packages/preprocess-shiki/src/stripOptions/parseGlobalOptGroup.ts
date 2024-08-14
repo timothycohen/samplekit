@@ -28,8 +28,8 @@ export const parseGlobalOptGroup = ({
 	let trimmed = escapeOptGroup(optStr);
 	if (trimmed === '') return warn(trimmed, 'Empty line');
 
-	const datas: string[] = [];
-	const classes: string[] = [];
+	const datas: PropertyArrays['datas'] = [];
+	const classes: PropertyArrays['classes'] = [];
 	const lines: Range[] = [];
 	const substrs: string[] = [];
 	const indexRanges: Range[] = [];
@@ -41,7 +41,9 @@ export const parseGlobalOptGroup = ({
 		if (trimmed.startsWith('d')) {
 			const s = takeRustyString(trimmed, 1);
 			if (!s) return warn(optStr, `Invalid data attribute.`);
-			datas.push(s.match);
+			const [key, value] = s.match.split('=');
+			if (value) datas.push([key!, value]);
+			else datas.push(key!);
 			trimmed = s.rest.trim();
 			continue;
 		}

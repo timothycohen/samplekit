@@ -1,5 +1,5 @@
 import { getOrLoadOpts } from './defaultOpts.js';
-import type { HighlightOpts, PropertyArrays, Result } from './types.js';
+import type { HighlightOpts, PropertyArrays, Result, Properties } from './types.js';
 
 type CodeToDecoratedHtml = {
 	code: string;
@@ -12,6 +12,20 @@ type CodeToDecoratedHtml = {
 	codeProperties?: Partial<PropertyArrays>;
 	preProperties?: Partial<PropertyArrays>;
 };
+
+function addDatas(
+	p: Properties,
+	properties: PropertyArrays['datas'] | undefined,
+	prefix?: '-window' | '-line',
+	cb?: (k: string, v: string) => void,
+) {
+	properties?.forEach((option) => {
+		const key = typeof option === 'string' ? option : option[0];
+		const value = typeof option === 'string' ? '' : option[1];
+		p[`data${prefix ?? ''}-${key}`] = value;
+		cb?.(key, value);
+	});
+}
 
 export const codeToDecoratedHtmlSync = ({
 	lineToProperties,
@@ -49,10 +63,11 @@ export const codeToDecoratedHtmlSync = ({
 				{
 					preprocess(_code, options) {
 						options.decorations = windowProperties?.map(({ start, end, properties: p }) => {
-							const properties: { class?: string; [k: `data-window-${string}`]: '' } = p.classes?.length
+							const properties: { class?: string; [k: `data-window-${string}`]: string } = p.classes?.length
 								? { class: p.classes.join(' ') }
 								: {};
-							if (p.datas?.length) for (const d of p.datas) properties[`data-window-${d}`] = '';
+
+							addDatas(properties, p.datas, '-window');
 							return { start, end, properties };
 						});
 					},
@@ -70,24 +85,23 @@ export const codeToDecoratedHtmlSync = ({
 							el.properties['class'] = decorations.classes.join(' ');
 						}
 
-						allLinesProperties?.datas?.forEach((option) => (el.properties[`data-${option}`] = ''));
-						decorations?.datas?.forEach((option) => {
-							if (option === 'hide') hasHidden = true;
-							el.properties[`data-line-${option}`] = '';
+						addDatas(el.properties, allLinesProperties?.datas);
+						addDatas(el.properties, decorations?.datas, '-line', (k) => {
+							if (k === 'hide') hasHidden = true;
 						});
 
 						lineNum++;
 						return el;
 					},
 					code(el) {
-						codeProperties?.datas?.forEach((option) => (el.properties[`data-${option}`] = ''));
+						addDatas(el.properties, codeProperties?.datas);
 						if (codeProperties?.classes?.length) el.properties['class'] = codeProperties.classes.join(' ');
 					},
 					pre(el) {
 						delete el.properties['class'];
 						delete el.properties['tabindex'];
 						if (preProperties?.classes?.length) el.properties['class'] = preProperties.classes.join(' ');
-						preProperties?.datas?.forEach((option) => (el.properties[`data-${option}`] = ''));
+						addDatas(el.properties, preProperties?.datas);
 
 						if (!hasHidden) return;
 						// remove hidden lines and collapse the resulting whitespace
