@@ -1,5 +1,6 @@
 import { join } from 'path';
 import { sequence, preprocessMeltUI } from '@melt-ui/pp';
+import { createKatexLogger, processKatex } from '@samplekit/preprocess-katex';
 import { createMdLogger, processMarkdown } from '@samplekit/preprocess-markdown';
 import { createShikiLogger, processCodeblockSync } from '@samplekit/preprocess-shiki';
 import adapter from '@sveltejs/adapter-node';
@@ -10,10 +11,11 @@ const root = join(new URL(import.meta.url).pathname, '..');
 const src = join(root, 'src');
 const articleRoot = join(src, 'routes/articles');
 const formatFilename = (/** @type {string} */ filename) => filename.replace(src, '');
+const include = (/** @type {string} */ filename) => filename.startsWith(articleRoot) || filename.endsWith('pp.svelte');
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
-	extensions: ['.svelte', '.svx'],
+	extensions: ['.svelte'],
 	compilerOptions: {
 		runes: true,
 		modernAst: true,
@@ -25,13 +27,17 @@ const config = {
 	},
 	preprocess: sequence([
 		processCodeblockSync({
-			include: (filename) => filename.startsWith(articleRoot) || filename.endsWith('.svx'),
+			include,
 			logger: { ...createShikiLogger(formatFilename), info: undefined },
 			opts,
 		}),
 		processMarkdown({
-			include: (filename) => filename.startsWith(articleRoot) || filename.endsWith('.svx'),
+			include,
 			logger: { ...createMdLogger(formatFilename), info: undefined },
+		}),
+		processKatex({
+			include,
+			logger: { ...createKatexLogger(formatFilename), info: undefined },
 		}),
 		vitePreprocess(),
 		preprocessMeltUI(),

@@ -15,7 +15,6 @@ export default {
 		}),
 		sveltekit(),
 	],
-	assetsInclude: '**/*.svx',
 	// https://github.com/sveltejs/kit/issues/11658 – Make sure to check Safari
 	esbuild: {
 		supported: {

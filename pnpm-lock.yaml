@@ -269,6 +269,9 @@ importers:
       '@samplekit/auth':
         specifier: workspace:^
         version: link:../../packages/auth
+      '@samplekit/preprocess-katex':
+        specifier: workspace:^
+        version: link:../../packages/preprocess-katex
       '@samplekit/preprocess-markdown':
         specifier: workspace:^
         version: link:../../packages/preprocess-markdown

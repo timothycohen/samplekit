@@ -82,11 +82,6 @@ declare global {
 	}
 
 	type Fetch = typeof globalThis.fetch;
-
-	module '*.svx' {
-		const component: import('svelte').ComponentType<import('svelte').SvelteComponent>;
-		export default component;
-	}
 }
 
 export {};
