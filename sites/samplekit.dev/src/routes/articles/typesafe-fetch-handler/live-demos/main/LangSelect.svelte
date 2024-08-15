@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { createSelect } from '@melt-ui/svelte';
 	import { Select } from '$lib/components';
-	import { isValidLang, langOptions, type Lang } from '.';
+	import { type Lang, langOptions, isSupportedLang } from './lang.service.common';
 
 	interface Props {
 		onSelect: (lang: Lang) => void;
@@ -12,7 +12,7 @@
 	const select = createSelect<{ lang: Lang }>({
 		defaultSelected: langOptions.language[0],
 		onSelectedChange: ({ next }) => {
-			if (isValidLang(next?.value.lang)) {
+			if (isSupportedLang(next?.value.lang)) {
 				onSelect(next.value.lang);
 				return next;
 			}

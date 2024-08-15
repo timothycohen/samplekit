@@ -1,6 +1,8 @@
 import type { ModuleDefinitions } from '$lib/articles/load';
 
 export default [
+	{ title: 'index.ts', loadRaw: () => import('./index.ts?raw') },
+	{ title: '+server.ts', loadRaw: () => import('./+server.ts?raw') },
 	{
 		title: 'Fetch Detailed',
 		loadComponent: () => import('./FetchDetailed.svelte'),
@@ -15,10 +17,4 @@ export default [
 	},
 	{ title: 'FetchDetailed.svelte', loadRaw: () => import('./FetchDetailed.svelte?raw') },
 	{ title: 'FetchBasic.svelte', loadRaw: () => import('./FetchBasic.svelte?raw') },
-	{ title: '+server.ts', loadRaw: () => import('./+server.ts?raw') },
-	{ title: 'index.ts', loadRaw: () => import('./index.ts?raw') },
-	{ title: 'http/client.ts', loadRaw: () => import('/src/lib/http/client.ts?raw') },
-	{ title: 'http/common.ts', loadRaw: () => import('/src/lib/http/common.ts?raw') },
-	{ title: 'http/server/json.ts', loadRaw: () => import('/src/lib/http/server/json.ts?raw') },
-	{ title: 'types/result.ts', loadRaw: () => import('/src/lib/utils/common/types/result.ts?raw') },
 ] satisfies ModuleDefinitions;

@@ -1,17 +1,15 @@
 <script lang="ts">
 	import I from '$lib/icons';
+	import { getRandomColor as get } from '$routes/articles/typesafe-fetch-handler/live-demos/main';
 	import LangSelect from './LangSelect.svelte';
-	import { getRandomColor, langOptions, type Lang } from '.';
-
-	const gettingRandomColor = getRandomColor();
-	const { delayed } = gettingRandomColor;
+	import { defaultLang, type Lang } from './lang.service.common';
 
 	let currentColor = $state('Yellow');
-	let selectedLang: Lang = $state(langOptions.language[0].value.lang);
+	let selectedLang: Lang = $state(defaultLang.value.lang);
 
 	const getColor = async () => {
-		if ($gettingRandomColor || !selectedLang) return;
-		const { data, error } = await gettingRandomColor.send({ excludeColor: currentColor, lang: selectedLang });
+		if (get.submitting || !selectedLang) return;
+		const { data, error } = await get.send({ excludeColor: currentColor, lang: selectedLang });
 		if (error) return window.alert('How did you break this? 😭');
 		currentColor = data.color;
 	};
@@ -23,10 +21,10 @@
 	</div>
 
 	<button
-		class="btn btn-accent col-span-2 transition-colors sm:col-span-1 {$delayed ? 'cursor-not-allowed' : ''}"
+		class="btn btn-accent col-span-2 transition-colors sm:col-span-1 {get.delayed ? 'cursor-not-allowed' : ''}"
 		onclick={getColor}
 	>
-		{#if $delayed}
+		{#if get.delayed}
 			<span class="grid w-[1.625rem] place-content-center" aria-label="Delayed">
 				<I.LoaderCircle class="inline h-5 w-5 animate-spin" />
 			</span>

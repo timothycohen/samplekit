@@ -5,29 +5,27 @@
 	import I from '$lib/icons';
 	import { TempValue } from '$lib/stores';
 	import LangSelect from './LangSelect.svelte';
-	import { getRandomColor, langOptions, type Lang } from '.';
-
-	const gettingRandomColor = getRandomColor();
-	const { delayed, timeout } = gettingRandomColor;
+	import { type Lang, langOptions } from './lang.service.common';
+	import { getRandomColor as get } from './index';
 
 	let currentColor = $state('Yellow');
 	let simulateDelay = $state(false);
 	let time = $state('');
 	let abortController: AbortController | null = $state(null);
-	let res: null | Awaited<ReturnType<(typeof gettingRandomColor)['send']>> = $state(null);
+	let res: null | Awaited<ReturnType<(typeof get)['send']>> = $state(null);
 	let selectedLang: Lang = $state(langOptions.language[0].value.lang);
 
 	const success = new TempValue<true>({ duration: 1500 });
 
 	const getColor = async () => {
 		if (selectedLang === undefined) return;
-		if ($gettingRandomColor) return;
+		if (get.submitting) return;
 		success.value = null;
 		time = '';
 		const start = performance.now();
 		abortController = new AbortController();
 		res = null;
-		res = await gettingRandomColor.send(
+		res = await get.send(
 			{ excludeColor: currentColor, lang: selectedLang, simulateDelay },
 			{ delayMs: 150, timeoutMs: 3000, abortSignal: abortController.signal },
 		);
@@ -44,12 +42,12 @@
 	<div class="grid w-72 items-center gap-4">
 		<LangSelect onSelect={(lang) => (selectedLang = lang)} />
 
-		<button class="btn btn-accent transition-colors {$delayed ? 'cursor-not-allowed' : ''}" onclick={getColor}>
-			{#if $timeout}
+		<button class="btn btn-accent transition-colors {get.delayed ? 'cursor-not-allowed' : ''}" onclick={getColor}>
+			{#if get.timeout}
 				<span class="grid w-[1.625rem] place-content-center" aria-label="Taking longer than usual.">
 					<LoadingDots class="bg-accent-1" wrapperClasses="mx-0" />
 				</span>
-			{:else if $delayed}
+			{:else if get.delayed}
 				<span class="grid w-[1.625rem] place-content-center" aria-label="Delayed">
 					<I.LoaderCircle class="inline h-5 w-5 animate-spin" />
 				</span>
@@ -67,7 +65,7 @@
 			Random Color
 		</button>
 
-		<button class="btn btn-hollow w-full" disabled={!$delayed} onclick={() => abortController?.abort()}>
+		<button class="btn btn-hollow w-full" disabled={!get.delayed} onclick={() => abortController?.abort()}>
 			Abort Request
 		</button>
 
@@ -79,9 +77,9 @@
 
 	<div class="grid h-full w-72 grid-cols-2 flex-col flex-wrap justify-between text-lg lg:flex">
 		<span>Color: {currentColor}</span>
-		<div>Loading: {$gettingRandomColor}</div>
-		<div>Delayed: {$delayed}</div>
-		<div>Timeout: {$timeout}</div>
+		<div>Loading: {get.submitting}</div>
+		<div>Delayed: {get.delayed}</div>
+		<div>Timeout: {get.timeout}</div>
 		<div class="col-span-2">Performance: {time ? `${time}ms` : ''}</div>
 		<div class="col-span-2">Data: {JSON.stringify(res?.data ?? '')}</div>
 		<div class="col-span-2">Error: {JSON.stringify(res?.error ?? '')}</div>

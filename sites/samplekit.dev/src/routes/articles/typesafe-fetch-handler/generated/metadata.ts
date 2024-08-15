@@ -4,7 +4,7 @@ import imgLg from '/src/routes/articles/typesafe-fetch-handler/assets/typesafe-f
 export default {
 	title: 'TypeSafe Fetch Handler',
 	implementationPath: '/articles/typesafe-fetch-handler#interactive-demo',
-	srcCodeHref: 'https://github.com/timothycohen/samplekit/blob/main/sites/samplekit.dev/src/lib/http/client.ts',
+	srcCodeHref: 'https://github.com/timothycohen/samplekit/blob/main/sites/samplekit.dev/src/lib/http/client.svelte.ts',
 	description: 'A typesafe fetch handler that stores the route, method, res/req types, and fetch state.',
 	publishedAt: new Date('2024-03-06T01:39:38.000Z'),
 	authors: [{ name: 'Tim Cohen', email: 'contact@timcohen.dev' }],
@@ -12,9 +12,10 @@ export default {
 	imgLg,
 	tags: ['typescript', 'http', 'DX', 'client-server', 'request handlers', 'endpoints'],
 	featured: true,
+	updates: [{ at: new Date('2024-08-13T22:26:40.000Z'), descriptions: ['Update to runes.'] }],
 	articlePath: '/articles/typesafe-fetch-handler',
-	wordCount: 2149,
-	readingTime: 10,
+	wordCount: 1823,
+	readingTime: 9,
 	toc: [
 		{
 			title: 'Data in SvelteKit',
@@ -29,6 +30,7 @@ export default {
 			title: 'Thinking through the API',
 			href: '/articles/typesafe-fetch-handler/#thinking-through-the-api',
 			children: [
+				{ title: 'Interface', href: '/articles/typesafe-fetch-handler/#interface' },
 				{ title: 'Server / Client Separation', href: '/articles/typesafe-fetch-handler/#server-/-client-separation' },
 				{
 					title: 'Hiding the route / method / types',
@@ -39,10 +41,10 @@ export default {
 					href: '/articles/typesafe-fetch-handler/#enforce-server-/-client-type-consistency',
 				},
 				{ title: 'Dynamic Routes', href: '/articles/typesafe-fetch-handler/#dynamic-routes' },
+				{ title: 'Options', href: '/articles/typesafe-fetch-handler/#options' },
 			],
 		},
 		{ title: 'Implementation', href: '/articles/typesafe-fetch-handler/#implementation' },
-		{ title: 'Bonus', href: '/articles/typesafe-fetch-handler/#bonus' },
 		{ title: 'Conclusion', href: '/articles/typesafe-fetch-handler/#conclusion' },
 	],
 } satisfies LoadedFrontMatter;
