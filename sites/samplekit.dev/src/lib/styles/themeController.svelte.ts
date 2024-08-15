@@ -26,37 +26,85 @@ export class ThemeController {
 	#mode = $state() as 'fixed_day' | 'fixed_night' | 'sync_system';
 	#themeDay = $state() as Theme;
 	#themeNight = $state() as Theme;
-	#modeApplied = $state() as ModeApplied;
-	#themeApplied = $state() as Theme;
 
-	#updateAppliedState() {
-		this.#modeApplied =
-			this.#mode === 'fixed_day'
-				? 'day'
-				: this.#mode === 'fixed_night'
-					? 'night'
-					: this.#systemScheme === 'light'
-						? 'day'
-						: 'night';
-		this.#themeApplied = this.#modeApplied === 'day' ? this.#themeDay : this.#themeNight;
+	#modeApplied: ModeApplied = $derived(
+		this.#mode === 'fixed_day'
+			? 'day'
+			: this.#mode === 'fixed_night'
+				? 'night'
+				: this.#systemScheme === 'light'
+					? 'day'
+					: 'night',
+	);
+	#themeApplied = $derived(this.#modeApplied === 'day' ? this.#themeDay : this.#themeNight);
+
+	constructor(initial: InitialTheme) {
+		this.#initializedOnClient = false;
+		this.#systemScheme = initial.systemScheme;
+		this.#mode = initial.mode;
+		this.#themeDay = initial.themeDay;
+		this.#themeNight = initial.themeNight;
+
+		const listener = (prefersDark: MediaQueryListEvent) => {
+			this.#systemScheme = prefersDark.matches ? 'dark' : 'light';
+			setThemeOnDoc(this.#themeApplied);
+			setSystemSchemeOnDoc(this.#systemScheme);
+		};
+
+		$effect(() => {
+			this.#initializedOnClient = true;
+			window.matchMedia?.('(prefers-color-scheme: dark)').addEventListener('change', listener);
+			return () => {
+				window.matchMedia?.('(prefers-color-scheme: dark)').removeEventListener('change', listener);
+			};
+		});
 	}
 
-	#listener = (prefersDark: MediaQueryListEvent) => {
-		const systemScheme = prefersDark.matches ? 'dark' : 'light';
+	setTheme({ kind, theme, animate }: { kind: ModeApplied; theme: Theme; animate: boolean }) {
+		if (kind === 'day') this.#themeDay = theme;
+		else this.#themeNight = theme;
+		storeTheme({ kind, theme });
+		if (animate) this.#animateThemeOnDoc();
+		else setThemeOnDoc(this.#themeApplied);
+	}
 
-		if (this.#mode === 'sync_system') {
-			const modeApplied = systemScheme === 'dark' ? 'night' : 'day';
-			const themeApplied = systemScheme === 'dark' ? this.#themeNight : this.#themeDay;
-			this.#systemScheme = systemScheme;
-			this.#themeApplied = themeApplied;
-			this.#modeApplied = modeApplied;
-			setThemeOnDoc(themeApplied);
-			setSystemSchemeOnDoc(systemScheme);
-		} else {
-			this.#systemScheme = systemScheme;
-			setSystemSchemeOnDoc(systemScheme);
-		}
-	};
+	setMode(mode: 'fixed_day' | 'fixed_night' | 'sync_system', opts: { animate: boolean }) {
+		this.#mode = mode;
+		storeMode(this.#mode);
+		if (opts.animate) this.#animateThemeOnDoc();
+		else setThemeOnDoc(this.#themeApplied);
+	}
+
+	get initializedOnClient() {
+		return this.#initializedOnClient;
+	}
+	get systemScheme() {
+		return this.#systemScheme;
+	}
+	get mode() {
+		return this.#mode;
+	}
+	set mode(mode: 'fixed_day' | 'fixed_night' | 'sync_system') {
+		this.setMode(mode, { animate: false });
+	}
+	get themeDay() {
+		return this.#themeDay;
+	}
+	set themeDay(theme) {
+		this.setTheme({ kind: 'day', theme, animate: false });
+	}
+	get themeNight() {
+		return this.#themeNight;
+	}
+	set themeNight(theme) {
+		this.setTheme({ kind: 'night', theme, animate: false });
+	}
+	get modeApplied() {
+		return this.#modeApplied;
+	}
+	get themeApplied() {
+		return this.#themeApplied;
+	}
 
 	#animateThemeOnDoc() {
 		/**
@@ -102,70 +150,5 @@ export class ThemeController {
 				},
 			);
 		});
-	}
-
-	setTheme({ kind, theme, animate }: { kind: ModeApplied; theme: Theme; animate: boolean }) {
-		if (kind === 'day') this.#themeDay = theme;
-		else this.#themeNight = theme;
-		this.#updateAppliedState();
-		storeTheme({ kind, theme });
-		if (animate) this.#animateThemeOnDoc();
-		else setThemeOnDoc(this.#themeApplied);
-	}
-
-	constructor(initial: InitialTheme) {
-		this.#initializedOnClient = false;
-		this.#systemScheme = initial.systemScheme;
-		this.#mode = initial.mode;
-		this.#themeDay = initial.themeDay;
-		this.#themeNight = initial.themeNight;
-		this.#updateAppliedState();
-
-		$effect(() => {
-			this.#initializedOnClient = true;
-			window.matchMedia?.('(prefers-color-scheme: dark)').addEventListener('change', this.#listener);
-			return () => {
-				window.matchMedia?.('(prefers-color-scheme: dark)').removeEventListener('change', this.#listener);
-			};
-		});
-	}
-
-	setMode(mode: 'fixed_day' | 'fixed_night' | 'sync_system', opts: { animate?: boolean }) {
-		this.#mode = mode;
-		this.#updateAppliedState();
-		storeMode(this.#mode);
-		if (opts.animate) this.#animateThemeOnDoc();
-		else setThemeOnDoc(this.#themeApplied);
-	}
-
-	get initializedOnClient() {
-		return this.#initializedOnClient;
-	}
-	get systemScheme() {
-		return this.#systemScheme;
-	}
-	get mode() {
-		return this.#mode;
-	}
-	set mode(mode: 'fixed_day' | 'fixed_night' | 'sync_system') {
-		this.setMode(mode, { animate: false });
-	}
-	get themeDay() {
-		return this.#themeDay;
-	}
-	set themeDay(theme) {
-		this.setTheme({ kind: 'day', theme, animate: false });
-	}
-	get themeNight() {
-		return this.#themeNight;
-	}
-	set themeNight(theme) {
-		this.setTheme({ kind: 'night', theme, animate: false });
-	}
-	get modeApplied() {
-		return this.#modeApplied;
-	}
-	get themeApplied() {
-		return this.#themeApplied;
 	}
 }

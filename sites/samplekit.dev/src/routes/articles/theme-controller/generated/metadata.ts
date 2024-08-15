@@ -7,7 +7,7 @@ export default {
 	implementationPath: '/appearance',
 	srcCodeHref: 'https://github.com/timothycohen/samplekit/tree/main/sites/samplekit.dev/src/lib/styles',
 	description:
-		'A theme controller that uses CSS variables to control light/dark mode with multiple themes, saves user preference to Cookies and avoids flash of unstyled content.',
+		'A theme controller that uses CSS variables to control light/dark mode with multiple themes, saves user preference to Cookies and avoids flashes of unstyled content.',
 	publishedAt: new Date('2024-03-06T18:36:17.000Z'),
 	authors: [{ name: 'Tim Cohen', email: 'contact@timcohen.dev' }],
 	imgSm,
@@ -15,9 +15,10 @@ export default {
 	video,
 	tags: ['dark mode', 'multiple themes', 'tailwind', 'css variables', 'FOUC'],
 	featured: true,
+	updates: [{ at: new Date('2024-08-13T22:53:19.000Z'), descriptions: ['Update to runes.', 'Add view transition.'] }],
 	articlePath: '/articles/theme-controller',
-	wordCount: 2833,
-	readingTime: 13,
+	wordCount: 3454,
+	readingTime: 16,
 	toc: [
 		{ title: 'Goals', href: '/articles/theme-controller/#goals' },
 		{
@@ -44,10 +45,9 @@ export default {
 			title: 'Controller',
 			href: '/articles/theme-controller/#controller',
 			children: [
-				{ title: 'Interface', href: '/articles/theme-controller/#interface' },
+				{ title: 'State', href: '/articles/theme-controller/#state' },
 				{ title: 'Storage', href: '/articles/theme-controller/#storage' },
-				{ title: 'Utils', href: '/articles/theme-controller/#utils' },
-				{ title: 'Implementation', href: '/articles/theme-controller/#implementation' },
+				{ title: 'Document', href: '/articles/theme-controller/#document' },
 				{ title: 'Prevent FOUC', href: '/articles/theme-controller/#prevent-fouc' },
 			],
 		},
@@ -59,6 +59,7 @@ export default {
 				{ title: 'Tailwind', href: '/articles/theme-controller/#tailwind' },
 			],
 		},
+		{ title: 'Bonus Animation', href: '/articles/theme-controller/#bonus-animation' },
 		{ title: 'Conclusion', href: '/articles/theme-controller/#conclusion' },
 	],
 } satisfies LoadedFrontMatter;

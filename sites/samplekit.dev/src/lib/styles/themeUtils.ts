@@ -7,7 +7,7 @@ export type StorageKey =
 	| `${typeof STORAGE_KEY_THEME_DAY | typeof STORAGE_KEY_THEME_NIGHT}_${'name' | 'scheme'}`
 	| 'theme_sync_mode';
 
-function getStorageClient(name: StorageKey): string | null {
+function getBrowserCookie(name: StorageKey): string | null {
 	const nameEQ = `${name}=`;
 	const cookies = document.cookie.split(';');
 
@@ -24,15 +24,14 @@ function getStorageClient(name: StorageKey): string | null {
 	return null;
 }
 
-export type Theme = { name: string; scheme: 'light' | 'dark' };
-
 export const THEMES = [
 	{ name: 'daffodil', scheme: 'light' },
 	{ name: 'desert', scheme: 'dark' },
 	{ name: 'bellflower', scheme: 'light' },
 	{ name: 'amethyst', scheme: 'dark' },
-] as const satisfies Theme[];
+] as const satisfies { name: string; scheme: 'light' | 'dark' }[];
 
+export type Theme = (typeof THEMES)[number];
 export type SystemScheme = 'light' | 'dark';
 export type Mode = 'fixed_day' | 'fixed_night' | 'sync_system';
 export type ModeApplied = 'day' | 'night';
@@ -73,15 +72,15 @@ export const normalizeThemeNight = (
 };
 
 export const getStoredThemeModeClient = (): Mode => {
-	return normalizeThemeMode(getStorageClient(STORAGE_KEY_THEME_SYNC_MODE));
+	return normalizeThemeMode(getBrowserCookie(STORAGE_KEY_THEME_SYNC_MODE));
 };
 
 export const getStoredThemeDayClient = (): Theme => {
-	return normalizeThemeDay(getStorageClient(`${STORAGE_KEY_THEME_DAY}_name`), getStorageClient);
+	return normalizeThemeDay(getBrowserCookie(`${STORAGE_KEY_THEME_DAY}_name`), getBrowserCookie);
 };
 
 export const getStoredThemeNightClient = (): Theme => {
-	return normalizeThemeNight(getStorageClient(`${STORAGE_KEY_THEME_NIGHT}_name`), getStorageClient);
+	return normalizeThemeNight(getBrowserCookie(`${STORAGE_KEY_THEME_NIGHT}_name`), getBrowserCookie);
 };
 
 export const setThemeOnDoc = ({ name, scheme }: Theme) => {
@@ -104,7 +103,7 @@ export const initTheme = () => {
 	const mode = getStoredThemeModeClient();
 	const systemScheme = getSystemScheme();
 	const appliedMode =
-		mode === 'fixed_day' ? 'day' : mode === 'fixed_night' ? 'night' : systemScheme === 'dark' ? 'night' : 'day';
+		mode === 'fixed_day' ? 'day' : mode === 'fixed_night' ? 'night' : systemScheme === 'light' ? 'day' : 'night';
 	const themeApplied = appliedMode === 'night' ? getStoredThemeNightClient() : getStoredThemeDayClient();
 	setThemeOnDoc(themeApplied);
 	setSystemSchemeOnDoc(systemScheme);

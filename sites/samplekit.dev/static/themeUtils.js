@@ -2,7 +2,7 @@
 var STORAGE_KEY_THEME_DAY = 'theme_day';
 var STORAGE_KEY_THEME_NIGHT = 'theme_night';
 var STORAGE_KEY_THEME_SYNC_MODE = 'theme_sync_mode';
-function getStorageClient(name) {
+function getBrowserCookie(name) {
     var nameEQ = "".concat(name, "=");
     var cookies = document.cookie.split(';');
     for (var i = 0; i < cookies.length; i++) {
@@ -56,13 +56,13 @@ var normalizeThemeNight = function (name, getter) {
     return (_a = THEMES.find(function (t) { return t.name === name && t.scheme === scheme; })) !== null && _a !== void 0 ? _a : DEFAULT_THEME_NIGHT;
 };
 var getStoredThemeModeClient = function () {
-    return normalizeThemeMode(getStorageClient(STORAGE_KEY_THEME_SYNC_MODE));
+    return normalizeThemeMode(getBrowserCookie(STORAGE_KEY_THEME_SYNC_MODE));
 };
 var getStoredThemeDayClient = function () {
-    return normalizeThemeDay(getStorageClient("".concat(STORAGE_KEY_THEME_DAY, "_name")), getStorageClient);
+    return normalizeThemeDay(getBrowserCookie("".concat(STORAGE_KEY_THEME_DAY, "_name")), getBrowserCookie);
 };
 var getStoredThemeNightClient = function () {
-    return normalizeThemeNight(getStorageClient("".concat(STORAGE_KEY_THEME_NIGHT, "_name")), getStorageClient);
+    return normalizeThemeNight(getBrowserCookie("".concat(STORAGE_KEY_THEME_NIGHT, "_name")), getBrowserCookie);
 };
 var setThemeOnDoc = function (_a) {
     var name = _a.name, scheme = _a.scheme;
@@ -83,7 +83,7 @@ var setSystemSchemeOnDoc = function (systemScheme) {
 var initTheme = function () {
     var mode = getStoredThemeModeClient();
     var systemScheme = getSystemScheme();
-    var appliedMode = mode === 'fixed_day' ? 'day' : mode === 'fixed_night' ? 'night' : systemScheme === 'dark' ? 'night' : 'day';
+    var appliedMode = mode === 'fixed_day' ? 'day' : mode === 'fixed_night' ? 'night' : systemScheme === 'light' ? 'day' : 'night';
     var themeApplied = appliedMode === 'night' ? getStoredThemeNightClient() : getStoredThemeDayClient();
     setThemeOnDoc(themeApplied);
     setSystemSchemeOnDoc(systemScheme);

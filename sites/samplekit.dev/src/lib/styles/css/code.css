@@ -68,6 +68,7 @@ pre[data-shiki-t-inline] {
 	margin: 0;
 	padding: 0;
 	display: inline;
+	white-space: pre-wrap;
 }
 pre[data-shiki-t-block] {
 	overflow: hidden;

@@ -9,7 +9,7 @@ import type {
 } from './themeUtils';
 import type { Cookies } from '@sveltejs/kit';
 
-function setStorageClient(name: StorageKey, value: string, days?: number): void {
+function setBrowserCookie(name: StorageKey, value: string, days?: number): void {
 	let expires = '';
 
 	if (days) {
@@ -23,12 +23,12 @@ function setStorageClient(name: StorageKey, value: string, days?: number): void 
 
 export const storeTheme = ({ kind, theme }: { kind: ModeApplied; theme: Theme }) => {
 	const storageKey: typeof STORAGE_KEY_THEME_DAY | typeof STORAGE_KEY_THEME_NIGHT = `theme_${kind}`;
-	setStorageClient(`${storageKey}_name`, theme.name);
-	setStorageClient(`${storageKey}_scheme`, theme.scheme);
+	setBrowserCookie(`${storageKey}_name`, theme.name);
+	setBrowserCookie(`${storageKey}_scheme`, theme.scheme);
 };
 
 export const storeMode = (mode: Mode) => {
-	setStorageClient(STORAGE_KEY_THEME_SYNC_MODE, mode);
+	setBrowserCookie(STORAGE_KEY_THEME_SYNC_MODE, mode);
 };
 
 export const getThemeOnServer = (cookies: Cookies) => ({
