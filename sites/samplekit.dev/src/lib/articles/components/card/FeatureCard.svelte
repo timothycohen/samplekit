@@ -16,9 +16,9 @@
 			| 'updates'
 			| 'video'
 		>;
-	} & { preview?: boolean };
+	};
 
-	const { metadata, preview }: Props = $props();
+	const { metadata }: Props = $props();
 </script>
 
 <div class="feature-card relative z-10">
@@ -29,7 +29,7 @@
 		</video>
 		<hr class="text-gray-5" />
 	{:else if metadata.imgSm}
-		<img src={metadata.imgSm} draggable="false" class="select-none" alt="" loading={preview ? 'eager' : 'lazy'} />
+		<img src={metadata.imgSm} draggable="false" class="select-none" alt="" loading="lazy" />
 		<hr class="text-gray-5" />
 	{/if}
 

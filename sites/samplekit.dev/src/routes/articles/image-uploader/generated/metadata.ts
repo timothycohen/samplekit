@@ -1,6 +1,5 @@
 import type { LoadedFrontMatter } from '$lib/articles/schema';
 import imgSm from '/src/routes/articles/image-uploader/assets/image-uploader-thumbnail-1200w.webp';
-import video from '/src/routes/articles/image-uploader/assets/2024-08-05_21-17-07_465x474_24fps.mp4';
 export default {
 	title: 'Image Cropper And Uploader',
 	implementationPath: '/account/profile',
@@ -11,7 +10,6 @@ export default {
 	publishedAt: new Date('2024-03-20T20:37:01.000Z'),
 	authors: [{ name: 'Tim Cohen', email: 'contact@timcohen.dev' }],
 	imgSm,
-	video,
 	tags: ['state controller', 'image uploads', 'aws', 'db', 's3', 'cloudfront', 'rekognition', 'rate limiting'],
 	featured: true,
 	articlePath: '/articles/image-uploader',

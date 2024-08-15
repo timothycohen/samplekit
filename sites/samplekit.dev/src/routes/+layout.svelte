@@ -46,7 +46,7 @@
 	</main>
 
 	{#if $page.data.layout.showFooter}
-		<footer class="mt-8 p-4 text-center">
+		<footer class="p-4 text-center">
 			<div class="flex justify-center gap-2">
 				<span>A project by <a class="link" href="mailto:contact@timcohen.dev">Timothy Cohen</a> </span>
 				|

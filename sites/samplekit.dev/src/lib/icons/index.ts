@@ -51,11 +51,14 @@ import SlidersHorizontal from 'lucide-svelte/icons/sliders-horizontal';
 import Sparkles from 'lucide-svelte/icons/sparkles';
 import StickyNote from 'lucide-svelte/icons/sticky-note';
 import Sun from 'lucide-svelte/icons/sun';
+import SwatchBook from 'lucide-svelte/icons/swatch-book';
 import Trash2 from 'lucide-svelte/icons/trash-2';
 import TriangleAlert from 'lucide-svelte/icons/triangle-alert';
 import UnfoldVertical from 'lucide-svelte/icons/unfold-vertical';
 import X from 'lucide-svelte/icons/x';
+import Zap from 'lucide-svelte/icons/zap';
 
+import GitHub from './GitHub.svelte';
 import Google from './Google.svelte';
 import Svelte from './Svelte.svelte';
 
@@ -111,10 +114,14 @@ const I = {
 	Sparkles,
 	StickyNote,
 	Sun,
+	SwatchBook,
 	Trash2,
 	TriangleAlert,
 	UnfoldVertical,
 	X,
+	Zap,
+
+	GitHub,
 	Google,
 	Svelte,
 };
