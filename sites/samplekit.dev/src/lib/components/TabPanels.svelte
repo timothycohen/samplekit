@@ -1,12 +1,12 @@
 <script lang="ts" context="module">
+	import type { NoPropComponent } from '$lib/utils/common';
 	import type { WrapperProps } from './PatternWrapper.svelte';
+	import type { Snippet } from 'svelte';
 
 	export type TabPanel = { wrapperProps?: WrapperProps; title: string; icon?: 'svelte' } & (
-		| { rawHTML: string | Promise<string>; component?: never }
-		| {
-				rawHTML?: never;
-				component: NoPropComponent | Promise<NoPropComponent>;
-		  }
+		| { rawHTML: string | Promise<string>; component?: never; snippet?: never }
+		| { rawHTML?: never; component: NoPropComponent | Promise<NoPropComponent>; snippet?: never }
+		| { rawHTML?: never; component?: never; snippet: Snippet }
 	);
 </script>
 
@@ -16,7 +16,6 @@
 	import { useCollapsedService } from '$lib/services/codeCollapse';
 	import PatternWrapper from './PatternWrapper.svelte';
 	import TabPanelItem from './TabPanelItem.svelte';
-	import type { NoPropComponent } from '$lib/utils/common';
 
 	interface Props {
 		files: Array<TabPanel>;
@@ -102,8 +101,10 @@
 					<PatternWrapper opts={file.wrapperProps}>
 						<TabPanelItem panel={file} />
 					</PatternWrapper>
-				{:else}
+				{:else if file.rawHTML}
 					<TabPanelItem panel={file} />
+				{:else if file.snippet}
+					{@render file.snippet()}
 				{/if}
 			{/if}
 		</div>
