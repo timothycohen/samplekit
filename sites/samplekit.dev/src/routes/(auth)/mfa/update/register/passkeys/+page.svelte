@@ -9,13 +9,11 @@
 
 	let err = $state('');
 
-	const registeringPasskey = registerMFA_Passkey_WithSeshConfAndPasskey();
-
 	const handlePasskey = async () => {
 		const { data: passkeyData, error: startErr } = await startPasskeyReg(data.passkey.opts);
 		if (startErr) return (err = startErr.message);
 
-		const { error } = await registeringPasskey.send({ passkeyData });
+		const { error } = await registerMFA_Passkey_WithSeshConfAndPasskey.send({ passkeyData });
 		if (error) return (err = error.message);
 
 		goto('/account/security/auth');

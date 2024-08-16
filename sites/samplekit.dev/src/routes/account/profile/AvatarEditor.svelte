@@ -32,7 +32,7 @@
 
 	const onPreexistingImgCropped = async (crop: CropValue) => {
 		const saveCropRes = await editAvatarController.saveCropValToDb({
-			saveCropToDb: () => updateAvatarCrop().send({ crop }),
+			saveCropToDb: () => updateAvatarCrop.send({ crop }),
 			crop,
 		});
 		if (saveCropRes || saveCropRes === null) await updateAvatar(saveCropRes);
@@ -48,9 +48,9 @@
 	const onNewImgCropped = async (crop: CropValue) => {
 		editAvatarController.loadCropValue({ crop });
 		const uploadRes = await editAvatarController.uploadCropped({
-			getUploadArgs: getSignedAvatarUploadUrl().send,
+			getUploadArgs: getSignedAvatarUploadUrl.send,
 			upload: uploadS3PresignedPost,
-			saveToDb: ({ crop }) => checkAndSaveUploadedAvatar().send({ crop }),
+			saveToDb: ({ crop }) => checkAndSaveUploadedAvatar.send({ crop }),
 		});
 		if (uploadRes || uploadRes === null) await updateAvatar(uploadRes);
 	};
@@ -58,7 +58,7 @@
 	const deleteConfirmationModalOpen = writable(false);
 	const openDelConfirmation = () => deleteConfirmationModalOpen.set(true);
 	const handleDelete = async () => {
-		const deleteRes = await editAvatarController.deleteImg({ delImg: deleteAvatar().send });
+		const deleteRes = await editAvatarController.deleteImg({ delImg: deleteAvatar.send });
 		if (deleteRes || deleteRes === null) await updateAvatar(deleteRes);
 	};
 </script>

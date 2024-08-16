@@ -21,9 +21,8 @@
 		$effect(() => {
 			const articleContentWrapper = document.querySelector('[data-toc-wrapper]') as null | HTMLElement;
 			if (!articleContentWrapper) return;
-			const updatingReadingTimeMetadata = updateLoadedFrontMatter();
 			const wordCount = articleContentWrapper.innerText.trim().split(/\s+/).length;
-			updatingReadingTimeMetadata.send({ wordCount, articlePath: article.articlePath });
+			updateLoadedFrontMatter.send({ wordCount, articlePath: article.articlePath });
 		});
 	}
 </script>

@@ -1,7 +1,7 @@
 import { dev } from '$app/environment';
 import { jsonFail, jsonOk } from '$lib/http/server';
 import { createCart, getCart, addToCart, removeFromCart, updateCart } from '$lib/shop';
-import { delSchema, postSchema, putSchema, type GetRes } from './common';
+import { delSchema, postSchema, putSchema, type GetRes } from '.';
 import type { RequestHandler } from '@sveltejs/kit';
 
 const addCartItem: RequestHandler = async ({ request, cookies, fetch }) => {

@@ -6,7 +6,7 @@ import {
 	removeCartItem as removeItem,
 	updateCartItemQty as updateItemQty,
 	addCartItem as addItem,
-} from '$routes/shop/cart.json/client';
+} from '$routes/shop/cart.json';
 import { handleToPath, type CartWithPaths, DEFAULT_SELECTED_OPTION } from '$routes/shop/utils';
 
 const [getCtx, setCtx] = defineContext<{

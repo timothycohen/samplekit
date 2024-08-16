@@ -29,13 +29,13 @@
 			assertUnreachable(passkeyAction);
 		})();
 
-		const { data, error: optsError } = await pipeline.getOptions().send();
+		const { data, error: optsError } = await pipeline.getOptions.send();
 		if (optsError) return onError(optsError.message);
 
 		const { data: passkeyData, error: awaitUserErr } = await pipeline.awaitUser(data.opts);
 		if (awaitUserErr) return onError(awaitUserErr.message);
 
-		const { error } = await pipeline.callback().send({ passkeyData });
+		const { error } = await pipeline.callback.send({ passkeyData });
 		if (error) return onError(error.message);
 
 		return onFinished();
