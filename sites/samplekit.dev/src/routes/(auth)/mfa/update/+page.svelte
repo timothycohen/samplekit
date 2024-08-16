@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { mfaLabels } from '$lib/auth/client';
+	import { mfaLabels } from '$lib/auth/common';
 	import { Admonition } from '$lib/components';
 
 	const { data } = $props();

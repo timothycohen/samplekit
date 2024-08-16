@@ -2,7 +2,7 @@
 	import { startPasskeyReg } from '@samplekit/auth/client';
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
-	import { Admonition } from '$lib/components/index.js';
+	import { Admonition } from '$lib/components';
 	import { registerMFA_Passkey_WithSeshConfAndPasskey } from '$routes/(auth)/mfa/update/register/passkeys.json';
 
 	const { data } = $props();

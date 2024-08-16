@@ -1,5 +1,5 @@
 import { ClientFetcher } from '$lib/http/client.svelte';
-import type { CroppedImg, CropValue } from '$lib/image/client';
+import type { CroppedImg, CropValue } from '$lib/image/common';
 import type { RouteId } from './$types';
 
 type PutReq = { crop: CropValue };

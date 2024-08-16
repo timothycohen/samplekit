@@ -81,7 +81,7 @@ export default [
 	},
 	{
 		title: 'imageSchema.ts',
-		loadRaw: () => import('/src/lib/image/client/schemas.ts?raw'),
+		loadRaw: () => import('/src/lib/image/common/schemas.ts?raw'),
 	},
 	{
 		title: 'imageUtils.ts',

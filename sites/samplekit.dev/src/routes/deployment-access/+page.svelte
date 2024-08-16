@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
 	import { InputMessage } from '$lib/components';
-	import { pluralize } from '$lib/utils/common/language.js';
+	import { pluralize } from '$lib/utils/common';
 	import { PassInput } from '$routes/(auth)/components';
 
 	const { data, form } = $props();

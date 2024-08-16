@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { ClientFetcher } from '$lib/http/client.svelte';
-import { cropSchema, type CroppedImg } from '$lib/image/client';
+import { cropSchema, type CroppedImg } from '$lib/image/common';
 import type { Result } from '$lib/utils/common';
 import type { RouteId } from './$types';
 

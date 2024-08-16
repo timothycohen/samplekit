@@ -4,7 +4,7 @@
 	import { fade } from 'svelte/transition';
 	import { uploadS3PresignedPost, CropImgUploadController, type CropControllerState } from '$lib/cloudStorage/client';
 	import { FileInput } from '$lib/components';
-	import { ImageCrop, UploadProgress, ImageCardBtns, ImageCardOverlays, type CropValue } from '$lib/image/client';
+	import { ImageCrop, UploadProgress, ImageCardBtns, ImageCardOverlays } from '$lib/image/client';
 	import ConfirmDelAvatarModal from './ConfirmDelAvatarModal.svelte';
 	import { updateAvatarCrop } from './avatar/crop.json';
 	import {
@@ -13,6 +13,7 @@
 		checkAndSaveUploadedAvatar,
 		deleteAvatar,
 	} from './avatar/upload.json';
+	import type { CropValue } from '$lib/image/common';
 
 	interface Props {
 		avatar: DB.User['avatar'];

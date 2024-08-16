@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { mfaLabels } from '$lib/auth/client';
+	import { mfaLabels } from '$lib/auth/common';
 	import { Verifier } from '$routes/(auth)/components';
 
 	const { data, children } = $props();

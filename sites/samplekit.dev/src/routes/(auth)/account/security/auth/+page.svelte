@@ -2,7 +2,7 @@
 	import { createDialog, melt } from '@melt-ui/svelte';
 	import { slide } from 'svelte/transition';
 	import { goto } from '$app/navigation';
-	import { mfaLabels } from '$lib/auth/client';
+	import { mfaLabels } from '$lib/auth/common';
 	import { Admonition } from '$lib/components';
 	import I from '$lib/icons';
 	import UpdatePassForm from './UpdatePassForm.svelte';

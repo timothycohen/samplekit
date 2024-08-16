@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Admonition } from '$lib/components/index.js';
+	import { Admonition } from '$lib/components';
 	import I from '$lib/icons';
 	import { Verifier } from '$routes/(auth)/components';
 

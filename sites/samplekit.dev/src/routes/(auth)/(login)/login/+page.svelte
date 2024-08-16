@@ -2,7 +2,7 @@
 	import { createDialog, melt } from '@melt-ui/svelte';
 	import { InputMessage } from '$lib/components';
 	import I from '$lib/icons';
-	import { superForm, zodClient } from '$lib/superforms/client.js';
+	import { superForm, zodClient } from '$lib/superforms/client';
 	import { GoogleFormButton, Or } from '$routes/(auth)/(login)/components';
 	import { PassInput } from '$routes/(auth)/components';
 	import { signinSchema } from '$routes/(auth)/validators';

@@ -2,7 +2,7 @@ import { circOut } from 'svelte/easing';
 import { tweened, type Tweened } from 'svelte/motion';
 import { get, type Writable } from 'svelte/store';
 import { defaultCropValue, fileToDataUrl, humanReadableFileSize } from '$lib/image/client';
-import type { CroppedImg, CropValue } from '$lib/image/client';
+import type { CroppedImg, CropValue } from '$lib/image/common';
 import type { Result } from '$lib/utils/common';
 
 //#region States
