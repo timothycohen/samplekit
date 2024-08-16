@@ -17,7 +17,7 @@
 	interface Props {
 		avatar: DB.User['avatar'];
 		onCancel: () => void;
-		updateAvatar: (img: DB.User['avatar']) => void;
+		updateAvatar: (img: DB.User['avatar']) => void | Promise<void>;
 	}
 
 	const { avatar, onCancel, updateAvatar }: Props = $props();
@@ -35,7 +35,7 @@
 			saveCropToDb: () => updateAvatarCrop().send({ crop }),
 			crop,
 		});
-		if (saveCropRes || saveCropRes === null) updateAvatar(saveCropRes);
+		if (saveCropRes || saveCropRes === null) await updateAvatar(saveCropRes);
 	};
 
 	const fileSelectStart = () => editAvatarController.fileSelectStart();
@@ -52,14 +52,14 @@
 			upload: uploadS3PresignedPost,
 			saveToDb: ({ crop }) => checkAndSaveUploadedAvatar().send({ crop }),
 		});
-		if (uploadRes || uploadRes === null) updateAvatar(uploadRes);
+		if (uploadRes || uploadRes === null) await updateAvatar(uploadRes);
 	};
 
 	const deleteConfirmationModalOpen = writable(false);
 	const openDelConfirmation = () => deleteConfirmationModalOpen.set(true);
 	const handleDelete = async () => {
 		const deleteRes = await editAvatarController.deleteImg({ delImg: deleteAvatar().send });
-		if (deleteRes || deleteRes === null) updateAvatar(deleteRes);
+		if (deleteRes || deleteRes === null) await updateAvatar(deleteRes);
 	};
 </script>
 
@@ -77,7 +77,10 @@
 		{:else if $s.state === 'cropping_preexisting'}
 			<ImageCrop url={$s.url} crop={$s.crop} onSave={onPreexistingImgCropped} />
 			<ImageCardBtns {onCancel} onNew={fileSelectStart} onDelete={openDelConfirmation} />
-		{:else if $s.state === 'db_updating_preexisting' || $s.state === 'deleting_preexisting'}
+		{:else if $s.state === 'db_updating_preexisting'}
+			<ImageCardOverlays img={{ kind: 'overlay', url: $s.url, crop: $s.crop }} />
+			<ImageCardBtns loader />
+		{:else if $s.state === 'deleting_preexisting'}
 			<ImageCardOverlays img={{ kind: 'overlay', url: $s.url, crop: $s.crop }} overlay={{ pulsingWhite: true }} />
 			<ImageCardBtns loader />
 		{:else if $s.state === 'uri_loading'}
@@ -89,13 +92,15 @@
 			<ImageCardBtns {onCancel} onNew={fileSelectStart} />
 		{:else if $s.state === 'cropped'}
 			<ImageCardOverlays img={{ kind: 'overlay', url: $s.uri, crop: $s.crop }} />
-		{:else if $s.state === 'db_saving' || $s.state === 'image_storage_uploading' || $s.state === 'upload_url_fetching'}
+		{:else if $s.state === 'upload_url_fetching' || $s.state === 'image_storage_uploading' || $s.state === 'db_saving'}
 			<ImageCardOverlays img={{ kind: 'overlay', url: $s.uri, crop: $s.crop }} overlay={{ pulsingWhite: true }} />
 			<ImageCardBtns loader />
 			<div out:fade><UploadProgress uploadProgress={$s.uploadProgress} /></div>
 		{:else if $s.state === 'completed'}
 			<ImageCardOverlays img={{ kind: 'full', url: $s.savedImg?.url, crop: $s.savedImg?.crop }} />
 			<ImageCardBtns badgeCheck />
+		{:else if $s.state === 'canceled'}
+			<!--  -->
 		{/if}
 	</div>
 {/if}
