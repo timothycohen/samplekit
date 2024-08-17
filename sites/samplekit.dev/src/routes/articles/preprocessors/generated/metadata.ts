@@ -4,7 +4,7 @@ import video from '/src/routes/articles/preprocessors/assets/2024-08-05_22-41-28
 export default {
 	title: 'Blog with Preprocessors',
 	implementationPath: '/articles/preprocessors/#interactive-demo',
-	srcCodeHref: 'https://github.com/timothycohen/samplekit/blob/main/packages/markdown',
+	srcCodeHref: 'https://github.com/timothycohen/samplekit/tree/main/packages/markdown',
 	description: 'Use preprocessors to format themed code blocks and Markdown tables alongside Svelte components.',
 	publishedAt: new Date('2024-03-06T21:16:15.000Z'),
 	authors: [{ name: 'Tim Cohen', email: 'contact@timcohen.dev' }],
@@ -13,12 +13,13 @@ export default {
 	tags: ['preprocessors', 'blog', 'markdown', 'code highlighting', 'DX'],
 	featured: true,
 	updates: [
-		{ at: new Date('2024-03-20T20:11:27.000Z'), descriptions: ['Expand processor syntax beyond highlighting.'] },
+		{ at: new Date('2024-08-15T22:24:50.000Z'), descriptions: ['Update to use @samplekit preprocessors.'] },
 		{ at: new Date('2024-03-21T17:59:53.000Z'), descriptions: ['Add formatLogFilename.'] },
+		{ at: new Date('2024-03-20T20:11:27.000Z'), descriptions: ['Expand processor syntax beyond highlighting.'] },
 	],
 	articlePath: '/articles/preprocessors',
-	wordCount: 2961,
-	readingTime: 14,
+	wordCount: 3891,
+	readingTime: 18,
 	toc: [
 		{
 			title: 'Evaluating the Options',
@@ -30,26 +31,21 @@ export default {
 			],
 		},
 		{
-			title: 'Integrating Preprocessors',
-			href: '/articles/preprocessors/#integrating-preprocessors',
+			title: 'Writing the Preprocessors',
+			href: '/articles/preprocessors/#writing-the-preprocessors',
 			children: [
-				{ title: 'Setup', href: '/articles/preprocessors/#setup' },
-				{
-					title: 'Table Preprocessor',
-					href: '/articles/preprocessors/#table-preprocessor',
-					children: [
-						{ title: 'Transformation Pipeline', href: '/articles/preprocessors/#transformation-pipeline' },
-						{ title: 'Writing the Preprocessor', href: '/articles/preprocessors/#writing-the-preprocessor' },
-					],
-				},
-				{
-					title: 'Codeblock Preprocessor',
-					href: '/articles/preprocessors/#codeblock-preprocessor',
-					children: [
-						{ title: 'Transformation Pipeline', href: '/articles/preprocessors/#transformation-pipeline' },
-						{ title: 'Writing the Preprocessor', href: '/articles/preprocessors/#writing-the-preprocessor' },
-					],
-				},
+				{ title: 'Markdown', href: '/articles/preprocessors/#markdown' },
+				{ title: 'Math', href: '/articles/preprocessors/#math' },
+				{ title: 'Code Decoration', href: '/articles/preprocessors/#code-decoration' },
+			],
+		},
+		{
+			title: 'Code Editor Support',
+			href: '/articles/preprocessors/#code-editor-support',
+			children: [
+				{ title: 'Overview', href: '/articles/preprocessors/#overview' },
+				{ title: 'Syntaxes', href: '/articles/preprocessors/#syntaxes' },
+				{ title: 'Snippets', href: '/articles/preprocessors/#snippets' },
 			],
 		},
 		{ title: 'Conclusion', href: '/articles/preprocessors/#conclusion' },

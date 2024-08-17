@@ -110,6 +110,7 @@ const shikiTsInline = createSameLineWrapper('&lt;!-- ', 'shiki-ts ', ' shiki-ts'
 });
 const commentInline = createSameLineWrapper('&lt;!-- ', '', '', '--&gt;', { transformName: 'inline' });
 const commentBlock = createSameLineWrapper('&lt;!--', '', '', '--&gt;', { transformName: 'block' });
+const mdInline = createSameLineWrapper('&lt;!--', ' md-start', 'md-end', '--&gt;', { transformName: 'inline' });
 
 updateOpts((oldOpts) => {
 	if (!oldOpts) return oldOpts;
@@ -180,7 +181,7 @@ updateOpts((oldOpts) => {
 			{
 				postprocess: (html) => {
 					const middle = html.replace(/^<pre[^>]*><code[^>]*>([\s\S]*?)<\/code><\/pre>$/, '$1');
-					return commentInline.start + middle + commentInline.end;
+					return `<span class="inline-block">${commentInline.start + middle + commentInline.end}</span>`;
 				},
 			},
 		],
@@ -193,6 +194,18 @@ updateOpts((oldOpts) => {
 				postprocess: (html) => {
 					const middle = html.replace(/^<pre[^>]*><code[^>]*>([\s\S]*?)<\/code><\/pre>$/, '$1');
 					return commentBlock.start + middle + commentBlock.end;
+				},
+			},
+		],
+	};
+
+	opts.transformMap['md-inline'] = {
+		addDefaultProps: defaultTransformMap['inline']['addDefaultProps'],
+		transforms: [
+			{
+				postprocess: (html) => {
+					const middle = html.replace(/^<pre[^>]*><code[^>]*>([\s\S]*?)<\/code><\/pre>$/, '$1');
+					return mdInline.start + middle + ' ' + mdInline.end;
 				},
 			},
 		],
