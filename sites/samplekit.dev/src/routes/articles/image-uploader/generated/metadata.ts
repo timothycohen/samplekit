@@ -4,7 +4,7 @@ export default {
 	title: 'Image Cropper And Uploader',
 	implementationPath: '/account/profile',
 	srcCodeHref:
-		'https://github.com/timothycohen/samplekit/blob/main/sites/samplekit.dev/src/lib/cloudStorage/client/cropImgUploadController.ts',
+		'https://github.com/timothycohen/samplekit/blob/main/sites/samplekit.dev/src/lib/cloudStorage/client/cropImgUploadController.svelte.ts',
 	description:
 		'Select an image, upload it to an AWS S3 Bucket with a progress indicator, moderate it with Rekognition, save it to the DB, and serve it via AWS Cloudfront.',
 	publishedAt: new Date('2024-03-20T20:37:01.000Z'),

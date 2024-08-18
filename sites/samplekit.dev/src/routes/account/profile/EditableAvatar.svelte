@@ -10,7 +10,7 @@
 
 	const { avatar, onAvatarUpdate }: Props = $props();
 
-	const updateAvatar = async (img: DB.User['avatar']) => {
+	const onNewAvatar = async (img: DB.User['avatar']) => {
 		await onAvatarUpdate(img);
 		editAvatarOpen.set(false);
 	};
@@ -27,7 +27,7 @@
 	{#if $editAvatarOpen}
 		<div use:melt={$overlay} class="modal-overlay"></div>
 		<div class="modal-content-position overflow-hidden rounded-card" use:melt={$content}>
-			<AvatarEditor {avatar} onCancel={() => editAvatarOpen.set(false)} {updateAvatar} />
+			<AvatarEditor {avatar} onCancel={() => editAvatarOpen.set(false)} {onNewAvatar} />
 		</div>
 	{/if}
 </div>

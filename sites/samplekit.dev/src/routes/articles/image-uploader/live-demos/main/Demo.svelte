@@ -10,7 +10,7 @@
 		user = $page.data['user'] ?? null;
 	});
 
-	const updateAvatar = (img: DB.User['avatar']) => {
+	const onNewAvatar = (img: DB.User['avatar']) => {
 		if (user) {
 			user.avatar = img;
 			editAvatarOpen.set(false);
@@ -38,7 +38,7 @@
 		{#if $editAvatarOpen}
 			<div use:melt={$overlay} class="modal-overlay"></div>
 			<div class="modal-content-position overflow-hidden rounded-card" use:melt={$content}>
-				<AvatarEditor avatar={user.avatar} onCancel={() => editAvatarOpen.set(false)} {updateAvatar} />
+				<AvatarEditor avatar={user.avatar} onCancel={() => editAvatarOpen.set(false)} {onNewAvatar} />
 			</div>
 		{/if}
 	</div>

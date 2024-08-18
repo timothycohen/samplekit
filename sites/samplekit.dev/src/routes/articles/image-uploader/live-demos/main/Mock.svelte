@@ -18,7 +18,7 @@
 	const rotation = tweened(0, { duration: 500, easing: cubicOut });
 	const scale = tweened(1, { duration: 500, easing: cubicOut });
 	const uploadProgress = tweened(0, { duration: 1000, easing: cubicOut });
-	const s = writable<CropControllerState>({ state: 'canceled' });
+	const s = writable<CropControllerState>({ state: 'idle' });
 	const timeouts: Array<ReturnType<typeof setTimeout>> = [];
 
 	onMount(() => {
@@ -43,7 +43,7 @@
 	});
 
 	const reset = () => {
-		s.set({ state: 'canceled' });
+		s.set({ state: 'idle' });
 		timeouts.forEach(clearTimeout);
 		rotation.set(0, { duration: 0 });
 		scale.set(1, { duration: 0 });
@@ -91,7 +91,6 @@
 					state: 'image_storage_uploading',
 					crop: endCrop,
 					uri: img_owl,
-					abortUpload: noop,
 					imageUploadPromise: new Promise(noop),
 					uploadProgress,
 				});
@@ -128,7 +127,6 @@
 					state: 'image_storage_uploading',
 					crop: { position: { x: 0, y: 0 }, aspect: 1, rotation: 0, scale: 1 },
 					uri: img_smoky,
-					abortUpload: noop,
 					imageUploadPromise: new Promise(noop),
 					uploadProgress,
 				});
