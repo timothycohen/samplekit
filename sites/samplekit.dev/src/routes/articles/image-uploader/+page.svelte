@@ -9,8 +9,9 @@
 		srcCodeHref:
 			'https://github.com/timothycohen/samplekit/blob/main/sites/samplekit.dev/src/lib/cloudStorage/client/cropImgUploadController.svelte.ts',
 		description:
-			'Select an image, upload it to an AWS S3 Bucket with a progress indicator, moderate it with Rekognition, save it to the DB, and serve it via AWS Cloudfront.',
+			'Select an image, crop it, upload it to an AWS S3 Bucket with a progress indicator, moderate it with Rekognition, save it to the DB, and serve it via AWS Cloudfront.',
 		publishedAt: new Date('2024-03-20 16:37:01 -0400'),
+		updates: [{ at: new Date('2024-08-16 18:59:25 -0400'), descriptions: ['Use runes.'] }],
 		authors: [{ name: 'Tim Cohen', email: 'contact@timcohen.dev' }],
 		imgSm,
 		// video,
@@ -21,16 +22,20 @@
 
 <script lang="ts">
 	import { CodeTopper } from '$lib/articles/components';
-	import { TabPanels, TabPanelItem, HAnchor, Admonition } from '$lib/components';
-	import AvatarEditor from './AvatarEditor.svelte';
-	import CropImgUploadController from './CropImgUploadController.svelte';
-	import IAM from './IAM.svelte';
-	import Misc from './Misc.svelte';
+	import { TabPanels, HAnchor, Admonition } from '$lib/components';
 	import img_uploaderFlow from './assets/image-uploader-flow-q30.webp';
 
 	const { data } = $props();
 </script>
 
+{#snippet Code(a: { title: string; rawHTML: string })}
+	<CodeTopper title={data.code.avatarEditor.title}>
+		<!-- eslint-disable-next-line svelte/no-at-html-tags -->
+		{@html a.rawHTML}
+	</CodeTopper>
+{/snippet}
+
+<!--#region Intro -->
 <p>
 	Let's allow our users to upload an image. We'll use an avatar as an example. This simple feature will touch a lot of
 	topics:
@@ -58,7 +63,7 @@
 	<li>
 		<p>Client Features</p>
 		<ul>
-			<li>Upload controller with reactive state in a Svelte store</li>
+			<li>Upload state machine controller with Svelte <!-- shiki-ts $state() shiki-ts --></li>
 			<li>Crop, file select, upload, and delete capabilities</li>
 			<li>Graceful interruption and cancellation handling</li>
 			<li>User friendly errors</li>
@@ -92,16 +97,18 @@
 </p>
 
 <Admonition kind="info" title="Bring Your Own Database">
-	<p class="my-2">
+	<div>
 		This article focuses on the SvelteKit logic and integrating the AWS services. Setting up each AWS service will be
-		detailed, but it's assumed you have a database.
-	</p>
-	<p class="my-0">
-		If not, you can use the <code class="text-info-11">dev:db:*</code> and <code class="text-info-11">dev:kv:*</code>
-		scripts in <code class="text-info-11">package.json</code> to create docker containers.
-	</p>
+		detailed, but it's assumed you have a database and kv store.
+	</div>
+	<div class="mt-2">
+		If not, you can use the <code class="text-info-11">pnpm dev:up</code> script in this repo's
+		<code>package.json</code> to create the necessary database and kv docker containers.
+	</div>
 </Admonition>
+<!--#endregion Intro -->
 
+<!--#region Options -->
 <HAnchor tag="h2" title="Upload Flow Options" />
 
 <p>The basic flow is simple. Get a file input from the user, upload it to storage, and save a link in a database.</p>
@@ -236,14 +243,13 @@
 
 <p>
 	This article implements the guarded client control method. It provides the best client experience (fastest, most
-	visible progress), incurs minimal strain on the server, avoids extra AWS complexity, and isn't too hard to protect.
+	visible progress), incurs minimal strain on the server, avoids extra AWS complexity, and isn't
+	<span class="italic">too</span> hard to protect.
 </p>
 
-<HAnchor tag="h2" title="Client" />
-
 <p>
-	If we try to view the server, client, and services all at once, we end up with something a little hard to reason with
-	(rate limiting and presigned url storage not shown):
+	If we try to view the server, client, and services all at once, we end up with something a hard to reason with (rate
+	limiting and presigned url storage not shown):
 </p>
 
 <img src={img_uploaderFlow} alt="Upload flow" />
@@ -252,183 +258,661 @@
 	By focusing on client, AWS, and server separately, the flow become very easy to reason about. We'll begin with the
 	client. Separating the logic from the UI and breaking it down into finite states will make it trivial to understand.
 </p>
+<!--#endregion Options -->
 
-<HAnchor tag="h3" title="State Controller Interface" />
+<!--#region Controller -->
+<!--#region State Snippets -->
+{#snippet StaticStates()}
+	<CodeTopper title="cropImgUploadController Static States">
+		<!-- shiki-start
+```ts
+export type Idle = { state: 'idle' }; // entry state
+export type Err = {
+	state: 'error';
+	img: { url: string | null; crop: CropValue | null };
+	errorMsgs: [string, string] | [string, null]; // [title, body]
+};
+export type Completed = { state: 'completed'; savedImg: CroppedImg | null };
+```
+shiki-end -->
+	</CodeTopper>
+{/snippet}
+
+{#snippet PreexistingStates()}
+	<CodeTopper title="cropImgUploadController Preexisting States">
+		<!-- shiki-start
+```ts
+export type CroppingPreexisting = {
+	state: 'cropping_preexisting'; // entry state
+	url: string;
+	crop: CropValue;
+	/**
+	 * Update a preexisting image's crop value.
+	 * States: 'cropping_preexisting' -> 'db_updating_preexisting' -> 'completed'
+	 */
+	saveCropValToDb({ crop }: { crop: CropValue }): Promise<Idle | Err | Completed>;
+	/**
+	 * Delete a preexisting image.
+	 * States: 'cropping_preexisting' -> 'deleting_preexisting' -> 'completed'
+	 */
+	deleteImg: () => Promise<Idle | Err | Completed>;
+};
+export type DbUpdatingPreexisting = {
+	state: 'db_updating_preexisting';
+	url: string;
+	crop: CropValue;
+	updateDbPromise: Promise<Result<{ savedImg: CroppedImg | null }>>;
+};
+export type DeletingPreexisting = {
+	state: 'deleting_preexisting';
+	url: string;
+	crop: CropValue;
+	deletePreexistingImgPromise: Promise<Result<Result.Success>>;
+};
+```
+shiki-end -->
+	</CodeTopper>
+{/snippet}
+
+{#snippet NewImageStates()}
+	<CodeTopper title="cropImgUploadController New Image States">
+		<!-- shiki-start
+```ts
+import type { Tweened } from 'svelte/motion';
+
+export type FileSelecting = {
+	state: 'file_selecting'; // entry state
+	/**
+	 * Convert a file into an in memory uri, guarding max file size.
+	 * States: 'file_selecting' -> 'uri_loading' -> 'uri_loaded'
+	 */
+	loadFiles: (a: { files: File[]; MAX_UPLOAD_SIZE: number }) => Promise<Idle | Err | UriLoaded>;
+};
+export type UriLoading = {
+	state: 'uri_loading';
+	file: File;
+	uriPromise: Promise<{ uri: string; error?: never } | { uri?: never; error: Error | DOMException }>;
+};
+export type UriLoaded = {
+	state: 'uri_loaded';
+	file: File;
+	uri: string;
+	/** States: 'uri_loaded' -> 'cropped' */
+	skipCrop: (a?: { crop: CropValue }) => Cropped;
+	/** States: 'uri_loaded' -> 'cropping' */
+	startCrop: () => Cropping;
+};
+export type Cropping = {
+	state: 'cropping';
+	file: File;
+	uri: string;
+	/** States: 'cropping' -> 'cropped' */
+	loadCropValue: ({ crop }: { crop: CropValue }) => Cropped;
+};
+export type Cropped = {
+	state: 'cropped';
+	file: File;
+	uri: string;
+	crop: CropValue;
+	/** States: 'cropped' -> 'upload_url_fetching' -> 'image_storage_uploading' -> 'db_saving' -> 'completed' */
+	uploadCropped(): Promise<Idle | Err | Completed>;
+};
+export type UploadUrlFetching = {
+	state: 'upload_url_fetching';
+	file: File;
+	uri: string;
+	crop: CropValue;
+	uploadProgress: Tweened<number>;
+	getUploadArgsPromise: Promise<Result<{ bucketUrl: string; formDataFields: Record<string, string> }>>;
+};
+export type ImageStorageUploading = {
+	state: 'image_storage_uploading';
+	uri: string;
+	crop: CropValue;
+	imageUploadPromise: Promise<Result<{ status: number }>>;
+	uploadProgress: Tweened<number>;
+};
+export type DbSaving = {
+	state: 'db_saving';
+	uri: string;
+	crop: CropValue;
+	saveToDbPromise: Promise<Result<{ savedImg: CroppedImg | null }>>;
+	uploadProgress: Tweened<number>;
+};
+```
+shiki-end -->
+	</CodeTopper>
+{/snippet}
+
+{#snippet UnionStates()}
+	<CodeTopper title="cropImgUploadController Union of States">
+		<!-- shiki-start
+```ts
+export type CropControllerState =
+	| Idle
+	| Err
+	| Completed
+	| CroppingPreexisting
+	| DbUpdatingPreexisting
+	| DeletingPreexisting
+	| FileSelecting
+	| UriLoading
+	| UriLoaded
+	| Cropping
+	| Cropped
+	| UploadUrlFetching
+	| ImageStorageUploading
+	| DbSaving;
+
+export type StateName = CropControllerState['state'];
+```
+shiki-end -->
+	</CodeTopper>
+{/snippet}
+<!--#endregion State Snippets -->
+
+{#snippet Callbacks()}
+	<!-- shiki-start
+```ts
+import type { CroppedImg, CropValue } from '$lib/image/common';
+import type { Result } from '$lib/utils/common';
+
+type GetUploadArgs = () => Promise<Result<{ bucketUrl: string; formDataFields: Record<string, string> }>>;
+type Upload = (a: {
+	bucketUrl: string;
+	formData: FormData;
+	uploadProgress: { tweened: Tweened<number>; scale: number };
+}) => { promise: Promise<Result<{ status: number }>>; abort: () => void };
+type SaveToDb = (a: { crop: CropValue }) => Promise<Result<{ savedImg: CroppedImg | null }>>;
+type DeletePreexistingImg = () => Promise<Result<Result.Success>>;
+type SaveCropToDb = (a: { crop: CropValue }) => Promise<Result<{ savedImg: CroppedImg | null }>>;
+```
+shiki-end -->
+{/snippet}
+
+<!--#region Entrypoint Snippets -->
+{#snippet EntryPointIdle()}
+	<CodeTopper title="cropImgUploadController Idle Entrypoint">
+		<!-- shiki-start
+```ts
+export class CropImgUploadController {
+	#state: CropControllerState = $state.raw({ state: 'idle' });
+	#isIdle: boolean = $derived(this.#state.state === 'idle');
+	#cleanup: null | (() => void) = null;
+
+	#getUploadArgs: GetUploadArgs;
+	#upload: Upload;
+	#saveToDb: SaveToDb;
+	#delImg: DeletePreexistingImg;
+	#saveCropToDb: SaveCropToDb;
+
+	get value() {
+		return this.#state;
+	}
+
+	/** Clean up and move to 'idle' */
+	toIdle = async (): Promise<Idle> => {
+		this.#cleanup?.();
+		return (this.#state = { state: 'idle' });
+	};
+
+	constructor(a: {
+		getUploadArgs: GetUploadArgs;
+		upload: Upload;
+		saveToDb: SaveToDb;
+		delImg: DeletePreexistingImg;
+		saveCropToDb: SaveCropToDb;
+	}) {
+		this.#getUploadArgs = a.getUploadArgs;
+		this.#upload = a.upload;
+		this.#saveToDb = a.saveToDb;
+		this.#delImg = a.delImg;
+		this.#saveCropToDb = a.saveCropToDb;
+
+		$effect(() => this.toIdle);
+	}
+}
+```
+shiki-end -->
+	</CodeTopper>
+{/snippet}
+
+{#snippet PreexistingEntrypoint()}
+	<CodeTopper title="cropImgUploadController Preexisting Entrypoint">
+		<!-- shiki-start
+```ts
+export class CropImgUploadController {
+...
+	/** Clean up and move to 'cropping_preexisting' */
+	toCropPreexisting = ({ crop, url }: { crop: CropValue; url: string }) => {
+		this.#cleanup?.();
+		this.#state = {
+			state: 'cropping_preexisting',
+			crop,
+			url,
+			saveCropValToDb: ({ crop }) => this.#saveCropValToDb({ crop, url }),
+			deleteImg: () => this.#deleteImg({ crop, url }),
+		};
+	};
+
+	#saveCropValToDb = async ({ crop, url }: { crop: CropValue; url: string }): Promise<Idle | Err | Completed> => {
+		const updateDbPromise = this.#saveCropToDb({ crop });
+		this.#state = { state: 'db_updating_preexisting', updateDbPromise, crop, url };
+		const { data, error } = await updateDbPromise;
+
+		if (this.#isIdle) return { state: 'idle' };
+		else if (error) return (this.#state = { state: 'error', img: { url, crop }, errorMsgs: [error.message, null] });
+		else return (this.#state = { state: 'completed', savedImg: data.savedImg });
+	};
+
+	#deleteImg = async ({ crop, url }: { crop: CropValue; url: string }): Promise<Idle | Err | Completed> => {
+		const deletePreexistingImgPromise = this.#delImg();
+		this.#state = { state: 'deleting_preexisting', deletePreexistingImgPromise, crop, url };
+		const { error } = await deletePreexistingImgPromise;
+
+		if (this.#isIdle) return { state: 'idle' };
+		else if (error) return (this.#state = { state: 'error', img: { url, crop }, errorMsgs: [error.message, null] });
+		else return (this.#state = { state: 'completed', savedImg: null });
+	};
+}
+```
+shiki-end -->
+	</CodeTopper>
+{/snippet}
+
+{#snippet Entry1()}
+	<CodeTopper title="cropImgUploadController New Entrypoint Part 1">
+		<!-- shiki-start
+```ts
+export class CropImgUploadController {
+	...
+	/** Clean up and move to 'file_selecting' */
+	toFileSelect = () => {
+		this.#cleanup?.();
+		this.#state = { state: 'file_selecting', loadFiles: this.#loadFiles };
+	};
+}
+```
+shiki-end -->
+	</CodeTopper>
+{/snippet}
+
+{#snippet Entry2()}
+	<!-- shiki-start
+```ts
+import { defaultCropValue, fileToDataUrl, humanReadableFileSize } from '$lib/image/client';
+
+export class CropImgUploadController {
+	...
+
+	#loadFiles = async ({
+		files,
+		MAX_UPLOAD_SIZE,
+	}: {
+		files: File[];
+		MAX_UPLOAD_SIZE: number;
+	}): Promise<Idle | Err | UriLoaded> => {
+		const file = files[0];
+
+		if (!file) {
+			return (this.#state = { state: 'error', img: { url: null, crop: null }, errorMsgs: ['No file selected', null] });
+		}
+
+		if (file.size > MAX_UPLOAD_SIZE) {
+			return (this.#state = {
+				state: 'error',
+				img: { url: null, crop: null },
+				errorMsgs: [
+					`File size (${humanReadableFileSize(file.size)}) must be less than ${humanReadableFileSize(MAX_UPLOAD_SIZE)}`,
+					null,
+				],
+			});
+		}
+
+		const uriPromise = fileToDataUrl(file);
+		this.#state = { state: 'uri_loading', file, uriPromise };
+
+		const { uri } = await uriPromise;
+		if (this.#isIdle) return { state: 'idle' };
+		if (!uri) {
+			return (this.#state = {
+				state: 'error',
+				img: { url: null, crop: null },
+				errorMsgs: ['Error reading file', null],
+			});
+		}
+		return (this.#state = {
+			state: 'uri_loaded',
+			file,
+			uri,
+			skipCrop: ({ crop } = { crop: defaultCropValue }) => this.#toCropped({ crop, file, uri }),
+			startCrop: () =>
+				(this.#state = {
+					state: 'cropping',
+					file,
+					uri,
+					loadCropValue: ({ crop }) => this.#toCropped({ crop, file, uri }),
+				}),
+		});
+	};
+
+	#toCropped = ({ crop, file, uri }: { crop: CropValue; file: File; uri: string }): Cropped => {
+		return (this.#state = {
+			state: 'cropped',
+			crop,
+			file,
+			uri,
+			uploadCropped: async () => this.#uploadPipeline({ crop, file, uri }),
+		});
+	};
+}
+```
+shiki-end -->
+{/snippet}
+
+{#snippet Entry3()}
+	<CodeTopper title="cropImgUploadController New Entrypoint Part 3">
+		<!-- shiki-start
+```ts
+import { circOut } from 'svelte/easing';
+import { tweened, type Tweened } from 'svelte/motion';
+
+export class CropImgUploadController {
+	...
+	#uploadPipeline = async ({
+		file,
+		uri,
+		crop,
+	}: {
+		file: File;
+		uri: string;
+		crop: CropValue;
+	}): Promise<Idle | Err | Completed> => {
+		/** Get the upload url from our server (progress 3-10%) */
+		const uploadProgress = tweened(0, { easing: circOut });
+		const getUploadArgsPromise = this.#getUploadArgs();
+		uploadProgress.set(3);
+		this.#state = { state: 'upload_url_fetching', file, uri, crop, uploadProgress, getUploadArgsPromise };
+
+		const getUploadArgsPromised = await getUploadArgsPromise;
+		if (this.#isIdle) return { state: 'idle' };
+
+		if (getUploadArgsPromised.error) {
+			return (this.#state = {
+				state: 'error',
+				img: { url: uri, crop },
+				errorMsgs: [getUploadArgsPromised.error.message, null],
+			});
+		}
+		uploadProgress.set(10);
+
+		const { bucketUrl, formDataFields } = getUploadArgsPromised.data;
+
+		const formData = new FormData();
+		for (const [key, value] of Object.entries(formDataFields)) {
+			formData.append(key, value);
+		}
+		formData.append('file', file);
+
+		/** Upload file to image storage (progress 10-90%) */
+		const { abort: abortUpload, promise: imageUploadPromise } = this.#upload({
+			bucketUrl,
+			formData,
+			uploadProgress: { tweened: uploadProgress, scale: 0.9 },
+		});
+
+		this.#cleanup = () => abortUpload();
+		this.#state = {
+			state: 'image_storage_uploading',
+			crop,
+			uri,
+			imageUploadPromise,
+			uploadProgress,
+		};
+
+		const imageUploadPromised = await imageUploadPromise;
+		this.#cleanup = null;
+
+		if (this.#isIdle) return { state: 'idle' };
+		if (imageUploadPromised.error) {
+			return (this.#state = {
+				state: 'error',
+				img: { url: uri, crop },
+				errorMsgs: [imageUploadPromised.error.message, null],
+			});
+		}
+
+		/** Save url to db (progress 90-100%) */
+		const interval = setInterval(() => {
+			uploadProgress.update((v) => {
+				const newProgress = Math.min(v + 1, 100);
+				if (newProgress === 100) clearInterval(interval);
+				return newProgress;
+			});
+		}, 20);
+
+		const saveToDbPromise = this.#saveToDb({ crop });
+
+		this.#cleanup = () => clearInterval(interval);
+		this.#state = {
+			state: 'db_saving',
+			crop,
+			uri,
+			saveToDbPromise,
+			uploadProgress,
+		};
+
+		const saveToDbPromised = await saveToDbPromise;
+		this.#cleanup = null;
+
+		if (this.#isIdle) return { state: 'idle' };
+
+		if (saveToDbPromised.error) {
+			return (this.#state = {
+				state: 'error',
+				img: { url: uri, crop },
+				errorMsgs: [saveToDbPromised.error.message, null],
+			});
+		}
+
+		clearInterval(interval);
+		uploadProgress.set(100);
+
+		return (this.#state = { state: 'completed', savedImg: saveToDbPromised.data.savedImg });
+	};
+}
+```
+shiki-end -->
+	</CodeTopper>
+{/snippet}
+<!--#endregion Entrypoint Snippets -->
+
+<HAnchor tag="h2" title="State Controller" />
 
 <p>
 	As usual, we'll start by defining some <code>Type</code>s and <code>Interface</code>s that will simplify the
 	implementation.
 </p>
 
-<HAnchor tag="h4" title="Property Types" />
+<HAnchor tag="h3" title="Crop Types" />
 
 <p>
 	One of our requirements is that the user should be able to crop their image. We'll do a <code>CSS</code> crop so we
-	don't have to worry about modifying the image.
-	<a href="https://github.com/sabine/svelte-crop-window" data-external>svelte-crop-window</a> will handle the cropping logic
-	for us, and we'll simply store their data alongside the url.
+	don't have to worry about modifying the image. This website uses
+	<a href="https://github.com/timothycohen/samplekit/tree/staging/packages/svelte-crop-window">
+		@samplekit/svelte-crop-window
+	</a>
+	which is a loving rune/builder based rewrite of
+	<a href="https://github.com/sabine/svelte-crop-window" data-external>sabine/svelte-crop-window</a>. This package will
+	handle the cropping logic for us, and we'll simply store that data alongside the url.
 </p>
 
-<CodeTopper title="$lib/image/client/schemas.ts">
-	<TabPanelItem
-		panel={{ rawHTML: data.article.demos?.main?.find((d) => d.title === 'imageSchema.ts')?.rawHTML ?? '' }}
-	/>
-</CodeTopper>
+{@render Code(data.code.imageSchema)}
 
-<HAnchor tag="h4" title="States" />
+<HAnchor tag="h3" title="States" />
 
 <p>
 	We need to break the flow into separate states. That could be done in many ways, but I'm going to break them along the
 	following lines.
 </p>
 
-<Misc part="state-table" />
+<!-- md-start
+| State Change Breakpoint            | Reasoning                                                                                                                                 |
+| ---------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| There's a decision branch          | Allow for easily composable pipelines                                                                                                     |
+| An async function is being awaited | Allow cancellation logic to be added to the state so a cancel function can handle cancels that occurred during <code>await promise</code> |
+| Something must be shown in the UI  | Allow getting user input, showing spinners, updating progress bars, etc.                                                                  |
+md-end -->
+
+<HAnchor tag="h4" title="Static" />
 
 <p>We need some static states:</p>
 
-<CropImgUploadController part={1} />
+{@render StaticStates()}
+
+<HAnchor tag="h4" title="Preexisting" />
 
 <p>
 	If the user has an avatar already, we'll want to allow them to crop it, save the updated crop value, and delete it.
 </p>
 
-<CropImgUploadController part={2} />
+{@render PreexistingStates()}
+
+<HAnchor tag="h4" title="New" />
 
 <p>
 	If the user doesn't have an image, or if they are selecting a new image, we'll need states to facilitate selecting the
 	file, loading it into memory, cropping it, getting the presigned url, sending it to AWS, and saving the url to the DB.
 </p>
 
-<CropImgUploadController part={3} />
+{@render NewImageStates()}
 
+<HAnchor tag="h4" title="Union" />
 <p>Putting it all together, the controller has the following states:</p>
 
-<CropImgUploadController part={4} />
+{@render UnionStates()}
+
+<HAnchor tag="h3" title="Callback Types" />
 
 <p>
-	The controller will have two logical entry points. If the user already has an avatar, it should start with the
-	<code>CroppingPreexisting</code> state. Otherwise, it will be set to the <code>FileSelecting</code> state.
-</p>
-
-<AvatarEditor part={1} />
-
-<HAnchor tag="h4" title="HTTP Functions" />
-
-<p>
-	Now that we've determined the states, we can define the http wrapper functions that our action functions will consume.
-</p>
-
-<CropImgUploadController part={5} />
-
-<p>
-	Of the five types, <code>GetUploadArgs</code>, <code>SaveToDb</code>, <code>DeletePreexistingImg</code>, and
-	<code>SaveCropToDb</code> are requests to our own server endpoints. They're implemented with the
-	<a href="/articles/typesafe-fetch-handler"> TypeSafe Fetch Handler we created in a previous article</a>.
-	<code>Upload</code>, however, is a request directly to AWS using the credentials the server sent the client along with
-	an <code>uploadProgress</code> object that will show the status of the user.
-</p>
-
-<HAnchor tag="h3" title="State Controller Implementation" />
-
-<p>
-	We'll make a <code>CropImgUploadController</code> class where the only property is a <code>Writable</code> store that
-	holds the <code>CropControllerState</code>.
+	Notice that each of the three state groups has a logical entry point. We start with the <code>Idle</code> state. If
+	the user already has an avatar, we can then transition to the <code>CroppingPreexisting</code> state. Otherwise, we
+	can use the <code>FileSelecting</code> state.
 </p>
 
 <p>
-	The state controller will have actions that transfer between states. Before implementing the action functions, we'll
-	want a couple helpers.
+	Some states have methods which can be used to transition to other states. Others don't because they are simply
+	transitional UI states in the pipeline that don't need user interaction.
 </p>
 
-<CropImgUploadController part={6} />
+<p>In order to start implementing those states, we will need to accept some callbacks in our constructor.</p>
+
+{@render Callbacks()}
+
+<HAnchor tag="h3" title="Implementation" />
 
 <p>
-	A few of our action functions will have very little logic. Their only purpose is to move the required data from one
-	state to another and guard against invalid state transitions.
+	Enough with the types – let's implement! We'll obviously need to store our state and callbacks. Additionally, if the
+	user exits in the middle of an async function, we'll want to be able to gracefully shut down, so let's also add a
+	cleanup method for that. Finally, we'll derive <code>isIdle</code> for convenience.
 </p>
 
-<CropImgUploadController part={7} />
+<HAnchor tag="h4" title="Idle Entrypoint" />
+
+<p>Our trivial idle entrypoint is the default state of the controller.</p>
+
+{@render EntryPointIdle()}
+
+<HAnchor tag="h4" title="Preexisting Entrypoint" />
 
 <p>
-	The action functions used when the user already has an image are more interesting. They'll need to be able to save the
-	new crop value and to delete the image.
+	Moving on to our second entrypoint – <code>CroppingPreexisting</code>:
 </p>
 
-<CropImgUploadController part={8} />
+{@render PreexistingEntrypoint()}
+
+<HAnchor tag="h4" title="New Entrypoint" />
+
+<p>We only have one more entry point to implement.</p>
+
+{@render Entry1()}
 
 <p>
-	If the user wants to load a new image, they'll start by selecting a file. The file should be loaded into memory,
-	guarding against files that are too large or of the wrong type.
+	In <code>#loadFiles</code> we load the file, turn it into a data uri, and transition to <code>uri_loaded</code>. That
+	state has two transition methods to either start cropping or simply use the default crop value.
 </p>
 
-<CodeTopper title="$lib/image/client/utils.ts">
-	<TabPanelItem
-		panel={{ rawHTML: data.article.demos?.main?.find((d) => d.title === 'imageUtils.ts')?.rawHTML ?? '' }}
-	/>
-</CodeTopper>
+<TabPanels
+	files={[{ title: 'cropImgUploadController New Entrypoint Part 2', snippet: Entry2 }, data.code.loadFileImports]}
+/>
 
-<CropImgUploadController part={9} />
+<p>
+	Finally we are at our last method. It's also the largest. In <code>#uploadPipeline</code> we will get the upload url, upload
+	the file, and save it to the DB.
+</p>
 
-<p>Now that the file is loaded we can create a full upload pipeline.</p>
+{@render Entry3()}
 
-<CropImgUploadController part={10} />
+<p>
+	And... we're done! But not really. We have some dependency injection going on here. Namely, the five callback
+	functions. Let's finish up our client code with the required UI components and then we'll tackle those callbacks.
+</p>
+<!--#endregion Controller -->
 
-<p>We've finished the upload state controller! Full code below.</p>
+<!--#region UI -->
+<HAnchor tag="h2" title="UI" />
 
-<CodeTopper title="$lib/cloudStorage/client/cropImgUploadController.ts Full" initialCollapsed>
-	<TabPanelItem
-		panel={{
-			rawHTML: data.article.demos?.main?.find((d) => d.title === 'cropImgUploadController.ts')?.rawHTML ?? '',
-		}}
-	/>
-</CodeTopper>
-
-<HAnchor tag="h3" title="UI Components" />
+<HAnchor tag="h3" title="Base Components" />
 
 <p>
 	We'll need a few components to show our UI state. We'll make them mostly dumb components so the logic can be isolated
 	inside the file where the <code>CropImgUploadController</code> is instantiated.
 </p>
 
-<TabPanels
-	files={data.article.demos?.main?.filter((d) =>
-		[
-			'FileInput.svelte',
-			'ImageCrop.svelte',
-			'ImageCardBtns.svelte',
-			'ImageCardOverlays.svelte',
-			'UploadProgress.svelte',
-			'ConfirmDelAvatarModal.svelte',
-		].includes(d.title),
-	) ?? []}
-/>
+<TabPanels files={data.code.ui} />
 
 <HAnchor tag="h3" title="Avatar Editor" />
 
 <p>
 	The final UI component will be the controller component <code>AvatarEditor.svelte</code> that orchestrates the UI
-	components created above using a <code>Writable&lt;CropControllerState&gt;</code> store <code>s</code>. It receives an
-	avatar from the parent and passes the changes back up with <code>onCancel</code> and
-	<code>updateAvatar</code> callbacks. The <code>FileInput</code> <code>accept</code> property is restricted to what
-	Rekognition can handle. This component lives on a page behind an auth guard. SampleKit uses
+	components created above using the <code>CropImgUploadController</code>. It receives an avatar from the parent and
+	passes the changes back up with <code>onCancel</code> and <code>onNewAvatar</code> callbacks. This component lives on
+	a page behind an auth guard. SampleKit uses
 	<a href="https://github.com/timothycohen/samplekit/tree/staging/packages/auth" data-external>its own auth package</a>.
 	There are many other options. For example,
 	<a href="https://lucia-auth.com/" data-external>Lucia Auth</a>.
 </p>
 
-<AvatarEditor part={2} />
+{@render Code(data.code.avatarEditor)}
 
 <p>
-	Let's call some unimplemented code to satisfy the callbacks in our UI components. The same
-	<code>MAX_UPLOAD_SIZE</code> set in the presigned url is also used on the client to guard against files that are too large
-	before uploading them.
+	We've finished the controller and UI, but we still have to implement the five callback functions that the
+	<code>CropImgUploadController</code> requires:
 </p>
 
-<AvatarEditor part={3} />
+<!-- shiki-start
+```ts
+import { uploadS3PresignedPost, CropImgUploadController } from '$lib/cloudStorage/client';
+import { updateAvatarCrop } from './avatar/crop.json';
+import {
+	MAX_UPLOAD_SIZE,
+	getSignedAvatarUploadUrl,
+	checkAndSaveUploadedAvatar,
+	deleteAvatar,
+} from './avatar/upload.json';
+```
+shiki-end -->
+<!--#endregion UI -->
+
+<!--#region Callbacks -->
+<HAnchor tag="h2" title="Dependency Injection Callbacks" />
 
 <p>
-	We've finished the UI, but the client calls three unimplemented files: a client upload function and two server
-	endpoints – <code>crop.json</code> and <code>upload.json</code>.
+	Of the five callbacks, <code>GetUploadArgs</code>, <code>SaveToDb</code>, <code>DeletePreexistingImg</code>, and
+	<code>SaveCropToDb</code> are requests to our own server endpoints. They're implemented with the
+	<a href="/articles/typesafe-fetch-handler"> TypeSafe Fetch Handler we created in a previous article</a>.
+	<code>Upload</code>, however, is a request directly to AWS using the credentials the server sent the client along with
+	an <code>uploadProgress</code> object that will show the status of the user. Let's tackle that first.
 </p>
 
 <HAnchor tag="h3" title="Uploader" />
@@ -440,33 +924,206 @@
 	callbacks, we'll promisify it and split the <code>promise</code> and <code>abort</code>.
 </p>
 
-<CodeTopper title="$lib/cloudStorage/client/uploadToCloudStorage.ts">
-	<TabPanelItem
-		panel={{ rawHTML: data.article.demos?.main?.find((d) => d.title === 'uploadToCloudStorage.ts')?.rawHTML ?? '' }}
-	/>
-</CodeTopper>
+{@render Code(data.code.cloudStorage)}
 
 <HAnchor tag="h3" title="Client Endpoints" />
 
 <p>
-	These define the <a href="/articles/typesafe-fetch-handler">typesafe fetch handlers</a> that will correspond to the
+	We're down to just the four callbacks within the two endpoints. These two client files define the
+	<a href="/articles/typesafe-fetch-handler">typesafe fetch handlers</a>
+	that will correspond to the
 	<code>+server.ts</code> endpoints.
 </p>
 
-<TabPanels
-	files={data.article.demos?.main?.filter((d) => ['crop.json/index.ts', 'upload.json/index.ts'].includes(d.title)) ??
-		[]}
-/>
-
-<p>We've finished our client code, but these two fetch handlers route to unimplemented server endpoints.</p>
-
-<HAnchor tag="h2" title="AWS" />
+<TabPanels files={data.code.api.client} />
 
 <p>
-	The two unimplemented server endpoints will call the AWS SDKs, so we'll set up AWS and then finish with our server
-	endpoints.
+	That's the last of the client code, but these two fetch handlers route to unimplemented server endpoints. They will
+	call the AWS SDKs, so we'll set up AWS and then come back to finish the marathon at the endpoints.
 </p>
+<!--#endregion Callbacks -->
 
+<!--#region AWS -->
+<!--#region IAM -->
+{#snippet IAM1()}
+	<CodeTopper title="Select User name you created -> Add permissions -> Create Inline Policy -> JSON">
+		<!-- shiki-start
+```json
+{
+	"Version": "2012-10-17",
+	"Statement": [
+		{
+			"Sid": "s3",
+			"Effect": "Allow",
+			"Action": [
+				"s3:PutObject",
+				"s3:DeleteObject"
+			],
+			"Resource": [
+				"arn:aws:s3:::samplekit",
+				"arn:aws:s3:::samplekit/*"
+			]
+		}
+	]
+}
+```
+shiki-end -->
+	</CodeTopper>
+{/snippet}
+
+{#snippet IAM2()}
+	<CodeTopper title="IAM -> Users -> User name you created -> Policy you created">
+		<!-- shiki-start
+```json
+{
+"Version": "2012-10-17",
+"Statement": [
+	{
+		"Sid": "s3",
+		"Effect": "Allow",
+		"Action": [
+			"s3:PutObject",
+			"s3:DeleteObject"
+		],
+		"Resource": [
+			"arn:aws:s3:::samplekit",
+			"arn:aws:s3:::samplekit/*"
+		]
+	},
+	{ //! d"diff-add"
+		"Sid": "cloudfront", //! d"diff-add"
+		"Effect": "Allow", //! d"diff-add"
+		"Action": [ //! d"diff-add"
+			"cloudfront:CreateInvalidation" //! d"diff-add"
+		], //! d"diff-add"
+		"Resource": [ //! d"diff-add"
+			"arn:aws:cloudfront::069636842578:distribution/*" //! d"diff-add"
+		] //! d"diff-add"
+	} //! d"diff-add"
+]
+}
+```
+shiki-end -->
+	</CodeTopper>
+{/snippet}
+
+{#snippet IAM3()}
+	<CodeTopper title="IAM -> Users -> User name you created -> Policy you created">
+		<!-- shiki-start
+```json
+{
+"Version": "2012-10-17",
+"Statement": [
+	{
+		"Sid": "s3",
+		"Effect": "Allow",
+		"Action": [
+			"s3:PutObject",
+			"s3:DeleteObject",
+			"s3:GetObject" //! d"diff-add"
+		],
+		"Resource": [
+			"arn:aws:s3:::samplekit",
+			"arn:aws:s3:::samplekit/*"
+		]
+	},
+	{
+		"Sid": "cloudfront",
+		"Effect": "Allow",
+		"Action": [
+			"cloudfront:CreateInvalidation"
+		],
+		"Resource": [
+			"arn:aws:cloudfront::069636842578:distribution/*"
+		]
+	},
+	{ //! d"diff-add"
+		"Sid": "rekognition", //! d"diff-add"
+		"Effect": "Allow", //! d"diff-add"
+		"Action": [ //! d"diff-add"
+			"rekognition:DetectModerationLabels" //! d"diff-add"
+		], //! d"diff-add"
+		"Resource": [ //! d"diff-add"
+			"*" //! d"diff-add"
+		] //! d"diff-add"
+	} //! d"diff-add"
+]
+}
+```
+shiki-end -->
+	</CodeTopper>
+{/snippet}
+<!--#endregion IAM -->
+
+<!-- #region Misc -->
+{#snippet PackageJSON()}
+	<CodeTopper title="package.json">
+		<!-- shiki-start
+```json
+"dependencies": {
+	"@aws-sdk/client-cloudfront": "^3.474.0",
+	"@aws-sdk/client-rekognition": "^3.474.0",
+	"@aws-sdk/client-s3": "^3.474.0",
+	"@aws-sdk/s3-presigned-post": "^3.478.0",
+}
+```
+shiki-end -->
+	</CodeTopper>
+{/snippet}
+
+{#snippet SDK()}
+	<CodeTopper title="AWS SDKs">
+		<!-- shiki-start
+```ts
+import { CloudFrontClient, CreateInvalidationCommand } from '@aws-sdk/client-cloudfront';
+import { RekognitionClient, DetectModerationLabelsCommand } from '@aws-sdk/client-rekognition';
+import { S3Client, DeleteObjectCommand } from '@aws-sdk/client-s3';
+import { createPresignedPost } from '@aws-sdk/s3-presigned-post';
+```
+shiki-end -->
+	</CodeTopper>
+{/snippet}
+
+{#snippet Cors()}
+	<CodeTopper title="Select bucket -> Permissions -> (CORS) -> Edit">
+		<!-- shiki-start
+```json
+[
+	{
+		"AllowedHeaders": ["*"],
+		"AllowedMethods": ["POST"],
+		"AllowedOrigins": ["*"],
+		"ExposeHeaders": []
+	}
+	]
+```
+shiki-end -->
+	</CodeTopper>
+{/snippet}
+
+{#snippet Env()}
+	<CodeTopper title=".env">
+		<!-- shiki-start
+```sh
+AWS_SERVICE_REGION="" # for example: us-east-1
+
+# https://console.aws.amazon.com/iam/home -> Select User -> Security credentials -> Create access key -> Copy access key and secret
+IAM_ACCESS_KEY_ID=""
+IAM_SECRET_ACCESS_KEY=""
+
+S3_BUCKET_NAME="" # The name of the bucket you created
+S3_BUCKET_URL="" # https://[bucket-name].s3.[region].amazonaws.com
+
+# https://console.aws.amazon.com/cloudfront -> Select distribution
+CLOUDFRONT_URL=""             # Copy Distribution domain name (including https://)
+CLOUDFRONT_DISTRIBUTION_ID="" # Copy ARN – the last digits after the final "/"
+```
+shiki-end -->
+	</CodeTopper>
+{/snippet}
+<!-- #endregion Misc -->
+
+<HAnchor tag="h2" title="AWS" />
 <p>
 	If you don't already have one, you will need to <a href="https://aws.amazon.com/" data-external>
 		set up account at aws.amazon.com
@@ -486,13 +1143,13 @@
 
 <p>All of the AWS code will use the official client SDKs.</p>
 
-<Misc part="package.json" />
+{@render PackageJSON()}
 
 <p>
 	Using the SDKs, a client is created and then commands are sent with the client. Here are the commands we'll be using.
 </p>
 
-<Misc part="aws-sdk" />
+{@render SDK()}
 
 <p>We need to enable the services on AWS, and then configure their permissions with an AWS IAM policy.</p>
 
@@ -510,7 +1167,7 @@
 	access" will prevent users from uploading directly without a presigned key.
 </p>
 
-<Misc part="cors" />
+{@render Cors()}
 
 <HAnchor tag="h4" title="Creating the IAM Policy" />
 
@@ -519,9 +1176,9 @@
 	naming it the same as your app will make it easy to remember. Use all default settings.
 </p>
 
-<p>Create a policy that will allow creating and deleting images in our bucket.</p>
+<p>Create a policy that will allow creating and deleting images in the bucket.</p>
 
-<IAM part={1} />
+{@render IAM1()}
 
 <p>
 	Click "Next", give it a policy name (again I've used the name of my app), and hit "Create Policy". Done! Now we have
@@ -531,9 +1188,9 @@
 <HAnchor tag="h4" title="Creating the Cloudfront Distribution" />
 
 <p>
-	Choose "Create Distribution" at <a href="https://us-east-1.console.aws.amazon.com/cloudfront" data-external
-		>AWS Cloudfront</a
-	>.
+	Choose "Create Distribution" at <a href="https://us-east-1.console.aws.amazon.com/cloudfront" data-external>
+		AWS Cloudfront
+	</a>.
 </p>
 
 <ul>
@@ -555,7 +1212,7 @@
 	therefore <code>cloudfront:CreateInvalidation</code> permissions will need to be granted.
 </p>
 
-<IAM part={2} />
+{@render IAM2()}
 
 <HAnchor tag="h4" title="Add Rekognition to the IAM Policy" />
 
@@ -566,11 +1223,11 @@
 	to detect directly from the S3 bucket.
 </p>
 
-<IAM part={3} />
+{@render IAM3()}
 
 <p>Let's create an IAM access token and add our environmental variables.</p>
 
-<Misc part="env" />
+{@render Env()}
 
 <HAnchor tag="h3" title="AWS Server Code" />
 
@@ -581,9 +1238,7 @@
 	so they are not created during the app build.
 </p>
 
-<TabPanels
-	files={data.article.demos?.main?.filter((d) => ['s3.ts', 'cloudfront.ts', 'rekognition.ts'].includes(d.title)) ?? []}
-/>
+<TabPanels files={data.code.aws} />
 
 <HAnchor tag="h4" title="Helpers" />
 
@@ -594,27 +1249,22 @@
 	etc. Creating keys by hand on each call would be messy, so let's make a key controller.
 </p>
 
-<CodeTopper title="$lib/cloudStorage/server/utils.ts">
-	<TabPanelItem
-		panel={{ rawHTML: data.article.demos?.main?.find((d) => d.title === 'keyController.ts')?.rawHTML ?? '' }}
-	/>
-</CodeTopper>
+{@render Code(data.code.keyController)}
 
 <p>
 	Lastly, we saw in our flow that we will need to create some kind of job that will remove any images that weren't
 	uploaded within a certain time. Let's implement that.
 </p>
 
-<CodeTopper title="$lib/cloudStorage/server/unsavedUploadsCleaner.ts">
-	<TabPanelItem
-		panel={{ rawHTML: data.article.demos?.main?.find((d) => d.title === 'unsavedUploadsCleaner.ts')?.rawHTML ?? '' }}
-	/>
-</CodeTopper>
+{@render Code(data.code.unsavedUploadsCleaner)}
+<!--#endregion AWS -->
 
-<HAnchor tag="h2" title="Server" />
+<!--#region Server -->
+<HAnchor tag="h2" title="Server Endpoints" />
 
 <p>
-	The last piece of this is to implement the two server endpoints <code>crop.json</code> and <code>upload.json</code>.
+	The last piece of the puzzle is to implement the two server endpoints: <code>crop.json</code> and
+	<code>upload.json</code>.
 </p>
 
 <HAnchor tag="h3" title="Crop" />
@@ -623,11 +1273,7 @@
 	<code>crop.json/+server.ts</code> is easy because we're just updating the crop value. Let's get that out of the way.
 </p>
 
-<CodeTopper title="$routes/account/profile/avatar/crop.json/+server.ts">
-	<TabPanelItem
-		panel={{ rawHTML: data.article.demos?.main?.find((d) => d.title === 'crop.json/+server.ts')?.rawHTML ?? '' }}
-	/>
-</CodeTopper>
+{@render Code(data.code.api.cropServer)}
 
 <HAnchor tag="h3" title="Upload" />
 
@@ -643,32 +1289,27 @@
 	>
 		own rate limiter
 	</a>
-	around a Redis client. A good in-memory rate limiter is
+	around a Redis client so that multiple instances of the app can be deployed. If that's not a consideration, a good in-memory
+	rate limiter is
 	<a href="https://github.com/ciscoheat/sveltekit-rate-limiter/blob/main/src/lib/server/index.ts" data-external>
-		sveltekit-rate-limiter</a
-	>, a package created by the author of sveltekit-superforms.
+		sveltekit-rate-limiter
+	</a>, a package created by the author of sveltekit-superforms.
 </p>
 
 <HAnchor tag="h4" title="Signed URL Storage" />
 
 <p>The presigned urls are stored in the database.</p>
 
-<TabPanels
-	files={data.article.demos?.main?.filter((d) =>
-		['presignedUrls.ts', 'presignedUrlsController.ts'].includes(d.title),
-	) ?? []}
-/>
+<TabPanels files={data.code.presigned} />
 
 <HAnchor tag="h4" title="Endpoint" />
 
 <p>We can now implement the last endpoint, and with it, complete the entire feature.</p>
 
-<CodeTopper title="$routes/account/profile/avatar/upload.json/+server.ts">
-	<TabPanelItem
-		panel={{ rawHTML: data.article.demos?.main?.find((d) => d.title === 'upload.json/+server.ts')?.rawHTML ?? '' }}
-	/>
-</CodeTopper>
+{@render Code(data.code.api.uploadServer)}
+<!--#endregion Server -->
 
+<!--#region Conclusion -->
 <HAnchor tag="h2" title="Conclusion" />
 
 <p>
@@ -688,3 +1329,4 @@
 	<a href="https://github.com/timothycohen/samplekit/discussions" data-external>GitHub discussions</a>. Until next time,
 	happy coding!
 </p>
+<!--#endregion Conclusion -->

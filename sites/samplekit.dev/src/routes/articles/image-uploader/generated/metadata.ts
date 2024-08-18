@@ -6,15 +6,16 @@ export default {
 	srcCodeHref:
 		'https://github.com/timothycohen/samplekit/blob/main/sites/samplekit.dev/src/lib/cloudStorage/client/cropImgUploadController.svelte.ts',
 	description:
-		'Select an image, upload it to an AWS S3 Bucket with a progress indicator, moderate it with Rekognition, save it to the DB, and serve it via AWS Cloudfront.',
+		'Select an image, crop it, upload it to an AWS S3 Bucket with a progress indicator, moderate it with Rekognition, save it to the DB, and serve it via AWS Cloudfront.',
 	publishedAt: new Date('2024-03-20T20:37:01.000Z'),
 	authors: [{ name: 'Tim Cohen', email: 'contact@timcohen.dev' }],
 	imgSm,
 	tags: ['state controller', 'image uploads', 'aws', 'db', 's3', 'cloudfront', 'rekognition', 'rate limiting'],
 	featured: true,
+	updates: [{ at: new Date('2024-08-16T22:59:25.000Z'), descriptions: ['Use runes.'] }],
 	articlePath: '/articles/image-uploader',
-	wordCount: 4924,
-	readingTime: 22,
+	wordCount: 6151,
+	readingTime: 28,
 	toc: [
 		{
 			title: 'Upload Flow Options',
@@ -27,21 +28,44 @@ export default {
 			],
 		},
 		{
-			title: 'Client',
-			href: '/articles/image-uploader/#client',
+			title: 'State Controller',
+			href: '/articles/image-uploader/#state-controller',
 			children: [
+				{ title: 'Crop Types', href: '/articles/image-uploader/#crop-types' },
 				{
-					title: 'State Controller Interface',
-					href: '/articles/image-uploader/#state-controller-interface',
+					title: 'States',
+					href: '/articles/image-uploader/#states',
 					children: [
-						{ title: 'Property Types', href: '/articles/image-uploader/#property-types' },
-						{ title: 'States', href: '/articles/image-uploader/#states' },
-						{ title: 'HTTP Functions', href: '/articles/image-uploader/#http-functions' },
+						{ title: 'Static', href: '/articles/image-uploader/#static' },
+						{ title: 'Preexisting', href: '/articles/image-uploader/#preexisting' },
+						{ title: 'New', href: '/articles/image-uploader/#new' },
+						{ title: 'Union', href: '/articles/image-uploader/#union' },
 					],
 				},
-				{ title: 'State Controller Implementation', href: '/articles/image-uploader/#state-controller-implementation' },
-				{ title: 'UI Components', href: '/articles/image-uploader/#ui-components' },
+				{ title: 'Callback Types', href: '/articles/image-uploader/#callback-types' },
+				{
+					title: 'Implementation',
+					href: '/articles/image-uploader/#implementation',
+					children: [
+						{ title: 'Idle Entrypoint', href: '/articles/image-uploader/#idle-entrypoint' },
+						{ title: 'Preexisting Entrypoint', href: '/articles/image-uploader/#preexisting-entrypoint' },
+						{ title: 'New Entrypoint', href: '/articles/image-uploader/#new-entrypoint' },
+					],
+				},
+			],
+		},
+		{
+			title: 'UI',
+			href: '/articles/image-uploader/#ui',
+			children: [
+				{ title: 'Base Components', href: '/articles/image-uploader/#base-components' },
 				{ title: 'Avatar Editor', href: '/articles/image-uploader/#avatar-editor' },
+			],
+		},
+		{
+			title: 'Dependency Injection Callbacks',
+			href: '/articles/image-uploader/#dependency-injection-callbacks',
+			children: [
 				{ title: 'Uploader', href: '/articles/image-uploader/#uploader' },
 				{ title: 'Client Endpoints', href: '/articles/image-uploader/#client-endpoints' },
 			],
@@ -82,8 +106,8 @@ export default {
 			],
 		},
 		{
-			title: 'Server',
-			href: '/articles/image-uploader/#server',
+			title: 'Server Endpoints',
+			href: '/articles/image-uploader/#server-endpoints',
 			children: [
 				{ title: 'Crop', href: '/articles/image-uploader/#crop' },
 				{
