@@ -116,7 +116,7 @@ shiki-end -->
 </p>
 
 <!-- shiki-start
-	```ts
+```ts
 interface SearchParamController {
 	subscribe: Readable<string | null>['subscribe'];
 	set: (value: string | null) => void;
@@ -133,11 +133,11 @@ shiki-end -->
 </p>
 
 <!-- shiki-start
-	```ts
+```ts
 interface SearchParamController {
 	subscribe: Readable<string | null>['subscribe'];
 	set: (value: string | null) => void;
-	toggle: (value: string) => void;
+	toggle: (value: string) => void;//! d"diff-add"
 }
 ```
 shiki-end -->
@@ -199,8 +199,8 @@ shiki-end -->
 ```ts
 interface SearchParamController {
 	subscribe: Readable<string | null>['subscribe'];
-	mutateSearchParams: (a: { newValue?: string | null; mutSearchParams: URLSearchParams }) => false | URLSearchParams;
-	pushStateToParams: (a: { mutSearchParams: URLSearchParams }) => false | URLSearchParams
+	mutateSearchParams: (a: { newValue?: string | null; mutSearchParams: URLSearchParams }) => false | URLSearchParams;//! d"diff-add"
+	pushStateToParams: (a: { mutSearchParams: URLSearchParams }) => false | URLSearchParams;//! d"diff-add"
 	set: (value: string | null) => void;
 	toggle: (value: string) => void;
 }
@@ -216,8 +216,8 @@ shiki-end -->
 
 <!-- shiki-start
 ```ts
-/** `false` if the value is not changed, `Promise<false>` if called on the server, and `Promise<true>` if the value and url change */
-type Changed = false | Promise<boolean>;
+/** `false` if the value is not changed, `Promise<false>` if called on the server, and `Promise<true>` if the value and url change *///! d"diff-add"
+type Changed = false | Promise<boolean>;//! d"diff-add"
 
 interface SearchParamController {
 	subscribe: Readable<string | null>['subscribe'];
@@ -239,8 +239,9 @@ shiki-end -->
 </p>
 
 <!-- shiki-start
+s", opts?: GoOpts" d"diff-add"
 ```ts
-type GoOpts = { absolute?: string };
+type GoOpts = { absolute?: string };//! d"diff-add"
 
 /** `false` if the value is not changed, `Promise<false>` if called on the server, and `Promise<true>` if the value and url change */
 type Changed = false | Promise<boolean>;
@@ -384,13 +385,13 @@ shiki-end -->
 ```ts
 interface SearchParamController {
 	subscribe: Readable<string | null>['subscribe'];
-	mutateSearchParams: (a: {
-		value?: { cleaned?: never; unclean?: string | null } | { cleaned?: string | null; unclean?: never };
-		mutSearchParams: URLSearchParams;
-	}) => false | URLSearchParams;
+	mutateSearchParams: (a: {//! d"diff-add"
+		value?: { cleaned?: never; unclean?: string | null } | { cleaned?: string | null; unclean?: never };//! d"diff-add"
+		mutSearchParams: URLSearchParams;//! d"diff-add"
+	}) => false | URLSearchParams;//! d"diff-add"
 	pushStateToParams: (a: { mutSearchParams: URLSearchParams }) => false | URLSearchParams;
-	set: (unclean: string | null, opts?: GoOpts) => Changed;
-	toggle: (unclean: string, opts?: GoOpts) => Changed;
+	set: (unclean: string | null, opts?: GoOpts) => Changed;//! s"unclean" d"diff-add"
+	toggle: (unclean: string, opts?: GoOpts) => Changed;//! s"unclean" d"diff-add"
 }
 ```
 shiki-end -->

@@ -1,4 +1,5 @@
 <script lang="ts" module>
+	import { TabPanelItem } from '$lib/components';
 	import imgSm from './assets/generic-url-state-controller-thumbnail-1200w.webp';
 	import type { RawFrontMatter } from '$lib/articles/schema';
 
@@ -18,14 +19,10 @@
 </script>
 
 <script lang="ts">
-	import { CodeTopper } from '$lib/articles/components';
+	import CodeTopper from '$lib/articles/components/CodeTopper.svelte';
 	import { HAnchor, Admonition, TabPanels } from '$lib/components';
 
-	interface Props {
-		data: { typedVariantFiles: { title: string; rawHTML: Promise<string> }[] };
-	}
-
-	const { data }: Props = $props();
+	const { data } = $props();
 </script>
 
 <p>
@@ -85,7 +82,7 @@ shiki-end -->
  shiki-end -->
 
 <p>
-	In our previous implementation, the data is <code>$derived</code> from <code>page</code>. This has a couple
+	In our previous implementation, the data is <code>derived</code> from <code>page</code>. This has a couple
 	implications.
 </p>
 
@@ -94,7 +91,7 @@ shiki-end -->
 		<p>
 			If there are invalid values in the url when the page first loads, we have to make a choice about whether the state
 			of the store in the brief moment before our init function runs should be unclean or out of sync with
-			<code>$page</code>. By making the state a <code>$derived</code> store without a deserialize function, we implicitly
+			<code>$page</code>. By making the state a <code>derived</code> store without a deserialize function, we implicitly
 			chose that it should be unclean.
 		</p>
 	</li>
@@ -126,7 +123,7 @@ shiki-end -->
 	<li class="list-disc">
 		<p>
 			Debouncing url changes becomes difficult because that requires debouncing the store update, overwriting user input
-			that arrives faster than the debounce period. By not using <code>$derived</code>, we can debounce and add effects
+			that arrives faster than the debounce period. By not using <code>derived</code>, we can debounce and add effects
 			that are invalidated when the url changes. For example, if there was a <code>load</code> function that referenced
 			<code>url</code>, and the <code>searchParam</code> was on a number input, holding the up arrow would cause a massive
 			number of load function invalidations. By decoupling the store from the URL state, we can immediately update the store
@@ -161,12 +158,14 @@ shiki-end -->
 	<code>&lbrace; min, max &rbrace;</code> price – later.
 </Admonition>
 
-<!-- shiki-start
+<CodeTopper title="paramGeneric.ts">
+	<!-- shiki-start
 ```ts
 interface ParamGeneric<Val> {
 }
 ```
 shiki-end -->
+</CodeTopper>
 
 <p>
 	<code>type ParamVal = string | null</code>, so let's add a convenience function to get that value. It will also be
@@ -174,31 +173,37 @@ shiki-end -->
 	well.
 </p>
 
-<!-- shiki-start
+<CodeTopper title="paramGeneric.ts">
+	<!-- shiki-start
 ```ts
 type ParamVal = string | null;
 
-interface ParamGeneric<Val, ParamName extends string> {
-	paramName: ParamName;
-	getParam: () => ParamVal;
+interface ParamGeneric<Val, ParamName extends string> {//! d"diff-add" s", ParamName extends string"
+	paramName: ParamName;//! d"diff-add"
+	getParam: () => ParamVal;//! d"diff-add"
 }
 ```
 shiki-end -->
+</CodeTopper>
 
 <p>
 	The validated source of truth will be in a Svelte store, so we'll add a <code>subscribe</code> function to get our store
 	value.
 </p>
 
-<!-- shiki-start
+<CodeTopper title="paramGeneric.ts">
+	<!-- shiki-start
 ```ts
+type ParamVal = string | null;
+
 interface ParamGeneric<Val, ParamName extends string> {
 	paramName: ParamName;
 	getParam: () => ParamVal;
-	subscribe: Readable<Val>['subscribe'];
+	subscribe: Readable<Val>['subscribe'];//! d"diff-add"
 }
 ```
 shiki-end -->
+</CodeTopper>
 
 <HAnchor tag="h4" title="Serializers" />
 
@@ -207,17 +212,21 @@ shiki-end -->
 	<code>Val => ParamVal</code> and deserialize <code>ParamVal => Val</code> functions to translate between them.
 </p>
 
-<!-- shiki-start
+<CodeTopper title="paramGeneric.ts">
+	<!-- shiki-start
 ```ts
+type ParamVal = string | null;
+
 interface ParamGeneric<Val, ParamName extends string> {
 	paramName: ParamName;
 	getParam: () => ParamVal;
 	subscribe: Readable<Val>['subscribe'];
-	serialize: (val: Val) => ParamVal;
-	deserialize: (paramVal: ParamVal) => Val;
+	serialize: (val: Val) => ParamVal;//! d"diff-add"
+	deserialize: (paramVal: ParamVal) => Val;//! d"diff-add"
 }
 ```
 shiki-end -->
+</CodeTopper>
 
 <p>
 	The serialize function won't need to think about validation logic. The store will be the source of truth and always
@@ -230,18 +239,22 @@ shiki-end -->
 	validates. The consumer can then compose the validation logic however they want without risk of duplication.
 </p>
 
-<!-- shiki-start
+<CodeTopper title="paramGeneric.ts">
+	<!-- shiki-start
 ```ts
+type ParamVal = string | null;
+
 interface ParamGeneric<Val, ParamName extends string> {
 	paramName: ParamName;
 	getParam: () => ParamVal;
 	subscribe: Readable<Val>['subscribe'];
 	serialize: (cleanVal: Val) => ParamVal;
-	deserialize: (uncleanParamVal: ParamVal) => Val;
-	clean: (uncleanVal: Val) => Val;
+	deserialize: (uncleanParamVal: ParamVal) => Val;//! d"diff-add" s"uncleanParamVal"
+	clean: (uncleanVal: Val) => Val;//! d"diff-add"
 }
 ```
 shiki-end -->
+</CodeTopper>
 
 <HAnchor tag="h4" title="Setters" />
 
@@ -251,8 +264,11 @@ shiki-end -->
 	<code>pullFromUrl</code>.
 </p>
 
-<!-- shiki-start
+<CodeTopper title="paramGeneric.ts">
+	<!-- shiki-start
 ```ts
+type ParamVal = string | null;
+
 interface ParamGeneric<Val, ParamVal, StoreVal> {
 	paramName: ParamName;
 	getParam: () => ParamVal;
@@ -260,11 +276,12 @@ interface ParamGeneric<Val, ParamVal, StoreVal> {
 	serialize: (cleanVal: Val) => ParamVal;
 	deserialize: (uncleanParamVal: ParamVal) => Val;
 	clean: (uncleanVal: Val) => Val;
-	pushToUrl: (mutUrl: URL) => URL;
-	pullFromUrl: () => void;
+	pushToUrl: (mutUrl: URL) => URL;//! d"diff-add"
+	pullFromUrl: () => void;//! d"diff-add"
 }
 ```
 shiki-end -->
+</CodeTopper>
 
 <p>
 	The <code>ParamVal</code> type <code>string | null</code> is useful for working with inputs, so let's add a
@@ -288,11 +305,14 @@ shiki-end -->
 	url.
 </p>
 
-<!-- shiki-start
+<CodeTopper title="paramGeneric.ts">
+	<!-- shiki-start
 ```ts
-type Changed = { changed: boolean };
-type GoOpts = { root?: string; deleteOtherParams?: true };
-type MaybeGoOpts = { nogo: true; root?: never; deleteOtherParams?: never } | ({ nogo?: never } & GoOpts);
+type Changed = { changed: boolean };//! d"diff-add"
+type GoOpts = { root?: string; deleteOtherParams?: true };//! d"diff-add"
+type MaybeGoOpts = { nogo: true; root?: never; deleteOtherParams?: never } | ({ nogo?: never } & GoOpts);//! d"diff-add"
+
+type ParamVal = string | null;
 
 interface ParamGeneric<Val, ParamName extends string> {
 	paramName: ParamName;
@@ -303,13 +323,14 @@ interface ParamGeneric<Val, ParamName extends string> {
 	clean: (uncleanVal: Val) => Val;
 	pushToUrl: (mutUrl: URL) => URL;
 	pullFromUrl: () => void;
-	setParam: (paramVal: ParamVal, opts?: MaybeGoOpts) => Changed;
-	set: (uncleanVal: Val, opts?: MaybeGoOpts) => Changed;
-	update: (cb: (old: Val) => Val) => void;
-	setCleaned: (cleaned: Val, opts?: MaybeGoOpts) => Changed;
+	setParam: (paramVal: ParamVal, opts?: MaybeGoOpts) => Changed;//! d"diff-add"
+	set: (uncleanVal: Val, opts?: MaybeGoOpts) => Changed;//! d"diff-add"
+	update: (cb: (old: Val) => Val) => void;//! d"diff-add"
+	setCleaned: (cleaned: Val, opts?: MaybeGoOpts) => Changed;//! d"diff-add"
 }
 ```
 shiki-end -->
+</CodeTopper>
 
 <HAnchor tag="h4" title="Sync State" />
 
@@ -319,8 +340,15 @@ shiki-end -->
 	sync when it first initializes, so we'll add an <code>initiallyOutOfSync</code> property.
 </p>
 
-<!-- shiki-start
+<CodeTopper title="paramGeneric.ts">
+	<!-- shiki-start
 ```ts
+type Changed = { changed: boolean };
+type GoOpts = { root?: string; deleteOtherParams?: true };
+type MaybeGoOpts = { nogo: true; root?: never; deleteOtherParams?: never } | ({ nogo?: never } & GoOpts);
+
+type ParamVal = string | null;
+
 interface ParamGeneric<Val, ParamName extends string> {
 	paramName: ParamName;
 	getParam: () => ParamVal;
@@ -334,120 +362,19 @@ interface ParamGeneric<Val, ParamName extends string> {
 	set: (uncleanVal: Val, opts?: MaybeGoOpts) => Changed;
 	update: (cb: (old: Val) => Val) => void;
 	setCleaned: (cleaned: Val, opts?: MaybeGoOpts) => Changed;
-	isSynced: (a?: { paramVal?: ParamVal; val?: Val }) => boolean;
-	initiallyOutOfSync: boolean;
+	isSynced: (a?: { paramVal?: ParamVal; val?: Val }) => boolean;//! d"diff-add"
+	initiallyOutOfSync: boolean;//! d"diff-add"
 }
 ```
 shiki-end -->
+</CodeTopper>
 
 <HAnchor tag="h3" title="Implementation" id="single-value-implementation" />
 
 <p>We know what we have to do. Here's one way of getting there:</p>
 
-<CodeTopper title="paramGeneric.ts">
-	<!-- shiki-start
-```ts
-const createUrl = ({ root, deleteOtherParams }: GoOpts = {}): URL => {
-	const url = new URL(get(page).url);
-	if (root) url.pathname = `${root.startsWith('/') ? '' : '/'}${root}`;
-	if (deleteOtherParams) url.search = '';
-	return url;
-};
-
-export const createParam = <Val, ParamName extends string = string>({
-	paramName,
-	defaultValue,
-	skipInitGoto,
-	serialize,
-	deserialize,
-	clean,
-}: Pick<ParamGeneric<Val, ParamName>, 'clean' | 'serialize' | 'deserialize'> & {
-	paramName: ParamName;
-	defaultValue: Val;
-	skipInitGoto?: true;
-}): ParamGeneric<Val, ParamName> => {
-	type Res = ParamGeneric<Val, ParamName>;
-
-	const store = writable<Val>(defaultValue);
-
-	const getParam: Res['getParam'] = () => {
-		return get(page).url.searchParams.get(paramName);
-	};
-
-	const pushToUrl: Res['pushToUrl'] = (mutUrl) => {
-		const currentVal = get(store);
-		const currentParam = serialize(currentVal);
-		if (currentParam === null) mutUrl.searchParams.delete(paramName);
-		else mutUrl.searchParams.set(paramName, currentParam);
-		return mutUrl;
-	};
-
-	const goImmediate = (opts?: GoOpts): void => {
-		goto(pushToUrl(createUrl(opts)), { keepFocus: true, noScroll: true, replaceState: true });
-	};
-
-	const go = (() => {
-		let timer: ReturnType<typeof setTimeout>;
-		return (opts?: GoOpts) => {
-			clearTimeout(timer);
-			timer = setTimeout(() => goImmediate(opts), 50);
-		};
-	})();
-
-	const isSynced: Res['isSynced'] = (a) => {
-		const paramVal = a?.paramVal ?? getParam();
-		const val = a?.val ?? get(store);
-		return paramVal === serialize(val);
-	};
-
-	const setCleaned: Res['setCleaned'] = (cleaned, opts) => {
-		store.set(cleaned);
-		const changed = !isSynced();
-		if (changed && !opts?.nogo) go(opts);
-		return { changed };
-	};
-
-	const set: Res['set'] = (unclean, opts) => setCleaned(clean(unclean), opts);
-
-	const update: Res['update'] = (cb) => set(cb(get(store)));
-
-	const setParam: Res['setParam'] = (param, opts) => {
-		return setCleaned(deserialize(param), opts);
-	};
-
-	const pullFromUrl: Res['pullFromUrl'] = () => {
-		setParam(getParam());
-	};
-
-	const init = (): boolean => {
-		const paramVals = getParam();
-		store.set(deserialize(paramVals));
-		const changed = !isSynced();
-		if (changed && browser && !skipInitGoto) {
-			goImmediate();
-		}
-		return changed;
-	};
-
-	return {
-		paramName,
-		getParam,
-		subscribe: store.subscribe,
-		serialize,
-		clean,
-		pushToUrl,
-		pullFromUrl,
-		setParam,
-		set,
-		update,
-		deserialize,
-		setCleaned,
-		isSynced,
-		initiallyOutOfSync: init(),
-	};
-};
-```
-shiki-end -->
+<CodeTopper title={data.paramGeneric.title}>
+	<TabPanelItem panel={data.paramGeneric} />
 </CodeTopper>
 
 <p>Pretty straightforward once the interface is decided.</p>
@@ -477,7 +404,8 @@ shiki-end -->
 	<code>b</code>.
 </p>
 
-<!-- shiki-start
+<CodeTopper title="paramsGeneric.ts">
+	<!-- shiki-start
 ```ts
 interface ParamsGeneric<Val, ParamName extends string> {
 	paramNameMap: Record<ParamName, string>;
@@ -485,6 +413,7 @@ interface ParamsGeneric<Val, ParamName extends string> {
 }
 ```
 shiki-end -->
+</CodeTopper>
 
 <p>
 	The rest of our interface will be very similar to the single param interface. However, whereas before the store
@@ -492,148 +421,16 @@ shiki-end -->
 	accepted a <code>ParamVal</code>, we now accept a <code>Record&lt;ParamName, ParamVal&gt;</code>.
 </p>
 
-<!-- shiki-start
-```ts
-interface ParamsGeneric<
-	Val,
-	ParamName extends string,
-	Params = Record<ParamName, ParamVal>,
-	Store = Record<ParamName, Val>,
-> {
-	paramNameMap: Record<ParamName, string>;
-	paramKeys: ParamName[];
-	getParams: () => Partial<Params>;
-	subscribe: Readable<Store>['subscribe'];
-	serializeOne: (cleanVal: Val) => ParamVal;
-	deserialize: (uncleanParamVals: Partial<Params>) => Store;
-	clean: (unclean: Partial<Store>) => Store;
-	pushToUrl: (mutUrl: URL) => URL;
-	pullFromUrl: () => void;
-	setParams: (param: Partial<Params>, opts?: MaybeGoOpts) => Changed;
-	set: (unclean: Partial<Store>, opts?: MaybeGoOpts) => Changed;
-	update: (cb: (old: Store) => Store) => void;
-	setCleaned: (cleaned: Store, opts?: MaybeGoOpts) => Changed;
-	isSynced: (a?: { paramVal?: Partial<Params>; val?: Store }) => boolean;
-	initiallyOutOfSync: boolean;
-}
-```
-shiki-end -->
+<CodeTopper title={data.paramsGenericInterface.title}>
+	<TabPanelItem panel={data.paramsGenericInterface} />
+</CodeTopper>
 
 <HAnchor tag="h3" title="Implementation" id="multi-value-implementation" />
 
 <p>And a possible implementation:</p>
 
-<CodeTopper title="paramsGeneric.ts">
-	<!-- shiki-start
-```ts
-export const createParams = <Val, ParamName extends string = string>({
-	clean,
-	defaultValue,
-	paramNameMap,
-	serializeOne,
-	deserialize: _deserialize,
-	skipInitGoto,
-}: Pick<ParamsGeneric<Val, ParamName>, 'serializeOne' | 'clean'> & {
-	paramNameMap: Record<ParamName, string>;
-	defaultValue: Record<ParamName, Val>;
-	skipInitGoto?: true;
-	deserialize: (a: {
-		old: Record<ParamName, Val>;
-		uncleanParamVals: Partial<Record<ParamName, ParamVal>>;
-	}) => Record<ParamName, Val>;
-}): ParamsGeneric<Val, ParamName> => {
-	type Res = ParamsGeneric<Val, ParamName>;
-
-	const deserialize = (uncleanParamVals: Partial<Record<ParamName, ParamVal>>) =>
-		_deserialize({ old: get(store), uncleanParamVals });
-
-	const paramKeys: Res['paramKeys'] = Object.keys(paramNameMap) as ParamName[];
-
-	const store = writable<Record<ParamName, Val>>(defaultValue);
-
-	const getParams: Res['getParams'] = () => {
-		const url = get(page).url;
-		return paramKeys.reduce((total, key) => ({ ...total, [key]: url.searchParams.get(paramNameMap[key]) }), {});
-	};
-
-	const pushToUrl: Res['pushToUrl'] = (mutUrl) => {
-		const currentVal = get(store);
-		paramKeys.forEach((key) => {
-			const currentParam = serializeOne(currentVal[key]);
-			const paramName = paramNameMap[key];
-			if (currentParam === null) mutUrl.searchParams.delete(paramName);
-			else mutUrl.searchParams.set(paramName, currentParam);
-		});
-		return mutUrl;
-	};
-
-	const isSynced: Res['isSynced'] = (a = {}) => {
-		const paramVal = a.paramVal ?? getParams();
-		const val = a.val ?? get(store);
-		return paramKeys.every((key) => paramVal[key] === serializeOne(val[key]));
-	};
-
-	const goImmediate = (opts?: GoOpts): void => {
-		goto(pushToUrl(createUrl(opts)), { keepFocus: true, noScroll: true, replaceState: true });
-	};
-
-	const go = (() => {
-		let timer: ReturnType<typeof setTimeout>;
-		return (opts?: GoOpts) => {
-			clearTimeout(timer);
-			timer = setTimeout(() => goImmediate(opts), 50);
-		};
-	})();
-
-	const setCleaned: Res['setCleaned'] = (cleaned, opts) => {
-		store.set(cleaned);
-		const changed = !isSynced();
-		if (changed && !opts?.nogo) go(opts);
-		return { changed };
-	};
-
-	const set: Res['set'] = (unclean, opts) => setCleaned(clean(unclean), opts);
-
-	const update: Res['update'] = (cb) => set(cb(get(store)));
-
-	const setParams: Res['setParams'] = (param, opts) => {
-		return setCleaned(deserialize(param), opts);
-	};
-
-	const pullFromUrl: Res['pullFromUrl'] = () => {
-		setParams(getParams());
-	};
-
-	const init = (): boolean => {
-		const paramVals = getParams();
-		store.set(deserialize(paramVals));
-		const changed = !isSynced();
-		if (changed && browser && !skipInitGoto) {
-			goImmediate();
-		}
-		return changed;
-	};
-
-	return {
-		paramNameMap,
-		paramKeys,
-		getParams,
-		subscribe: store.subscribe,
-		serializeOne,
-		deserialize,
-		clean,
-		pushToUrl,
-		pullFromUrl,
-		setParams,
-		set,
-		update,
-		setCleaned,
-		isSynced,
-		initiallyOutOfSync: init(),
-	};
-};
-```
-shiki-end -->
+<CodeTopper title={data.paramsGeneric.title}>
+	<TabPanelItem panel={data.paramsGeneric} />
 </CodeTopper>
 
 <HAnchor tag="h2" title="Concrete Types" />

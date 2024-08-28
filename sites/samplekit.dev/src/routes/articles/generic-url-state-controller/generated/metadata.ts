@@ -13,8 +13,8 @@ export default {
 	featured: false,
 	series: { name: 'URL State Controller', position: 2 },
 	articlePath: '/articles/generic-url-state-controller',
-	wordCount: 2438,
-	readingTime: 11,
+	wordCount: 1829,
+	readingTime: 9,
 	toc: [
 		{
 			title: 'Drawbacks of the derived store',
