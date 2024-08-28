@@ -1,4 +1,4 @@
-<script lang="ts" context="module">
+<script lang="ts" module>
 	import imgLg from './assets/typesafe-fetch-handler-q30.webp';
 	import imgSm from './assets/typesafe-fetch-handler-thumbnail-1200w.webp';
 	import type { RawFrontMatter } from '$lib/articles/schema';

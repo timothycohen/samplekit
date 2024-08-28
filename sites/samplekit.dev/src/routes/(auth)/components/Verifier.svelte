@@ -1,4 +1,4 @@
-<script lang="ts" context="module">
+<script lang="ts" module>
 	import type { SuperValidated } from '$lib/superforms/client';
 	import type { confirmPassSchema, sendSMSTokenSchema, verifyOTPSchema } from '$routes/(auth)/validators';
 

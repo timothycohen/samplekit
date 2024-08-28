@@ -6,7 +6,7 @@
 	import { GoogleFormButton, Or } from '$routes/(auth)/(login)/components';
 	import { PassInput } from '$routes/(auth)/components';
 	import { signinSchema } from '$routes/(auth)/validators';
-	import { useTurnstileCtx } from '../+layout.svelte';
+	import { useTurnstileCtx } from '../turnstile.ctx.svelte';
 
 	const { data } = $props();
 

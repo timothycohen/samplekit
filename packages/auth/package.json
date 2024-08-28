@@ -15,17 +15,17 @@
 		"build": "pnpm clean && tsc"
 	},
 	"devDependencies": {
-		"@simplewebauthn/types": "^9.0.1",
+		"@simplewebauthn/types": "^10.0.0",
 		"@types/cookie": "^0.6.0",
 		"@types/qrcode": "^1.5.5"
 	},
 	"dependencies": {
-		"@simplewebauthn/browser": "^9.0.1",
-		"@simplewebauthn/server": "9.0.1",
-		"nanoid": "^5.0.5",
+		"@simplewebauthn/browser": "^10.0.0",
+		"@simplewebauthn/server": "10.0.1",
+		"nanoid": "^5.0.7",
 		"otplib": "^12.0.1",
-		"qrcode": "^1.5.3",
-		"zod": "^3.22.4"
+		"qrcode": "^1.5.4",
+		"zod": "^3.23.8"
 	},
 	"exports": {
 		"./client": "./dist/client/index.js",

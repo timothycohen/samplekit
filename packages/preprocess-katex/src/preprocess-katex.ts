@@ -1,7 +1,7 @@
 import { walk } from 'estree-walker';
 import katex from 'katex';
 import MagicString from 'magic-string';
-import { parse, type SvelteNode, type PreprocessorGroup } from 'svelte/compiler';
+import { parse, type PreprocessorGroup } from 'svelte/compiler';
 import type { Logger } from './logger.js';
 
 const display = { start: String.raw`\[`, end: String.raw`\]` };
@@ -97,7 +97,7 @@ export function processKatex({
 			let count = 0;
 
 			walk(ast.fragment, {
-				enter(node: SvelteNode) {
+				enter(node: (typeof ast.fragment.nodes)[number]) {
 					if (node.type !== 'Comment') return;
 					const trimmed = node.data.trim();
 

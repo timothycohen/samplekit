@@ -1,4 +1,4 @@
-<script lang="ts" context="module">
+<script lang="ts" module>
 	import imgLg from './assets/simple-url-state-controller-q30.webp';
 	import imgSm from './assets/simple-url-state-controller-thumbnail-1200w.webp';
 	import type { RawFrontMatter } from '$lib/articles/schema';

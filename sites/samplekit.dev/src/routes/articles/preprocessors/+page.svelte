@@ -1,4 +1,4 @@
-<script lang="ts" context="module">
+<script lang="ts" module>
 	import video from './assets/2024-08-05_22-41-28_889x627.mp4';
 	import imgSm from './assets/preprocessors-thumbnail-1200w.webp';
 	import type { RawFrontMatter } from '$lib/articles/schema';
@@ -337,7 +337,7 @@ shiki-end -->
 import { walk } from 'estree-walker';
 import MagicString from 'magic-string';
 import { marked as hostedMarked } from 'marked';
-import { parse, type SvelteNode, type PreprocessorGroup } from 'svelte/compiler';
+import { parse, type PreprocessorGroup } from 'svelte/compiler';
 import type { Logger } from './logger.js';
 
 const delimiter = { start: 'md-start', end: 'md-end' };
@@ -364,7 +364,7 @@ export function processMarkdown({
 				let count = 0;
 
 				walk(ast.fragment, {
-					enter(node: SvelteNode) {
+					enter(node: (typeof ast.fragment.nodes)[number]) {
 						if (node.type !== 'Comment') return;
 						const trimmed = node.data.trim();
 						if (!trimmed.startsWith(delimiter.start)) return;
@@ -459,7 +459,7 @@ shiki-end -->
 import { walk } from 'estree-walker';
 import katex from 'katex';
 import MagicString from 'magic-string';
-import { parse, type SvelteNode, type PreprocessorGroup } from 'svelte/compiler';
+import { parse, type PreprocessorGroup } from 'svelte/compiler';
 import type { Logger } from './logger.js';
 
 const display = { start: String.raw`\[`, end: String.raw`\]` };
@@ -485,7 +485,7 @@ export function processKatex({
 			let count = 0;
 
 			walk(ast.fragment, {
-				enter(node: SvelteNode) {
+				enter(node: (typeof ast.fragment.nodes)[number]) {
 					if (node.type !== 'Comment') return;
 					const trimmed = node.data.trim();
 
@@ -534,7 +534,7 @@ shiki-end -->
 import { walk } from 'estree-walker';
 import katex from 'katex';
 import MagicString from 'magic-string';
-import { parse, type SvelteNode, type PreprocessorGroup } from 'svelte/compiler';
+import { parse, type PreprocessorGroup } from 'svelte/compiler';
 import type { Logger } from './logger.js';
 
 const display = { start: String.raw`\[`, end: String.raw`\]` };
@@ -571,7 +571,7 @@ export function processKatex({
 			let count = 0;
 
 			walk(ast.fragment, {
-				enter(node: SvelteNode) {
+				enter(node: (typeof ast.fragment.nodes)[number]) {
 					if (node.type !== 'Comment') return;
 					const trimmed = node.data.trim();
 
@@ -652,7 +652,7 @@ d"diff-add" l"21-79" l"114" l"118" l"121-124" l"126"
 import { walk } from 'estree-walker';
 import katex from 'katex';
 import MagicString from 'magic-string';
-import { parse, type SvelteNode, type PreprocessorGroup } from 'svelte/compiler';
+import { parse, type PreprocessorGroup } from 'svelte/compiler';
 import type { Logger } from './logger.js';
 
 const display = { start: String.raw`\[`, end: String.raw`\]` };
@@ -748,7 +748,7 @@ export function processKatex({
 			let count = 0;
 
 			walk(ast.fragment, {
-				enter(node: SvelteNode) {
+				enter(node: (typeof ast.fragment.nodes)[number]) {
 					if (node.type !== 'Comment') return;
 					const trimmed = node.data.trim();
 

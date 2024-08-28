@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { HAnchor, Admonition } from '$lib/components';
 	import I from '$lib/icons';
-	import { useCodeThemeCtx } from '../+layout.svelte';
+	import { useCodeThemeCtx } from '../codeTheme.ctx.svelte';
 
 	const { data } = $props();
 	const codeTheme = useCodeThemeCtx();

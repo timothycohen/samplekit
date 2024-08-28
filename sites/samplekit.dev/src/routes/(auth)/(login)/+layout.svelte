@@ -1,16 +1,8 @@
-<script lang="ts" context="module">
-	import { Turnstile } from '$lib/botProtection/turnstile/client';
-	import { defineContext } from '$lib/utils/client';
-
-	const [get, set] = defineContext<Turnstile>();
-	export const createTurnstileCtx = () => set(new Turnstile());
-	export const useTurnstileCtx = get;
-</script>
-
 <script lang="ts">
 	import { TurnstileEl } from '$lib/botProtection/turnstile/client';
 	import { LogoLink, Admonition } from '$lib/components';
 	import { DotPattern } from '$routes/(auth)/(login)/components';
+	import { createTurnstileCtx, useTurnstileCtx } from './turnstile.ctx.svelte';
 
 	createTurnstileCtx();
 	const turnstile = useTurnstileCtx();

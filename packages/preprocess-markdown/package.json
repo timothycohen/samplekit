@@ -17,10 +17,12 @@
 		".": "./dist/index.js",
 		"./package.json": "./package.json"
 	},
+	"peerDependencies": {
+		"svelte": ">=5.0.0-next.241"
+	},
 	"dependencies": {
 		"estree-walker": "^3.0.3",
-		"magic-string": "^0.30.10",
-		"marked": "^12.0.0",
-		"svelte": "5.0.0-next.164"
+		"magic-string": "^0.30.11",
+		"marked": "^14.1.0"
 	}
 }

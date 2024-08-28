@@ -1,4 +1,4 @@
-<script lang="ts" context="module">
+<script lang="ts" module>
 	import type { NoPropComponent } from '$lib/utils/common';
 	import type { WrapperProps } from './PatternWrapper.svelte';
 	import type { Snippet } from 'svelte';

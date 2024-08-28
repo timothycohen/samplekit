@@ -1,4 +1,4 @@
-<script lang="ts" context="module">
+<script lang="ts" module>
 	export type WrapperProps = { bg?: true; center?: true; noBorder?: true; noPadding?: true };
 </script>
 

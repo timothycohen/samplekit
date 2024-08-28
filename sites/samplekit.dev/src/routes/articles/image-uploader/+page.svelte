@@ -1,4 +1,4 @@
-<script lang="ts" context="module">
+<script lang="ts" module>
 	// import video from './assets/2024-08-05_21-17-07_465x474_24fps.mp4';
 	import imgSm from './assets/image-uploader-thumbnail-1200w.webp';
 	import type { RawFrontMatter } from '$lib/articles/schema';
