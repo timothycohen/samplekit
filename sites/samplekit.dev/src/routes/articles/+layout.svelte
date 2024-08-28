@@ -60,7 +60,7 @@
 
 			{#if article.demos?.main}
 				<div class="prose prose-radix my-4 lg:prose-lg">
-					<HAnchor tag="h2" title="Interactive Demo" />
+					<HAnchor tag="h2" title="Demo" />
 				</div>
 				<div class="main-demo prose-pre">
 					<TabPanels files={article.demos.main} />

@@ -4,7 +4,7 @@
 
 	export const metadata = {
 		title: 'Generic URL State Controller',
-		implementationPath: '/articles/generic-url-state-controller#interactive-demo',
+		implementationPath: '/articles/generic-url-state-controller#demo',
 		srcCodeHref:
 			'https://github.com/timothycohen/samplekit/tree/main/sites/samplekit.dev/src/routes/articles/generic-url-state-controller',
 		description: 'Sync validated, generic store state to the URL with a flexible API.',

@@ -20,7 +20,7 @@ export default [
 	{ title: 'Price.svelte', loadRaw: () => import('/src/routes/shop/components/searchAndFilter/Price.svelte?raw') },
 	{
 		title: 'SearchBar.svelte',
-		loadRaw: () => import('/src/routes/articles/generic-url-state-controller/live-demos/main/Search.svelte?raw'),
+		loadRaw: () => import('/src/routes/articles/generic-url-state-controller/demos/main/Search.svelte?raw'),
 	},
 	{ title: 'SortBy.svelte', loadRaw: () => import('/src/routes/shop/components/searchAndFilter/SortBy.svelte?raw') },
 ] satisfies ModuleDefinitions;

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import I from '$lib/icons';
-	import { getRandomColor as get } from '$routes/articles/typesafe-fetch-handler/live-demos/main';
+	import { getRandomColor as get } from '$routes/articles/typesafe-fetch-handler/demos/main';
 	import LangSelect from './LangSelect.svelte';
 	import { defaultLang, type Lang } from './lang.service.common';
 

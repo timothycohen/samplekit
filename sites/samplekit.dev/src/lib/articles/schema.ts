@@ -87,7 +87,6 @@ export type MetaRawComponents = Record<
 	`${string}${'.svelte'}`,
 	{ bg?: true; center?: true; noBorder?: true; noPadding?: true; title?: string }
 >;
-export const defaultMetaRawComponents: MetaRawComponents = { 'Demo.svelte': { title: 'Interactive Demo' } };
 export type MetaProcessedComponents = MetaRawComponents[keyof MetaRawComponents] & { title: string };
 
 export type MetaRawCode = { modules: Array<{ rawCodePromise: () => Promise<string>; title: string }> };

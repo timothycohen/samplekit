@@ -5,7 +5,7 @@
 
 	export const metadata = {
 		title: 'TypeSafe Fetch Handler',
-		implementationPath: '/articles/typesafe-fetch-handler#interactive-demo',
+		implementationPath: '/articles/typesafe-fetch-handler#demo',
 		srcCodeHref:
 			'https://github.com/timothycohen/samplekit/blob/main/sites/samplekit.dev/src/lib/http/client.svelte.ts',
 		description: 'A typesafe fetch handler that stores the route, method, res/req types, and fetch state.',

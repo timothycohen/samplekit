@@ -5,7 +5,7 @@
 
 	export const metadata = {
 		title: 'Blog with Preprocessors',
-		implementationPath: '/articles/preprocessors/#interactive-demo',
+		implementationPath: '/articles/preprocessors/#demo',
 		srcCodeHref: 'https://github.com/timothycohen/samplekit/tree/main/packages/markdown',
 		description: 'Use preprocessors to format themed code blocks and Markdown tables alongside Svelte components.',
 		publishedAt: new Date('2024-03-06 16:16:15 -0500'),

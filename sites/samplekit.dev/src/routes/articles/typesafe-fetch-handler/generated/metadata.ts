@@ -3,7 +3,7 @@ import imgSm from '/src/routes/articles/typesafe-fetch-handler/assets/typesafe-f
 import imgLg from '/src/routes/articles/typesafe-fetch-handler/assets/typesafe-fetch-handler-q30.webp';
 export default {
 	title: 'TypeSafe Fetch Handler',
-	implementationPath: '/articles/typesafe-fetch-handler#interactive-demo',
+	implementationPath: '/articles/typesafe-fetch-handler#demo',
 	srcCodeHref: 'https://github.com/timothycohen/samplekit/blob/main/sites/samplekit.dev/src/lib/http/client.svelte.ts',
 	description: 'A typesafe fetch handler that stores the route, method, res/req types, and fetch state.',
 	publishedAt: new Date('2024-03-06T01:39:38.000Z'),

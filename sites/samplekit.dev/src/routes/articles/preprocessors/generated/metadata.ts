@@ -3,7 +3,7 @@ import imgSm from '/src/routes/articles/preprocessors/assets/preprocessors-thumb
 import video from '/src/routes/articles/preprocessors/assets/2024-08-05_22-41-28_889x627.mp4';
 export default {
 	title: 'Blog with Preprocessors',
-	implementationPath: '/articles/preprocessors/#interactive-demo',
+	implementationPath: '/articles/preprocessors/#demo',
 	srcCodeHref: 'https://github.com/timothycohen/samplekit/tree/main/packages/markdown',
 	description: 'Use preprocessors to format themed code blocks and Markdown tables alongside Svelte components.',
 	publishedAt: new Date('2024-03-06T21:16:15.000Z'),

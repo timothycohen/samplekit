@@ -4,7 +4,7 @@ import type { ModuleDefinitions, DemoName, CodeProcessed, ComponentProcessed, Me
 /** @throws Error */
 export const demosMap = (() => {
 	const metaModules = Object.entries(
-		import.meta.glob('/src/routes/articles/**/live-demos/**/meta.preview.ts', { eager: true }),
+		import.meta.glob('/src/routes/articles/**/demos/**/meta.preview.ts', { eager: true }),
 	) as [string, { default: ModuleDefinitions }][];
 
 	const map: Partial<Record<ArticlePath, { main?: ModuleDefinitions; lazy?: Record<DemoName, ModuleDefinitions> }>> =
@@ -13,7 +13,7 @@ export const demosMap = (() => {
 	for (const [url, loaded] of metaModules) {
 		const a = url.replace('/src/routes', '').split('/');
 		a.pop();
-		const demoIdx = a.indexOf('live-demos');
+		const demoIdx = a.indexOf('demos');
 		const articlePath = a.slice(0, demoIdx).join('/') as ArticlePath;
 		const demoName = a.slice(demoIdx + 1).join('/');
 		if (!map[articlePath]) map[articlePath] = {};

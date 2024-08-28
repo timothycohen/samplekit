@@ -14,5 +14,5 @@ export type PostRes = { color: string };
 
 export const getRandomColor = new ClientFetcher<RouteId, PostRes, PostReq>(
 	'POST',
-	'/articles/typesafe-fetch-handler/live-demos/main',
+	'/articles/typesafe-fetch-handler/demos/main',
 );

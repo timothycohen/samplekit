@@ -5,9 +5,9 @@
 
 	export const metadata = {
 		title: 'Simple URL State Controller',
-		implementationPath: '/articles/simple-url-state-controller#interactive-demo',
+		implementationPath: '/articles/simple-url-state-controller#demo',
 		srcCodeHref: 'https://github.com/timothycohen/samplekit/tree/main/sites/samplekit.dev/src/lib/stores/params',
-		description: 'Store state in the URL with a few simple svelte stores.',
+		description: 'Store state in the URL with a few simple Svelte stores.',
 		publishedAt: new Date('2024-03-07 13:29:34 -0500'),
 		authors: [{ name: 'Tim Cohen', email: 'contact@timcohen.dev' }],
 		imgSm,
@@ -37,7 +37,7 @@
 </p>
 
 <p>
-	In this article, we'll create controllers for the search param state that we can use just as easily as regular svelte
+	In this article, we'll create controllers for the search param state that we can use just as easily as regular Svelte
 	stores. We'll put them to use by storing the filter state of posts in the URL as in the demo above.
 </p>
 
@@ -73,7 +73,7 @@ shiki-end -->
 import { page } from '$app/stores';
 import { derived, get } from 'svelte/store';
 
-const searchParam: (param: string) => {
+const searchParam = (param: string) => {
 	const store = derived(page, ($page) => $page.url.searchParams.get(param));
 
 	return {
@@ -81,7 +81,7 @@ const searchParam: (param: string) => {
 	}
 }
 
-const searchParams: (param: string) => {
+const searchParams = (param: string) => {
 	const store = derived(page, ($page) => $page.url.searchParams.getAll(param));
 
 	return {
@@ -739,7 +739,7 @@ shiki-end -->
 	And that's it! We've created a simple wrapper around a derived store that syncs application state with the URL. This
 	is everything we need to write the demo at the top of the article.
 	<a
-		href="https://github.com/timothycohen/samplekit/tree/main/sites/samplekit.dev/src/routes/articles/simple-url-state-controller/live-demos/main"
+		href="https://github.com/timothycohen/samplekit/tree/main/sites/samplekit.dev/src/routes/articles/simple-url-state-controller/demos/main"
 		data-external
 	>
 		Full code here
