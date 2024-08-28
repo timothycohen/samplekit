@@ -21,7 +21,7 @@
 	<ul class="space-y-.5 {level !== 1 ? 'pl-4' : ''}">
 		{#each tree as heading, i (i)}
 			<li class="space-y-.5">
-				<a href="#{heading.id}" class="inline-block w-full hover:text-accent-12" {onclick}>
+				<a data-sveltekit-replacestate href="#{heading.id}" class="inline-block w-full hover:text-accent-12" {onclick}>
 					<span
 						{...$item(heading.id)}
 						class="underline--hidden

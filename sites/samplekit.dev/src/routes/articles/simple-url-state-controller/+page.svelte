@@ -91,9 +91,9 @@ const searchParams = (param: string) => {
 ```
 shiki-end -->
 
-<HAnchor tag="h2" title="Single value search param" />
+<HAnchor tag="h2" title="Single Value" />
 
-<HAnchor tag="h3" title="API" />
+<HAnchor tag="h3" title="API" id="search-param-controller-api" />
 
 <HAnchor tag="h4" title="Fulfilling the Store Contract" />
 
@@ -255,7 +255,7 @@ interface SearchParamController {
 ```
 shiki-end -->
 
-<HAnchor tag="h3" title="Implementation" />
+<HAnchor tag="h3" title="Implementation" id="search-param-impl" />
 
 <p>We've got a solid API, so let's write the implementation.</p>
 
@@ -474,7 +474,7 @@ export const searchParam = (
 shiki-end -->
 </CodeTopper>
 
-<HAnchor tag="h3" title="Demo" />
+<HAnchor tag="h3" title="Example Usage" />
 
 <p>Now let's use it! Try it out below.</p>
 
@@ -548,9 +548,9 @@ shiki-end -->
 	<code>?easter=🐰&egg=🐰</code> immediately as desired.
 </p>
 
-<HAnchor tag="h2" title="Multi-value search params" />
+<HAnchor tag="h2" title="Multi Value" />
 
-<HAnchor tag="h3" title="API" />
+<HAnchor tag="h3" title="API" id="search-params-controller-api" />
 
 <p>Our multi-value controller's helper functions will be a little more detailed.</p>
 
@@ -585,7 +585,7 @@ interface SearchParamsController {
 ```
 shiki-end -->
 
-<HAnchor tag="h3" title="Implementation" />
+<HAnchor tag="h3" title="Implementation" id="search-params-impl" />
 
 <p>The ideas are the same, so we'll skip straight to the code. Here's one possible implementation.</p>
 

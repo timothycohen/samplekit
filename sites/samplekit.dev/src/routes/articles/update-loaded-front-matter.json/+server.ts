@@ -26,7 +26,7 @@ type FlatTocItem = { depth: number; title: string; href: string };
 type TocItem = { title: string; href: string; children?: TocItem[] };
 
 const createToc = ({ fileContents, articlePath }: { fileContents: string; articlePath: string }) => {
-	const regex = /<HAnchor\s+tag="([^"]+)"\s+title="([^"]+)"\s*\/>/g;
+	const regex = /<HAnchor\s+tag="([^"]+)"\s+title="([^"]+)"(?:\s+id="([^"]+)")?\s*\/>/g;
 
 	const results: FlatTocItem[] = [];
 
@@ -35,10 +35,11 @@ const createToc = ({ fileContents, articlePath }: { fileContents: string; articl
 	const hrefSet = new Set();
 
 	while ((match = regex.exec(fileContents)) !== null) {
-		const depth = +match[1]!.slice(1);
-
+		const tag = match[1]!;
+		const depth = +tag.slice(1);
 		const title = match[2]!;
-		const href = articlePath + '/#' + title.toLowerCase().replace(/\s+/g, '-');
+		const id = match[3] || title.toLowerCase().replace(/\s+/g, '-');
+		const href = articlePath + '/#' + id;
 		if (hrefSet.has(href)) logger.warn(`Duplicate href \`${href}\``);
 		hrefSet.add(href);
 

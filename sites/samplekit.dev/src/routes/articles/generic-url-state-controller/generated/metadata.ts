@@ -34,7 +34,7 @@ export default {
 						{ title: 'Sync State', href: '/articles/generic-url-state-controller/#sync-state' },
 					],
 				},
-				{ title: 'Implementation', href: '/articles/generic-url-state-controller/#implementation' },
+				{ title: 'Implementation', href: '/articles/generic-url-state-controller/#single-value-implementation' },
 			],
 		},
 		{
@@ -42,7 +42,7 @@ export default {
 			href: '/articles/generic-url-state-controller/#multi-value-generic-param',
 			children: [
 				{ title: 'Interface', href: '/articles/generic-url-state-controller/#interface' },
-				{ title: 'Implementation', href: '/articles/generic-url-state-controller/#implementation' },
+				{ title: 'Implementation', href: '/articles/generic-url-state-controller/#multi-value-implementation' },
 			],
 		},
 		{ title: 'Concrete Types', href: '/articles/generic-url-state-controller/#concrete-types' },

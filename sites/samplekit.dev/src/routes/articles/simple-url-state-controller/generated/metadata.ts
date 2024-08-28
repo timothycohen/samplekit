@@ -14,17 +14,17 @@ export default {
 	featured: true,
 	series: { name: 'URL State Controller', position: 1 },
 	articlePath: '/articles/simple-url-state-controller',
-	wordCount: 2674,
+	wordCount: 2672,
 	readingTime: 12,
 	toc: [
 		{ title: 'Thinking through the API', href: '/articles/simple-url-state-controller/#thinking-through-the-api' },
 		{
-			title: 'Single value search param',
-			href: '/articles/simple-url-state-controller/#single-value-search-param',
+			title: 'Single Value',
+			href: '/articles/simple-url-state-controller/#single-value',
 			children: [
 				{
 					title: 'API',
-					href: '/articles/simple-url-state-controller/#api',
+					href: '/articles/simple-url-state-controller/#search-param-controller-api',
 					children: [
 						{
 							title: 'Fulfilling the Store Contract',
@@ -38,22 +38,22 @@ export default {
 				},
 				{
 					title: 'Implementation',
-					href: '/articles/simple-url-state-controller/#implementation',
+					href: '/articles/simple-url-state-controller/#search-param-impl',
 					children: [
 						{ title: 'Helpers', href: '/articles/simple-url-state-controller/#helpers' },
 						{ title: 'searchParam', href: '/articles/simple-url-state-controller/#searchparam' },
 					],
 				},
 				{ title: 'Adding Validation', href: '/articles/simple-url-state-controller/#adding-validation' },
-				{ title: 'Demo', href: '/articles/simple-url-state-controller/#demo' },
+				{ title: 'Example Usage', href: '/articles/simple-url-state-controller/#example-usage' },
 			],
 		},
 		{
-			title: 'Multi-value search params',
-			href: '/articles/simple-url-state-controller/#multi-value-search-params',
+			title: 'Multi Value',
+			href: '/articles/simple-url-state-controller/#multi-value',
 			children: [
-				{ title: 'API', href: '/articles/simple-url-state-controller/#api' },
-				{ title: 'Implementation', href: '/articles/simple-url-state-controller/#implementation' },
+				{ title: 'API', href: '/articles/simple-url-state-controller/#search-params-controller-api' },
+				{ title: 'Implementation', href: '/articles/simple-url-state-controller/#search-params-impl' },
 			],
 		},
 		{ title: 'Conclusion', href: '/articles/simple-url-state-controller/#conclusion' },

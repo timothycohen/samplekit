@@ -19,6 +19,7 @@
 		{#each tree as heading, i (i)}
 			<li class="space-y-.5">
 				<a
+					data-sveltekit-replacestate
 					href={heading.href}
 					class="inline-block w-full transition-colors duration-300 hover:text-accent-12"
 					{onclick}

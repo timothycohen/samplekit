@@ -340,7 +340,7 @@ interface ParamGeneric<Val, ParamName extends string> {
 ```
 shiki-end -->
 
-<HAnchor tag="h3" title="Implementation" />
+<HAnchor tag="h3" title="Implementation" id="single-value-implementation" />
 
 <p>We know what we have to do. Here's one way of getting there:</p>
 
@@ -519,7 +519,7 @@ interface ParamsGeneric<
 ```
 shiki-end -->
 
-<HAnchor tag="h3" title="Implementation" />
+<HAnchor tag="h3" title="Implementation" id="multi-value-implementation" />
 
 <p>And a possible implementation:</p>
 

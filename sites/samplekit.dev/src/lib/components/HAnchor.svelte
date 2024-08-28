@@ -5,14 +5,21 @@
 		title,
 		tag,
 		dataToc = true,
-	}: { title: string; tag: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6'; dataToc?: true | null } = $props();
+		id,
+	}: { title: string; tag: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6'; dataToc?: true | null; id?: string } = $props();
 
-	const id = title.toLowerCase().replace(/\s+/g, '-');
-	const href = '#' + id;
+	const ID = id ?? title.toLowerCase().replace(/\s+/g, '-');
+	const href = '#' + ID;
 </script>
 
-<svelte:element this={tag} data-toc={dataToc} {id}>
-	<a {href} class="group relative -mr-8 pr-8">
+<!-- @component
+This component is used to generate the TOC in `update-loaded-front-matter.json/+server.ts`
+
+To match the regex correctly, ensure the props are ordered as tag, title, [id]
+-->
+
+<svelte:element this={tag} data-toc={dataToc} id={ID}>
+	<a {href} class="group relative -mr-8 pr-8" data-sveltekit-replacestate>
 		<span class="text-gray-12 group-hover:text-accent-12">{title}</span>
 		<span
 			class="absolute bottom-0 right-0 top-0 grid content-center
