@@ -1,7 +1,7 @@
 import { jsonb, pgTable, timestamp, varchar } from 'drizzle-orm/pg-core';
 import { createSelectSchema } from 'drizzle-zod';
 import { z } from 'zod';
-import type { croppedImgSchema } from '$lib/image/client';
+import type { croppedImgSchema } from '$lib/image/common';
 
 // user is a reserved keyword in postgres
 export const users = pgTable('user_account', {

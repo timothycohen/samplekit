@@ -16,6 +16,19 @@ const str64ToNumArr = (str: string): number[] => Buffer.from(str, 'base64url').t
 const uint8ArrToStr64 = (uint8Array: Uint8Array): string => Buffer.from(uint8Array).toString('base64url');
 const str64ToU8Arr = (str: string): Uint8Array => new Uint8Array(str64ToNumArr(str));
 
+const getSavedDevices = (savedPasskeys: Auth.MFAs['passkeys']) =>
+	savedPasskeys?.map((device) => ({
+		id: device.credentialID,
+		type: 'public-key' as const,
+		transport: device.transport,
+	})) ?? [];
+
+const intoAuthenticator = (savedPasskey: NonNullable<Auth.MFAs['passkeys']>[number]) => ({
+	...savedPasskey,
+	credentialID: savedPasskey.credentialID,
+	credentialPublicKey: str64ToU8Arr(savedPasskey.credentialPublicKey),
+});
+
 export const createPasskey = <P, PWOP, PCtx>({
 	config,
 	dbProvider,
@@ -25,19 +38,6 @@ export const createPasskey = <P, PWOP, PCtx>({
 	dbProvider: DbAdapterProvider<P, PWOP>;
 	transformProvider: TransformProvider<P, PCtx>;
 }) => {
-	const getSavedDevices = (savedPasskeys: Auth.MFAs['passkeys']) =>
-		savedPasskeys?.map((device) => ({
-			id: str64ToU8Arr(device.credentialID),
-			type: 'public-key' as const,
-			transport: device.transport,
-		})) ?? [];
-
-	const intoAuthenticator = (savedPasskey: NonNullable<Auth.MFAs['passkeys']>[number]) => ({
-		...savedPasskey,
-		credentialID: str64ToU8Arr(savedPasskey.credentialID),
-		credentialPublicKey: str64ToU8Arr(savedPasskey.credentialPublicKey),
-	});
-
 	const createRegOpts = async ({
 		savedPasskeys,
 		email,
@@ -50,7 +50,7 @@ export const createPasskey = <P, PWOP, PCtx>({
 		generateRegistrationOptions({
 			rpName: config.passkey.rpName,
 			rpID: config.passkey.rpID,
-			userID: email,
+			userID: Buffer.from(email),
 			userName: givenName,
 			timeout: config.passkeyTimeout,
 			attestationType: 'none',
@@ -95,7 +95,7 @@ export const createPasskey = <P, PWOP, PCtx>({
 		}
 
 		const { counter } = registrationInfo;
-		const credentialID = uint8ArrToStr64(registrationInfo.credentialID);
+		const credentialID = registrationInfo.credentialID;
 		const credentialPublicKey = uint8ArrToStr64(registrationInfo.credentialPublicKey);
 
 		const savedPasskeys = await getSaved(userId);

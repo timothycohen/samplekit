@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { InputMessage, CodeInput } from '$lib/components';
-	import { Loader2 } from '$lib/styles/icons';
+	import I from '$lib/icons';
 	import { superForm, type SuperValidated } from '$lib/superforms/client';
 	import type { verifyOTPSchema } from '$routes/(auth)/validators';
 
@@ -21,7 +21,7 @@
 
 	<button type="submit" disabled={!filled || $submitting} class="btn btn-accent mt-5">
 		{#if $delayed}
-			<Loader2 class="inline h-5 w-5 animate-spin" />
+			<I.LoaderCircle class="inline h-5 w-5 animate-spin" />
 		{/if}
 		Verify
 	</button>

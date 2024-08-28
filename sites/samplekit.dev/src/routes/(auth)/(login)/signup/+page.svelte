@@ -1,21 +1,19 @@
 <script lang="ts">
-	import { useTurnstileService } from '$lib/botProtection/turnstile/client';
 	import { InputMessage } from '$lib/components';
-	import { Loader2 } from '$lib/styles/icons';
+	import I from '$lib/icons';
 	import { superForm, zodClient } from '$lib/superforms/client';
 	import { GoogleFormButton, Or } from '$routes/(auth)/(login)/components';
 	import { PassInput } from '$routes/(auth)/components';
 	import { signupSchema } from '$routes/(auth)/validators';
+	import { useTurnstileCtx } from '../turnstile.ctx.svelte';
 
 	const { data } = $props();
 
-	const { form, errors, constraints, enhance, message, submitting } = $state(
-		superForm(data.signupForm, {
-			validators: zodClient(signupSchema),
-		}),
-	);
+	const { form, errors, constraints, enhance, message, submitting } = superForm(data.signupForm, {
+		validators: zodClient(signupSchema),
+	});
 
-	const { turnstile, turnstileInput } = useTurnstileService();
+	const turnstile = useTurnstileCtx();
 </script>
 
 <h1 class="text-h4 font-medium">Sign up</h1>
@@ -24,7 +22,7 @@
 <GoogleFormButton persistent={$form.persistent} />
 <Or />
 
-<form action="/signup?/signupWithPassword" method="post" use:enhance use:turnstileInput={{ form }}>
+<form action="/signup?/signupWithPassword" method="post" use:enhance use:turnstile.addForm={{ name: 'signup', form }}>
 	<label for="email" class="input-label">Email</label>
 	<input
 		bind:value={$form.email}
@@ -102,9 +100,15 @@
 		</label>
 	</div>
 
-	<button class="btn btn-accent h-10 w-full py-0 transition-colors" disabled={$submitting || !$turnstile} type="submit">
-		{#if $submitting}
-			<Loader2 class="inline h-5 w-5 animate-spin" />
+	<button
+		class="btn btn-accent h-10 w-full py-0 transition-colors"
+		disabled={$submitting || !turnstile.token}
+		type="submit"
+	>
+		{#if !turnstile.token}
+			Verifying...
+		{:else if $submitting}
+			<I.LoaderCircle class="inline h-5 w-5 animate-spin" />
 			Creating...
 		{:else}
 			Sign up

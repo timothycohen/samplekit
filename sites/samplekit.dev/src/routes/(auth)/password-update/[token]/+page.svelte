@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-	import { Logo, InputMessage } from '$lib/components';
-	import { Loader2 } from '$lib/styles/icons';
+	import { LogoLink, InputMessage } from '$lib/components';
+	import I from '$lib/icons';
 	import { superForm, zodClient } from '$lib/superforms/client';
 	import { PassInput } from '$routes/(auth)/components';
 	import { createNewPassSchema } from '$routes/(auth)/validators';
@@ -20,7 +20,7 @@
 		<div class="relative rounded-card px-4 shadow-4">
 			<div class="flex-auto p-6">
 				<div class="mb-10 flex items-center justify-center overflow-hidden text-2xl">
-					<Logo link />
+					<LogoLink />
 				</div>
 
 				<h2 class="mb-6 text-xl font-medium">Update Password</h2>
@@ -73,7 +73,7 @@
 
 					<button class="btn btn-accent h-10 w-full py-0" disabled={$submitting} type="submit">
 						{#if $submitting}
-							<Loader2 class="inline h-5 w-5 animate-spin" />
+							<I.LoaderCircle class="inline h-5 w-5 animate-spin" />
 							Updating...
 						{:else}
 							Update Password

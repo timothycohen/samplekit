@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-	import { Trash2, BadgeCheck, Loader2 } from '$lib/styles/icons';
+	import { Admonition } from '$lib/components';
+	import I from '$lib/icons';
 
 	const { data } = $props();
 
@@ -14,7 +15,7 @@
 		<div class="relative space-y-4 rounded-card p-8 shadow-3">
 			{#if session.current}
 				<div class="absolute right-4 top-4">
-					<div class="flex items-center justify-center gap-1"><BadgeCheck class="h-4 w-4" />This Device</div>
+					<div class="flex items-center justify-center gap-1"><I.BadgeCheck class="h-4 w-4" />This Device</div>
 					{#if !session.persistent}
 						<div class="flex justify-end"><small>Single Session</small></div>
 					{/if}
@@ -25,9 +26,9 @@
 					<input type="hidden" value={session.id} name="session_id" />
 					<button disabled={!!submitting} type="submit" class="btn-ghost absolute right-4 top-4 border-none">
 						{#if submitting === session.id}
-							<Loader2 class="animate-spin" />
+							<I.LoaderCircle class="animate-spin" />
 						{:else}
-							<Trash2 />
+							<I.Trash2 />
 						{/if}
 					</button>
 				</form>
@@ -44,8 +45,7 @@
 		</div>
 	{/each}
 
-	<div class="alert-wrapper alert-wrapper-info">
-		<p class="alert-header text-lg">How long is a device logged in?</p>
+	<Admonition kind="security" title="How long is a device logged in?">
 		<p class="mb-2">
 			The <span class="italic">“Remember me”</span> option stores a session for {data.expirationDuration}
 			without any activity. Logging in extends the duration.
@@ -55,7 +55,7 @@
 			and are not displayed here.
 		</p>
 		<p>You can log out of a remembered device at any time.</p>
-	</div>
+	</Admonition>
 
 	<div class="flex flex-wrap justify-between gap-4">
 		<form action="/logout?/logoutCurrent" method="post" onsubmit={() => (submitting = 'all')}>

@@ -1,16 +1,37 @@
 <script lang="ts">
+	import '@samplekit/preprocess-katex/katex.css';
 	import '../app.css';
-	import { onMount } from 'svelte';
+	import { tick } from 'svelte';
+	import { browser } from '$app/environment';
+	import { beforeNavigate, afterNavigate } from '$app/navigation';
 	import { page } from '$app/stores';
+	import { createTurnstileLoadedFlag } from '$lib/botProtection/turnstile/client';
 	import { Header, SEO } from '$lib/components';
-	import { themeController } from '$lib/styles';
+	import { createMobileNavCtx } from '$lib/components/layout/nav/context.svelte';
+	import { createThemeControllerCtx } from '$lib/styles';
 
-	const { children } = $props();
+	const { children, data } = $props();
 
-	onMount(() => {
-		const { destroy } = themeController.listen('light-dark-system');
-		return destroy;
-	});
+	createThemeControllerCtx(data.initialTheme);
+	createMobileNavCtx();
+	createTurnstileLoadedFlag();
+
+	const smoothNavigationOnlyOnSamePage = () => {
+		if (browser) document.documentElement.style.scrollBehavior = 'smooth';
+
+		beforeNavigate(({ from, to }) => {
+			if (from?.route.id === to?.route.id) return;
+			document.documentElement.style.scrollBehavior = 'auto';
+		});
+
+		afterNavigate(() => {
+			tick().then(() => {
+				document.documentElement.style.scrollBehavior = 'smooth';
+			});
+		});
+	};
+
+	smoothNavigationOnlyOnSamePage();
 </script>
 
 <SEO meta={$page.data.meta} />
@@ -25,7 +46,7 @@
 	</main>
 
 	{#if $page.data.layout.showFooter}
-		<footer class="mt-8 p-4 text-center">
+		<footer class="p-4 text-center">
 			<div class="flex justify-center gap-2">
 				<span>A project by <a class="link" href="mailto:contact@timcohen.dev">Timothy Cohen</a> </span>
 				|

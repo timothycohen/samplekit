@@ -1,28 +1,27 @@
 <script lang="ts">
+	import { Admonition } from '$lib/components';
 	import { indefiniteArticle } from '$lib/utils/common';
 
 	const { data } = $props();
 </script>
 
 <section class="mx-auto h-screen-nav w-full max-w-3xl p-8">
-	<div class="space-y-8 rounded-card p-8 shadow-3">
-		<div class="mb-2 text-xl font-bold">Link {data.provider ?? 'OAuth'} Account</div>
+	<Admonition bold kind="security">
+		<div>
+			<p>This account does not have {data.provider ?? 'OAuth'} authentication enabled.</p>
 
-		<p>This account does not have {data.provider ?? 'OAuth'} authentication enabled.</p>
-		<p>
-			If you would like to log in with {data.provider ?? 'a provider'}, please sign in with your password, and change to {data.provider ??
-				'OAuth'} in
-			<strong>Account Security</strong> settings.
-		</p>
-		<a href="/login" class="btn btn-hollow sm:w-fit">Log In With Password</a>
-	</div>
+			<p class="my-2 text-gray-11">
+				If you would like to log in with {data.provider ?? 'a provider'}, please sign in with your password, and change
+				to {data.provider ?? 'OAuth'} in <strong class="text-gray-12">Account Security</strong> settings. Your
+				multi-factor authentication will be managed by {data.provider ?? 'the provider'}.
+			</p>
 
-	<div class="alert-wrapper alert-wrapper-warning mt-6">
-		<p class="alert-header">
-			Linking {data.provider ? `${indefiniteArticle(data.provider)} ${data.provider} account` : 'an OAuth provider'} will
-			remove password and MFA login.
-		</p>
+			<a href="/login" class="btn btn-hollow ml-auto mt-6 sm:w-fit">Log In With Password</a>
+		</div>
+	</Admonition>
 
-		Sign in and multi-factor authentication will be managed by {data.provider ?? 'the provider'}.
-	</div>
+	<Admonition kind="note">
+		Linking {data.provider ? `${indefiniteArticle(data.provider)} ${data.provider} account` : 'an OAuth provider'} will remove
+		password and MFA login.
+	</Admonition>
 </section>

@@ -1,7 +1,28 @@
+<script lang="ts" module>
+	import imgLg from './assets/simple-url-state-controller-q30.webp';
+	import imgSm from './assets/simple-url-state-controller-thumbnail-1200w.webp';
+	import type { RawFrontMatter } from '$lib/articles/schema';
+
+	export const metadata = {
+		title: 'Simple URL State Controller',
+		implementationPath: '/articles/simple-url-state-controller#demo',
+		srcCodeHref: 'https://github.com/timothycohen/samplekit/tree/main/sites/samplekit.dev/src/lib/stores/params',
+		description: 'Store state in the URL with a few simple Svelte stores.',
+		publishedAt: new Date('2024-03-07 13:29:34 -0500'),
+		authors: [{ name: 'Tim Cohen', email: 'contact@timcohen.dev' }],
+		imgSm,
+		imgLg,
+		tags: ['url', 'state management'],
+		featured: true,
+		series: { name: 'URL State Controller', position: 1 },
+	} satisfies RawFrontMatter;
+</script>
+
 <script lang="ts">
 	import { CodeTopper } from '$lib/articles/components';
+	import { HAnchor, Admonition } from '$lib/components';
+	import I from '$lib/icons';
 	import { searchParam } from '$lib/stores';
-	import { ArrowUp, X, Check } from '$lib/styles/icons';
 
 	const setSwitch = searchParam('set-switch');
 	const toggleSwitch = searchParam('toggle-switch');
@@ -16,11 +37,11 @@
 </p>
 
 <p>
-	In this article, we'll create controllers for the search param state that we can use just as easily as regular svelte
+	In this article, we'll create controllers for the search param state that we can use just as easily as regular Svelte
 	stores. We'll put them to use by storing the filter state of posts in the URL as in the demo above.
 </p>
 
-<h2>Thinking through the API</h2>
+<HAnchor tag="h2" title="Thinking through the API" />
 
 <p>
 	Odds are, we'll likely want to separate the API for single and multi-value search params. The stored values should be
@@ -52,7 +73,7 @@ shiki-end -->
 import { page } from '$app/stores';
 import { derived, get } from 'svelte/store';
 
-const searchParam: (param: string) => {
+const searchParam = (param: string) => {
 	const store = derived(page, ($page) => $page.url.searchParams.get(param));
 
 	return {
@@ -60,7 +81,7 @@ const searchParam: (param: string) => {
 	}
 }
 
-const searchParams: (param: string) => {
+const searchParams = (param: string) => {
 	const store = derived(page, ($page) => $page.url.searchParams.getAll(param));
 
 	return {
@@ -70,11 +91,11 @@ const searchParams: (param: string) => {
 ```
 shiki-end -->
 
-<h2>Single value search param</h2>
+<HAnchor tag="h2" title="Single Value" />
 
-<h3>API</h3>
+<HAnchor tag="h3" title="API" id="search-param-controller-api" />
 
-<h4>Fulfilling the Store Contract</h4>
+<HAnchor tag="h4" title="Fulfilling the Store Contract" />
 
 <p>Our single value controller should be as simple to use as a regular store.</p>
 
@@ -95,7 +116,7 @@ shiki-end -->
 </p>
 
 <!-- shiki-start
-	```ts
+```ts
 interface SearchParamController {
 	subscribe: Readable<string | null>['subscribe'];
 	set: (value: string | null) => void;
@@ -103,7 +124,7 @@ interface SearchParamController {
 ```
 shiki-end -->
 
-<h4>Convenience Methods</h4>
+<HAnchor tag="h4" title="Convenience Methods" />
 
 <p>
 	Ideally we'd have a convenience function to toggle it too.
@@ -112,18 +133,19 @@ shiki-end -->
 </p>
 
 <!-- shiki-start
-	```ts
+```ts
 interface SearchParamController {
 	subscribe: Readable<string | null>['subscribe'];
 	set: (value: string | null) => void;
-	toggle: (value: string) => void;
+	toggle: (value: string) => void;//! d"diff-add"
 }
 ```
 shiki-end -->
 
 <p>
-	Great! But what if the url state is set to <code>?param=foo</code> and we call <code>paramStore.toggle('bar')</code>?
-	Should it be <code>?param=bar</code> or <code>null</code>? Most likely, we'll want to switch it to <code>'bar'</code>
+	Great! But what if the url state is set to <code>?param=foo</code> and we call
+	<code>paramStore.toggle('bar')</code>? Should it be <code>?param=bar</code> or <code>null</code>? Most likely, we'll
+	want to switch it to <code>'bar'</code>
 	and then another <code>.toggle('bar')</code> call will switch it to <code>null</code>.
 </p>
 
@@ -164,7 +186,7 @@ shiki-end -->
 	</fieldset>
 </div>
 
-<h4>Multiple Params</h4>
+<HAnchor tag="h4" title="Multiple Params" />
 
 <p>
 	We may want to update multiple params before actually navigating to the new page. This is especially important if we
@@ -177,15 +199,15 @@ shiki-end -->
 ```ts
 interface SearchParamController {
 	subscribe: Readable<string | null>['subscribe'];
-	mutateSearchParams: (a: { newValue?: string | null; mutSearchParams: URLSearchParams }) => false | URLSearchParams;
-	pushStateToParams: (a: { mutSearchParams: URLSearchParams }) => false | URLSearchParams
+	mutateSearchParams: (a: { newValue?: string | null; mutSearchParams: URLSearchParams }) => false | URLSearchParams;//! d"diff-add"
+	pushStateToParams: (a: { mutSearchParams: URLSearchParams }) => false | URLSearchParams;//! d"diff-add"
 	set: (value: string | null) => void;
 	toggle: (value: string) => void;
 }
 ```
 shiki-end -->
 
-<h4>Result</h4>
+<HAnchor tag="h4" title="Result" />
 
 <p>
 	We'll probably want to know whether the <code>set</code> or <code>toggle</code> functions were successful, and be able
@@ -194,8 +216,8 @@ shiki-end -->
 
 <!-- shiki-start
 ```ts
-/** `false` if the value is not changed, `Promise<false>` if called on the server, and `Promise<true>` if the value and url change */
-type Changed = false | Promise<boolean>;
+/** `false` if the value is not changed, `Promise<false>` if called on the server, and `Promise<true>` if the value and url change *///! d"diff-add"
+type Changed = false | Promise<boolean>;//! d"diff-add"
 
 interface SearchParamController {
 	subscribe: Readable<string | null>['subscribe'];
@@ -207,17 +229,19 @@ interface SearchParamController {
 ```
 shiki-end -->
 
-<h4>Go Options</h4>
+<HAnchor tag="h4" title="Go Options" />
 
 <p>
 	And lastly, if the input (for example a search bar) is in a layout, we may or may not need to change the
-	<code>url.pathname</code> and not just the <code>url.search</code>. We'll add some go options to our <code>set</code>
+	<code>url.pathname</code> and not just the <code>url.search</code>. We'll add some go options to our
+	<code>set</code>
 	and <code>toggle</code> functions.
 </p>
 
 <!-- shiki-start
+s", opts?: GoOpts" d"diff-add"
 ```ts
-type GoOpts = { absolute?: string };
+type GoOpts = { absolute?: string };//! d"diff-add"
 
 /** `false` if the value is not changed, `Promise<false>` if called on the server, and `Promise<true>` if the value and url change */
 type Changed = false | Promise<boolean>;
@@ -232,7 +256,7 @@ interface SearchParamController {
 ```
 shiki-end -->
 
-<h3>Implementation</h3>
+<HAnchor tag="h3" title="Implementation" id="search-param-impl" />
 
 <p>We've got a solid API, so let's write the implementation.</p>
 
@@ -242,7 +266,7 @@ shiki-end -->
 	<code>goto</code> to update the url.
 </p>
 
-<h4>Helpers</h4>
+<HAnchor tag="h4" title="Helpers" />
 
 <p>
 	<code>goto</code> takes a few options that we'll need to turn on for every call, so let's make a wrapper called
@@ -274,17 +298,15 @@ shiki-end -->
 	simply mutate the <code>searchParams</code>. It must be a new reference.
 </p>
 
-<div class="alert-wrapper alert-wrapper-warning mb-6 text-base">
-	<p class="alert-header">
-		<strong>Svelte 4 subscriptions are notified on assignment changes, not internal mutations.</strong>
+<Admonition kind="important">
+	<strong>Svelte 4 subscriptions are notified on assignment changes, not internal mutations.</strong>
+	<p class="flex items-center gap-4">
+		<I.X class="text-error-9" /> Mutable reference to $page.url.searchParams
 	</p>
 	<p class="flex items-center gap-4">
-		<X class="text-error-9" /> Mutable reference to $page.url.searchParams
+		<I.Check class="text-success-9" /> <span>New object created from $page.url.searchParams</span>
 	</p>
-	<p class="flex items-center gap-4">
-		<Check class="text-success-9" /> <span>New object created from $page.url.searchParams</span>
-	</p>
-</div>
+</Admonition>
 
 <!-- shiki-start
 ```ts
@@ -303,7 +325,7 @@ const cloneParams = () => new URLSearchParams(get(page).url.search);
 ```
 shiki-end -->
 
-<h4>searchParam</h4>
+<HAnchor tag="h4" title="searchParam" />
 
 <p>One possible implementation:</p>
 
@@ -349,7 +371,7 @@ export const searchParam = (name: string): SearchParamController => {
 ```
 shiki-end -->
 
-<h3>Adding Validation</h3>
+<HAnchor tag="h3" title="Adding Validation" />
 
 <p>
 	We now have a working implementation, but there's something we could add: bounds. This implementation expects the
@@ -363,20 +385,20 @@ shiki-end -->
 ```ts
 interface SearchParamController {
 	subscribe: Readable<string | null>['subscribe'];
-	mutateSearchParams: (a: {
-		value?: { cleaned?: never; unclean?: string | null } | { cleaned?: string | null; unclean?: never };
-		mutSearchParams: URLSearchParams;
-	}) => false | URLSearchParams;
+	mutateSearchParams: (a: {//! d"diff-add"
+		value?: { cleaned?: never; unclean?: string | null } | { cleaned?: string | null; unclean?: never };//! d"diff-add"
+		mutSearchParams: URLSearchParams;//! d"diff-add"
+	}) => false | URLSearchParams;//! d"diff-add"
 	pushStateToParams: (a: { mutSearchParams: URLSearchParams }) => false | URLSearchParams;
-	set: (unclean: string | null, opts?: GoOpts) => Changed;
-	toggle: (unclean: string, opts?: GoOpts) => Changed;
+	set: (unclean: string | null, opts?: GoOpts) => Changed;//! s"unclean" d"diff-add"
+	toggle: (unclean: string, opts?: GoOpts) => Changed;//! s"unclean" d"diff-add"
 }
 ```
 shiki-end -->
 
 <p>
-	As our initial value may also be unclean (for example if the user navigates to <code>?param=unclean</code> directly),
-	we'll also add an <code>init</code> function that invokes the clean function.
+	As our initial value may also be unclean (for example if the user navigates to <code>?param=unclean</code>
+	directly), we'll also add an <code>init</code> function that invokes the clean function.
 </p>
 
 <p>
@@ -453,7 +475,7 @@ export const searchParam = (
 shiki-end -->
 </CodeTopper>
 
-<h3>Demo</h3>
+<HAnchor tag="h3" title="Example Usage" />
 
 <p>Now let's use it! Try it out below.</p>
 
@@ -472,7 +494,7 @@ shiki-end -->
 shiki-end -->
 
 <div class="space-y-4">
-	<label for="single-search-param" class="input-label flex gap-2"><ArrowUp class="h-4 w-4" /> Check the URL</label>
+	<label for="single-search-param" class="input-label flex gap-2"><I.ArrowUp class="h-4 w-4" /> Check the URL</label>
 	<input type="text" bind:value={$singleSearchParam} id="single-search-param" class="peer input-text max-w-48" />
 
 	<label for="easter" class="input-label flex gap-2">Try to type "egg" or use your browser to go to ?easter=egg.</label>
@@ -527,9 +549,9 @@ shiki-end -->
 	<code>?easter=🐰&egg=🐰</code> immediately as desired.
 </p>
 
-<h2>Multi-value search params</h2>
+<HAnchor tag="h2" title="Multi Value" />
 
-<h3>API</h3>
+<HAnchor tag="h3" title="API" id="search-params-controller-api" />
 
 <p>Our multi-value controller's helper functions will be a little more detailed.</p>
 
@@ -564,7 +586,7 @@ interface SearchParamsController {
 ```
 shiki-end -->
 
-<h3>Implementation</h3>
+<HAnchor tag="h3" title="Implementation" id="search-params-impl" />
 
 <p>The ideas are the same, so we'll skip straight to the code. Here's one possible implementation.</p>
 
@@ -712,13 +734,14 @@ export const searchParams = (
 shiki-end -->
 </CodeTopper>
 
-<h2>Conclusion</h2>
+<HAnchor tag="h2" title="Conclusion" />
 
 <p>
 	And that's it! We've created a simple wrapper around a derived store that syncs application state with the URL. This
 	is everything we need to write the demo at the top of the article.
 	<a
-		href="https://github.com/timothycohen/samplekit/tree/main/sites/samplekit.dev/src/routes/articles/simple-url-state-controller/live-demos/main"
+		href="https://github.com/timothycohen/samplekit/tree/main/sites/samplekit.dev/src/routes/articles/simple-url-state-controller/demos/main"
+		data-external
 	>
 		Full code here
 	</a>.
@@ -746,6 +769,6 @@ shiki-end -->
 
 <p>
 	Have any questions or comments? Share it in the
-	<a href="https://github.com/timothycohen/samplekit/discussions">GitHub discussions</a>! Thanks for reading and see you
-	in the <a href="/articles/generic-url-state-controller">next one</a>!
+	<a href="https://github.com/timothycohen/samplekit/discussions" data-external>GitHub discussions</a>! Thanks for
+	reading and see you in the <a href="/articles/generic-url-state-controller">next one</a>!
 </p>

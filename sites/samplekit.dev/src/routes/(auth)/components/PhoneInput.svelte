@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { InputMessage } from '$lib/components';
-	import { Loader2 } from '$lib/styles/icons';
+	import I from '$lib/icons';
 	import { superForm, zodClient, type SuperValidated } from '$lib/superforms/client';
 	import { phoneNumberSchema } from '$routes/(auth)/validators';
 
@@ -33,7 +33,7 @@
 
 	<button type="submit" class="btn btn-accent" disabled={$submitting}>
 		{#if $submitting}
-			<Loader2 class="inline h-5 w-5 animate-spin" />
+			<I.LoaderCircle class="inline h-5 w-5 animate-spin" />
 			Sending...
 		{:else}
 			Send SMS

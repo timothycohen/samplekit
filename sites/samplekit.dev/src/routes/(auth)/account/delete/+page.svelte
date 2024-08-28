@@ -1,5 +1,6 @@
 <script lang="ts">
-	import { Loader2 } from '$lib/styles/icons';
+	import { Admonition } from '$lib/components';
+	import I from '$lib/icons';
 	import { Verifier } from '$routes/(auth)/components';
 
 	const { data } = $props();
@@ -16,13 +17,12 @@
 	<div class="space-y-8 rounded-card p-8 shadow-3">
 		<h2 class="t-base-lg font-medium">Step 2: Confirm</h2>
 
-		<div class="alert-wrapper alert-wrapper-error mt-12">
-			<div class="alert-header"><strong>Permanently</strong> delete your account.</div>
+		<Admonition bold kind="caution" title="Permanently delete your account">
 			<ul class="ml-4">
 				<li class="list-disc">All data will be removed.</li>
 				<li class="list-disc">There is no chance of recovery.</li>
 			</ul>
-		</div>
+		</Admonition>
 
 		<form
 			action="/account/delete?/deleteUserWithSeshConf"
@@ -48,7 +48,7 @@
 				class="btn btn-hollow mt-6 w-full"
 			>
 				{#if submitting}
-					<Loader2 class="h-4 w-4 animate-spin text-accent-9" />
+					<I.LoaderCircle class="h-4 w-4 animate-spin text-accent-9" />
 				{/if}
 				<small>Permanently Delete</small>
 			</button>

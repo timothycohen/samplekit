@@ -1,41 +1,30 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
 	import { fly } from 'svelte/transition';
-	import { Changelog, DateLine, FeatureCard, FeatureSwapCard, Series, TOC } from '$lib/articles/components';
-	import { TabPanels } from '$lib/components';
-	import { createCollapsedService, useCollapsedService } from '$lib/components/collapsedService';
-	import { ArrowRight, PanelRightDashed, UnfoldVertical, FoldVertical } from '$lib/styles/icons';
+	import { dev } from '$app/environment';
+	import { Vaul, Changelog, DateLine, Series, TOC } from '$lib/articles/components';
+	import { FeatureCard } from '$lib/articles/components/card';
+	import { TabPanels, HAnchor, Portal } from '$lib/components';
+	import I from '$lib/icons';
+	import { createCollapsedService, useCollapsedService } from '$lib/services/codeCollapse';
 	import { pluralize } from '$lib/utils/common';
+	import { updateLoadedFrontMatter } from './update-loaded-front-matter.json';
 
 	const { data, children } = $props();
 	const article = $derived(data.article);
 
-	let wordCount = $state(0);
-	let readingTime = $state(0);
-
-	function updateReadingTime() {
-		const text = articleContentWrapper.innerText;
-		const wpm = 225;
-		const words = text.trim().split(/\s+/);
-		wordCount = words.length;
-		readingTime = Math.ceil(wordCount / wpm);
-	}
-
-	onMount(() => {
-		updateReadingTime();
-	});
-
-	let articleContentWrapper: HTMLDivElement;
 	let sidebarOpen = $state(true);
 
-	createCollapsedService();
-	const { triggerAll } = useCollapsedService();
-	let allOpen = $state(false);
+	createCollapsedService(false);
+	const globalCollapsed = useCollapsedService();
 
-	const toggleAllOpen = () => {
-		allOpen = !allOpen;
-		triggerAll(allOpen);
-	};
+	if (dev) {
+		$effect(() => {
+			const articleContentWrapper = document.querySelector('[data-toc-wrapper]') as null | HTMLElement;
+			if (!articleContentWrapper) return;
+			const wordCount = articleContentWrapper.innerText.trim().split(/\s+/).length;
+			updateLoadedFrontMatter.send({ wordCount, articlePath: article.articlePath });
+		});
+	}
 </script>
 
 <div class="page" style="max-width: 1440px; padding: clamp(1rem, -0.6rem + 4vw, 3rem);">
@@ -63,20 +52,17 @@
 					</ul>
 				{/if}
 				<p class="text-xs font-bold uppercase tracking-wider text-gray-11">
-					<span class="uppercase">{readingTime} min read</span>
+					<span class="uppercase">{article.readingTime} min read</span>
 					<span class="mx-2" aria-hidden="true">•</span>
-					<span class="uppercase">{wordCount} {pluralize('word', wordCount)}</span>
+					<span class="uppercase">{article.wordCount} {pluralize('word', article.wordCount)}</span>
 				</p>
 			</hgroup>
 
 			{#if article.demos?.main}
-				<span class="prose prose-lg prose-radix">
-					<h2 class="my-4" id="interactive-demo" data-auto-slug-anchor-position="prepend" data-auto-slug="">
-						<a href="#interactive-demo" aria-hidden="true" tabindex="-1" data-auto-slug-anchor="">#</a>
-						Interactive Demo
-					</h2>
-				</span>
-				<div class="main-demo">
+				<div class="prose prose-radix my-4 lg:prose-lg">
+					<HAnchor tag="h2" title="Demo" />
+				</div>
+				<div class="main-demo prose-pre">
 					<TabPanels files={article.demos.main} />
 				</div>
 			{/if}
@@ -84,29 +70,28 @@
 
 		<div class="mb-6-9 flex flex-col gap-8 lg:hidden">
 			<Series series={article.series} />
-			<TOC />
 		</div>
 
 		<div class="flex gap-[clamp(2.5rem,8vw,4rem)]">
-			<div class="prose prose-lg prose-radix min-w-0 max-w-none flex-1" bind:this={articleContentWrapper} id="use-toc">
+			<div class="prose prose-radix min-w-0 max-w-none flex-1 lg:prose-lg" data-toc-wrapper>
 				{@render children?.()}
 			</div>
 
-			{#if sidebarOpen}
-				<div class="hidden flex-col gap-8 lg:flex">
+			<div class="hidden flex-col gap-8 lg:flex">
+				{#if sidebarOpen}
 					<Series series={article.series} />
 
 					<div class="flex-1">
-						<div class="sticky top-[calc(var(--nav-height)_+_2rem)] overflow-y-auto">
-							<div class="max-h-[calc(98vh-calc(var(--nav-height)_+_2rem))] py-2">
-								<TOC>
+						<div class="sticky top-[calc(var(--open-nav-height)_+_2rem)] overflow-y-auto">
+							<div class="max-h-[calc(98vh-calc(var(--open-nav-height)_+_2rem))] py-2">
+								<TOC tree={data.article.toc}>
 									<div class="flex w-full items-center justify-between">
 										<h2 class="t-h3 font-bold text-accent-12">Table of Contents</h2>
 										<button
 											class="btn btn-ghost mr-1 rounded-badge px-2 py-1"
 											onclick={() => (sidebarOpen = !sidebarOpen)}
 										>
-											<ArrowRight class="h-5 w-5" />
+											<I.ArrowRight class="h-5 w-5" />
 										</button>
 									</div>
 								</TOC>
@@ -118,45 +103,58 @@
 						{#if article.prev}
 							<div class="w-80">
 								<h2 class="t-h3 mb-4 font-bold text-accent-12">Previous Article</h2>
-								{#if !(article.prev.imgSmGif ?? article.prev.imgSm)}
-									<FeatureCard feature={article.prev} />
-								{:else}
-									<FeatureCard feature={article.prev} />
-								{/if}
+								<FeatureCard metadata={article.prev} />
 							</div>
 						{/if}
 
 						{#if article.next}
 							<div class="w-80">
 								<h2 class="t-h3 mb-4 font-bold text-accent-12">Next Article</h2>
-								{#if !(article.next.imgSmGif ?? article.next.imgSm)}
-									<FeatureCard feature={article.next} />
-								{:else}
-									<FeatureCard feature={article.next} />
-								{/if}
+								<FeatureCard metadata={article.next} />
 							</div>
 						{/if}
 					</div>
+				{:else}
+					<button
+						in:fly={{ x: 40, y: 40 }}
+						class="fixed bottom-20 h-12 w-12 items-center justify-center rounded-full border border-gray-5 bg-app-bg/75 text-gray-11 backdrop-blur-md lg:flex"
+						style="right: calc(var(--scrollbar-width, 0px) + 1rem);"
+						onclick={() => (sidebarOpen = !sidebarOpen)}
+					>
+						<I.PanelRightDashed class="h-6 w-6" />
+					</button>
+				{/if}
+			</div>
+
+			<Portal targetSelector="#portal-target-header">
+				<div class="contents lg:hidden">
+					<span class="flex h-4/5 items-center">
+						<Vaul>
+							{#snippet children({ closeVaul })}
+								<TOC tree={data.article.toc} onclick={closeVaul} />
+							{/snippet}
+						</Vaul>
+						<button class="btn btn-hollow rounded-l-none border-none px-3" onclick={() => globalCollapsed.toggle()}>
+							{#if globalCollapsed.true}
+								<I.FoldVertical class="h-6 w-6" />
+							{:else}
+								<I.UnfoldVertical class="h-6 w-6" />
+							{/if}
+						</button>
+					</span>
 				</div>
-			{:else}
-				<button
-					in:fly={{ x: 40, y: 40 }}
-					class="fixed bottom-20 right-4 hidden h-12 w-12 items-center justify-center rounded-full border border-gray-5 bg-app-bg/75 text-gray-11 backdrop-blur-md lg:flex"
-					onclick={() => (sidebarOpen = !sidebarOpen)}
-				>
-					<PanelRightDashed class="h-6 w-6" />
-				</button>
-			{/if}
+			</Portal>
 
 			<button
 				in:fly={{ x: 40, y: 40 }}
-				class="fixed bottom-4 right-4 z-10 flex h-12 w-12 items-center justify-center rounded-full border border-gray-5 bg-app-bg/75 text-gray-11 backdrop-blur-md"
-				onclick={() => toggleAllOpen()}
+				class="fixed bottom-4 z-10 hidden h-12 w-12 items-center justify-center rounded-full border border-gray-5 bg-app-bg/75 text-gray-11 backdrop-blur-md lg:flex"
+				style="right: calc(var(--scrollbar-width, 0px) + 1rem);"
+				onclick={() => globalCollapsed.toggle()}
 			>
-				{#if allOpen}
-					<UnfoldVertical class="h-6 w-6" />
+				{#if globalCollapsed.true}
+					<I.FoldVertical class="h-6 w-6" />
 				{:else}
-					<FoldVertical class="h-6 w-6" />
+					<I.UnfoldVertical class="h-6 w-6" />
 				{/if}
 			</button>
 		</div>
@@ -164,74 +162,31 @@
 
 	<footer class="mt-12 md:mt-24">
 		<div class="mb-8">
-			<DateLine lastUpdate={article.updates?.[article.updates.length - 1]} publishedAt={article.publishedAt} />
+			<DateLine lastUpdate={article.updates?.[0]} publishedAt={article.publishedAt} />
 		</div>
 
 		<div class="mb-6-9 flex flex-col gap-8 md:flex-row {sidebarOpen ? 'lg:hidden' : ''}">
 			{#if article.prev}
 				<div class="w-full md:max-w-md">
-					<div class="prose prose-lg prose-radix mb-4"><h2>Previous Article</h2></div>
-					{#if !(article.prev.imgSmGif ?? article.prev.imgSm)}
-						<FeatureCard feature={article.prev} />
-					{:else}
-						<div class="block md:hidden"><FeatureSwapCard feature={article.prev} /></div>
-						<div class="hidden md:block"><FeatureCard feature={article.prev} /></div>
-					{/if}
+					<div class="prose prose-radix mb-4 lg:prose-lg"><h2>Previous Article</h2></div>
+					<FeatureCard metadata={article.prev} />
 				</div>
 			{/if}
 
 			{#if article.next}
 				<div class="w-full md:max-w-md">
-					<div class="prose prose-lg prose-radix mb-4"><h2>Next Article</h2></div>
-					{#if !(article.next.imgSmGif ?? article.next.imgSm)}
-						<FeatureCard feature={article.next} />
-					{:else}
-						<div class="block md:hidden"><FeatureSwapCard feature={article.next} /></div>
-						<div class="hidden md:block"><FeatureCard feature={article.next} /></div>
-					{/if}
+					<div class="prose prose-radix mb-4 lg:prose-lg"><h2>Next Article</h2></div>
+					<FeatureCard metadata={article.next} />
 				</div>
 			{/if}
 		</div>
 
-		<div class="prose prose-lg prose-radix">
+		<div class="prose prose-radix lg:prose-lg">
 			<Changelog updates={article.updates} />
 			<p>
 				Have a suggestion? File an
-				<a href="https://github.com/timothycohen/samplekit/issues">issue</a>.
+				<a href="https://github.com/timothycohen/samplekit/issues" data-external>issue</a>.
 			</p>
 		</div>
 	</footer>
 </div>
-
-<style lang="postcss">
-	article :global([data-auto-slug]) {
-		position: relative;
-		width: fit-content;
-	}
-
-	article :global([data-auto-slug]:not([data-auto-slug-ignore]):hover a[data-auto-slug-anchor]) {
-		opacity: 1;
-	}
-
-	article :global([data-auto-slug-ignore] a[data-auto-slug-anchor]) {
-		display: none;
-	}
-
-	article :global(.table-wrapper) {
-		overflow-x: auto;
-	}
-
-	article :global(a[data-auto-slug-anchor]) {
-		position: absolute;
-		left: calc(0% - 1rem);
-		width: calc(100% + 2rem);
-		text-decoration: none;
-		opacity: 0;
-	}
-
-	article .main-demo :global(.tabpanel > .code-wrapper) {
-		padding: 1rem 1.5rem;
-		margin: 0;
-		font-size: 0.9rem;
-	}
-</style>

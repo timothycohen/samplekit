@@ -2,7 +2,7 @@
 var STORAGE_KEY_THEME_DAY = 'theme_day';
 var STORAGE_KEY_THEME_NIGHT = 'theme_night';
 var STORAGE_KEY_THEME_SYNC_MODE = 'theme_sync_mode';
-function getStorage(name) {
+function getBrowserCookie(name) {
     var nameEQ = "".concat(name, "=");
     var cookies = document.cookie.split(';');
     for (var i = 0; i < cookies.length; i++) {
@@ -16,32 +16,6 @@ function getStorage(name) {
     }
     return null;
 }
-function setStorage(name, value, days) {
-    var expires = '';
-    if (days) {
-        var date = new Date();
-        date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
-        expires = "; expires=".concat(date.toUTCString());
-    }
-    document.cookie = "".concat(name, "=").concat(value).concat(expires, "; path=/");
-}
-/**
- * #### bellflower / amethyst
- * - success: Jade
- * - info: Cyan
- * - error: Ruby
- * - warning: Amber
- * - accent: Iris
- * - gray: Mauve
- *
- * #### daffodil / desert
- * - success: Green
- * - info: Blue
- * - error: Red
- * - warning: Yellow
- * - accent: Amber
- * - gray: Sand
- */
 var THEMES = [
     { name: 'daffodil', scheme: 'light' },
     { name: 'desert', scheme: 'dark' },
@@ -56,39 +30,39 @@ var getSystemScheme = function () {
         return 'light';
     return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
 };
-var getStoredThemeMode = function () {
-    if (typeof window === 'undefined')
-        return DEFAULT_THEME_SYNC_MODE;
-    var val = getStorage(STORAGE_KEY_THEME_SYNC_MODE);
+var normalizeThemeMode = function (val) {
     if (!val)
         return DEFAULT_THEME_SYNC_MODE;
     if (val === 'fixed_day' || val === 'fixed_night' || val === 'sync_system')
         return val;
     return DEFAULT_THEME_SYNC_MODE;
 };
-var getStoredThemeDay = function () {
+var normalizeThemeDay = function (name, getter) {
     var _a;
-    if (typeof window === 'undefined')
-        return DEFAULT_THEME_DAY;
-    var name = getStorage("".concat(STORAGE_KEY_THEME_DAY, "_name"));
     if (!name)
         return DEFAULT_THEME_DAY;
-    var scheme = getStorage("".concat(STORAGE_KEY_THEME_DAY, "_scheme"));
+    var scheme = getter("".concat(STORAGE_KEY_THEME_DAY, "_scheme"));
     if (!scheme)
         return DEFAULT_THEME_DAY;
     return (_a = THEMES.find(function (t) { return t.name === name && t.scheme === scheme; })) !== null && _a !== void 0 ? _a : DEFAULT_THEME_DAY;
 };
-var getStoredThemeNight = function () {
+var normalizeThemeNight = function (name, getter) {
     var _a;
-    if (typeof window === 'undefined')
-        return DEFAULT_THEME_NIGHT;
-    var name = getStorage("".concat(STORAGE_KEY_THEME_NIGHT, "_name"));
     if (!name)
         return DEFAULT_THEME_NIGHT;
-    var scheme = getStorage("".concat(STORAGE_KEY_THEME_NIGHT, "_scheme"));
+    var scheme = getter("".concat(STORAGE_KEY_THEME_NIGHT, "_scheme"));
     if (!scheme)
         return DEFAULT_THEME_NIGHT;
     return (_a = THEMES.find(function (t) { return t.name === name && t.scheme === scheme; })) !== null && _a !== void 0 ? _a : DEFAULT_THEME_NIGHT;
+};
+var getStoredThemeModeClient = function () {
+    return normalizeThemeMode(getBrowserCookie(STORAGE_KEY_THEME_SYNC_MODE));
+};
+var getStoredThemeDayClient = function () {
+    return normalizeThemeDay(getBrowserCookie("".concat(STORAGE_KEY_THEME_DAY, "_name")), getBrowserCookie);
+};
+var getStoredThemeNightClient = function () {
+    return normalizeThemeNight(getBrowserCookie("".concat(STORAGE_KEY_THEME_NIGHT, "_name")), getBrowserCookie);
 };
 var setThemeOnDoc = function (_a) {
     var name = _a.name, scheme = _a.scheme;
@@ -103,18 +77,14 @@ var setThemeOnDoc = function (_a) {
         document.documentElement.dataset['theme'] = name;
     }
 };
-var setThemeInStorage = function (_a) {
-    var kind = _a.kind, theme = _a.theme;
-    var storageKey = "theme_".concat(kind);
-    setStorage("".concat(storageKey, "_name"), theme.name);
-    setStorage("".concat(storageKey, "_scheme"), theme.scheme);
+var setSystemSchemeOnDoc = function (systemScheme) {
+    document.documentElement.setAttribute('data-prefer-scheme', systemScheme);
 };
-var setModeInStorage = function (mode) {
-    setStorage(STORAGE_KEY_THEME_SYNC_MODE, mode);
-};
-var _initTheme = function () {
-    var mode = getStoredThemeMode();
-    var appliedMode = mode === 'fixed_day' ? 'day' : mode === 'fixed_night' ? 'night' : getSystemScheme() === 'dark' ? 'night' : 'day';
-    var themeApplied = appliedMode === 'night' ? getStoredThemeNight() : getStoredThemeDay();
+var initTheme = function () {
+    var mode = getStoredThemeModeClient();
+    var systemScheme = getSystemScheme();
+    var appliedMode = mode === 'fixed_day' ? 'day' : mode === 'fixed_night' ? 'night' : systemScheme === 'light' ? 'day' : 'night';
+    var themeApplied = appliedMode === 'night' ? getStoredThemeNightClient() : getStoredThemeDayClient();
     setThemeOnDoc(themeApplied);
+    setSystemSchemeOnDoc(systemScheme);
 };

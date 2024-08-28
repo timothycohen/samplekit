@@ -1,5 +1,6 @@
 <script lang="ts">
-	import { mfaLabels } from '$lib/auth/client';
+	import { mfaLabels } from '$lib/auth/common';
+	import { Admonition } from '$lib/components';
 	import type { Snippet } from 'svelte';
 
 	interface Props {
@@ -34,6 +35,6 @@
 	</select>
 
 	<noscript>
-		<div class="alert-wrapper alert-wrapper-warning mt-6">Please enable JavaScript to continue.</div>
+		<Admonition bold kind="security" title="JS Required">Enable JavaScript to continue.</Admonition>
 	</noscript>
 </div>

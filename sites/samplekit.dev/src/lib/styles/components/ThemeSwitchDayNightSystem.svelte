@@ -2,11 +2,11 @@
 	// svg from https://toggles.dev/
 	import { tick, type Snippet } from 'svelte';
 	import { clickOutside, keyboard, windowEscape } from '$lib/actions';
-	import { Check, MonitorSmartphone, Moon, Sun } from '$lib/styles/icons';
+	import I from '$lib/icons';
 
 	interface Props {
 		modeApplied: 'day' | 'night';
-		schemeSystem: 'dark' | 'light';
+		systemScheme: 'dark' | 'light';
 		mode: 'fixed_night' | 'fixed_day' | 'sync_system';
 		duration?: number;
 		version?: 'horizon' | 'expand';
@@ -18,7 +18,7 @@
 
 	const {
 		modeApplied,
-		schemeSystem,
+		systemScheme,
 		mode,
 		duration = 500,
 		version = 'expand',
@@ -148,13 +148,12 @@
 				onclick={() => change('fixed_day')}
 				use:keyboard={{ ArrowUp: [prev], ArrowDown: [next] }}
 			>
-				<Sun class="h-5" />
+				<I.Sun class="h-5" />
 				<span class="whitespace-nowrap">
 					Day {#if dayName}<span class="capitalize">({dayName})</span>{/if}
 				</span>
 				{#if mode === 'fixed_day'}
-					<!-- <Dot class="fill-info-9 stroke-info-9 ml-auto scale-[3]" /> -->
-					<Check class="ml-auto text-success-9" />
+					<I.Check class="ml-auto text-success-9" />
 				{/if}
 			</button>
 			<button
@@ -163,13 +162,12 @@
 				onclick={() => change('fixed_night')}
 				use:keyboard={{ ArrowUp: [prev], ArrowDown: [next] }}
 			>
-				<Moon class="h-5" />
+				<I.Moon class="h-5" />
 				<span class="whitespace-nowrap">
 					Night {#if nightName}<span class="capitalize">({nightName})</span>{/if}
 				</span>
 				{#if mode === 'fixed_night'}
-					<!-- <Dot class="fill-info-9 stroke-info-9 ml-auto scale-[3]" /> -->
-					<Check class="ml-auto text-success-9" />
+					<I.Check class="ml-auto text-success-9" />
 				{/if}
 			</button>
 			<button
@@ -179,11 +177,10 @@
 				onclick={() => change('sync_system')}
 				use:keyboard={{ ArrowUp: [prev], ArrowDown: [next] }}
 			>
-				<MonitorSmartphone class="h-5" />
-				<span>System {schemeSystem === 'dark' ? ' (Night)' : ' (Day)'}</span>
+				<I.MonitorSmartphone class="h-5" />
+				<span>System {systemScheme === 'dark' ? ' (Night)' : ' (Day)'}</span>
 				{#if mode === 'sync_system'}
-					<!-- <Dot class="fill-info-9 stroke-info-9 ml-auto scale-[3]" /> -->
-					<Check class="ml-auto text-success-9" />
+					<I.Check class="ml-auto text-success-9" />
 				{/if}
 			</button>
 			{@render afterMenu?.({ prev, next })}

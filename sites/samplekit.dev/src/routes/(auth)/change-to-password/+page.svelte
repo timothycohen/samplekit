@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { InputMessage } from '$lib/components';
+	import { Admonition } from '$lib/components';
 
 	const { form } = $props();
 </script>
@@ -18,11 +18,16 @@
 					<button class="btn btn-accent" disabled={!!form?.fail || !!form?.success}>Send Setup Email</button>
 				</form>
 			</div>
-			<InputMessage {form} />
-		</div>
-	</div>
 
-	<div class="alert-wrapper alert-wrapper-warning mt-6">
-		Creating a password will disable OAuth sign in (e.g. Google).
+			<div class="input-subtext">
+				{#if form}
+					{#if form.success}
+						<Admonition kind="success" title={form.success} />
+					{:else if form.fail}
+						<Admonition kind="error" title={form.fail} />
+					{/if}
+				{/if}
+			</div>
+		</div>
 	</div>
 </section>

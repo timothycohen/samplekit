@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { Admonition } from '$lib/components';
 	import { MFASelector, SendSMSTokenForm, VerifyCodeForm, type VerifierProps } from '$routes/(auth)/components';
 	import PasskeyChallenge from './PasskeyChallenge.svelte';
 
@@ -51,13 +52,13 @@
 	{:else if selectedMFAMethod === 'passkeys'}
 		<PasskeyChallenge {passkeyAction} onFinished={onPasskeyFinished} onError={(e) => (passkeyError = e)} />
 		{#if passkeyError}
-			<div class="alert-wrapper alert-wrapper-error">
+			<Admonition bold kind="caution" title="Error">
 				{passkeyError}
-			</div>
+			</Admonition>
 		{:else}
-			<div class="alert-wrapper alert-wrapper-info">
+			<Admonition kind="hint">
 				Please follow the instructions on your device to complete the authentication process.
-			</div>
+			</Admonition>
 		{/if}
 	{:else if selectedMFAMethod === 'authenticator'}
 		<p class="mb-1">Enter the code in your authenticator app to continue.</p>

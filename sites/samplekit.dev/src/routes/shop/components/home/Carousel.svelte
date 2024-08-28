@@ -7,29 +7,36 @@
 		products: Product[];
 	}
 
-	const { products }: Props = $props();
+	/*
+	 * bug-svelte-5
+	 * Doing [...products, ...products, ...products] and then mapping products.images to their url caused Svelte to throw
+	 */
 
-	const carouselProducts = $state([...products, ...products, ...products]);
+	const { products }: Props = $props();
 </script>
 
-{#if carouselProducts.length}
+{#snippet Li(product: Product)}
+	<li class="relative aspect-square h-[30vh] max-h-[275px] w-2/3 max-w-[475px] flex-none md:w-1/3">
+		<a href={handleToPath({ handle: product.handle, kind: 'product' })} class="relative h-full w-full">
+			<GridTileImage
+				alt={product.title}
+				label={{
+					title: product.title,
+					price: product.priceRange.minVariantPrice,
+				}}
+				images={product.images.map((i) => i.url)}
+				sizes="(min-width: 1024px) 25vw, (min-width: 768px) 33vw, 50vw"
+			/>
+		</a>
+	</li>
+{/snippet}
+
+{#if products.length}
 	<div class="w-full overflow-x-auto pb-6 pt-1">
 		<ul class="animate-carousel flex gap-4">
-			{#each carouselProducts as product, i (`${product.handle}${i}`)}
-				<li class="relative aspect-square h-[30vh] max-h-[275px] w-2/3 max-w-[475px] flex-none md:w-1/3">
-					<a href={handleToPath({ handle: product.handle, kind: 'product' })} class="relative h-full w-full">
-						<GridTileImage
-							alt={product.title}
-							label={{
-								title: product.title,
-								price: product.priceRange.minVariantPrice,
-							}}
-							images={product.images.map((i) => i.url)}
-							sizes="(min-width: 1024px) 25vw, (min-width: 768px) 33vw, 50vw"
-						/>
-					</a>
-				</li>
-			{/each}
+			{#each products as product, i (`${product.handle}${i}`)}{@render Li(product)}{/each}
+			{#each products as product, i (`${product.handle}${products.length + i}`)}{@render Li(product)}{/each}
+			{#each products as product, i (`${product.handle}${2 * products.length + i}`)}{@render Li(product)}{/each}
 		</ul>
 	</div>
 {/if}

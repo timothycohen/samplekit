@@ -1,5 +1,4 @@
 import { sentrySvelteKit } from '@sentry/sveltekit';
-import { enhancedImages } from '@sveltejs/enhanced-img';
 import { sveltekit } from '@sveltejs/kit/vite';
 import type { UserConfig } from 'vite';
 
@@ -14,10 +13,8 @@ export default {
 			},
 			autoUploadSourceMaps: false,
 		}),
-		enhancedImages(),
 		sveltekit(),
 	],
-	assetsInclude: '**/*.svx',
 	// https://github.com/sveltejs/kit/issues/11658 – Make sure to check Safari
 	esbuild: {
 		supported: {

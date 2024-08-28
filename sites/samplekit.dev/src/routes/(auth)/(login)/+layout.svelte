@@ -1,12 +1,12 @@
 <script lang="ts">
-	import { Turnstile, createTurnstileService, useTurnstileService } from '$lib/botProtection/turnstile/client';
-	import { Logo } from '$lib/components';
+	import { TurnstileEl } from '$lib/botProtection/turnstile/client';
+	import { LogoLink, Admonition } from '$lib/components';
 	import { DotPattern } from '$routes/(auth)/(login)/components';
+	import { createTurnstileCtx, useTurnstileCtx } from './turnstile.ctx.svelte';
 
+	createTurnstileCtx();
+	const turnstile = useTurnstileCtx();
 	const { children } = $props();
-
-	createTurnstileService();
-	const { turnstile } = useTurnstileService();
 </script>
 
 <section class="my-5-12 grid place-items-center page">
@@ -23,17 +23,19 @@
 
 			<div class="z-10">
 				<div class="mb-8 flex items-center justify-center overflow-hidden text-3xl">
-					<Logo link />
+					<LogoLink />
 				</div>
 
 				{@render children()}
 
 				<div class="mb-4 mt-2 h-[65px] w-full">
-					<Turnstile {turnstile} />
+					<TurnstileEl {turnstile} />
 				</div>
 
 				<noscript>
-					<div class="alert-wrapper alert-wrapper-warning mt-6">Please enable JavaScript to continue.</div>
+					<Admonition bold kind="security" title="JS Required">
+						Enable JavaScript to continue with email / password.
+					</Admonition>
 				</noscript>
 				<div class="text-center text-sm text-gray-11">This is a demo site. The database is reset every 24 hours.</div>
 			</div>

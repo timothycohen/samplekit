@@ -1,7 +1,7 @@
 import { codeToDecoratedHtmlSync } from '@samplekit/preprocess-shiki';
 import { opts } from '$lib/shiki';
 
-const codeBlockCss = import('/src/lib/styles/css/code-block.css?raw')
+const codeBlockCss = import('/src/lib/styles/css/code.css?raw')
 	.then(({ default: rawCode }) =>
 		codeToDecoratedHtmlSync({
 			lang: 'css',

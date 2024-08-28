@@ -1,3 +1,4 @@
+import type { Properties } from 'hast';
 import type { HighlighterCore, ThemeInput, LanguageInput, DecorationItem, ShikiTransformer } from 'shiki/core';
 import type { BundledLanguage, BundledTheme } from 'shiki/types.mjs';
 import type { PreprocessorGroup } from 'svelte/compiler';
@@ -10,11 +11,12 @@ export type {
 	PreprocessorGroup,
 	BundledTheme,
 	BundledLanguage,
+	Properties,
 };
 
 export type Result<D> = { data: D; error?: never } | { data?: never; error: Error };
 export type Range = [number, number];
-export type PropertyArrays = { classes: string[]; datas: string[] };
+export type PropertyArrays = { classes: string[]; datas: Array<string | [string, string]> };
 
 /**
  * For use when calling shiki without the processor using `codeToDecoratedHtmlSync`.

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { slide } from 'svelte/transition';
-	import { Eraser, Loader2, Pencil } from '$lib/styles/icons';
+	import I from '$lib/icons';
 	import { superForm, zodClient } from '$lib/superforms/client';
 	import { nameSchema } from '$routes/(auth)/validators';
 	import type { SuperValidated } from '$lib/superforms/client';
@@ -37,11 +37,11 @@
 	{#if editingName}
 		{$form.given_name}
 		{$form.family_name}
-		<button disabled={$submitting} onclick={() => (editingName = false)}><Eraser class="h-4 w-4" /></button>
+		<button disabled={$submitting} onclick={() => (editingName = false)}><I.Eraser class="h-4 w-4" /></button>
 	{:else}
 		{user.givenName}
 		{user.familyName}
-		<button disabled={$submitting} onclick={() => (editingName = true)}><Pencil class="h-4 w-4" /></button>
+		<button disabled={$submitting} onclick={() => (editingName = true)}><I.Pencil class="h-4 w-4" /></button>
 	{/if}
 </div>
 
@@ -79,7 +79,7 @@
 
 		<button class="btn btn-accent w-full" type="submit" disabled={$submitting || noChanges}>
 			{#if $submitting}
-				<Loader2 class="h-4 w-4 animate-spin" />
+				<I.LoaderCircle class="h-4 w-4 animate-spin" />
 				Saving...
 			{:else if noChanges}
 				Saved

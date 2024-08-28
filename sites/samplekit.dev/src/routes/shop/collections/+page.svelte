@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { ArrowRight } from '$lib/styles/icons';
+	import I from '$lib/icons';
 	import { NoResults } from '$routes/shop/components';
 	import { useNavService } from '$routes/shop/services';
 	import { handleToPath } from '$routes/shop/utils';
@@ -36,7 +36,7 @@
 
 						<span class="flex items-center gap-2 py-2 text-xl group-hover:text-accent-9">
 							{collection.title}
-							<ArrowRight class="h-6 w-6 transition-transform group-hover:translate-x-1" />
+							<I.ArrowRight class="h-6 w-6 transition-transform group-hover:translate-x-1" />
 						</span>
 					</a>
 				</li>

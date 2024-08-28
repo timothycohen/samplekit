@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { Admonition } from '$lib/components';
 	import { VerifyCodeForm } from '$routes/(auth)/components';
 
 	const { data } = $props();
@@ -6,10 +7,9 @@
 
 <div class="space-y-8 rounded-card p-8 shadow-3">
 	<h2 class="t-base-lg font-medium">Step 2: Add To Authenticator App</h2>
-	<div class="alert-wrapper alert-wrapper-info">
-		<p class="alert-header">Scan our QR Code</p>
-		<p>Tap the "+" icon on your authenticator app (e.g. Google Authenticator) to scan our QR code.</p>
-	</div>
+	<Admonition kind="info" title="Scan our QR Code">
+		Tap the "+" icon on your authenticator app (e.g. Google Authenticator) to scan our QR code.
+	</Admonition>
 
 	<img alt="authenticator qr code" src={data.authenticator.dataUrl} />
 

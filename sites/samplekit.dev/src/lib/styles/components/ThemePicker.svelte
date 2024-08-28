@@ -1,21 +1,22 @@
 <script lang="ts">
 	import { fade } from 'svelte/transition';
-	import { Check, Moon, Sun } from '$lib/styles/icons';
+	import I from '$lib/icons';
 	import { debounce } from '$lib/utils/common';
 	import ThemeDemo from './ThemeDemo.svelte';
+	import type { ModeApplied, Theme } from '../themeUtils';
 
-	type Theme = { name: string; scheme: 'light' | 'dark' };
 	interface Props {
 		mode: 'day' | 'night';
 		themes: Theme[];
 		active: boolean;
 		preference: Theme;
-		setTheme: (theme: { kind: 'day' | 'night'; theme: Theme }) => void;
+		switchToFromInactive?: () => void;
+		setTheme: (detail: { kind: ModeApplied; theme: Theme }) => void;
 	}
 
-	const { mode, themes, active, preference, setTheme }: Props = $props();
+	const { mode, themes, active, preference, switchToFromInactive, setTheme }: Props = $props();
 
-	const Icon = mode === 'day' ? Sun : Moon;
+	const Icon = mode === 'day' ? I.Sun : I.Moon;
 	let hovered: null | Theme = $state(null);
 	const displayTheme = $derived(hovered ?? preference);
 
@@ -28,13 +29,9 @@
 		saved = 'fading-in';
 	};
 
-	let showOppositeScheme = $state(false);
-
-	$effect(() => {
-		if (preference.scheme === (mode === 'day' ? 'dark' : 'light')) {
-			showOppositeScheme = true;
-		}
-	});
+	let wantsToShowOppositeScheme = $state(false);
+	const hasToShowOppositeScheme = $derived(preference.scheme === (mode === 'day' ? 'dark' : 'light'));
+	const showOppositeScheme = $derived(wantsToShowOppositeScheme || hasToShowOppositeScheme);
 </script>
 
 <div class="overflow-hidden rounded-card border border-gray-6">
@@ -46,18 +43,32 @@
 
 		{#if saved === 'fading-in' || saved === 'saved'}
 			<span
+				class="contents"
 				transition:fade={{ duration: 300 }}
 				onintrostart={setFadeOutTimer}
 				onoutroend={() => (saved = null)}
-				class="flex items-center justify-end gap-2"
-			>
-				<span>Saved </span>
-				<Check class="h-5 text-success-9" />
+			></span>
+		{/if}
+
+		{#if !active && switchToFromInactive}
+			<span class="flex items-center justify-end gap-2">
+				<button
+					onclick={switchToFromInactive}
+					class="btn btn-ghost -m-1 mr-1 p-1 text-sm transition hover:bg-gray-4 hover:text-gray-12 focus:bg-gray-4
+					{saved ? 'text-bold bg-gray-4 text-gray-12' : 'text-gray-10'}"
+				>
+					Activate
+				</button>
+			</span>
+		{:else if saved === 'fading-in' || saved === 'saved'}
+			<span class="flex items-center justify-end gap-2">
+				<span class="font-semibold text-gray-12">Saved </span>
+				<I.Check class="h-5 !stroke-2 text-success-9" />
 			</span>
 		{:else if saved === null && active}
-			<span in:fade class="flex items-center justify-end gap-2">
-				<span>Active </span>
-				<Check class="h-5 text-success-9" />
+			<span in:fade|global class="flex items-center justify-end gap-2">
+				<span class="font-semibold text-gray-12">Active </span>
+				<I.Check class="h-5 !stroke-2 text-success-9" />
 			</span>
 		{/if}
 	</div>
@@ -66,28 +77,29 @@
 		<ThemeDemo {displayTheme} />
 
 		<div class="flex flex-wrap gap-4">
-			{#each themes as theme}
+			{#each themes as theme (theme)}
+				{@const chosen = preference.name === theme.name && preference.scheme === theme.scheme}
 				{#if showOppositeScheme || (theme.scheme === 'light' && mode === 'day') || (theme.scheme === 'dark' && mode === 'night')}
-					<button
-						data-theme={theme.name}
-						class:scale-125={theme.name === displayTheme.name && theme.scheme === displayTheme.scheme}
-						class="{theme.scheme} flex h-10 w-10 overflow-hidden rounded-badge border border-gray-6"
-						onclick={() => save(theme)}
-						onmouseenter={() => (hovered = theme)}
-						onmouseleave={() => (hovered = null)}
-					>
-						<span class="h-full flex-1 bg-app-bg"></span>
-						<span class="h-full flex-1 bg-accent-9"></span>
-					</button>
+					<div>
+						<button
+							data-theme={theme.name}
+							class="{theme.scheme} flex h-10 w-10 overflow-hidden rounded-badge border border-gray-6"
+							onclick={() => save(theme)}
+							onmouseenter={() => (hovered = theme)}
+							onmouseleave={() => (hovered = null)}
+						>
+							<span class="h-full flex-1 bg-app-bg"></span>
+							<span class="h-full flex-1 bg-accent-9"></span>
+						</button>
+						{#if active && chosen}
+							<I.Dot class="-mb-8 -mt-2 h-10 w-10 fill-accent-9 stroke-accent-9" />
+						{/if}
+					</div>
 				{/if}
 			{/each}
 		</div>
 		<label class="mt-4 flex items-center justify-end gap-2">
-			<input
-				type="checkbox"
-				bind:checked={showOppositeScheme}
-				disabled={preference.scheme === (mode === 'day' ? 'dark' : 'light')}
-			/>
+			<input type="checkbox" bind:checked={wantsToShowOppositeScheme} disabled={hasToShowOppositeScheme} />
 			<span>Show {mode === 'day' ? 'Dark' : 'Light'} Themes</span>
 		</label>
 	</div>

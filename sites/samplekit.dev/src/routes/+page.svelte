@@ -1,108 +1,132 @@
 <script lang="ts">
-	import { FeatureCard, FeatureSwapCard } from '$lib/articles/components';
-	import { allPostData } from '$lib/articles/load';
-	import { BookOpenText, Boxes, Code } from '$lib/styles/icons';
+	import { CardList } from '$lib/articles/components/card';
+	import { LogoIcon } from '$lib/components';
+	import I from '$lib/icons';
+	import Slider from './home/Slider.svelte';
+	import PreprocessorDemo from './home/pp-demo/PreprocessorDemo.pp.svelte';
+
+	const { data } = $props();
 </script>
 
-<section class="page">
-	<div class="cross-dots absolute -top-[var(--nav-height)] bottom-0 left-0 right-0 -z-20 hidden dark:block"></div>
-	<div
-		class="absolute -top-[var(--nav-height)] left-0 right-0 -z-10 hidden h-96 w-full bg-gradient-to-t from-app-bg/50 to-accent-3/50 opacity-60 dark:block"
-	></div>
-	<div
-		class="absolute -top-[var(--nav-height)] left-0 right-0 -z-10 hidden h-96 w-full bg-gradient-to-tr from-app-bg/30 via-app-bg/50 to-transparent dark:block"
-	></div>
+<div class="overflow-hidden">
+	<section class="py-12 lg:pt-20">
+		<div class="mx-auto w-full max-w-7xl px-page">
+			<div class="flex flex-col-reverse lg:flex-row">
+				<div class="relative flex-1 space-y-2">
+					<span class="flex justify-center lg:justify-start">
+						<h1
+							class="hero-size relative bg-gradient-to-r from-red-9 to-accent-11 bg-clip-text font-serif text-transparent"
+						>
+							Sample.Kit
+						</h1>
+					</span>
+					<div class="hero-size text-center lg:text-left">
+						<div class="whitespace-nowrap">Packages & Interactive</div>
+						<div class="whitespace-nowrap">Demos For SvelteKit</div>
+					</div>
+					<div class="text-center text-gray-11 md:text-lg lg:text-left lg:text-2xl">
+						<div>Home of the SampleKit preprocessors and</div>
+						<div>demos for auth, e-commerce, and beyond.</div>
+					</div>
+					<div class="flex justify-center gap-2 text-sm sm:gap-4 sm:text-lg lg:justify-start">
+						<a href="https://preprocessors.samplekit.dev" class="btn btn-accent mt-8">Preprocessors</a>
+						<a href="/shop" class="btn btn-hollow mt-8">Shop Demo</a>
+						<a href="#articles" class="btn btn-hollow mt-8">Articles</a>
+					</div>
+				</div>
+				<div class="relative flex items-center justify-center">
+					<div
+						class="relative grid h-36 w-36 animate-spin place-items-center animation-duration-[120s] md:h-48 md:w-48 lg:h-72 lg:w-72"
+					>
+						<div
+							class="pulse absolute inset-0 -z-10 rounded-full bg-gradient-to-r from-red-9/25 to-accent-11/35 blur-2xl"
+						></div>
+						<LogoIcon svgClasses="h-4/5 w-4/5 " svelteClasses="stroke-red-5 fill-accent-9-contrast" />
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
 
-	<div>
-		<h1
-			class="t-h1 mt-[clamp(1.875rem,_4.5vw,_3rem)] bg-gradient-to-tr from-accent-7 via-accent-11 to-accent-7 bg-clip-text text-center font-bold text-transparent"
-		>
-			SvelteKit Design Patterns
-		</h1>
-		<p
-			class="mx-auto mt-[clamp(0.625rem,_1.5vw,_1rem)] max-w-xl text-center text-[clamp(1rem,_1.95vw,_1.25rem)] font-light"
-		>
-			Documenting the implementation of various flows, patterns, and techniques using SvelteKit.
-		</p>
+	<section class="bg-gradient-to-b from-app-bg to-accent-1 py-12" id="preprocessors">
+		<div class="mx-auto w-full max-w-7xl px-page">
+			<h2 class="mb-4 font-serif text-3xl lg:text-4xl">Preprocessors</h2>
+			<p class="mb-8 text-lg text-gray-11 lg:mb-12">
+				The SampleKit preprocessors utilize HTML comments with custom delimiters to inject functionality without
+				interrupting other tooling.
+			</p>
+			<PreprocessorDemo />
+		</div>
+	</section>
 
-		<div class="mx-auto my-[clamp(1.875rem,_4.5vw,_3rem)] max-w-4xl">
-			<ul class="mx-auto flex w-[17rem] flex-col items-center justify-between gap-4 md:w-full md:flex-row">
-				<li class="flex w-full items-center gap-6 sm:flex-col sm:gap-3">
-					<BookOpenText class="h-10 w-10 text-accent-12" />
-					<div class="flex flex-col sm:items-center">
-						<p class="text-h3-min font-bold">Articles</p>
-						<p>Full implementation details</p>
-					</div>
+	<section class="bg-gradient-to-t from-app-bg to-accent-1 py-12" id="demos">
+		<div class="mx-auto w-full max-w-7xl px-page">
+			<h2 class="mb-4 font-serif text-3xl lg:text-4xl">Demos</h2>
+			<p class="mb-8 text-lg text-gray-11 lg:mb-12">
+				The SampleKit website itself is an accessible template for implementing common features in a SvelteKit
+				application.
+			</p>
+		</div>
+
+		<Slider />
+	</section>
+
+	<section class="py-12" id="articles">
+		<div class="mx-auto w-full max-w-7xl px-page">
+			<h2 class="flex gap-2 font-serif text-3xl lg:text-4xl">
+				Articles
+				<sup class="text-xs">
+					<span class="text-svelte">*</span>Now with
+					<span class="text-sm italic"> <span class="relative text-svelte">ᚱ</span>unes</span>
+				</sup>
+			</h2>
+
+			<ul class="my-8 grid grid-cols-3 gap-4 lg:my-12">
+				<li class="flex items-center justify-center gap-2 rounded-badge border border-blue-11 p-2">
+					<I.BookOpenText class="h-6 w-6 text-blue-11" />
+					<span class="text-lg font-bold text-gray-12">Tutorial</span>
 				</li>
-				<li class="flex w-full items-center gap-6 sm:flex-col sm:gap-3">
-					<Boxes class="h-10 w-10 text-accent-12" />
-					<div class="flex flex-col sm:items-center">
-						<p class="text-h3-min font-bold">Demos</p>
-						<p>Embedded examples</p>
-					</div>
+
+				<li class="flex items-center justify-center gap-2 rounded-badge border border-iris-11 p-2">
+					<I.Boxes class="h-6 w-6 text-iris-11" />
+					<span class="text-lg font-bold text-gray-12">Demo</span>
 				</li>
-				<li class="flex w-full items-center gap-6 sm:flex-col sm:gap-3">
-					<Code class="h-10 w-10 text-accent-12" />
-					<div class="flex flex-col sm:items-center">
-						<p class="text-h3-min font-bold">Code</p>
-						<p>Open source on GitHub</p>
-					</div>
+
+				<li class="flex items-center justify-center gap-2 rounded-badge border border-green-11 p-2">
+					<I.Code class="h-6 w-6 text-green-11" />
+					<span class="text-lg font-bold text-gray-12">Source</span>
 				</li>
 			</ul>
+
+			<CardList cards={data.featureCards} />
 		</div>
-	</div>
+	</section>
+</div>
 
-	<div class="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
-		{#each allPostData as feature, i}
-			{#if !(feature.imgSmGif ?? feature.imgSm)}
-				<FeatureCard {feature} preview={i === 0} />
-			{:else}
-				<div class="block sm:hidden"><FeatureSwapCard {feature} preview={i === 0} /></div>
-				<div class="hidden sm:block"><FeatureCard {feature} preview={i === 0} /></div>
-			{/if}
-		{/each}
-	</div>
-</section>
-
-<style>
-	/* https://projects.verou.me/css3patterns/#cross-dots */
-	.cross-dots {
-		--gradient-bg: hsl(var(--app-bg));
-		--gradient-stripes: hsl(var(--accent-9) / 0.075);
-		--gradient-dots: hsl(var(--accent-3) / 0.075);
-
-		background: radial-gradient(var(--gradient-dots) 3px, transparent 4px),
-			radial-gradient(var(--gradient-dots) 3px, transparent 4px), linear-gradient(var(--gradient-bg) 4px, transparent 0),
-			linear-gradient(
-				45deg,
-				transparent 74px,
-				transparent 75px,
-				var(--gradient-stripes) 75px,
-				var(--gradient-stripes) 76px,
-				transparent 77px,
-				transparent 109px
-			),
-			linear-gradient(
-				-45deg,
-				transparent 75px,
-				transparent 76px,
-				var(--gradient-stripes) 76px,
-				var(--gradient-stripes) 77px,
-				transparent 78px,
-				transparent 109px
-			),
-			var(--gradient-bg);
-		background-size:
-			109px 109px,
-			109px 109px,
-			100% 6px,
-			109px 109px,
-			109px 109px;
-		background-position:
-			54px 55px,
-			0px 0px,
-			0px 0px,
-			0px 0px,
-			0px 0px;
+<style lang="postcss">
+	@keyframes pulse {
+		50% {
+			opacity: 0.75;
+		}
+	}
+	.pulse {
+		animation: pulse 10s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+	}
+	.hero-size {
+		font-weight: bold;
+		font-size: 2rem;
+		line-height: 2.25rem;
+	}
+	@media (min-width: 768px) {
+		.hero-size {
+			font-size: 3rem;
+			line-height: 1;
+		}
+	}
+	@media (min-width: 1024px) {
+		.hero-size {
+			font-size: 3.5rem;
+			line-height: 1;
+		}
 	}
 </style>

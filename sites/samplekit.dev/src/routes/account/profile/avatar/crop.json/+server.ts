@@ -1,7 +1,7 @@
 import { eq } from 'drizzle-orm';
 import { db, users } from '$lib/db/server';
 import { jsonFail, jsonOk } from '$lib/http/server';
-import { croppedImgSchema } from '$lib/image/client';
+import { croppedImgSchema } from '$lib/image/common';
 import type { PutRes } from '.';
 import type { RequestHandler } from './$types';
 import type { RequestEvent } from '@sveltejs/kit';

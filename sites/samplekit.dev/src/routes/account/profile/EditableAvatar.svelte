@@ -4,14 +4,14 @@
 	import AvatarEditor from './AvatarEditor.svelte';
 
 	interface Props {
-		user: DB.User;
-		onAvatarUpdate: (img: DB.User['avatar']) => void;
+		avatar: DB.User['avatar'];
+		onAvatarUpdate: (img: DB.User['avatar']) => void | Promise<void>;
 	}
 
-	const { user, onAvatarUpdate }: Props = $props();
+	const { avatar, onAvatarUpdate }: Props = $props();
 
-	const updateAvatar = (img: DB.User['avatar']) => {
-		onAvatarUpdate(img);
+	const onNewAvatar = async (img: DB.User['avatar']) => {
+		await onAvatarUpdate(img);
 		editAvatarOpen.set(false);
 	};
 
@@ -21,19 +21,13 @@
 	} = createDialog({ forceVisible: true });
 </script>
 
-<Avatar
-	editing={$editAvatarOpen}
-	avatar={user.avatar}
-	size={150}
-	editable
-	onEditorClicked={() => editAvatarOpen.set(true)}
-/>
+<Avatar editing={$editAvatarOpen} {avatar} size={150} editable onEditorClicked={() => editAvatarOpen.set(true)} />
 
 <div use:melt={$portalled}>
 	{#if $editAvatarOpen}
 		<div use:melt={$overlay} class="modal-overlay"></div>
 		<div class="modal-content-position overflow-hidden rounded-card" use:melt={$content}>
-			<AvatarEditor avatar={user.avatar} onCancel={() => editAvatarOpen.set(false)} {updateAvatar} />
+			<AvatarEditor {avatar} onCancel={() => editAvatarOpen.set(false)} {onNewAvatar} />
 		</div>
 	{/if}
 </div>

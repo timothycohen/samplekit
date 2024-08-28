@@ -21,8 +21,8 @@ export const parseLineOptGroup = ({
 	let trimmed = escapeOptGroup(optGroup);
 	if (trimmed === '') return warn(optGroup, 'Empty.');
 
-	const datas: string[] = [];
-	const classes: string[] = [];
+	const datas: PropertyArrays['datas'] = [];
+	const classes: PropertyArrays['classes'] = [];
 	const indexRanges: Range[] = [];
 
 	while (trimmed.length) {
@@ -54,7 +54,9 @@ export const parseLineOptGroup = ({
 		if (trimmed.startsWith('d')) {
 			const s = takeRustyString(trimmed, 1);
 			if (!s) return warn(optGroup, `Invalid data attribute.`);
-			datas.push(s.match);
+			const [key, value] = s.match.split('=');
+			if (value) datas.push([key!, value]);
+			else datas.push(key!);
 			trimmed = s.rest.trim();
 			continue;
 		}

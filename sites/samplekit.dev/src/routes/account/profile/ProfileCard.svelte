@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { invalidateAll } from '$app/navigation';
 	import { type nameSchema } from '$routes/(auth)/validators';
 	import EditableAvatar from './EditableAvatar.svelte';
 	import EditableName from './EditableName.svelte';
@@ -14,7 +15,7 @@
 
 <div class="mx-auto max-w-sm rounded-card p-8 shadow-4 md:mx-0">
 	<div class="relative mx-auto w-36 rounded-full">
-		<EditableAvatar {user} onAvatarUpdate={(img) => (user.avatar = img)} />
+		<EditableAvatar avatar={user.avatar} onAvatarUpdate={invalidateAll} />
 	</div>
 
 	<EditableName {user} {nameForm} />

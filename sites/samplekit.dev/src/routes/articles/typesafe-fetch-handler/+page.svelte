@@ -1,54 +1,77 @@
-<script lang="ts">
-	import { CodeTopper } from '$lib/articles/components';
-	import { Sparkles } from '$lib/styles/icons';
+<script lang="ts" module>
+	import imgLg from './assets/typesafe-fetch-handler-q30.webp';
+	import imgSm from './assets/typesafe-fetch-handler-thumbnail-1200w.webp';
+	import type { RawFrontMatter } from '$lib/articles/schema';
 
-	let showQuizAnswer = $state(false);
+	export const metadata = {
+		title: 'TypeSafe Fetch Handler',
+		implementationPath: '/articles/typesafe-fetch-handler#demo',
+		srcCodeHref:
+			'https://github.com/timothycohen/samplekit/blob/main/sites/samplekit.dev/src/lib/http/client.svelte.ts',
+		description: 'A typesafe fetch handler that stores the route, method, res/req types, and fetch state.',
+		publishedAt: new Date('2024-03-05 20:39:38 -0500'),
+		authors: [{ name: 'Tim Cohen', email: 'contact@timcohen.dev' }],
+		imgSm,
+		imgLg,
+		tags: ['typescript', 'http', 'DX', 'client-server', 'request handlers', 'endpoints'],
+		featured: true,
+		updates: [{ at: new Date('2024-08-13 18:26:40 -0400'), descriptions: ['Update to runes.'] }],
+	} satisfies RawFrontMatter;
 </script>
 
-<h2>Data in SvelteKit</h2>
+<script lang="ts">
+	import { CodeTopper } from '$lib/articles/components';
+	import { HAnchor } from '$lib/components';
+	import TabPanels from '$lib/components/TabPanels.svelte';
+	import I from '$lib/icons';
+
+	let showQuizAnswer = $state(false);
+
+	const { data } = $props();
+</script>
+
+<HAnchor tag="h2" title="Data in SvelteKit" />
 
 <p>There are three ways to breach the client/server divide in SvelteKit:</p>
 
-<div class="table-wrapper">
-	<table>
-		<tbody>
-			<tr>
-				<td><span class="text-sm font-light">0.1</span> </td>
-				<td>Component Initialization</td>
-				<td>
-					<a href="https://kit.svelte.dev/docs/load">Load Functions</a>
-				</td>
-			</tr>
-			<tr>
-				<td><span class="text-sm font-light">0.2</span> </td>
-				<td>Form Submissions</td>
-				<td>
-					<a href="https://kit.svelte.dev/docs/form-actions">Form Actions</a>
-				</td>
-			</tr>
-			<tr>
-				<td><span class="text-sm font-light">0.3</span></td>
-				<td>HTTP Requests</td>
-				<td>
-					<a href="https://kit.svelte.dev/docs/routing#server"> Request Handlers </a>
-				</td>
-			</tr>
-		</tbody>
-	</table>
-</div>
+<table>
+	<tbody>
+		<tr>
+			<td><span class="text-sm font-light">0.1</span> </td>
+			<td>Component Initialization</td>
+			<td>
+				<a href="https://kit.svelte.dev/docs/load" data-external>Load Functions</a>
+			</td>
+		</tr>
+		<tr>
+			<td><span class="text-sm font-light">0.2</span> </td>
+			<td>Form Submissions</td>
+			<td>
+				<a href="https://kit.svelte.dev/docs/form-actions" data-external>Form Actions</a>
+			</td>
+		</tr>
+		<tr>
+			<td><span class="text-sm font-light">0.3</span></td>
+			<td>HTTP Requests</td>
+			<td>
+				<a href="https://kit.svelte.dev/docs/routing#server" data-external> Request Handlers </a>
+			</td>
+		</tr>
+	</tbody>
+</table>
 
 <p>
-	<span class="text-warning-10"> Pop quiz! </span>
-	<span>Which are typed by SvelteKit?</span>
+	<span class="text-2xl text-warning-10"> Pop quiz! </span>
+	<span class="italic text-gray-12">Which are typed by SvelteKit?</span>
 </p>
 
 <p>Let's have a quick look at each of the three ways to communicate between client and server to find our answer.</p>
 
-<h3>Load Functions</h3>
+<HAnchor tag="h3" title="Load Functions" />
 
 <p>
 	SvelteKit does the heavy lifting here. We return data and the client automatically
-	<Sparkles class="inline-block h-4 w-4 text-sun-moon" /> has full type safety. It works because SvelteKit writes
+	<I.Sparkles class="inline-block h-4 w-4 text-sun-moon" /> has full type safety. It works because SvelteKit writes
 	<code>PageData</code> to a <code>$types.d.ts</code> file in the <code>.svelte-kit</code> folder. That folder is
 	included by <code>.svelte-kit/tsconfig.json</code> which is itself included by your app's
 	<code>tsconfig.json</code>.
@@ -65,20 +88,21 @@ shiki-end -->
 <!-- shiki-start
 ```svelte
 <script lang="ts">
-	export let data // (property) name: "Bart Simpson"
+	const { data } = $props(); // (property) name: "Bart Simpson"
 </script>
 ```
 shiki-end -->
 
-<h3>Form Actions</h3>
+<HAnchor tag="h3" title="Form Actions" />
 
-<p>
-	Like <code>PageData</code>, <code>ActionData</code> is typed the same way and applies to <code>export let form;</code>
-</p>
+<div>
+	Like <code>PageData</code>, <code>ActionData</code> is typed the same way and applies to
+	<!-- shiki-ts const { form } = $props(); shiki-ts -->
+</div>
 
 <p>
 	There are also packages which expand on this with more features and the ability to easily handle multiple forms on a
-	single page. My favorite is <a href="https://superforms.rocks/">SuperForms</a>.
+	single page. My favorite is <a href="https://superforms.rocks/" data-external>SuperForms</a>.
 </p>
 
 <!-- shiki-start
@@ -91,7 +115,7 @@ if (!verifySMSTokenForm.valid) {
 ```
 shiki-end -->
 
-<h3>Endpoints</h3>
+<HAnchor tag="h3" title="Endpoints" />
 
 <p>By now you probably already know the answer to our little quiz.</p>
 
@@ -132,25 +156,29 @@ shiki-end -->
 <!-- shiki-start
 ```svelte
 <script lang="ts">
-	// Manually set loading indicator
-	let loading = true
+	let loading = false;
 
-	// Pretty sure I typed the route correctly.
-	const someRes = await fetch('/api/add-name', {
-		method: 'POST', // Or was it PUT?
-		headers: { 'Content-Type': 'application/json' },
-		body: JSON.stringify({ name: 'Tim' }), // Was it name or firstName???
-	});
+	const loadNames = async () => {
+		// Manually set loading indicator
+		loading = true;
 
-	if (someRes.ok) {
-		const json = await someRes.json();
-		// The api returns the new list of names... right?
-		if (json.allNames) names = json.allNames
-	} else {
-		console.error('yikes! I miss TypeScript and IntelliSense!')
+		// Pretty sure I typed the route correctly.
+		const someRes = await fetch('/api/add-name', {
+			method: 'POST', // Or was it PUT?
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify({ name: 'Tim' }), // Was it name or firstName???
+		});
+
+		if (someRes.ok) {
+			const data = await someRes.json();
+			// The api returns the new list of names... right?
+			if (data.allNames) names = data.allNames
+		} else {
+			console.error('yikes! I miss TypeScript and IntelliSense!')
+		}
+
+		loading = false
 	}
-
-	loading = false
 </script>
 
 {#if loading}
@@ -164,23 +192,74 @@ shiki-end -->
 <!-- shiki-start
 ```svelte
 <script lang="ts">
-	const addingName = addName();
+	import { addNameToList } from '$routes/demos/name-list.json';
 
-	// fully typed body. no route or method to remember
-	const { data, error } = await addingName.send({ name: 'Tim' });
-	if (error) handleError();
-	else names = data.allNames; // fully typed. no response type to look up
+	const loadNames = async () => {
+		// fully typed body. no route or method to remember
+		const { data, error } = await addNameToList.send({ name: 'Tim' });
+		if (error) handleError();
+		else names = data.allNames; // fully typed. no response type to look up
+	}
 </script>
 
-{#if $addingName}
+{#if addNameToList.submitting}
 	<p>Adding name...</p>
 {/if}
 ```
 shiki-end -->
 
-<h2>Thinking through the API</h2>
+<HAnchor tag="h2" title="Thinking through the API" />
 
-<h3>Server / Client Separation</h3>
+<HAnchor tag="h3" title="Interface" />
+
+<p>As we saw above we know we'll need a send function and submitting state.</p>
+
+<!-- shiki-start
+```ts
+interface Fetcher<ResponseData, RequestData = void> {
+	submitting: boolean;
+	send: (body: RequestData) => Promise<Result<ResponseData>>;
+}
+```
+shiki-end -->
+
+<p>
+	With respect for function signatures and healthy fear of undocumented code paths, the send function is designed to
+	return errors instead of throwing them. The <code>Result</code> type looks like this:
+</p>
+
+<CodeTopper title="$lib/utils/common/types/result.ts">
+	<!-- eslint-disable-next-line svelte/no-at-html-tags -->
+	{@html data.code['$lib/utils/common/types/result.ts'].rawHTML}
+</CodeTopper>
+
+<p>
+	If we always return this type from our fetch handler, we can always destructure
+	<code>&lbrace; data, error &rbrace;</code>. Verifying the existence of one will make TS know the other is
+	<code>undefined</code>.
+</p>
+
+<p>
+	Superforms has a few nice features that are worth copying over to our fetch API. <code>submitting</code> switches to
+	<code>true</code> as soon as the request is sent.
+	<a href="https://superforms.rocks/concepts/timers#loading-indicators" data-external>As Superforms explains</a>, it's
+	often better to wait a bit before showing the loading indicator. This is especially true for fast requests, where the
+	loading indicator can be more distracting than helpful. With that in mind, let's imitate their <code>delayed</code>
+	and <code>timeout</code> stores.
+</p>
+
+<!-- shiki-start
+```ts
+interface Fetcher<ResponseData, RequestData = void> {
+	submitting: boolean;
+	delayed: boolean;//!d"diff-add"
+	timeout: boolean;//!d"diff-add"
+	send: (body: RequestData) => Promise<Result<ResponseData>>;
+}
+```
+shiki-end -->
+
+<HAnchor tag="h3" title="Server / Client Separation" />
 <p>
 	Server endpoint handlers and client fetch wrappers should be co-located, but fully distinct and impossible to mix up.
 </p>
@@ -192,15 +271,15 @@ shiki-end -->
 
 <p>
 	It's already easy to understand what's going on because the files are side by side, but for uniformity and ease of
-	search, I name the server endpoint handler and client fetch wrapper the same thing. I use explicit names instead of
-	lambdas as a form of documentation.
+	search, I name the server endpoint handler and client fetch wrapper the same thing. Explicit naming instead of lambdas
+	serves as a form of documentation.
 </p>
 
 <CodeTopper title="$routes/demos/name-list.json/+server.ts">
 	<!-- shiki-start
 ```ts
 const addNameToList = async ({ locals, request }: RequestEvent) => { ... };
-export const PUT: RequestHandler = addNamesToList;
+export const PUT: RequestHandler = addNameToList;
 ```
 shiki-end -->
 </CodeTopper>
@@ -210,16 +289,16 @@ shiki-end -->
 ```ts
 type PutReq = { name: string };
 export type PutRes = { allNames: string[] };
-export const addNamesToList = createClientFetch()
+export const addNameToList = new ClientFetcher();
 ```
 shiki-end -->
 </CodeTopper>
 
-<h3>Hiding the route / method / types</h3>
+<HAnchor tag="h3" title="Hiding the route / method / types" />
 
 <p>
 	The caller shouldn't need to know the route or the method. That should be defined by the wrapper. Also, the body and
-	response should be fully typed, which means <code>createClientFetch</code> will have to be generic.
+	response should be fully typed, which means <code>ClientFetcher</code> will have to be generic.
 </p>
 
 <p>
@@ -231,56 +310,23 @@ shiki-end -->
 <CodeTopper title="$routes/demos/name-list.json/index.ts">
 	<!-- shiki-start
 ```ts
-import type { RouteId } from './$types';
+import type { RouteId } from './$types';//!d"diff-add"
 
 type PutReq = { name: string };
 export type PutRes = { allNames: string[] };
-export const addNamesToList = createClientFetch<RouteId, PutRes, PutReq>('PUT', '/demos/name-list.json');
+export const addNameToList = new ClientFetcher();//!d"diff-remove"
+export const addNameToList = new ClientFetcher<RouteId, PutRes, PutReq>('PUT', '/demos/name-list.json');//!d"diff-add"
 ```
 shiki-end -->
 </CodeTopper>
 
-<h3>Enforce server / client type consistency</h3>
-
-<p>How do we enforce that we actually return the type we say we're returning from the endpoint?</p>
+<HAnchor tag="h3" title="Enforce server / client type consistency" />
 
 <p>
-	The return of <code>clientFetch</code> should be consistent, and with a respect for the function signature and a healthy
-	fear of undocumented code paths, this API will return errors instead of throwing them.
-</p>
-
-<p>
-	That leads to using a <code>Result</code> type – even if TypeScript doesn't have the same developer experience or guarantees
-	handling errors as a language like Rust does.
-</p>
-
-<CodeTopper title="$lib/utils/common/types/result.ts">
-	<!-- shiki-start
-```ts
-export type Result<T, E = App.JSONError> = NonNullable<Result.Err<E> | Result.Ok<T>>;
-export namespace Result {
-	export type Success = { message: 'Success' };
-	export type Ok<T> = { data: T; error?: never };
-	export type Err<E> = { data?: never; error: E };
-}
-```
-shiki-end -->
-</CodeTopper>
-
-<p>
-	If we always return this type from our fetch handler, we can always destructure
-	<code>&lbrace; data, error &rbrace;</code>. Verifying the existence of one will make TS know the other is
-	<code>undefined</code>.
-</p>
-
-<p>
-	But we need to ensure we always return this type from our endpoint handlers. Let's create two helpers to make it easy:
-	<code>jsonOk</code> and <code>jsonFail</code>.
-</p>
-
-<p>
-	As a bonus, we'll make sure the error inherits the type from <code>App.JSONError</code>, so we have a single source of
-	truth for error types.
+	How do we enforce that we actually return the type we say we're returning from the endpoint? We need to ensure we
+	always return the correct <code>Result</code> type from our endpoint handlers. Let's create two helpers to make it
+	easy: <code>jsonOk</code> and <code>jsonFail</code>. As a bonus, we'll make sure the error inherits the type from
+	<code>App.JSONError</code> so we have a single source of truth for error types.
 </p>
 
 <CodeTopper title="app.d.ts">
@@ -293,30 +339,28 @@ declare global {
 		}
 		type JSONError = App.Error & { status: number };
 		...
+	}//!d"hide"
+}//!d"hide"
 ```
 shiki-end -->
 </CodeTopper>
 
-<CodeTopper title="$lib/http/server/json.ts">
-	<!-- shiki-start
-```ts
-import { json } from '@sveltejs/kit';
-import { httpCodeMap } from '../common';
+{#snippet Server()}
+	<!-- eslint-disable-next-line svelte/no-at-html-tags -->
+	{@html data.code['$lib/http/server/json.ts'].rawHTML}
+{/snippet}
 
-export const jsonOk = <T extends Record<string, unknown>>(body?: T) =>
-	body ? json({ data: body }) : json({ data: { message: 'Success' } });
+{#snippet Common()}
+	<!-- eslint-disable-next-line svelte/no-at-html-tags -->
+	{@html data.code['$lib/http/common.ts'].rawHTML}
+{/snippet}
 
-export function jsonFail(status: 400 | 401 | 403 | 404 | 429 | 500): Response;
-export function jsonFail(status: number, message: string): Response;
-export function jsonFail(status: number, message?: string): Response {
-	let e: { error: App.JSONError };
-	if (message) e = { error: { message, status } };
-	else e = { error: { message: httpCodeMap[status] ?? 'Unknown Error', status } };
-	return json(e, { status });
-}
-```
-shiki-end -->
-</CodeTopper>
+<TabPanels
+	files={[
+		{ title: '$lib/http/server/json.ts', snippet: Server },
+		{ title: '$lib/http/common.ts', snippet: Common },
+	]}
+/>
 
 <p>
 	Back in our endpoint, we can now use our types and functions to make the endpoint handler fully typed and consistent.
@@ -330,21 +374,17 @@ const addNameToList = async ({ locals, request }: RequestEvent) => {
 	// or
 	return jsonOk<GetRes>(res);
 };
-export const PUT: RequestHandler = addNamesToList;
+export const PUT: RequestHandler = addNameToList;
 ```
 shiki-end -->
 </CodeTopper>
 
-<h3>Dynamic Routes</h3>
+<HAnchor tag="h3" title="Dynamic Routes" />
 
 <p>
-	We're almost done designing the API. The only other consideration is how to handle routes that aren't static? What if
-	it's <code>/demos/[id]/name</code>?
-</p>
-
-<p>
-	We can make another flavor of <code>createClientFetch</code> that takes a function to create the url. Let's call it
-	<code>createDynClientFetch</code>.
+	We're almost done designing the API. However, we've so far assumed the route is static. What if it's
+	<code>/demos/[id]/name</code> instead? We can make another flavor of <code>ClientFetcher</code> that takes a function
+	to create the url. Let's call it <code>DynClientFetcher</code>.
 </p>
 
 <CodeTopper title="$routes/demos/[id]/name/index.ts">
@@ -352,136 +392,17 @@ shiki-end -->
 ```ts
 type PutReq = { name: string };
 export type PutRes = { allNames: string[] };
-export const addNamesToList = createDynClientFetch<PutRes, PutReq, { id: string }>('PUT', ({ id }) => `/demos/${id}/name.json`);
+export const addNameToList = new DynClientFetcher<PutRes, PutReq, { id: string }>('PUT', ({ id }) => `/demos/${id}/name.json`);
 ```
 shiki-end -->
 </CodeTopper>
 
-<h2>Implementation</h2>
+<HAnchor tag="h3" title="Options" />
 
-<p>
-	Let's implement the API we just designed and add in a couple options to control whether to <code>invalidateAll</code> after
-	the fetch / before the loading state returns to false, prevent duplicate requests, or allow signal cancelling.
-</p>
+<p>The final consideration is to accept some control options.</p>
 
-<p>This is a quick one:</p>
-
-<CodeTopper title="$lib/http/client.ts">
-	<!-- shiki-start
+<!-- shiki-start
 ```ts
-import { get, writable, type Writable } from 'svelte/store';
-import { browser } from '$app/environment';
-import { goto, invalidateAll } from '$app/navigation';
-import { logger } from '$lib/logging/client';
-import type { Result } from '$lib/utils/common';
-import type { Method } from './common';
-
-const stripGroup = (str: string) => str.replace(/\/\(.+\)/, '');
-
-type LocalOpts = { invalidate?: boolean; preventDuplicateRequests?: boolean; abortSignal?: AbortSignal };
-type GlobalOpts = { invalidate?: true; preventDuplicateRequests?: true };
-
-const createFetcher =
-	<RequestData, ResponseData>(fetching: Writable<boolean>, method: Method) =>
-	async (url: string, body: RequestData, opts?: LocalOpts) => {
-		if (!browser) return { error: { status: 500, message: 'Client fetch called on server' } } as Result<ResponseData>;
-
-		if (opts?.preventDuplicateRequests && get(fetching))
-			return { error: { status: 429, message: 'Too Many Requests' } } as Result<ResponseData>;
-
-		fetching.set(true);
-
-		let cleanBody;
-		try {
-			cleanBody = body ? JSON.stringify(body) : undefined;
-		} catch (err) {
-			logger.error(err);
-			return { error: { status: 400, message: 'Unable to stringify body' } } as Result<ResponseData>;
-		}
-
-		try {
-			const res = await fetch(stripGroup(url), { signal: opts?.abortSignal, method, body: cleanBody });
-			if (res.redirected) {
-				fetching.set(false);
-				await goto(res.url);
-				return { error: { status: 302, message: 'Redirected' } } as Result<ResponseData>;
-			} else {
-				const json = await res.json();
-				if (opts?.invalidate) await invalidateAll();
-				fetching.set(false);
-				return json as Result<ResponseData>;
-			}
-		} catch (err) {
-			fetching.set(false);
-			if ((err instanceof DOMException && err.name === 'AbortError') || (err as { status: number })?.status === 499) {
-				return { error: { status: 499, message: 'The user aborted the request.' } } as Result<ResponseData>;
-			}
-			logger.error(err);
-			return { error: { status: 500, message: 'Internal Error' } } as Result<ResponseData>;
-		}
-	};
-
-export const createClientFetch = <RouteId extends string, ResponseData, RequestData = void>(
-	method: Method,
-	staticUrl: RouteId,
-	globalOpts?: GlobalOpts,
-) => {
-	return () => {
-		const fetching = writable(false);
-		const fetcher = createFetcher<RequestData, ResponseData>(fetching, method);
-
-		const send = async (body: RequestData, localOpts?: LocalOpts): Promise<Result<ResponseData>> =>
-			fetcher(staticUrl, body, { ...globalOpts, ...localOpts });
-
-		return { ...fetching, send };
-	};
-};
-
-export const createDynClientFetch = <ResponseData, RequestData = void, URLProps = void>(
-	method: Method,
-	urlCreator: (data: URLProps) => string,
-	globalOpts?: GlobalOpts,
-) => {
-	return () => {
-		const fetching = writable(false);
-		const fetcher = createFetcher<RequestData, ResponseData>(fetching, method);
-
-		const sendUrl = async (
-			urlProps: URLProps,
-			body: RequestData,
-			localOpts?: LocalOpts,
-		): Promise<Result<ResponseData>> => fetcher(urlCreator(urlProps), body, { ...globalOpts, ...localOpts });
-
-		return { ...fetching, sendUrl };
-	};
-};
-```
-shiki-end -->
-</CodeTopper>
-
-<h2>Bonus</h2>
-
-<p>
-	Superforms has a few nice features that are worth copying over to our fetch API. Currently, our function switches
-	<code>fetching</code> to <code>true</code> as soon as the request is sent.
-	<a href="https://superforms.rocks/concepts/timers#loading-indicators">As they explain</a>, it's often better to wait a
-	bit before showing the loading indicator. This is especially true for fast requests, where the loading indicator can
-	be more distracting than helpful. With that in mind, let's imitate their <code>delay</code> and
-	<code>timeout</code> stores.
-</p>
-
-<CodeTopper title="$lib/http/client.ts">
-	<!-- shiki-start
-```ts
-import { get, writable, type Writable } from 'svelte/store';
-import { browser } from '$app/environment';
-import { goto, invalidateAll } from '$app/navigation';
-import { logger } from '$lib/logging/client';
-import type { Result } from '$lib/utils/common';
-import type { Method } from './common';
-
-const stripGroup = (str: string) => str.replace(/\/\(.+\)/, '');
-
 type LocalOpts = {
 	invalidate?: boolean;
 	preventDuplicateRequests?: boolean;
@@ -491,120 +412,29 @@ type LocalOpts = {
 };
 type GlobalOpts = { invalidate?: true; preventDuplicateRequests?: true };
 
-const createFetcher =
-	<RequestData, ResponseData>(
-		{
-			submitting,
-			delayed,
-			timeout,
-		}: { submitting: Writable<boolean>; delayed: Writable<boolean>; timeout: Writable<boolean> },
-		method: Method,
-	) =>
-	async (url: string, body: RequestData, opts?: LocalOpts) => {
-		if (!browser) return { error: { status: 500, message: 'Client fetch called on server' } } as Result<ResponseData>;
-
-		if (opts?.preventDuplicateRequests && get(submitting))
-			return { error: { status: 429, message: 'Too Many Requests' } } as Result<ResponseData>;
-
-		submitting.set(true);
-		const delayTimeout = setTimeout(() => delayed.set(true), opts?.delayMs ?? 500);
-		const timeoutTimeout = setTimeout(() => timeout.set(true), opts?.timeoutMs ?? 10000);
-
-		const finish = () => {
-			clearTimeout(delayTimeout);
-			clearTimeout(timeoutTimeout);
-			submitting.set(false);
-			delayed.set(false);
-			timeout.set(false);
-		};
-
-		let cleanBody;
-		try {
-			cleanBody = body ? JSON.stringify(body) : undefined;
-		} catch (err) {
-			logger.error(err);
-			return { error: { status: 400, message: 'Unable to stringify body' } } as Result<ResponseData>;
-		}
-
-		try {
-			const res = await fetch(stripGroup(url), { signal: opts?.abortSignal, method, body: cleanBody });
-			if (res.redirected) {
-				finish();
-				await goto(res.url);
-				return { error: { status: 302, message: 'Redirected' } } as Result<ResponseData>;
-			} else {
-				const json = await res.json();
-				if (opts?.invalidate) await invalidateAll();
-				finish();
-				return json as Result<ResponseData>;
-			}
-		} catch (err) {
-			finish();
-			if ((err instanceof DOMException && err.name === 'AbortError') || (err as { status: number })?.status === 499) {
-				return { error: { status: 499, message: 'The user aborted the request.' } } as Result<ResponseData>;
-			}
-			logger.error(err);
-			return { error: { status: 500, message: 'Internal Error' } } as Result<ResponseData>;
-		}
-	};
-
-export const createClientFetch = <RouteId extends string, ResponseData, RequestData = void>(
-	method: Method,
-	staticUrl: RouteId,
-	globalOpts?: GlobalOpts,
-) => {
-	return () => {
-		const submitting = writable(false);
-		const delayed = writable(false);
-		const timeout = writable(false);
-		const fetcher = createFetcher<RequestData, ResponseData>({ submitting, delayed, timeout }, method);
-
-		const send = async (body: RequestData, localOpts?: LocalOpts): Promise<Result<ResponseData>> =>
-			fetcher(staticUrl, body, { ...globalOpts, ...localOpts });
-
-		return {
-			subscribe: submitting.subscribe,
-			delayed: { subscribe: delayed.subscribe },
-			timeout: { subscribe: timeout.subscribe },
-			send,
-		};
-	};
-};
-
-export const createDynClientFetch = <ResponseData, RequestData = void, URLProps = void>(
-	method: Method,
-	urlCreator: (data: URLProps) => string,
-	globalOpts?: GlobalOpts,
-) => {
-	return () => {
-		const submitting = writable(false);
-		const delayed = writable(false);
-		const timeout = writable(false);
-		const fetcher = createFetcher<RequestData, ResponseData>({ submitting, delayed, timeout }, method);
-
-		const sendUrl = async (
-			urlProps: URLProps,
-			body: RequestData,
-			localOpts?: LocalOpts,
-		): Promise<Result<ResponseData>> => fetcher(urlCreator(urlProps), body, { ...globalOpts, ...localOpts });
-
-		return {
-			subscribe: submitting.subscribe,
-			delayed: { subscribe: delayed.subscribe },
-			timeout: { subscribe: timeout.subscribe },
-			sendUrl,
-		};
-	};
-};
+interface Fetcher<ResponseData, RequestData = void> {
+	submitting: boolean;
+	delayed: boolean;
+	timeout: boolean;
+	send: (body: RequestData, localOpts?: LocalOpts) => Promise<Result<ResponseData>>;
+}
 ```
 shiki-end -->
+
+<HAnchor tag="h2" title="Implementation" />
+
+<p>We're finally ready to implement.</p>
+
+<CodeTopper title="$lib/http/client.svelte.ts">
+	<!-- eslint-disable-next-line svelte/no-at-html-tags -->
+	{@html data.code['$lib/http/client.svelte.ts'].rawHTML}
 </CodeTopper>
 
-<h2>Conclusion</h2>
+<HAnchor tag="h2" title="Conclusion" />
 
 <p>
 	I really enjoy working with this API. With only around a hundred lines of code, loading states are baked in, errors
 	are accounted for, and type / route / method checks are all moved to compile time. Do you use something similar? Have
 	you found an even better way? Share it in the
-	<a href="https://github.com/timothycohen/samplekit/discussions">GitHub discussions</a>!
+	<a href="https://github.com/timothycohen/samplekit/discussions" data-external>GitHub discussions</a>!
 </p>

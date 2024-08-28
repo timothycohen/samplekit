@@ -1,0 +1,38 @@
+import { join } from 'path';
+import { createKatexLogger, processKatex } from '@samplekit/preprocess-katex';
+import { createMdLogger, processMarkdown } from '@samplekit/preprocess-markdown';
+import { createShikiLogger, processCodeblockSync } from '@samplekit/preprocess-shiki';
+import adapter from '@sveltejs/adapter-auto';
+import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
+import { opts } from './src/lib/shiki/index.js';
+
+const root = join(new URL(import.meta.url).pathname, '..');
+const src = join(root, 'src');
+const articleRoot = join(src, 'routes/articles');
+const formatFilename = (/** @type {string} */ filename) => filename.replace(src, '');
+const include = (/** @type {string} */ filename) => filename.startsWith(articleRoot) || filename.endsWith('pp.svelte');
+
+/** @type {import('@sveltejs/kit').Config} */
+const config = {
+	preprocess: [
+		processCodeblockSync({
+			include,
+			logger: createShikiLogger(formatFilename),
+			opts,
+		}),
+		processMarkdown({
+			include,
+			logger: createMdLogger(formatFilename),
+		}),
+		processKatex({
+			include,
+			logger: createKatexLogger(formatFilename),
+		}),
+		vitePreprocess(),
+	],
+	kit: {
+		adapter: adapter(),
+	},
+};
+
+export default config;

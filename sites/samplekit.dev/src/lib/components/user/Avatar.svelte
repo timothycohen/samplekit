@@ -1,6 +1,6 @@
 <script lang="ts">
+	import I from '$lib/icons';
 	import { mediaStyles, outerStyles } from '$lib/image/client';
-	import { Pencil } from '$lib/styles/icons';
 
 	interface Props {
 		editable?: boolean;
@@ -56,7 +56,7 @@
 			{size > 50 && !editing ? 'hidden group-hover:grid' : 'grid'}
 			place-content-center bg-black/70 text-white"
 		>
-			<Pencil />
+			<I.Pencil />
 		</span>
 		{#if size > 50 && showEditButton}
 			<span

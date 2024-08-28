@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { createDialog, melt } from '@melt-ui/svelte';
-	import { X } from '$lib/styles/icons';
+	import I from '$lib/icons';
 	import type { Component, Snippet } from 'svelte';
 
 	interface Props {
@@ -97,7 +97,7 @@
 			{/if}
 
 			<button use:melt={$closeEl} aria-label="close" class="modal-x-btn">
-				<X />
+				<I.X />
 			</button>
 		</div>
 	{/if}

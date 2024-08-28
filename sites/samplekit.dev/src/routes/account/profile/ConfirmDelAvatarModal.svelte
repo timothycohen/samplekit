@@ -1,21 +1,27 @@
 <script lang="ts">
 	import { createDialog, melt } from '@melt-ui/svelte';
-	import type { Writable } from 'svelte/store';
 
 	interface Props {
-		open: Writable<boolean>;
+		open: boolean;
 		handleDelete: () => void;
 	}
 
-	const { open, handleDelete }: Props = $props();
+	let { open = $bindable(), handleDelete }: Props = $props();
 
 	const {
 		elements: { portalled, overlay, content, title, description, close },
-	} = createDialog({ open, forceVisible: true });
+	} = createDialog({
+		forceVisible: true,
+		defaultOpen: open,
+		onOpenChange: ({ next }) => {
+			open = next;
+			return next;
+		},
+	});
 </script>
 
 <div use:melt={$portalled}>
-	{#if $open}
+	{#if open}
 		<div class="modal-overlay" use:melt={$overlay}></div>
 		<div class="modal-content" use:melt={$content}>
 			<h2 class="modal-title" use:melt={$title}>Delete your avatar?</h2>

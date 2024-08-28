@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { HAnchor, Admonition } from '$lib/components';
 	import I from '$lib/icons';
-	import { useCodeThemeCtx } from '../+layout.svelte';
+	import { useCodeThemeCtx } from '../codeTheme.ctx.svelte';
 
 	const { data } = $props();
 	const codeTheme = useCodeThemeCtx();
@@ -977,7 +977,7 @@ shiki-end -->
 
 <!-- shiki-start
 ```ts
-type PropertyArrays = { classes: string[]; datas: string[] };
+type PropertyArrays = { classes: string[]; datas: Array<string | [string, string]> };
 
 type CodeToDecoratedHtml = {
 	code: string;

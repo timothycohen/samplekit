@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { SlidersHorizontal } from '$lib/styles/icons';
+	import I from '$lib/icons';
 	import { Available, SortBy, Price } from '$routes/shop/components';
 	import { useNavService, useSearchAndFilterService } from '$routes/shop/services';
 
@@ -26,7 +26,7 @@
 <div class="mt-4 w-full max-w-screen-2xl items-stretch px-page full">
 	<div class="hidden items-center justify-between lg:flex">
 		<button class="btn btn-hollow relative" onclick={() => (filterAsideOpen = !filterAsideOpen)}>
-			<span><SlidersHorizontal /></span>
+			<span><I.SlidersHorizontal /></span>
 			<span>{filterAsideOpen ? 'Unpin ' : ''} Filters</span>
 			{#if $filterCount}<span>({$filterCount})</span>{/if}
 		</button>
@@ -45,7 +45,7 @@
 					class="btn btn-hollow relative w-full animate-fade-up-and-in {scrollY > 120 ? '' : 'hidden'}"
 					onclick={() => (filterAsideOpen = !filterAsideOpen)}
 				>
-					<span><SlidersHorizontal /></span>
+					<span><I.SlidersHorizontal /></span>
 					<span>{filterAsideOpen ? 'Unpin ' : ''} Filters</span>
 					{#if $filterCount}<span>({$filterCount})</span>{/if}
 				</button>

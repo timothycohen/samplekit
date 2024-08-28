@@ -1,4 +1,4 @@
 export * from './components';
 
-export { themeController } from './colorThemeController';
-export { THEMES, type Theme } from './colorThemeUtils';
+export { createThemeControllerCtx, useThemeControllerCtx } from './context.svelte';
+export { THEMES, type Theme } from './themeUtils';

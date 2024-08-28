@@ -1,43 +1,60 @@
+<script lang="ts" module>
+	import video from './assets/2024-08-05_22-41-28_889x627.mp4';
+	import imgSm from './assets/preprocessors-thumbnail-1200w.webp';
+	import type { RawFrontMatter } from '$lib/articles/schema';
+
+	export const metadata = {
+		title: 'Blog with Preprocessors',
+		implementationPath: '/articles/preprocessors/#demo',
+		srcCodeHref: 'https://github.com/timothycohen/samplekit/tree/main/packages/markdown',
+		description: 'Use preprocessors to format themed code blocks and Markdown tables alongside Svelte components.',
+		publishedAt: new Date('2024-03-06 16:16:15 -0500'),
+		authors: [{ name: 'Tim Cohen', email: 'contact@timcohen.dev' }],
+		imgSm,
+		video,
+		tags: ['preprocessors', 'blog', 'markdown', 'code highlighting', 'DX'],
+		featured: true,
+		updates: [
+			{ at: new Date('2024-08-15 18:24:50 -0400'), descriptions: ['Update to use @samplekit preprocessors.'] },
+			{ at: new Date('2024-03-21 13:59:53 -0400'), descriptions: ['Add formatLogFilename.'] },
+			{ at: new Date('2024-03-20 16:11:27 -0400'), descriptions: ['Expand processor syntax beyond highlighting.'] },
+		],
+	} satisfies RawFrontMatter;
+</script>
+
 <script lang="ts">
 	import { CodeTopper } from '$lib/articles/components';
-	import { TabPanelItem } from '$lib/components';
-	import DiffProcess from './DiffProcess.svelte';
-	import DiffRender from './DiffRender.svelte';
-	import DiffWrite from './DiffWrite.svelte';
-	import TableProcess from './TableProcess.svelte';
-	import TableRender from './TableRender.svelte';
-	import TableWrite from './TableWrite.svelte';
+	import { TabPanels, HAnchor } from '$lib/components';
 
 	const { data } = $props();
 
 	const svelteConfig = data.article.demos?.main?.find((e) => e.title === 'svelte.config.js')?.rawHTML;
-	const tablePreprocessors = data.article.demos?.main?.find((e) => e.title === 'tablePreprocessor.ts')?.rawHTML;
 	const codeBlocks = data.codeBlockCss;
-	if (!svelteConfig || !tablePreprocessors || !codeBlocks) throw new Error('Missing data');
+	if (!svelteConfig || !codeBlocks) throw new Error('Missing data');
 </script>
 
-<p>When creating this website, I had a few DX requirements:</p>
+<p>When creating this website, I had a few DX requirements for the articles:</p>
 
 <ul>
-	<li class="list-disc">easily embed Svelte components within the article</li>
-	<li class="list-disc">write code blocks and tables in Markdown</li>
-	<li class="list-disc">style code blocks with my personal VS Code theme</li>
-	<li class="list-disc">transform everything on the server (no client-side highlighting)</li>
-	<li class="list-disc">easily customize and extends features</li>
+	<li class="list-disc">preserve all the tooling Svelte offers</li>
+	<li class="list-disc">write tables in Markdown</li>
+	<li class="list-disc">style dark code blocks with my personal VS Code theme</li>
+	<li class="list-disc">add new features (like Math) as needed</li>
+	<li class="list-disc">transform everything on the server</li>
+	<li class="list-disc">write the code as if it were on the client</li>
 	<li class="list-disc">not have to wait for compatibility when Svelte 5 is released</li>
 </ul>
 
-<h2>Evaluating the Options</h2>
+<HAnchor tag="h2" title="Evaluating the Options" />
 
-<h3>0.1: Unified</h3>
+<HAnchor tag="h3" title="0.1: Unified" />
 
 <p>
 	Unified is an ecosystem of packages that all accept a standardized abstract syntax tree (AST). The uniformity means
 	you can convert your language into an AST, run a pipeline of transformations, and then transform it into some other
-	language. Originally, I thought of using the unified ecosystem to convert Markdown to an AST, use <code
-		>rehypePrettyCode</code
-	> in the middle for styling, and then convert it to HTML. This is a great solution for technical and non-technical users
-	alike because of how easy Markdown is to write.
+	language. Originally, I thought of using the unified ecosystem to convert Markdown to an AST, use
+	<code>rehypePrettyCode</code> in the middle for styling, and then convert it to HTML. This is a great solution for technical
+	and non-technical users alike because of how easy Markdown is to write.
 </p>
 
 <p>Something like this would work:</p>
@@ -99,7 +116,7 @@ export const mdToHTML = async <T extends object>(markdown: string) => {
 	};
 };
 
-/** @throws Error if the file could not be read or parsed */
+/** @throws Error if the file cannot be read or parsed */
 export async function parsePath<T extends object>(mdPath: { slug: string; path: string }): Promise<Parsed<T>> {
 	const rawMdContent = await fs.readFile(mdPath.path, 'utf-8').catch((_err) => {
 		throw new Error(`Unable to readFile ${mdPath.path}`);
@@ -133,586 +150,1062 @@ shiki-end -->
 </CodeTopper>
 
 <p>
-	However, this makes inlining Svelte components cumbersome. Would we write multiple md files, import/process them
-	separately, and put the Svelte components in-between? Would we have some special syntax to inject the Svelte
-	components where needed?
+	The largest drawback is that we'd be writing Markdown and forgoing the Svelte ecosystem entirely. Furthermore, even if
+	that were acceptable, this makes inlining Svelte components cumbersome. Would we write multiple <code>.md</code>
+	files, import/process them separately, and embed them into <code>.svelte</code> components? Would we write Markdown, and
+	inject Svelte components in-between?
 </p>
 
-<h3>0.2: MDsveX</h3>
+<HAnchor tag="h3" title="0.2: MDsveX" />
 <p>
-	<a href="https://MDsveX.pngwn.io/docs/">MDsveX</a> – a Markdown preprocessor for Svelte – solves the embedded Svelte
-	problem.
-	<a href="https://kit.svelte.dev/docs/integrations#preprocessors">Preprocessors</a> transform the input files before passing
-	them to the Svelte compiler, and this particular preprocessor enables writing Markdown and Svelte in the same file.
+	<a href="https://MDsveX.pngwn.io/docs/" data-external>MDsveX</a> – a Markdown preprocessor for Svelte – solves the
+	embedded Svelte problem.
+	<a href="https://kit.svelte.dev/docs/integrations#preprocessors" data-external>Preprocessors</a> transform the input files
+	before passing them to the Svelte compiler, and this particular preprocessor enables writing Markdown and Svelte in the
+	same file.
 </p>
 
 <p>
 	The biggest concern at the time of my decision was that it hadn't been updated in 7 months with over 150+ open issues.
-	It didn't inspire confidence that it would support Svelte 5 upon its release, which was a large consideration of which
-	method to use. The second reason was that MDsveX was overkill for my needs. I want to keep my code as close to HTML as
-	possible because it's more expressive and simpler; every step away from HTML is another build process.
+	It didn't inspire confidence that it would support Svelte 5 upon its release, which was a large consideration in which
+	method to use. Ideally, the technique we use would be resistant to changes in Svelte. The second reason was that
+	MDsveX is a separate language, and because of that, it wouldn't <span class="italic">just work</span> with other Svelte
+	tooling.
 </p>
 
 <p>
-	I really only want Markdown for two things: tables and code blocks. The general idea of a preprocessor, however, is
-	very appealing.
+	I really only want Markdown for three things: tables, code blocks, and math. The general idea of a preprocessor,
+	however, is very appealing.
 </p>
 
-<h3>0.3: Preprocessors</h3>
+<HAnchor tag="h3" title="0.3: Preprocessors" />
 
 <p>
-	We can easily customize our supported functionality by writing simple preprocessors for each feature we want to add.
-	There are plenty of packages which could handle our desired functionality so we only need to write functions that wrap
-	a dedicated package and call it when some special syntax is detected.
+	We can easily add a new feature to Svelte by writing a simple preprocessor wrapping a dedicated package for each new
+	functionality. There's <a href="https://marked.js.org/" data-external>Marked</a> for Markdown,
+	<a href="https://github.com/shikijs/shiki" data-external>Shiki</a>
+	for code highlighting, and <a href="https://katex.org/" data-external>KaTeX</a> for math.
 </p>
 
-<h2>Integrating Preprocessors</h2>
-
-<h3>Setup</h3>
-
-<p>
-	First, we'll want a different file extension so that we can instruct our preprocessors to not waste time on regular
-	<code>.svelte</code> files. It will also make it easier to write invalid Svelte syntax without triggering lint errors.
-	<a href="https://github.com/sveltejs/svelte/issues/9039#issuecomment-1650599142">
-		(&lt;script&gt; tags in HTML are especially troublesome.)
-	</a>
-	Using <code>.svx</code> (the extension used by MDsveX) is natural because our preprocessor syntax will be trivially
-	different from a subset of their syntax and would allow us to switch easily if desired. It also comes with the benefit
-	of a (limited)
-	<a href="https://marketplace.visualstudio.com/items?itemName=sebsojeda.vscode-svx">
-		VS Code syntax highlighting extension
-	</a>.
-</p>
-
-<p>Now that we've chosen the file extension, we'll need to configure vite to look for it.</p>
-
-<CodeTopper title="vite.config.ts">
+<div class="my-5">
+	The main requirement is to work inside <code>.svelte</code> files alongside the Svelte language server, Prettier,
+	ESLint, etc. This means we need syntax that is ignored by all tooling. Luckily, we already have such a thing: the HTML
+	comment:
 	<!-- shiki-start
+t-comment-inline
 ```ts
-import type { UserConfig } from 'vite';
-
-export default {
-	...,
-	assetsInclude: '**/*.svx',
-} satisfies UserConfig;
 ```
-shiki-end -->
-</CodeTopper>
-
-<p>We'll add types to our <code>app.d.ts</code> file to remove the lint errors.</p>
-
-<CodeTopper title="app.d.ts">
-	<!-- shiki-start
-```ts
-declare global {
-	...
-
-	module '*.svx' {
-		const component: import('svelte').ComponentType<import('svelte').SvelteComponent>;
-		export default component;
-	}
-}
-export {};
-```
-shiki-end -->
-</CodeTopper>
-
-<p>And finally we add the preprocessors.</p>
-
-<CodeTopper title="svelte.config.js">
-	<TabPanelItem panel={{ rawHTML: svelteConfig }} />
-</CodeTopper>
-
-<p>
-	<code>vitePreprocess</code> from <code>vite-plugin-svelte</code> handles the regular transformations like
-	<code>&ltscript lang="ts"&gt</code>.
-</p>
-
-<div class="alert-wrapper alert-wrapper-info pb-2 text-base">
-	<p class="alert-header my-0">Tip</p>
-	<p class="mb-6 mt-2">Add emmet completions for <code>.svx</code> files in VS Code for your sanity!</p>
-	<div class="text-lg">
-		<CodeTopper title=".vscode/settings.json">
-			<!-- shiki-start
-```json
-{
-	"emmet.includeLanguages": { ..., "svx": "html" }
-}
-```
-shiki-end -->
-		</CodeTopper>
-	</div>
+shiki-end -->. Bonus points that it already has a shortcut keybinding and
+	simply turns into a comment if the preprocessor isn't present. With this, we can decide upon some delimiters.
 </div>
 
-<h3>Table Preprocessor</h3>
+<div class="no-lines grid grid-cols-2 gap-6">
+	<!-- shiki-start
+t-shiki-block
+```ts
+const foo = "bar";
+```
+shiki-end -->
 
-<h4>Transformation Pipeline</h4>
-
-<p>We want to write:</p>
-
-<CodeTopper title="Table Example: Writing">
-	<TableWrite />
-</CodeTopper>
-
-<p>process to (sans whitespace):</p>
-
-<CodeTopper title="Table Example: Processing">
-	<TableProcess />
-</CodeTopper>
-
-<p>and render as:</p>
-
-<TableRender />
-
-<div class="alert-wrapper alert-wrapper-info text-base">
-	<p class="alert-header my-0">Hint</p>
-	<p class="my-2">Styles via <a href="https://tailwindcss.com/docs/typography-plugin">Tailwind Typography</a>.</p>
+	<!-- shiki-start
+t-md-block
+```md
+# Markdown
+```
+shiki-end -->
 </div>
 
-<p>
-	We <span class="italic">could</span> write some complicated logic to parse the file and determine where a table might start
-	or end, but let's just make it very simple and use a start and end tag.
-</p>
-
-<p>
-	Comment syntax is nice because it disappears if changing to MDsveX, has a bound keyboard shortcut, and has noticeable
-	syntax highlighting.
-</p>
-
-<h4>Writing the Preprocessor</h4>
-
-<p>
-	We know what we want, so let's write a simple preprocessor that wraps a dedicated package. There are multiple packages
-	we could use to handle the heavy lifting of converting a Markdown table into HTML. We'll use
-	<a href="https://marked.js.org/">marked</a>.
-</p>
-
-<p>We loop over the content, pull out anything between the start and end delimiters, process it, and put it back in.</p>
-
-<CodeTopper title="/scripts/markdown/table.js">
-	<TabPanelItem panel={{ rawHTML: tablePreprocessors }} />
-</CodeTopper>
-
-<p>Easy and already halfway there!</p>
-
-<h3>Codeblock Preprocessor</h3>
-
-<p>
-	We should be able to declare line properties at the top with <code>///diff-remove:3-10</code> or inline with
-	<code>// [!diff-remove]</code>. The same syntax should be used for <code>highlight</code>,
-	<code>diff-add</code>, <code>diff-remove</code>, and <code>hide</code>. Hiding code is useful because we might want to
-	show only part of a function or class, but keep the syntax highlighting as if the hidden code were there.
-</p>
-
-<h4>Transformation Pipeline</h4>
-
-<p>For this one, we want to write:</p>
-
-<CodeTopper title="Codeblock Example: Writing">
-	<DiffWrite />
-</CodeTopper>
-
-<p>process to (sans whitespace):</p>
-
-<CodeTopper title="Codeblock Example: Processing">
-	<DiffProcess />
-</CodeTopper>
-
-<p>and render as:</p>
-
-<CodeTopper title="Codeblock Example: Rendering">
-	<DiffRender />
-</CodeTopper>
-
-<h4>Writing the Preprocessor</h4>
-
-<p>Again, no need to reinvent the wheel. Let's use <a href="https://github.com/shikijs/shiki">Shiki</a>.</p>
-
-<p>First, let's decide on the languages we want to load.</p>
-
-<CodeTopper title="codeblockPreprocessor.ts Part 1">
-	<!-- shiki-start
-```ts
-import { type BundledLanguage as ShikiLang } from 'shiki';
-
-export const mdLanguages = ['json', 'sh', 'html', 'css', 'md', 'js', 'ts', 'svelte', 'diff'] satisfies ShikiLang[];
-export type MdLang = (typeof mdLanguages)[number];
-export const isMdLang = (lang?: string): lang is MdLang => mdLanguages.includes(lang as MdLang);
+<!-- shiki-start
+t-comment-block
+```latex
+\[ V={4 \over 3}\pi r^{3} \]
 ```
 shiki-end -->
-</CodeTopper>
 
-<p>Let's make sure to escape Svelte characters too.</p>
+<HAnchor tag="h2" title="Writing the Preprocessors" />
 
-<CodeTopper title="codeblockPreprocessor.ts Part 2">
-	<!-- shiki-start
-```ts
-const escapeSvelte = (code: string) => {
-	return code.replace(/[{}`]/g, (match) => {
-		return {
-			'{': '&lbrace;',
-			'}': '&rbrace;',
-			'`': '&grave;',
-		}[match]!;
-	});
-};
-```
-shiki-end -->
-</CodeTopper>
+<HAnchor tag="h3" title="Markdown" />
 
 <p>
-	We know we want to be detect things like line highlighting and diffing, so we'll check for a custom
-	<code>///highlight:</code> or <code>// [!highlight]</code> syntax, extract the line data, and remove the syntax from the
-	output.
+	We'll start with the Markdown preprocessor because it does nothing but wrap <code>Marked</code>. Writing a
+	preprocessor that wraps an existing package is dead simple. We just have to remove the code between our delimiters,
+	process it, and put it back in. There are two obvious choices for how to pull out the code. We can either loop over
+	the raw string content with <code>indexOf</code> or we can walk a Svelte AST tree. Here are two examples of how we can
+	implement the preprocessor.
 </p>
 
-<CodeTopper title="codeblockPreprocessor.ts Part 3">
+{#snippet StringApproach()}
 	<!-- shiki-start
 ```ts
-const extractGlobalRegex = ({ rawCode, regex }: { rawCode: string; regex: RegExp }) => {
-	const lines: number[] = [];
-	const strippedCode = rawCode.replace(regex, (_, group) => {
-		group
-			.trim()
-			.split(',')
-			.forEach((lineStr: string) => {
-				lineStr = lineStr.trim().replace(/[^0-9-]/g, '');
-				if (lineStr.includes('-')) {
-					const [start, end] = lineStr.split('-');
-					if (start && end) {
-						for (let lineNum = Number(start.trim()); lineNum <= Number(end.trim()); lineNum++) {
-							lines.push(lineNum);
-						}
-					}
-				} else {
-					lines.push(Number(lineStr));
-				}
-			});
-		return '';
-	});
+import { marked as hostedMarked } from 'marked';
+import type { Logger } from './logger.js';
+import type { PreprocessorGroup } from 'svelte/compiler';
 
-	return { strippedCode, lines };
-};
+const delimiter = { start: 'md-start', end: 'md-end' };
 
-const propToGlobalRegex = [
-	['highlighted', /^\/\/\/\s*highlight:(.*)\s*\n/m, ' // &brackbang;highlight]'],
-	['hidden', /^\/\/\/\s*hide:(.*)\s*\n/m, ' // &brackbang;hide'],
-	['diff-added', /^\/\/\/\s*diff-add:(.*)\s*\n/m, ' // &brackbang;diff-add'],
-	['diff-removed', /^\/\/\/\s*diff-remove:(.*)\s*\n/m, ' // &brackbang;diff-remove'],
-] as const;
+/**
+ * @throws {Error} If the comment block is incomplete.
+ */
+const replaceComments = (content: string, replacer: (comment: string) => null | string): string => {
+	let resultContent = content;
 
-const lineRegexMatchToProp = {
-	highlight: 'highlighted',
-	hide: 'hidden',
-	'diff-add': 'diff-added',
-	'diff-remove': 'diff-removed',
-} as const;
+	let startIdx = resultContent.indexOf('&openhtmlcomment;');
 
-const lineRegex = /\/\/\s*\[!(highlight|hide|diff-add|diff-remove)\]/g;
+	while (startIdx !== -1) {
+		const endIdx = resultContent.indexOf('&closehtmlcomment;', startIdx + 4);
+		if (endIdx === -1) throw new Error(`Incomplete comment block at start ${startIdx}. Aborting.`);
 
-const getLineProps = (rawCode: string) => {
-	let code = rawCode.replaceAll('\t', '  ');
-	const lineProps: Record<number, `data-line-${(typeof propToGlobalRegex)[number][0]}`[]> = {};
-	const hasProperty = propToGlobalRegex.reduce(
-		(acc, [propName]) => ({ ...acc, [propName]: false }),
-		{} as Record<(typeof propToGlobalRegex)[number][0], boolean>,
-	);
+		const extractedContent = resultContent.substring(startIdx + 4, endIdx);
 
-	for (const [propertyName, globalRegex] of propToGlobalRegex) {
-		const { strippedCode, lines } = extractGlobalRegex({ rawCode: code, regex: globalRegex });
-		code = strippedCode;
-		if (lines.length) hasProperty[propertyName] = true;
-		for (const line of lines) {
-			if (lineProps[line]) lineProps[line]!.push(`data-line-${propertyName}`);
-			else lineProps[line] = [`data-line-${propertyName}`];
+		const replaced = replacer(extractedContent);
+		if (replaced === null) {
+			startIdx = resultContent.indexOf('&openhtmlcomment;', endIdx + 3);
+			continue;
 		}
+		const before = resultContent.substring(0, startIdx);
+		const after = resultContent.substring(endIdx + 3);
+
+		resultContent = before + replaced + after;
+		startIdx = resultContent.indexOf('&openhtmlcomment;', startIdx + replaced.length);
 	}
 
-	code = code
-		.split('\n')
-		.map((lineStr, index) => {
-			let match;
-			const lineNum = index + 1;
-
-			while ((match = lineRegex.exec(lineStr)) !== null) {
-				const key = match[1] as keyof typeof lineRegexMatchToProp;
-				const propName = lineRegexMatchToProp[key];
-				if (lineProps[lineNum]) lineProps[lineNum]!.push(`data-line-${propName}`);
-				else lineProps[lineNum] = [`data-line-${propName}`];
-			}
-
-			return lineStr.replace(lineRegex, '');
-		})
-		.join('\n');
-
-	const preProps = Object.entries(hasProperty).reduce((acc, [key, value]) => {
-		if (value) acc.push(`data-has-${key}`);
-		return acc;
-	}, [] as string[]);
-
-	return { strippedCode: code, lineProps, preProps };
-};
-```
-shiki-end -->
-</CodeTopper>
-
-<p>
-	Next we'll need to choose a light and dark theme to create our highlighter. I'll use
-	<code>
-		<a href="https://textmate-grammars-themes.netlify.app/?theme=rose-pine-dawn&grammar=typescript">rose-pine-dawn</a>
-	</code>
-	for the light theme and
-	<code><a href="https://github.com/timothycohen/samplekit/blob/main/packages/markdown/src/darker.ts">darker</a></code>
-	– my own modified version of VS Code <code>dark+</code> – for the dark theme.
-</p>
-
-<CodeTopper title="codeblockPreprocessor.ts Part 4">
-	<!-- shiki-start
-```ts
-import { getHighlighter } from 'shiki';
-import darkerJSON from './darker.js';
-
-const highlighter = await getHighlighter({
-	themes: [darkerJSON, 'rose-pine-dawn'],
-	langs: mdLanguages,
-});
-```
-shiki-end -->
-</CodeTopper>
-
-<p>Now we can use it to render some HTML!</p>
-
-<CodeTopper title="codeblockPreprocessor.ts Part 5">
-	<!-- shiki-start
-```ts
-import type { Element } from 'hast';
-
-const createThemedCodeHtml = ({
-	code,
-	lang,
-	lineProps,
-	preProps,
-}: {
-	code: string;
-	lang: MdLang;
-	lineProps: Record<number, string[]>;
-	preProps: string[];
-}) => {
-	let lineNum = 1;
-
-	return highlighter.codeToHtml(code.trim(), {
-		lang,
-		themes: { darker: 'darker', 'rose-pine-dawn': 'rose-pine-dawn' },
-		defaultColor: false,
-		cssVariablePrefix: '--h-',
-		transformers: [
-			{
-				line(el: Element) {
-					delete el.properties['class'];
-					el.properties['data-line'] = lineNum;
-					const properties = lineProps[lineNum];
-					if (properties?.length) properties.forEach((property) => (el.properties[property] = ''));
-					lineNum++;
-					return el;
-				},
-				code(el: Element) {
-					// remove hidden lines and collapse the resulting whitespace
-					// doing it this way after highlighting means we can still highlight things like class methods without declaring the entire class
-					const newChildren = [];
-					for (let i = 0; i < el.children.length; i++) {
-						const child = el.children[i]!;
-						if (child.type !== 'element') {
-							newChildren.push(child);
-						} else if (!Object.keys(child.properties).includes('data-line-hidden')) {
-							newChildren.push(child);
-						} else {
-							const next = el.children[i + 1];
-							if (next?.type === 'text') {
-								next.value = next.value.replace(/^\n/, '');
-							}
-						}
-					}
-					el.children = newChildren;
-					return el;
-				},
-				pre(el: Element) {
-					delete el.properties['class'];
-					delete el.properties['tabindex'];
-					preProps.forEach((property) => (el.properties[property] = ''));
-					return el;
-				},
-			},
-		],
-	});
+	return resultContent;
 };
 
-export const mdCodeBlockToRawHtml = ({ rawCode, lang }: { rawCode: string; lang: MdLang }) => {
-	try {
-		const { strippedCode: code, lineProps, preProps } = getLineProps(rawCode);
-		return {
-			data:
-				`<div class="code-wrapper">` + escapeSvelte(createThemedCodeHtml({ code, lang, lineProps, preProps })) + '</div>',
-		};
-	} catch (err) {
-		if (err instanceof Error) return { error: err };
-		return { error: new Error(`Unable to highlight`) };
-	}
-};
-```
-shiki-end -->
-</CodeTopper>
-
-<p>
-	Our preprocessor code will give us the raw markup, including the <code>```</code> or <code>~~~</code> markdown code block
-	delimiter, so let's write a function to parse and remove the wrapper from the raw input.
-</p>
-
-<CodeTopper title="codeblockPreprocessor.ts Part 6">
-	<!-- shiki-start
-```ts
-const parseAndRemoveWrapper = (
-	rawMarkdown: string,
-): { rawCode: string; lang: MdLang; error?: never } | { rawCode?: never; lang?: never; error: Error } => {
-	rawMarkdown = rawMarkdown.trim();
-	const lines = rawMarkdown.split('\n');
-	const firstLine = lines[0];
-	if (!firstLine) return { error: new Error('Markdown file is empty') };
-
-	const startsWith = firstLine.startsWith('&tripgrave;') ? '&tripgrave;' : firstLine.startsWith('&triptilde;') ? '&triptilde;' : null;
-	if (!startsWith) return { error: new Error('Markdown file is not a codeblock') };
-
-	let lang: string;
-	if (startsWith === '&tripgrave;') {
-		lang = firstLine.replace('&tripgrave;', '').trim();
-		lines.splice(0, 1);
-	} else {
-		lang = firstLine.replace('&triptilde;', '').trim();
-		lines.splice(0, 1);
-	}
-	if (!isMdLang(lang)) return { error: new Error(`Language ${lang} not loaded.`) };
-
-	while (lines.length) {
-		const lastLine = lines[lines.length - 1]!.trim();
-		if (lastLine === '' || lastLine === startsWith) lines.pop();
-		else break;
-	}
-
-	const rawCode = lines.join('\n');
-	return { rawCode, lang };
-};
-```
-shiki-end -->
-</CodeTopper>
-
-<p>
-	We have everything needed to write our processor, so let's get to it. We'll use the same loop and replace method as
-	<code>preprocessTable</code>.
-</p>
-
-<CodeTopper title="codeblockPreprocessor.ts Part 7">
-	<!-- shiki-start
-```ts
-export function processCodeblock({
+export function processMarkdown({
 	include,
 	logger,
-	formatLogFilename,
+	marked = hostedMarked,
 }: {
-	logger?: { error: (s: string) => void; debug: (s: string) => void; warn: (s: string) => void };
 	include?: (filename: string) => boolean;
-	formatLogFilename?: (filename: string) => string;
+	logger?: Logger;
+	marked?: typeof hostedMarked;
 } = {}) {
 	return {
-		markup({ content, filename }: { content: string; filename: string }): { code: string } | null {
-			if (include && !include(filename)) return null;
-			const format = formatLogFilename || ((filename: string) => filename);
+		name: 'md',
+		markup({ content, filename }) {
+			if (!filename) return;
+			if (include && !include(filename)) return;
 
-			const delimiters = [
-				{ startRegex: new RegExp('&tripgrave;(' + mdLanguages.join('|') + ')'), endMarker: '&tripgrave;' },
-				{ startRegex: new RegExp('&triptilde;(' + mdLanguages.join('|') + ')'), endMarker: '&triptilde;' },
-			];
+			try {
+				let count = 0;
 
-			let resultContent = content;
-			let { startRegex, endMarker } = delimiters.pop()!;
-			let startMatch = startRegex.exec(resultContent);
+				const code = replaceComments(content, (comment) => {
+					let trimmed = comment.trim();
+					if (!trimmed.startsWith(delimiter.start)) return null;
+					count++;
+					if (!trimmed.endsWith(delimiter.end)) throw new Error(`Incomplete md (count: ${count}). Aborting.`);
+					trimmed = trimmed.substring(delimiter.start.length + 1, trimmed.length - delimiter.end.length);
+					return marked(trimmed, { async: false }) as string;
+				});
 
+				if (count) logger?.info?.({ count }, filename);
+				return { code };
+			} catch (err) {
+				if (err instanceof Error) logger?.error?.(err, filename);
+				else logger?.error?.(Error('Failed to render Markdown.'), filename);
+			}
+		},
+	} satisfies PreprocessorGroup;
+}
+```
+shiki-end -->
+{/snippet}
+
+{#snippet Logger()}
+	<!-- shiki-start
+```ts
+export type Logger = {
+	error?: (e: Error, filename: string) => void;
+	info?: (a: { count: number }, filename: string) => void;
+};
+
+export const createMdLogger = (formatFilename: (filename: string) => void = (filename: string) => filename): Logger => {
+	return {
+		error: (e, filename) => console.error(`[PREPROCESS] | Mark | Error | ${formatFilename(filename)} | ${e.message}`),
+		info: (detail, filename) =>
+			console.info(`[PREPROCESS] | Mark | Info | ${formatFilename(filename)} | count: ${detail.count}`),
+	};
+};
+```
+shiki-end -->
+{/snippet}
+
+{#snippet ASTApproach()}
+	<!-- shiki-start
+```ts
+import { walk } from 'estree-walker';
+import MagicString from 'magic-string';
+import { marked as hostedMarked } from 'marked';
+import { parse, type PreprocessorGroup } from 'svelte/compiler';
+import type { Logger } from './logger.js';
+
+const delimiter = { start: 'md-start', end: 'md-end' };
+const delimLoc = { start: delimiter.start.length + 1, end: -delimiter.end.length - 1 };
+
+export function processMarkdown({
+	include,
+	logger,
+	marked = hostedMarked,
+}: {
+	include?: (filename: string) => boolean;
+	logger?: Logger;
+	marked?: typeof hostedMarked;
+} = {}) {
+	return {
+		name: 'md',
+		markup({ content, filename }) {
+			if (!filename) return;
+			if (include && !include(filename)) return;
+
+			try {
+				const s = new MagicString(content);
+				const ast = parse(content, { filename, modern: true });
+				let count = 0;
+
+				walk(ast.fragment, {
+					enter(node: (typeof ast.fragment.nodes)[number]) {
+						if (node.type !== 'Comment') return;
+						const trimmed = node.data.trim();
+						if (!trimmed.startsWith(delimiter.start)) return;
+						if (!trimmed.endsWith(delimiter.end)) return;
+						s.remove(node.start, node.end);
+						s.appendLeft(node.start, marked(trimmed.slice(delimLoc.start, delimLoc.end), { async: false }) as string);
+						count++;
+					},
+				});
+
+				if (count) logger?.info?.({ count }, filename);
+				return { code: s.toString() };
+			} catch (err) {
+				if (err instanceof Error) logger?.error?.(err, filename);
+				else logger?.error?.(Error('Failed to render Markdown.'), filename);
+			}
+		},
+	} satisfies PreprocessorGroup;
+}
+```
+shiki-end -->
+{/snippet}
+
+<TabPanels
+	files={[
+		{ snippet: ASTApproach, title: 'AST Approach' },
+		{ snippet: StringApproach, title: 'String Approach' },
+		{ snippet: Logger, title: 'logger.ts' },
+	]}
+/>
+
+<p>And we can now register it with Svelte.</p>
+
+<CodeTopper title="svelte.config.js">
+	<!-- shiki-start
+```js
+import { processMarkdown, createMdLogger } from '@samplekit/preprocess-markdown';
+import adapter from '@sveltejs/adapter-auto';
+import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
+import { opts } from './src/lib/shiki/index.js';
+
+const preprocessorRoot = `${import.meta.dirname}/src/routes/`;
+const formatFilename = (/** @type {string} */ filename) => filename.replace(preprocessorRoot, '');
+const include = (/** @type {string} */ filename) => filename.startsWith(preprocessorRoot);
+
+/** @type {import('@sveltejs/kit').Config} */
+const config = {
+	preprocess: [
+		processMarkdown({
+			include,
+			logger: createMdLogger(formatFilename),
+		}),
+		vitePreprocess(),
+	],
+	kit: {
+		adapter: adapter(),
+	},
+};
+
+export default config;
+```
+shiki-end -->
+</CodeTopper>
+
+<p>
+	Hopefully it's clear how powerful this simple idea is. We <span class="italic">could</span> write some complicated logic
+	to parse a file and determine where a table might start or end, but that would necessarily require us to work in a different
+	language without the Svelte ecosystem. In my opinion sacrificing Svelte tooling to use these preprocessors would be the
+	wrong tradeoff.
+</p>
+
+<HAnchor tag="h3" title="Math" />
+
+<p>
+	We'll do the same thing for Markdown, but in this version, we'll want two delimiters. One for inline math like this <!--\( V={4 \over 3}\pi r^{3} \) -->
+	and one for display math like this:
+</p>
+
+<!-- \[
+\begin{align}
+\dot{x} & = \sigma(y-x) \\
+\dot{y} & = \rho x - y - xz \\
+\dot{z} & = -\beta z + xy
+\end{align}
+\] -->
+
+<p>It's very similar to the AST approach above.</p>
+
+<CodeTopper title="preprocess-katex">
+	<!-- shiki-start
+```ts
+import { walk } from 'estree-walker';
+import katex from 'katex';
+import MagicString from 'magic-string';
+import { parse, type PreprocessorGroup } from 'svelte/compiler';
+import type { Logger } from './logger.js';
+
+const display = { start: String.raw`\[`, end: String.raw`\]` };
+const inline = { start: String.raw`\(`, end: String.raw`\)` };
+const delimLoc = { start: 3, end: -3 };
+
+export function processKatex({
+	include,
+	logger,
+	renderToString = katex.renderToString,
+}: {
+	include?: (filename: string) => boolean;
+	logger?: Logger;
+	renderToString?: (tex: string, options?: katex.KatexOptions) => string;
+} = {}) {
+	return {
+		name: 'katex',
+		markup({ content, filename }) {
+			if (!filename) return;
+			if (include && !include(filename)) return;
+			const s = new MagicString(content);
+			const ast = parse(content, { filename, modern: true });
 			let count = 0;
 
-			while (startMatch || delimiters.length) {
-				if (!startMatch) {
-					({ startRegex, endMarker } = delimiters.pop()!);
-					startMatch = startRegex.exec(resultContent);
-					continue;
-				}
+			walk(ast.fragment, {
+				enter(node: (typeof ast.fragment.nodes)[number]) {
+					if (node.type !== 'Comment') return;
+					const trimmed = node.data.trim();
 
-				count++;
+					let displayMode: boolean | undefined = undefined;
+					if (trimmed.startsWith(display.start) && trimmed.endsWith(display.end)) displayMode = true;
+					else if (trimmed.startsWith(inline.start) && trimmed.endsWith(inline.end)) displayMode = false;
+					if (displayMode === undefined) return;
 
-				const startIdx = startMatch.index;
-				const endIdx = resultContent.indexOf(endMarker, startIdx + startMatch[0].length);
+					s.remove(node.start, node.end);
 
-				if (endIdx === -1) {
-					logger?.error(
-						`[PREPROCESS] | ${format(filename)} | Codeblock | Error | Incomplete md at start ${startIdx} (count: ${count}). Aborting.`,
-					);
-					return { code: resultContent };
-				}
+					let parsed;
+					try {
+						const rawInput = String.raw`${trimmed.slice(delimLoc.start, delimLoc.end)}`;
+						parsed = renderToString(rawInput, {
+							displayMode,
+							throwOnError: true,
+						});
+					} catch (err) {
+						logger?.error?.(err instanceof Error ? err : Error('Failed to render KaTeX.'), filename);
+						return;
+					}
 
-				const before = resultContent.substring(0, startIdx);
-				const extractedContentWithWrapper = resultContent.substring(startIdx, endIdx + endMarker.length);
-				const after = resultContent.substring(endIdx + endMarker.length);
-				let processedContent = '';
+					const content = displayMode
+						? `<div class="overflow-x-auto">{@html \`${parsed}\`}</div>`
+						: `{@html \`${parsed}\`}`;
+					s.appendLeft(node.start, content);
+					count++;
+				},
+			});
 
-				const { rawCode, lang, error: codeProcessError } = parseAndRemoveWrapper(extractedContentWithWrapper);
-				let highlightError;
-				if (rawCode && lang) {
-					const { data, error } = mdCodeBlockToRawHtml({ rawCode, lang });
-					if (data) processedContent = data;
-					else if (error) highlightError = error;
-				}
+			if (count) logger?.info?.({ count }, filename);
 
-				if (codeProcessError || highlightError) {
-					logger?.warn(
-						`[PREPROCESS] | ${format(filename)} | Codeblock | Warning | Unable to process at start ${startIdx} count ${count}. Skipping.`,
-					);
-				}
-
-				resultContent = before + processedContent + after;
-				startMatch = startRegex.exec(resultContent);
-			}
-
-			logger?.debug(`[PREPROCESS] | ${format(filename)} | Codeblock | Success | { count: ${count} } }`);
-
-			return { code: resultContent };
+			return { code: s.toString() };
 		},
-	};
+	} satisfies PreprocessorGroup;
 }
 ```
 shiki-end -->
 </CodeTopper>
 
-<p>We've finished the preprocessor. Full code below.</p>
+<p>Annoyingly, KaTeX logs directly to the console. To prevent this, let's wrap the call to KaTeX in a trap function.</p>
 
-<CodeTopper title="codeblockPreprocessor.ts Full" initialCollapsed>
-	<TabPanelItem
-		panel={{ rawHTML: data.article.demos?.main?.find((d) => d.title === 'codeblockPreprocessor.ts')?.rawHTML ?? '' }}
-	/>
+<CodeTopper title="preprocess-katex">
+	<!-- shiki-start
+```ts
+import { walk } from 'estree-walker';
+import katex from 'katex';
+import MagicString from 'magic-string';
+import { parse, type PreprocessorGroup } from 'svelte/compiler';
+import type { Logger } from './logger.js';
+
+const display = { start: String.raw`\[`, end: String.raw`\]` };
+const inline = { start: String.raw`\(`, end: String.raw`\)` };
+const delimLoc = { start: 3, end: -3 };
+
+// https://github.com/KaTeX/KaTeX/issues/3720
+const catchStdErr = ({ tmpWrite, trappedFn }: { trappedFn: () => void; tmpWrite: (str: string) => boolean }) => {//! d"diff-add"
+	const write = process.stdout.write;//! d"diff-add"
+	try {//! d"diff-add"
+		process.stderr.write = tmpWrite;//! d"diff-add"
+		trappedFn();//! d"diff-add"
+	} finally {//! d"diff-add"
+		process.stderr.write = write;//! d"diff-add"
+	}//! d"diff-add"
+};//! d"diff-add"
+
+export function processKatex({
+	include,
+	logger,
+	renderToString = katex.renderToString,
+}: {
+	include?: (filename: string) => boolean;
+	logger?: Logger;
+	renderToString?: (tex: string, options?: katex.KatexOptions) => string;
+} = {}) {
+	return {
+		name: 'katex',
+		markup({ content, filename }) {
+			if (!filename) return;
+			if (include && !include(filename)) return;
+			const s = new MagicString(content);
+			const ast = parse(content, { filename, modern: true });
+			let count = 0;
+
+			walk(ast.fragment, {
+				enter(node: (typeof ast.fragment.nodes)[number]) {
+					if (node.type !== 'Comment') return;
+					const trimmed = node.data.trim();
+
+					let displayMode: boolean | undefined = undefined;
+					if (trimmed.startsWith(display.start) && trimmed.endsWith(display.end)) displayMode = true;
+					else if (trimmed.startsWith(inline.start) && trimmed.endsWith(inline.end)) displayMode = false;
+					if (displayMode === undefined) return;
+
+					s.remove(node.start, node.end);
+
+					let parsed;
+					try {
+						const rawInput = String.raw`${trimmed.slice(delimLoc.start, delimLoc.end)}`;
+						const warns: Error[] = [];//! d"diff-add"
+						catchStdErr({//! d"diff-add"
+							trappedFn: () => {//! d"diff-add"
+								parsed = renderToString(rawInput, {
+									displayMode,
+									throwOnError: true,
+								});
+							},//! d"diff-add"
+							tmpWrite: (str) => {//! d"diff-add"
+								if (!str.startsWith('No character metrics for ')) warns.push(Error(str));//! d"diff-add"
+								return true;//! d"diff-add"
+							},//! d"diff-add"
+						});//! d"diff-add"
+						if (logger?.warn) {//! d"diff-add"
+							warns.forEach((err) => logger.warn?.(err, filename));//! d"diff-add"
+						}//! d"diff-add"
+					} catch (err) {
+						logger?.error?.(err instanceof Error ? err : Error('Failed to render KaTeX.'), filename);
+						return;
+					}
+
+					const content = displayMode
+						? `<div class="overflow-x-auto">{@html \`${parsed}\`}</div>`
+						: `{@html \`${parsed}\`}`;
+					s.appendLeft(node.start, content);
+					count++;
+				},
+			});
+
+			if (count) logger?.info?.({ count }, filename);
+
+			return { code: s.toString() };
+		},
+	} satisfies PreprocessorGroup;
+}
+```
+shiki-end -->
 </CodeTopper>
-
-<p>And finally, we add a touch of css:</p>
-
-<CodeTopper title="code-block.css">
-	<TabPanelItem panel={{ rawHTML: codeBlocks }} />
-</CodeTopper>
-
-<h2>Conclusion</h2>
 
 <p>
-	Svelte preprocessors are powerful even with a painless setup like we've implemented here. I'm grateful to
-	<a href="https://github.com/pngwn/MDsveX">MDsveX</a>,
-	<a href="https://github.com/vnphanquang/svelte-put">svelte-put</a>, and
-	<a href="https://melt-ui.com/docs/preprocessor">Melt UI</a>
+	Looks good. But what about reactivity? It's quite possible you'll want to use handlebar substitution inside the
+	equations. If we simply tried to use it as is, KaTeX would choke on the syntax. We'll have to make a special TeX like
+	macro for Svelte.
+	<code>\s</code> seems as good as any. It should take the Svelte content out, replace it with unique single character placeholders,
+	process the TeX, and then put the Svelte content back in.
+</p>
+
+<CodeTopper title="Svelte Reactivity">
+	<!-- shiki-start
+```ts
+// the nuts and bolts of it
+const { svelteFreeString, extractedSvelteContent } = replaceSvelteAndStore(rawInput);
+const mathString = katex.renderToString(svelteFreeString)
+const parsed = restoreSvelte(mathString, extractedSvelteContent);
+```
+shiki-end -->
+</CodeTopper>
+
+<p>We'll use some Unicode characters as our storage placeholder.</p>
+
+<CodeTopper title="preprocess-katex">
+	<!-- shiki-start
+d"diff-add" l"21-79" l"114" l"118" l"121-124" l"126"
+```ts
+import { walk } from 'estree-walker';
+import katex from 'katex';
+import MagicString from 'magic-string';
+import { parse, type PreprocessorGroup } from 'svelte/compiler';
+import type { Logger } from './logger.js';
+
+const display = { start: String.raw`\[`, end: String.raw`\]` };
+const inline = { start: String.raw`\(`, end: String.raw`\)` };
+const delimLoc = { start: 3, end: -3 };
+
+// https://github.com/KaTeX/KaTeX/issues/3720
+const catchStdErr = ({ tmpWrite, trappedFn }: { trappedFn: () => void; tmpWrite: (str: string) => boolean }) => {
+	const write = process.stdout.write;
+	try {
+		process.stderr.write = tmpWrite;
+		trappedFn();
+	} finally {
+		process.stderr.write = write;
+	}
+};
+
+const unicodeInsertionPlaceholders = [
+	'␇',
+	'␈',
+	'␉',
+	'␊',
+	'␋',
+	'␌',
+	'␍',
+	'␎',
+	'␏',
+	'␐',
+	'␑',
+	'␒',
+	'␓',
+	'␔',
+	'␕',
+	'␖',
+	'␗',
+	'␘',
+	'␙',
+	'␚',
+	'␛',
+	'␜',
+	'␝',
+	'␞',
+	'␟',
+	'␠',
+];
+
+function replaceSvelteAndStore(input: string): { svelteFreeString: string; extractedSvelteContent: string[] } {
+	const extractedSvelteContent: string[] = [];
+	let index = 0;
+	const svelteFreeString = input.replace(/\\s\{([^}]*)\}/g, (_match, p1) => {
+		if (index >= unicodeInsertionPlaceholders.length) throw new Error('Too many variable substitutions.');
+		extractedSvelteContent.push(p1);
+		const unicodePlaceholder = unicodeInsertionPlaceholders[index];
+		index++;
+		return `{` + unicodePlaceholder + `}`;
+	});
+
+	return { svelteFreeString, extractedSvelteContent };
+}
+
+function restoreSvelte(mathString: string, extractedSvelteContent: string[]): string {
+	if (!extractedSvelteContent.length) return mathString;
+
+	const unicodeMap = new Map();
+	extractedSvelteContent.forEach((content, i) => {
+		unicodeMap.set(unicodeInsertionPlaceholders[i], content);
+	});
+
+	const unicodePlaceholderRegex = new RegExp(`(${unicodeInsertionPlaceholders.join('|')})`, 'g');
+
+	return mathString.replaceAll(unicodePlaceholderRegex, (placeholder) => {
+		const svelteContent = unicodeMap.get(placeholder);
+		return `\${${svelteContent}}`;
+	});
+}
+
+export function processKatex({
+	include,
+	logger,
+	renderToString = katex.renderToString,
+}: {
+	include?: (filename: string) => boolean;
+	logger?: Logger;
+	renderToString?: (tex: string, options?: katex.KatexOptions) => string;
+} = {}) {
+	return {
+		name: 'katex',
+		markup({ content, filename }) {
+			if (!filename) return;
+			if (include && !include(filename)) return;
+			const s = new MagicString(content);
+			const ast = parse(content, { filename, modern: true });
+			let count = 0;
+
+			walk(ast.fragment, {
+				enter(node: (typeof ast.fragment.nodes)[number]) {
+					if (node.type !== 'Comment') return;
+					const trimmed = node.data.trim();
+
+					let displayMode: boolean | undefined = undefined;
+					if (trimmed.startsWith(display.start) && trimmed.endsWith(display.end)) displayMode = true;
+					else if (trimmed.startsWith(inline.start) && trimmed.endsWith(inline.end)) displayMode = false;
+					if (displayMode === undefined) return;
+
+					s.remove(node.start, node.end);
+
+					let parsed;
+					try {
+						const rawInput = String.raw`${trimmed.slice(delimLoc.start, delimLoc.end)}`;
+						const { svelteFreeString, extractedSvelteContent } = replaceSvelteAndStore(rawInput);
+						const warns: Error[] = [];
+						catchStdErr({
+							trappedFn: () => {
+								const mathString = renderToString(svelteFreeString, {
+									displayMode,
+									throwOnError: true,
+									strict: (errorCode: string, errorMsg: string) => {
+										if (errorCode === 'unknownSymbol' && errorMsg.startsWith('Unrecognized Unicode character'))
+											return 'ignore';
+									},
+								});
+								parsed = restoreSvelte(mathString, extractedSvelteContent);
+							},
+							tmpWrite: (str) => {
+								if (!str.startsWith('No character metrics for ')) warns.push(Error(str));
+								return true;
+							},
+						});
+						if (logger?.warn) {
+							warns.forEach((err) => logger.warn?.(err, filename));
+						}
+					} catch (err) {
+						logger?.error?.(err instanceof Error ? err : Error('Failed to render KaTeX.'), filename);
+						return;
+					}
+					const content = displayMode
+						? `<div class="overflow-x-auto">{@html \`${parsed}\`}</div>`
+						: `{@html \`${parsed}\`}`;
+					s.appendLeft(node.start, content);
+					count++;
+				},
+			});
+
+			if (count) logger?.info?.({ count }, filename);
+
+			return { code: s.toString() };
+		},
+	} satisfies PreprocessorGroup;
+}
+```
+shiki-end -->
+</CodeTopper>
+
+<p>Easy – two down and one to go!</p>
+
+<HAnchor tag="h3" title="Code Decoration" />
+
+<div>
+	We've saved the best for last. Fundamentally, there doesn't need to be anything different about this preprocessor than
+	the other two we've done so far. But simply wrapping Shiki without the ability to customize decorations would be an
+	injustice. So, we'll add the ability to add data attributes and classes using Shiki's Decoration API. Ideally we could
+	add it to the <!-- shiki-html <pre> shiki-html --> tag, line ranges, index ranges, substrings, etc.
+</div>
+
+<p>
+	We'll need a place for our preprocessor to look for the options. If we look back at our delimiter syntax, we have an
+	obvious place: between the front delimiter and code fence. For convenience, let's also allow line options to be at the
+	end of the line they're scoped to.
+</p>
+
+<!-- shiki-start
+t-shiki-block
+~~~md
+s"foo" c"border border-accent-9"
+```ts
+const foo = "bar";
+const added = true;//!p d"diff-add"
+```
+~~~
+shiki-end -->
+
+<!-- shiki-start
+s"foo" c"border border-accent-9"
+```ts
+const foo = "bar";
+const added = true;//! d"diff-add"
+```
+shiki-end -->
+
+<p>
+	Because we're supporting options, this preprocessor will be more involved than the other two. We'll first need to
+	split the raw string into the global options, inline options, code fence, language, and code. Then we can pass
+	everything off to a function that calls Shiki <code>codeToHtml</code> and applies Shiki decorations based on the extracted
+	options.
+</p>
+
+<!-- shiki-start
+```ts
+import { walk } from 'estree-walker';
+import MagicString from 'magic-string';
+import { parse } from 'svelte/compiler';
+import { getOrLoadOpts } from './defaultOpts.js';
+import { codeToDecoratedHtmlSync } from './highlight.js';
+import { stripOptions } from './stripOptions/index.js';
+import type { PreprocessOpts, Logger, PreprocessorGroup } from './types.js';
+
+export function processCodeblockSync({
+	opts,
+	include,
+	logger,
+}: {
+	include?: (filename: string) => boolean;
+	logger?: Logger;
+	opts: PreprocessOpts;
+}) {
+	return {
+		name: 'codeblock',
+		markup({ content, filename }) {
+			if (!filename) return;
+			if (include && !include(filename)) return;
+			const s = new MagicString(content);
+			const ast = parse(content, { filename, modern: true });
+			let count = 0;
+
+			walk(ast.fragment, {
+				enter(node) {
+					if (node.type !== 'Comment') return;
+					const trimmed = node.data.trim();
+					if (!trimmed.startsWith(opts.delimiters.common)) return;
+
+					if (trimmed.endsWith(opts.delimiters.fenced.end)) {
+						s.remove(node.start, node.end);
+
+						const prepared = stripOptions(
+							// escapePreprocessor allows us to write things like &closehtmlcomment; which would
+							// otherwise terminate the html comment surrounding our preprocessor
+							opts.escapePreprocessor({
+								code: trimmed.slice(opts.delimiters.fenced.startLoc, opts.delimiters.fenced.endLoc),
+							}),
+							(e: Error) => logger?.warn?.(e, filename),
+						);
+						if (prepared instanceof Error) {
+							return logger?.error?.(prepared, filename);
+						}
+
+						const {
+							lang,
+							lineToProperties,
+							tranName, // we haven't discussed this, but this allows us to register custom transform functions
+							preProperties,
+							strippedCode,
+							windowProperties,
+							allLinesProperties,
+						} = prepared;
+						if (!opts.highlighterCore.getLoadedLanguages().includes(lang)) {
+							return logger?.error?.(
+								Error(
+									lang
+										? `Language ${lang} not loaded. Hint: try \`opts: await getOrLoadOpts({ langNames: ['${lang}'] })\` and restart the server.`
+										: 'No lang provided.',
+								),
+								filename,
+							);
+						}
+
+						let transformName = 'block';
+						if (tranName && opts.transformMap[tranName]) {
+							transformName = tranName;
+						} else if (tranName !== null) {
+							const keys = Object.keys(opts.transformMap);
+							logger?.warn?.(
+								Error(`${tranName} not in opts.transformMap. Defaulting to 'block'. Options: (${keys.join(', ')}).`),
+								filename,
+							);
+						}
+
+						const { error, data } = codeToDecoratedHtmlSync({
+							opts,
+							lineToProperties,
+							allLinesProperties,
+							preProperties,
+							windowProperties,
+							code: strippedCode,
+							transformName,
+							lang,
+						});
+						if (error) {
+							return logger?.error?.(error, filename);
+						}
+
+						s.appendLeft(node.start, data);
+						count++;
+						return;
+					}
+
+					for (const { delimLoc, delimiter, lang } of opts.delimiters.inline) {
+						if (trimmed.endsWith(delimiter)) {
+							s.remove(node.start, node.end);
+
+							const { error, data } = codeToDecoratedHtmlSync({
+								code: opts.escapePreprocessor({ code: trimmed.slice(delimLoc.start, delimLoc.end) }),
+								lang,
+								opts,
+								transformName: 'inline',
+							});
+							if (error) {
+								return logger?.error?.(error, filename);
+							}
+
+							s.appendLeft(node.start, data);
+							count++;
+							break;
+						}
+					}
+				},
+			});
+
+			if (count) {
+				logger?.info?.({ count }, filename);
+			}
+
+			return { code: s.toString() };
+		},
+	} satisfies PreprocessorGroup;
+}
+```
+shiki-end -->
+
+<p>
+	Shiki is async, so we'll wrap the previous function with another that awaits the default options containing the Shiki
+	<code>Highlighter</code>.
+</p>
+
+<!-- shiki-start
+```ts
+export async function processCodeblock({
+	include,
+	logger,
+}: {
+	include?: (filename: string) => boolean;
+	logger?: Logger;
+}) {
+	return processCodeblockSync({ include, logger, opts: await getOrLoadOpts() });
+}
+```
+shiki-end -->
+
+<p>
+	For brevity, the details behind the options extraction have been omitted, but the actual preprocessor part is very
+	similar to the other two. Full functionality details are available in the
+	<a href="https://preprocessors.samplekit.dev/docs/code-decoration/">docs</a>.
+</p>
+
+<HAnchor tag="h2" title="Code Editor Support" />
+
+<p>
+	We've finished our preprocessors, but they're hard to use without syntax highlighting in our code editor. Everything
+	is formatted like a comment. Let's fix that by writing a VS Code extension!
+</p>
+
+<HAnchor tag="h3" title="Overview" />
+
+<p>
+	The <span class="italic">best</span> way to do this would be to follow the
+	<a data-external href="https://code.visualstudio.com/api/get-started/your-first-extension">
+		official VS Code extension docs
+	</a>. It shows how to use Yeoman to scaffold an extension. These are simple extensions though, so we'll just write
+	them directly instead.
+</p>
+
+<p>
+	We need to write a <code>package.json</code> with a <code>contributes</code> field. In it, we'll have
+	<code>grammars</code> and <code>snippets</code>. When we're ready, we'll run <code>vsce package</code> to package the
+	extension and metadata. Then, we can install it with
+	<code>code --install-extension &lt;extension-name&gt;</code>. This will add it to the
+	<code>~/.vscode/extensions</code> folder (or wherever your install location is).
+</p>
+
+<HAnchor tag="h3" title="Syntaxes" />
+
+<p>
+	Let's use the Markdown preprocessor as an example. We'll create a repo for the VS Code extension and add a
+	<code>package.json</code>. In it, we'll add a section to point VS Code to the grammar declaration file.
+</p>
+
+<CodeTopper title="package.json">
+	<!-- shiki-start
+```json
+{
+"contributes": {
+		"grammars": [
+			{
+				"scopeName": "md.pp-svelte",
+				"injectTo": [
+					"source.svelte"
+				],
+				"path": "./syntaxes/md.pp-svelte.tmLanguage.json"
+			}
+		],
+	}
+}
+```
+shiki-end -->
+</CodeTopper>
+
+<div class="my-6">
+	VS Code uses <a href="https://github.com/microsoft/vscode-textmate">TextMate grammar</a>. If you open the VS Code
+	command palette and search <code>Developer: Inspect Editor Tokens and Scopes</code>, you can see how things are
+	highlighted. Everything exists in a textmate scope, and that scope is targeted by your VS Code theme for decorating.
+	Our job is to tell VS Code, "when you see
+	<!-- shiki-start
+t-md-inline
+```html
+```
+shiki-end -->
+	in a Svelte template, open up our custom scope, highlight the delimiter like a control keyword, and highlight the internals
+	like Markdown." This is how we do it:
+</div>
+
+<CodeTopper title="./syntaxes/md.pp-svelte.tmLanguage.json">
+	<!-- shiki-start
+```json
+{
+	"name": "Svelte Component Markdown Injection",
+	// the name matches what we put in the package.json
+	"scopeName": "md.pp-svelte",
+	// only match within the svelte scope
+	"injectionSelector": "L:source.svelte",
+	"fileTypes": [],
+	"patterns": [
+		{
+			// start with the HTML comment opening. Use an oniguruma lookahead to only match if the next thing is "md-start"
+			"begin": "&openhtmlcomment;(?=\\s*md-start)",
+			// end with the HTML comment closing. Use an oniguruma lookbehind to only match if the last thing matched was "md-end"
+			"end": "(?<=.*?md-end)\\s*&closehtmlcomment",
+			// give the entire match our custom scope
+			"name": "source.pp-svelte",
+			"patterns": [
+				{
+					// inside the match, mark the md-start as a keyword
+					"begin": "md-start",
+					"beginCaptures": { "0": { "name": "keyword.control.pp-svelte" } },
+					// also match the end as a keyword
+					"end": ".*?(md-end)",
+					"endCaptures": { "1": { "name": "keyword.control.pp-svelte" } },
+					// give everything within the &openhtmlcomment; and &closehtmlcomment; our custom markdown scope
+					"name": "markdown.pp-svelte",
+					// give everything within the md-start and md-end delimiters the real markdown scope
+					"contentName": "text.html.markdown",
+					// actually use the markdown scope for everything between the delimiters
+					"patterns": [{ "include": "text.html.markdown" }]
+				}
+			]
+		}
+	]
+}
+```
+shiki-end -->
+</CodeTopper>
+
+<p>
+	Although this particular file is fairly straightforward, Oniguruma syntax can be... difficult. Writing it in JSON is
+	even more tedious because it requires double escaping. <a data-external href="https://regex101.com/">regex101</a> and
+	this
+	<a data-external href="https://www.apeth.com/nonblog/stories/textmatebundle.html">
+		decade old blog post by Matt Neuburg
+	</a> are useful shields to defend yourself against the beast that is Oniguruma regex.
+</p>
+
+<HAnchor tag="h3" title="Snippets" />
+
+<div class="my-6">
+	It would get very old very fast if we needed to write <!-- shiki-start
+t-md-inline
+```html
+```
+shiki-end --> all the time.
+	Let's write a VS Code snippet so we can write <code>mds</code> instead. Back in our
+	<code>package.json</code> we can point to a snippets file.
+</div>
+
+<CodeTopper title="package.json">
+	<!-- shiki-start
+```json
+{
+	"contributes": {
+		"grammars": [
+			{
+				"scopeName": "md.pp-svelte",
+				"injectTo": [
+					"source.svelte"
+				],
+				"path": "./syntaxes/md.pp-svelte.tmLanguage.json"
+			}
+		],
+		"snippets": [//! d"diff-add"
+			{//! d"diff-add"
+				"language": "svelte",//! d"diff-add"
+				"path": "./snippets/md.pp-svelte.code-snippets"//! d"diff-add"
+			}//! d"diff-add"
+		]//! d"diff-add"
+	}
+}
+```
+shiki-end -->
+</CodeTopper>
+
+<p>And write it just like a normal VS Code snippets file.</p>
+
+<CodeTopper title="./snippets/md.pp-svelte.code-snippets">
+	<!-- shiki-start
+```json
+{
+	"New Markdown block": {
+		"scope": "text.svelte",
+		"prefix": "md-start",
+		"description": "Creates a new markdown block.",
+		"body": ["&openhtmlcomment; md-start", "$1", "md-end &closehtmlcomment;", "$0"],
+	},
+}
+```
+shiki-end -->
+</CodeTopper>
+
+<p>
+	Voilà. Now rinse and repeat for the other two – though they're all subtly different. Find the
+	<a href="https://github.com/timothycohen/samplekit/tree/main/packages/">source code</a> here.
+</p>
+
+<HAnchor tag="h2" title="Conclusion" />
+
+<div>
+	These three preprocessors and their VS Code extensions are available under NPM and the VS Code marketplace.
+	<a href="https://preprocessors.samplekit.dev/docs/code-decoration/">Full documentation here</a>.
+
+	<!-- md-start
+| NPM Package                                                                                    | VS Code Extension                                                                                                      |
+| ---------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| [@samplekit/preprocess-katex](https://www.npmjs.com/package/@samplekit/preprocess-katex)       | [timothycohen.svelte-pp-katex](https://marketplace.visualstudio.com/items?itemName=timothycohen.svelte-pp-katex)       |
+| [@samplekit/preprocess-markdown](https://www.npmjs.com/package/@samplekit/preprocess-markdown) | [timothycohen.svelte-pp-markdown](https://marketplace.visualstudio.com/items?itemName=timothycohen.svelte-pp-markdown) |
+| [@samplekit/preprocess-shiki](https://www.npmjs.com/package/@samplekit/preprocess-shiki)       | [timothycohen.svelte-pp-shiki](https://marketplace.visualstudio.com/items?itemName=timothycohen.svelte-pp-shiki)       |
+md-end -->
+</div>
+
+<p>
+	Svelte preprocessors are quite powerful, and by using the HTML comment delimiters, we can have our preprocessors and
+	standard tooling too. I'm grateful to
+	<a href="https://github.com/pngwn/MDsveX" data-external>MDsveX</a>,
+	<a href="https://github.com/vnphanquang/svelte-put" data-external>svelte-put</a>, and
+	<a href="https://melt-ui.com/docs/preprocessor" data-external>Melt UI</a>
 	for introducing them to me, and I hope this article helps you get started with your own preprocessors. If you have a question
 	or want to share your preprocessor, share it in the
-	<a href="https://github.com/timothycohen/samplekit/discussions">GitHub discussions</a>!
+	<a href="https://github.com/timothycohen/samplekit/discussions" data-external>GitHub discussions</a>!
 </p>
 
 <p>Happy coding!</p>

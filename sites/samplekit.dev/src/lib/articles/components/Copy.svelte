@@ -19,7 +19,7 @@
 </script>
 
 <!-- lucide-svelte Clipboard -->
-<button class="grid h-full w-full place-content-center" onclick={copyToClipboard}>
+<button class="grid h-full w-full place-content-center -outline-offset-1" onclick={copyToClipboard}>
 	<span class="sr-only">{copied ? 'Copied' : 'Copy'}</span>
 	<svg
 		xmlns="http://www.w3.org/2000/svg"

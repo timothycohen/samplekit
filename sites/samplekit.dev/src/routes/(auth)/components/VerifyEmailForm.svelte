@@ -16,9 +16,8 @@
 	});
 </script>
 
-<div class="alert-wrapper alert-wrapper-info">
-	Send a confirmation email to <strong class="font-extrabold text-accent-9 underline">{email}</strong>.
-</div>
+<p class="text-gray-11">Send a confirmation email to <strong class="text-gray-12">{email}</strong>.</p>
+
 <form {action} method="post" use:enhance onsubmit={() => (submitted = true)}>
 	<button class="btn btn-accent {submitted ? 'font-semibold' : ''}" disabled={submitted} type="submit">
 		{submitted ? 'Sent!' : 'Send'}

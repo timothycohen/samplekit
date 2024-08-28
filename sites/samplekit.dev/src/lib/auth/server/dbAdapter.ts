@@ -10,7 +10,7 @@ import {
 	userSchema,
 	users,
 } from '$lib/db/server';
-import { croppedImgSchema } from '$lib/image/client';
+import { croppedImgSchema } from '$lib/image/common';
 import { assertUnreachable } from '$lib/utils/common';
 import type {
 	Auth,

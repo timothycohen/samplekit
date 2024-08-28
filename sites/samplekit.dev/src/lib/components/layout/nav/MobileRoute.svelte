@@ -1,21 +1,24 @@
 <script lang="ts">
 	import { page } from '$app/stores';
 	import type { RouteGroup, RouteLeaf } from './routes';
+	import type { Snippet } from 'svelte';
 
 	interface Props {
 		route: RouteLeaf | RouteGroup;
 		onNavItemClick: () => void;
+		onGroupLine?: Snippet;
 	}
 
-	const { route, onNavItemClick }: Props = $props();
+	const { route, onNavItemClick, onGroupLine }: Props = $props();
 
 	const isGroup = (route: RouteLeaf | RouteGroup): route is RouteGroup => 'groupPath' in route;
 </script>
 
 <li>
 	{#if isGroup(route)}
-		<span class="t-h2 flex items-center gap-2 font-bold leading-h1">
+		<span class="flex items-center justify-between gap-2 text-2xl font-bold leading-10">
 			{route.groupText}
+			{@render onGroupLine?.()}
 		</span>
 		<ul class="flex flex-col">
 			{#each route.children as subRoute}
@@ -26,10 +29,11 @@
 		<a
 			onclick={onNavItemClick}
 			href={route.path}
-			aria-current={$page.url.pathname.startsWith(route.path) ? 'page' : undefined}
-			class="text-h4 leading-h2 text-gray-12 underline--hidden before:bottom-[.175rem]
-						 before:h-[.35rem] hover:text-accent-12 hover:before:w-full
-						 aria-[current='page']:pointer-events-none aria-[current='page']:before:w-full"
+			aria-current={(route.path === '/' && $page.url.pathname === '/') ||
+			(route.path !== '/' && $page.url.pathname.startsWith(route.path))
+				? 'page'
+				: undefined}
+			class="text-lg leading-8 text-gray-11 underline--hidden before:bottom-[.175rem] before:h-[.35rem] hover:text-gray-12 hover:before:w-full aria-[current='page']:pointer-events-none aria-[current='page']:text-gray-12 aria-[current='page']:before:w-full"
 		>
 			{route.text}
 		</a>

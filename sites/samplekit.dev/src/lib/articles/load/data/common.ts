@@ -1,53 +1,86 @@
-import * as sentry from '@sentry/sveltekit';
-import {
-	rawFrontMatterSchema,
-	type ProcessedFrontMatter,
-	type RawFrontMatter,
-	type LoadedFrontMatter,
-} from '$lib/articles/schema';
-import type { ArticleSlug } from '../types';
+import { dev } from '$app/environment';
+import { loadedFrontMatter } from '$lib/articles/schema';
+import { logger } from '$lib/logging/client';
+import type { ProcessedFrontMatter, LoadedFrontMatter, ArticlePath } from '$lib/articles/schema';
+import type { Component } from 'svelte';
 
-/** @throws Error */
-const postData: Record<string, Promise<LoadedFrontMatter>> = (() => {
-	const dataModules = Object.entries(import.meta.glob('/src/routes/articles/**/meta.data.ts')) as [
-		string,
-		() => Promise<{ default: RawFrontMatter }>,
-	][];
+const dummyData = (articlePath: ArticlePath): LoadedFrontMatter => ({
+	articlePath,
+	wordCount: 1,
+	readingTime: 1,
+	toc: [],
+	title: '',
+	implementationPath: '',
+	srcCodeHref: '',
+	description: '',
+	publishedAt: new Date(),
+	authors: [],
+});
 
-	return dataModules.reduce<Record<string, Promise<LoadedFrontMatter>>>((acc, [url, load]) => {
-		const a = url.replace('/src/routes/articles/', '').split('/');
-		const slug = a.splice(0, 2)[0]! as ArticleSlug;
-		const frontMatter = load()
-			.then((loaded) => loaded.default)
-			.then((rawData) => {
-				const validated = rawFrontMatterSchema.safeParse({ ...rawData });
-				if (validated.success) return { ...validated.data, articleSlug: slug };
-				sentry.captureException(validated.error);
-				throw new Error(`Error reading frontmatter for \`${slug}\`. Skipping...`);
-			});
-		acc[slug] = frontMatter;
-		return acc;
-	}, {});
-})();
+const loadMetadata = (): Record<ArticlePath, LoadedFrontMatter> => {
+	const files = import.meta.glob('/src/routes/articles/**/generated/metadata.ts', {
+		eager: true,
+	}) as Record<string, { default: unknown }>;
+	const res = {} as Record<ArticlePath, LoadedFrontMatter>;
+
+	const articlePaths = Object.keys(import.meta.glob('/src/routes/articles/**/+page.svelte')).map((s) =>
+		s.replace('/src/routes', '').replace('/+page.svelte', ''),
+	) as ArticlePath[];
+
+	for (const path of articlePaths) {
+		const metadataPath = '/src/routes' + path + '/generated/metadata.ts';
+		const metadata = files[metadataPath]?.default;
+		if (!metadata) {
+			res[path] = dummyData(path);
+			if (dev) logger.warn(`Missing metadata for \`${metadataPath}\``);
+			continue;
+		}
+		const parsed = loadedFrontMatter.safeParse(metadata);
+		if (!parsed.success) {
+			res[path] = dummyData(path);
+			logger.error(`Malformed metadata for \`${metadataPath}\``);
+			continue;
+		}
+		res[path] = parsed.data;
+	}
+
+	return res;
+};
+
+const loadCardComponents = (): Record<ArticlePath, Component<{ metadata: LoadedFrontMatter }>> => {
+	return (
+		Object.entries(import.meta.glob('/src/routes/articles/**/FeatureCard.svelte', { eager: true })) as [
+			string,
+			{ default: Component<{ metadata: LoadedFrontMatter }> },
+		][]
+	).reduce(
+		(acc, [url, { default: component }]) => {
+			const articlePath = url.replace('/src/routes', '').replace('/FeatureCard.svelte', '') as ArticlePath;
+			acc[articlePath] = component;
+			return acc;
+		},
+		{} as Record<ArticlePath, Component<{ metadata: LoadedFrontMatter }>>,
+	);
+};
 
 const expandSeries = <
-	T extends { title: string; articleSlug: string; publishedAt: Date; series?: { name: string; position: number } },
+	T extends { title: string; articlePath: string; publishedAt: Date; series?: { name: string; position: number } },
 >(
 	frontMatter: T[],
 ): (T & {
 	series?: T['series'] & {
 		finalPublishDate: Date;
-		all: { title: string; articleSlug: string; position: number; publishedAt: Date }[];
+		all: { title: string; articlePath: string; position: number; publishedAt: Date }[];
 	};
 })[] => {
-	const seriesMap = new Map<string, { title: string; articleSlug: string; position: number; publishedAt: Date }[]>();
+	const seriesMap = new Map<string, { title: string; articlePath: string; position: number; publishedAt: Date }[]>();
 
 	frontMatter.forEach((fm) => {
 		if (fm.series) {
 			const arr = seriesMap.get(fm.series.name) ?? [];
 			arr.push({
 				title: fm.title,
-				articleSlug: fm.articleSlug,
+				articlePath: fm.articlePath,
 				position: fm.series.position,
 				publishedAt: fm.publishedAt,
 			});
@@ -92,12 +125,26 @@ const sort = <T extends { publishedAt: Date; series?: { name: string; position: 
 	});
 };
 
-const addPrevNextLinks = <T extends { articleSlug: string; title: string }>(
+const addPrevNextLinks = <T extends { articlePath: string; title: string }>(
 	parsed: T[],
 ): (T & { prev: T | undefined; next: T | undefined })[] =>
 	parsed.map((data, i) => ({ ...data, prev: parsed[i - 1], next: parsed[i + 1] }));
 
-export const allPostData: ProcessedFrontMatter[] = await Promise.all(Object.values(postData))
+const metadata = loadMetadata();
+const cardComponents = loadCardComponents();
+
+export const allPostData: ProcessedFrontMatter[] = await Promise.all(Object.values(metadata))
 	.then(expandSeries)
 	.then(addPrevNextLinks)
 	.then((fm) => sort(fm, 'date'));
+
+export type FeatureCard = { metadata: ProcessedFrontMatter; FeatureCard: Component<{ metadata: LoadedFrontMatter }> };
+
+export const featureCards = allPostData.reduce<FeatureCard[]>((acc, metadata) => {
+	const FeatureCard = cardComponents[metadata.articlePath];
+	if (!FeatureCard) {
+		if (dev) logger.warn(`Missing card component for \`${metadata.articlePath}\``);
+		return acc;
+	}
+	return [...acc, { metadata, FeatureCard }];
+}, []);

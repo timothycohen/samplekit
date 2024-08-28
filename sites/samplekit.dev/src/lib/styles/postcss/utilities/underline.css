@@ -26,8 +26,7 @@
 		bottom: -0.175rem;
 		z-index: -1;
 		border-radius: 1rem;
-
-		@apply motion-reduce:duration-0;
+		@apply respect-reduced-motion;
 	}
 	.dark .underline--hidden:before {
 		background-color: theme('colors.accent.7');

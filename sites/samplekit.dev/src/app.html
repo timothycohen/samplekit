@@ -1,10 +1,14 @@
 <!doctype html>
-<html lang="en" data-theme="amethyst" class="dark">
+<html lang="en" data-theme="amethyst" class="no-js dark">
+	<!-- general meta tags (dynamic tags in SEO.svelte)-->
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+
 	<head>
 		<!-- theme -->
 		<script src="/themeUtils.js"></script>
 		<script>
-			_initTheme();
+			initTheme();
 		</script>
 
 		<meta name="theme-color" media="(prefers-color-scheme: light)" content="#FFFFFF" />
@@ -59,6 +63,7 @@
 
 		<!-- JS indicator -->
 		<script>
+			document.documentElement.classList.remove('no-js');
 			document.documentElement.classList.add('js-enabled');
 		</script>
 
@@ -69,10 +74,6 @@
 				}
 			</style>
 		</noscript>
-
-		<!-- general meta tags (dynamic tags in SEO.svelte)-->
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1" />
 
 		<!-- favicons -->
 		<link rel="apple-touch-icon" sizes="180x180" href="%sveltekit.assets%/apple-touch-icon.png" />

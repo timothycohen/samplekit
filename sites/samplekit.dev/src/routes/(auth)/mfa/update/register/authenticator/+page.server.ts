@@ -1,4 +1,4 @@
-import { mfaLabels } from '$lib/auth/client';
+import { mfaLabels } from '$lib/auth/common';
 import { auth } from '$lib/auth/server';
 import { transports } from '$lib/auth/server';
 import { checkedRedirect } from '$lib/http/server';

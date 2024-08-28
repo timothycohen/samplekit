@@ -1,6 +1,6 @@
 import { z } from 'zod';
-import { createClientFetch } from '$lib/http/client';
-import { cropSchema, type CroppedImg } from '$lib/image/client';
+import { ClientFetcher } from '$lib/http/client.svelte';
+import { cropSchema, type CroppedImg } from '$lib/image/common';
 import type { Result } from '$lib/utils/common';
 import type { RouteId } from './$types';
 
@@ -13,6 +13,6 @@ export const putReqSchema = z.object({ crop: cropSchema });
 export type PutReq = z.infer<typeof putReqSchema>;
 export type PutRes = { savedImg: CroppedImg | null };
 
-export const getSignedAvatarUploadUrl = createClientFetch<RouteId, GetRes>('GET', routeId);
-export const checkAndSaveUploadedAvatar = createClientFetch<RouteId, PutRes, PutReq>('PUT', routeId);
-export const deleteAvatar = createClientFetch<RouteId, Result.Success>('DELETE', routeId);
+export const getSignedAvatarUploadUrl = new ClientFetcher<RouteId, GetRes>('GET', routeId);
+export const checkAndSaveUploadedAvatar = new ClientFetcher<RouteId, PutRes, PutReq>('PUT', routeId);
+export const deleteAvatar = new ClientFetcher<RouteId, Result.Success>('DELETE', routeId);

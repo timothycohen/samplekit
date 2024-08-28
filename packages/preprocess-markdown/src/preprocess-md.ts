@@ -1,7 +1,7 @@
 import { walk } from 'estree-walker';
 import MagicString from 'magic-string';
 import { marked as hostedMarked } from 'marked';
-import { parse, type SvelteNode, type PreprocessorGroup } from 'svelte/compiler';
+import { parse, type PreprocessorGroup } from 'svelte/compiler';
 import type { Logger } from './logger.js';
 
 const delimiter = { start: 'md-start', end: 'md-end' };
@@ -65,7 +65,7 @@ export function processMarkdown({
 				let count = 0;
 
 				walk(ast.fragment, {
-					enter(node: SvelteNode) {
+					enter(node: (typeof ast.fragment.nodes)[number]) {
 						if (node.type !== 'Comment') return;
 						const trimmed = node.data.trim();
 						if (!trimmed.startsWith(delimiter.start)) return;

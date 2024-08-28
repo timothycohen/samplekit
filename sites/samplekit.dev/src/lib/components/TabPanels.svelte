@@ -1,23 +1,21 @@
-<script lang="ts" context="module">
+<script lang="ts" module>
+	import type { NoPropComponent } from '$lib/utils/common';
 	import type { WrapperProps } from './PatternWrapper.svelte';
+	import type { Snippet } from 'svelte';
 
 	export type TabPanel = { wrapperProps?: WrapperProps; title: string; icon?: 'svelte' } & (
-		| { rawHTML: string | Promise<string>; component?: never }
-		| {
-				rawHTML?: never;
-				component: NoPropComponent | Promise<NoPropComponent>;
-		  }
+		| { rawHTML: string | Promise<string>; component?: never; snippet?: never }
+		| { rawHTML?: never; component: NoPropComponent | Promise<NoPropComponent>; snippet?: never }
+		| { rawHTML?: never; component?: never; snippet: Snippet }
 	);
 </script>
 
 <script lang="ts">
 	import { createTabs, melt } from '@melt-ui/svelte';
-	import { useCollapsedService } from '$lib/components/collapsedService';
-	import { ChevronUp } from '$lib/styles/icons';
-	import Icon from './Icon.svelte';
+	import I from '$lib/icons';
+	import { useCollapsedService } from '$lib/services/codeCollapse';
 	import PatternWrapper from './PatternWrapper.svelte';
 	import TabPanelItem from './TabPanelItem.svelte';
-	import type { NoPropComponent } from '$lib/utils/common';
 
 	interface Props {
 		files: Array<TabPanel>;
@@ -37,10 +35,10 @@
 		},
 	});
 
-	const service = useCollapsedService();
-	if (service) {
-		service.onTrigger((newState) => (collapsed = newState));
-	}
+	const globalCollapsed = useCollapsedService();
+	$effect(() => {
+		collapsed = globalCollapsed.true;
+	});
 
 	// todo svelte-5 melt-ui hack to get rid of "state_unsafe_mutation" error
 	files.forEach((_t, i) => $trigger(`tab-${i}`));
@@ -67,8 +65,8 @@
 						class="flex items-center gap-2 text-nowrap text-base
 						{active ? 'text-gray-12' : 'text-gray-10 group-hover:text-gray-11'}"
 					>
-						{#if triggerItem.icon}
-							<Icon class="h-5 w-5" icon={triggerItem.icon} />
+						{#if triggerItem.icon === 'svelte'}
+							<I.Svelte class="h-5 w-5" />
 						{/if}
 
 						<span class="relative">
@@ -91,7 +89,7 @@
 			class="grid min-h-10 w-10 shrink-0 place-content-center rounded-tr-card border-l border-gray-9 bg-gray-3 text-gray-10 -outline-offset-1 hover:bg-gray-4 dark:border-gray-5"
 		>
 			<div class="transition-transform {collapsed ? 'rotate-180' : ''}">
-				<ChevronUp />
+				<I.ChevronUp />
 			</div>
 		</button>
 	</div>
@@ -103,16 +101,12 @@
 					<PatternWrapper opts={file.wrapperProps}>
 						<TabPanelItem panel={file} />
 					</PatternWrapper>
-				{:else}
+				{:else if file.rawHTML}
 					<TabPanelItem panel={file} />
+				{:else if file.snippet}
+					{@render file.snippet()}
 				{/if}
 			{/if}
 		</div>
 	{/each}
 </div>
-
-<style lang="postcss">
-	.tabpanel :global(> .code-wrapper) {
-		border-radius: 0 0 var(--radius-card) var(--radius-card);
-	}
-</style>

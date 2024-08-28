@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Eye, EyeOff } from '$lib/styles/icons';
+	import I from '$lib/icons';
 	import type { HTMLInputAttributes } from 'svelte/elements';
 
 	interface Props {
@@ -58,7 +58,7 @@
 	/>
 	<div class="input-text-btn-wrapper">
 		<button type="button" class="input-text-btn" onclick={togglePassVis}>
-			{#if passElType === 'password'}<EyeOff class="h-5 w-5" />{:else}<Eye class="h-5 w-5" />{/if}
+			{#if passElType === 'password'}<I.EyeOff class="h-5 w-5" />{:else}<I.Eye class="h-5 w-5" />{/if}
 		</button>
 	</div>
 </div>

@@ -1,12 +1,12 @@
 <script lang="ts">
 	import { createDialog, melt } from '@melt-ui/svelte';
-	import { useTurnstileService } from '$lib/botProtection/turnstile/client';
 	import { InputMessage } from '$lib/components';
-	import { KeyRound, Loader2, X } from '$lib/styles/icons';
-	import { superForm, zodClient } from '$lib/superforms/client.js';
+	import I from '$lib/icons';
+	import { superForm, zodClient } from '$lib/superforms/client';
 	import { GoogleFormButton, Or } from '$routes/(auth)/(login)/components';
 	import { PassInput } from '$routes/(auth)/components';
 	import { signinSchema } from '$routes/(auth)/validators';
+	import { useTurnstileCtx } from '../turnstile.ctx.svelte';
 
 	const { data } = $props();
 
@@ -28,16 +28,16 @@
 		submitting: resetSubmitting,
 	} = superForm(data.emailPassResetForm, { taintedMessage: null });
 
-	const { turnstile, turnstileInput } = useTurnstileService();
+	const turnstile = useTurnstileCtx();
 
 	const {
-		elements: { portalled, overlay, content, title, description, close, trigger },
+		elements: { overlay, content, title, description, close, trigger },
 		states: { open: emailPassModal },
 	} = createDialog({ forceVisible: true });
 
 	const inputDisabled = $derived($signinSubmitting || $resetSubmitting);
-	const signinDisabled = $derived($signinSubmitting || $resetSubmitting || !$turnstile);
-	const resetDisabled = $derived($signinSubmitting || $resetSubmitting || !$turnstile || !!$resetMessage?.success);
+	const signinDisabled = $derived($signinSubmitting || $resetSubmitting || !turnstile.token);
+	const resetDisabled = $derived($signinSubmitting || $resetSubmitting || !turnstile.token || !!$resetMessage?.success);
 </script>
 
 <h1 class="text-h4 font-medium">Welcome to SampleKit!</h1>
@@ -46,7 +46,12 @@
 <GoogleFormButton persistent={$signinForm.persistent} />
 <Or />
 
-<form action="/login?/loginWithPassword" method="post" use:signinEnhance use:turnstileInput={{ form: signinForm }}>
+<form
+	action="/login?/loginWithPassword"
+	method="post"
+	use:signinEnhance
+	use:turnstile.addForm={{ name: 'signin', form: signinForm }}
+>
 	<label for="email" class="input-label">Email</label>
 	<input
 		bind:value={$signinForm.email}
@@ -92,8 +97,10 @@
 	</div>
 
 	<button class="btn btn-accent h-10 w-full py-0 transition-colors" disabled={signinDisabled} type="submit">
-		{#if $signinSubmitting}
-			<Loader2 class="inline h-5 w-5 animate-spin" />
+		{#if !turnstile.token}
+			Verifying...
+		{:else if $signinSubmitting}
+			<I.LoaderCircle class="inline h-5 w-5 animate-spin" />
 			Signing in...
 		{:else}
 			Sign in
@@ -103,7 +110,7 @@
 	<InputMessage message={signinMessage} />
 </form>
 
-<div use:melt={$portalled}>
+<div>
 	{#if $emailPassModal}
 		<div use:melt={$overlay} class="modal-overlay"></div>
 		<div class="modal-content" use:melt={$content}>
@@ -111,10 +118,10 @@
 				action="/password-reset?/emailPassReset"
 				method="post"
 				use:resetEnhance
-				use:turnstileInput={{ form: resetForm }}
+				use:turnstile.addForm={{ name: 'reset', form: resetForm }}
 			>
 				<div class="modal-icon-wrapper">
-					<KeyRound class="h-full w-full" />
+					<I.KeyRound class="h-full w-full" />
 				</div>
 
 				<h2 use:melt={$title} class="modal-title">Reset your password.</h2>
@@ -141,8 +148,11 @@
 					disabled={resetDisabled}
 					type="submit"
 				>
-					{#if $resetSubmitting}
-						<Loader2 class="inline h-5 w-5 animate-spin" />
+					{#if !turnstile.token}
+						<I.LoaderCircle class="inline h-5 w-5 animate-spin" />
+						Verifying...
+					{:else if $resetSubmitting}
+						<I.LoaderCircle class="inline h-5 w-5 animate-spin" />
 						Sending
 					{:else if $resetMessage?.success}
 						Sent!
@@ -152,7 +162,7 @@
 				</button>
 			</form>
 
-			<button use:melt={$close} class="modal-x-btn"><X /></button>
+			<button use:melt={$close} class="modal-x-btn"><I.X /></button>
 		</div>
 	{/if}
 </div>

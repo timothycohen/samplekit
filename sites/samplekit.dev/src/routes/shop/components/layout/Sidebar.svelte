@@ -2,7 +2,7 @@
 	import { melt } from '@melt-ui/svelte';
 	import { fade, fly } from 'svelte/transition';
 	import { page } from '$app/stores';
-	import { X } from '$lib/styles/icons';
+	import I from '$lib/icons';
 	import { Available, Price, SearchBar, SortBy } from '$routes/shop/components';
 	import { useNavService } from '$routes/shop/services';
 	import { handleToPath } from '$routes/shop/utils';
@@ -35,7 +35,7 @@
 				aria-label="Close"
 				class="btn-ghost absolute right-3 top-3 grid h-6 w-6 place-content-center"
 			>
-				<X />
+				<I.X />
 			</button>
 
 			<div class="hidden lg:contents">

@@ -16,7 +16,7 @@ const config = {
 		modernAst: true,
 	},
 	vitePlugin: {
-		dynamicCompileOptions({ filename }) {
+		dynamicCompileOptions(/** @type {{filename: string}} */ { filename }) {
 			if (filename.includes('node_modules')) return { runes: undefined };
 		},
 	},
