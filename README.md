@@ -1,6 +1,8 @@
 # SampleKit
 
-SampleKit showcases the integration of common patterns and useful libraries for [SvelteKit](https://kit.svelte.dev/).
+SampleKit houses [SvelteKit](https://kit.svelte.dev/) NPM packages, corresponding VS Code extensions, and [documentation](https://preprocessors.samplekit.dev/docs/code-decoration/).
+
+It also showcases the integration of common patterns and useful libraries for SvelteKit via demos and articles.
 
 It addresses common questions that come up when building a full stack application – or backend for frontend – using SvelteKit that are beyond the scope of the SvelteKit documentation, but are still specifically oriented towards integration with SvelteKit.
 
@@ -119,8 +121,14 @@ const signupWithPassword: Action = async (event) => {
 
 ```diff
 <!-- src/routes/(auth)/(login)/signup/+page.svelte -->
-- <button ... disabled={$submitting || !$turnstile} type="submit">
+- <button ... disabled={$submitting|| !turnstile.token} type="submit">
 + <button ... disabled={$submitting} type="submit">
+```
+
+```diff
+<!-- src/routes/(auth)/(login)/login/+page.svelte -->
+- const signinDisabled = $derived($signinSubmitting || $resetSubmitting || !turnstile.token);
++ const signinDisabled = $derived($signinSubmitting || $resetSubmitting);
 ```
 
 ### Uninstall
@@ -128,12 +136,5 @@ const signupWithPassword: Action = async (event) => {
 To remove the docker containers, you can run the following:
 
 ```sh
-pnpm dev:db:delete
-pnpm dev:kv:delete
-```
-
-You can also remove the unused docker volumes if desired:
-
-```sh
-docker volume prune
+pnpm dev:down
 ```
