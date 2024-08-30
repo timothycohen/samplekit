@@ -11,7 +11,7 @@
 # Expects:
 # `./sites/samplekit.dev/.env._preview' to exist
 
-FROM node:20.14-alpine AS BUILD
+FROM node:20.14-alpine AS build
 WORKDIR /usr/src/app
 ARG ROOT=/usr/src/app
 ARG REPO=/usr/src/app/sites/samplekit.dev
@@ -34,18 +34,18 @@ RUN apk --no-cache add curl tzdata
 RUN cp /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 # Config files
-COPY --from=BUILD $ROOT/package.json $ROOT/package.json
-COPY --from=BUILD $ROOT/pnpm-lock.yaml $ROOT/pnpm-lock.yaml
-COPY --from=BUILD $ROOT/pnpm-workspace.yaml $ROOT/pnpm-workspace.yaml
-COPY --from=BUILD $ROOT/.npmrc $ROOT/.npmrc
-COPY --from=BUILD $REPO/package.json $REPO/package.json
+COPY --from=build $ROOT/package.json $ROOT/package.json
+COPY --from=build $ROOT/pnpm-lock.yaml $ROOT/pnpm-lock.yaml
+COPY --from=build $ROOT/pnpm-workspace.yaml $ROOT/pnpm-workspace.yaml
+COPY --from=build $ROOT/.npmrc $ROOT/.npmrc
+COPY --from=build $REPO/package.json $REPO/package.json
 
 # Adapter node doesn't bundle modules
-COPY --from=BUILD $ROOT/node_modules $ROOT/node_modules
-COPY --from=BUILD $REPO/node_modules $REPO/node_modules
+COPY --from=build $ROOT/node_modules $ROOT/node_modules
+COPY --from=build $REPO/node_modules $REPO/node_modules
 
-COPY --from=BUILD $REPO/generated/db-migrations $REPO/generated/db-migrations
-COPY --from=BUILD $REPO/build $REPO/build
+COPY --from=build $REPO/generated/db-migrations $REPO/generated/db-migrations
+COPY --from=build $REPO/build $REPO/build
 
 EXPOSE 3000
 # Defining ORIGIN prevents "Cross-site POST form submissions are forbidden" errors
