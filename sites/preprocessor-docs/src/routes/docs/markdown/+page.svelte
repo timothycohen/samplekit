@@ -15,12 +15,12 @@
 <HAnchor tag="h1" title="Markdown" dataToc={null} />
 
 <p>
-	The <a data-external href="https://github.com/timothycohen/samplekit/tree/staging/packages/preprocess-markdown">
+	The <a data-external href="https://www.npmjs.com/package/@samplekit/preprocess-markdown">
 		<span class="font-mono text-base">@samplekit/preprocess-markdown</span>
 	</a>
 	npm package and
-	<a data-external href="https://marketplace.visualstudio.com/items?itemName=timothycohen.svelte-pp-markdown">
-		<span class="font-mono text-base">svelte-pp-markdown</span>
+	<a data-external href="https://marketplace.visualstudio.com/items?itemName=samplekit.svelte-pp-markdown">
+		<span class="font-mono text-base">samplekit.svelte-pp-markdown</span>
 	</a>
 	VS Code extension allow you to write Markdown processed with
 	<a data-external href="https://github.com/markedjs/marked">Marked</a> directly within your Svelte template.
@@ -36,11 +36,11 @@
 			Write tables with ease just like you would with Markdown.
 			<span class="code-table">
 				<!-- md-start
-| Preprocessor                   | VS Code Extension               |
-| ------------------------------ | ------------------------------- |
-| @samplekit/preprocess-katex    | timothycohen.svelte-pp-katex    |
-| @samplekit/preprocess-markdown | timothycohen.svelte-pp-markdown |
-| @samplekit/preprocess-shiki    | timothycohen.svelte-pp-shiki    |
+| Preprocessor                   | VS Code Extension            |
+| ------------------------------ | ---------------------------- |
+| @samplekit/preprocess-katex    | samplekit.svelte-pp-katex    |
+| @samplekit/preprocess-markdown | samplekit.svelte-pp-markdown |
+| @samplekit/preprocess-shiki    | samplekit.svelte-pp-shiki    |
 md-end -->
 			</span>
 		</span>
@@ -129,8 +129,8 @@ shiki-end -->
 	<li class="step">
 		<span class="step-title">Install the VS Code extension (for snippets and syntax highlighting)</span>
 		<span class="step-content">
-			<a data-external href="https://marketplace.visualstudio.com/items?itemName=timothycohen.svelte-pp-markdown">
-				timothycohen.svelte-pp-markdown
+			<a data-external href="https://marketplace.visualstudio.com/items?itemName=samplekit.svelte-pp-markdown">
+				samplekit.svelte-pp-markdown
 			</a>
 		</span>
 	</li>

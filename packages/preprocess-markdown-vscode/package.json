@@ -1,7 +1,7 @@
 {
 	"name": "svelte-pp-markdown",
 	"displayName": "Svelte Markdown Preprocessor",
-	"publisher": "timothycohen",
+	"publisher": "samplekit",
 	"description": "Syntax highlighting for Markdown in Svelte HTML comments.",
 	"license": "MIT",
 	"type": "module",

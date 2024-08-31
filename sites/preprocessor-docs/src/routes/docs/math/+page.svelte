@@ -24,12 +24,12 @@ A = \\pi r^2 &= ${A} \\\\
 <HAnchor tag="h1" title="Math" dataToc={null} />
 
 <p>
-	The <a data-external href="https://github.com/timothycohen/samplekit/tree/staging/packages/preprocess-katex">
+	The <a data-external href="https://www.npmjs.com/package/@samplekit/preprocess-katex">
 		<span class="font-mono text-base">@samplekit/preprocess-katex</span>
 	</a>
 	npm package and
-	<a data-external href="https://marketplace.visualstudio.com/items?itemName=timothycohen.svelte-pp-katex">
-		<span class="font-mono text-base">svelte-pp-katex</span>
+	<a data-external href="https://marketplace.visualstudio.com/items?itemName=samplekit.svelte-pp-katex">
+		<span class="font-mono text-base">samplekit.svelte-pp-katex</span>
 	</a>
 	VS Code extension allow you to use
 	<a data-external href="https://katex.org/docs/supported.html">KaTeX</a> directly within your Svelte template.
@@ -141,8 +141,8 @@ shiki-end -->
 	<li class="step">
 		<span class="step-title">Install the VS Code extension (for snippets and syntax highlighting)</span>
 		<span class="step-content">
-			<a data-external href="https://marketplace.visualstudio.com/items?itemName=timothycohen.svelte-pp-katex">
-				timothycohen.svelte-pp-katex
+			<a data-external href="https://marketplace.visualstudio.com/items?itemName=samplekit.svelte-pp-katex">
+				samplekit.svelte-pp-katex
 			</a>
 		</span>
 	</li>

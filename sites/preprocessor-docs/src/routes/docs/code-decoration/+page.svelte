@@ -14,12 +14,12 @@
 <HAnchor tag="h1" title="Code Decoration" dataToc={null} />
 
 <p>
-	The <a data-external href="https://github.com/timothycohen/samplekit/tree/staging/packages/preprocess-shiki">
+	The <a data-external href="https://www.npmjs.com/package/@samplekit/preprocess-shiki">
 		<span class="font-mono text-base">@samplekit/preprocess-shiki</span>
 	</a>
 	npm package and
-	<a data-external href="https://marketplace.visualstudio.com/items?itemName=timothycohen.svelte-pp-shiki">
-		<span class="font-mono text-base">svelte-pp-shiki</span>
+	<a data-external href="https://marketplace.visualstudio.com/items?itemName=samplekit.svelte-pp-shiki">
+		<span class="font-mono text-base">samplekit.svelte-pp-shiki</span>
 	</a>
 	VS Code extension allow you to write code blocks to be decorated by
 	<a data-external href="https://shiki.style/">Shiki</a> directly within your Svelte template.
@@ -104,7 +104,7 @@ shiki-end -->. More generally, you can register custom default
 		<I.CircleCheckBig class="feature-icon" />
 		<span class="feature-title">Code with TextMate support.</span>
 		<span class="feature-content">
-			The <a data-external href="https://marketplace.visualstudio.com/items?itemName=timothycohen.svelte-pp-shiki">
+			The <a data-external href="https://marketplace.visualstudio.com/items?itemName=samplekit.svelte-pp-shiki">
 				<span class="font-mono">VS Code extension</span>
 			</a>
 			detects the default languages and injects code syntax highlighting directly into your Svelte files. Because VS Code
@@ -198,8 +198,8 @@ shiki-end -->
 	<li class="step">
 		<span class="step-title">Install the VS Code extension (for snippets and syntax highlighting)</span>
 		<span class="step-content">
-			<a data-external href="https://marketplace.visualstudio.com/items?itemName=timothycohen.svelte-pp-shiki">
-				timothycohen.svelte-pp-shiki
+			<a data-external href="https://marketplace.visualstudio.com/items?itemName=samplekit.svelte-pp-shiki">
+				samplekit.svelte-pp-shiki
 			</a>
 		</span>
 	</li>

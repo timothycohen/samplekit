@@ -38,4 +38,4 @@ After
 
 ## Extension
 
-> [VSCode Marketplace](https://marketplace.visualstudio.com/items?itemName=timothycohen.svelte-pp-katex)
+> [VSCode Marketplace](https://marketplace.visualstudio.com/items?itemName=samplekit.svelte-pp-katex)

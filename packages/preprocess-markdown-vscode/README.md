@@ -23,4 +23,4 @@ After
 
 ## Extension
 
-> [VSCode Marketplace](https://marketplace.visualstudio.com/items?itemName=timothycohen.svelte-pp-markdown)
+> [VSCode Marketplace](https://marketplace.visualstudio.com/items?itemName=samplekit.svelte-pp-markdown)
