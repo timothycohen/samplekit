@@ -1,5 +1,6 @@
 {
 	"name": "svelte-pp-katex",
+	"version": "1.0.0",
 	"displayName": "Svelte KaTeX Preprocessor",
 	"publisher": "samplekit",
 	"description": "Syntax highlighting for KaTeX in Svelte HTML comments and JS template literals.",

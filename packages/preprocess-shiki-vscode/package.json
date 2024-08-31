@@ -1,5 +1,6 @@
 {
 	"name": "svelte-pp-shiki",
+	"version": "1.0.0",
 	"displayName": "Svelte Shiki Preprocessor",
 	"publisher": "samplekit",
 	"description": "Syntax highlighting for code blocks in Svelte HTML comments.",
