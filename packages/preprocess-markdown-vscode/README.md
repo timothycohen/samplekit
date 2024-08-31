@@ -15,11 +15,11 @@ By using HTML comments, it's trivial to write a preprocessor without running afo
 
 Before
 
-<img alt="Markdown in HTML comment without extension." src="./static/demo-comment-md-before.png" width="300" />
+<img alt="Markdown in HTML comment without extension." src="https://raw.githubusercontent.com/timothycohen/samplekit/staging/packages/preprocess-markdown-vscode/static/demo-comment-md-before.png" width="300" />
 
 After
 
-<img alt="Markdown in HTML comment with extension." src="./static/demo-comment-md.png" width="300" />
+<img alt="Markdown in HTML comment with extension." src="https://raw.githubusercontent.com/timothycohen/samplekit/staging/packages/preprocess-markdown-vscode/static/demo-comment-md.png" width="300" />
 
 ## Extension
 
