@@ -24,7 +24,6 @@ export function createTouchScalePanRotateHandler({
 }: TouchScalePanRotateActionOptions): TouchScalePanRotateHandler {
 	let rect: DOMRect | undefined = undefined;
 	let touches: { p: Point; identifier: number }[] = [];
-	let rafTimeout: number | undefined = undefined;
 	let rotationAccumulated = 0;
 	let panAccumulated: Point = { x: 0, y: 0 };
 	let scaleAccumulated = 1;
@@ -38,11 +37,8 @@ export function createTouchScalePanRotateHandler({
 	}
 
 	function dispatchTouchScalePanRotate(e: TouchScalePanRotate, touches: TouchList) {
-		if (rafTimeout) window.cancelAnimationFrame(rafTimeout);
-		rafTimeout = window.requestAnimationFrame(() => {
-			onTouchScalePanRotate?.(e);
-			for (const t of touches) updateTouches(t);
-		});
+		onTouchScalePanRotate?.(e);
+		for (const t of touches) updateTouches(t);
 	}
 
 	function handleTouchstart(event: TouchEvent & { currentTarget: HTMLElement }) {
