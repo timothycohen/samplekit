@@ -52,10 +52,10 @@
 	"homepage": "https://preprocessors.samplekit.dev",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/timothycohen/samplekit/tree/staging/packages/svelte-pp-katex"
+		"url": "https://github.com/timothycohen/samplekit/tree/staging/packages/preprocess-katex-vscode"
 	},
 	"bugs": {
-		"url": "https://github.com/timothycohen/samplekit/tree/staging/packages/svelte-pp-katex/issues"
+		"url": "https://github.com/timothycohen/samplekit/issues"
 	},
 	"keywords": [
 		"latex",

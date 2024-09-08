@@ -42,10 +42,10 @@
 	"homepage": "https://preprocessors.samplekit.dev",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/timothycohen/samplekit/tree/staging/packages/svelte-pp-markdown"
+		"url": "https://github.com/timothycohen/samplekit/tree/staging/packages/preprocess-markdown-vscode"
 	},
 	"bugs": {
-		"url": "https://github.com/timothycohen/samplekit/tree/staging/packages/svelte-pp-markdown/issues"
+		"url": "https://github.com/timothycohen/samplekit/issues"
 	},
 	"keywords": [
 		"markdown",
