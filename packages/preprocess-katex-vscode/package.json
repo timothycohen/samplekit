@@ -1,13 +1,17 @@
 {
 	"name": "svelte-pp-katex",
 	"version": "1.0.0",
+	"private": true,
 	"displayName": "Svelte KaTeX Preprocessor",
-	"publisher": "samplekit",
 	"description": "Syntax highlighting for KaTeX in Svelte HTML comments and JS template literals.",
+	"author": "Tim Cohen <contact@timcohen.dev>",
+	"publisher": "samplekit",
 	"license": "MIT",
 	"type": "module",
-	"author": "Tim Cohen <contact@timcohen.dev>",
-	"private": true,
+	"icon": "static/sk-katex.png",
+	"engines": {
+		"vscode": "^1.9.0"
+	},
 	"scripts": {
 		"format": "prettier --ignore-path ../../.prettierignore --check .",
 		"format:fix": "prettier --ignore-path ../../.prettierignore --list-different --write .",
@@ -15,31 +19,8 @@
 		"clean": "rm -f *.vsix",
 		"build": "pnpm clean && vsce package"
 	},
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/timothycohen/samplekit/tree/staging/packages/svelte-pp-katex"
-	},
-	"icon": "static/sk-katex.png",
-	"bugs": {
-		"url": "https://github.com/timothycohen/samplekit/tree/staging/packages/svelte-pp-katex/issues"
-	},
-	"engines": {
-		"vscode": "^1.9.0"
-	},
 	"categories": [
 		"Programming Languages"
-	],
-	"keywords": [
-		"latex",
-		"katex",
-		"tex",
-		"math",
-		"javascript",
-		"typescript",
-		"svelte",
-		"preprocess",
-		"samplekit",
-		"preprocess-katex"
 	],
 	"contributes": {
 		"grammars": [
@@ -67,5 +48,27 @@
 				"path": "./snippets/katex.pp-svelte.code-snippets"
 			}
 		]
-	}
+	},
+	"homepage": "https://preprocessors.samplekit.dev",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/timothycohen/samplekit/tree/staging/packages/svelte-pp-katex"
+	},
+	"bugs": {
+		"url": "https://github.com/timothycohen/samplekit/tree/staging/packages/svelte-pp-katex/issues"
+	},
+	"keywords": [
+		"latex",
+		"katex",
+		"tex",
+		"math",
+		"javascript",
+		"typescript",
+		"svelte",
+		"sveltekit",
+		"preprocess",
+		"samplekit",
+		"preprocess-katex",
+		"svelte-pp-katex"
+	]
 }

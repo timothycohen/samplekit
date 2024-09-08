@@ -1,9 +1,10 @@
 {
 	"name": "@samplekit/auth",
-	"description": "Auth helpers for SvelteKit",
 	"private": true,
-	"type": "module",
+	"description": "Auth helpers for SvelteKit",
 	"author": "Tim Cohen <contact@timcohen.dev>",
+	"license": "MIT",
+	"type": "module",
 	"scripts": {
 		"format": "prettier --ignore-path ../../.prettierignore --check .",
 		"format:fix": "prettier --ignore-path ../../.prettierignore --list-different --write .",
@@ -14,10 +15,10 @@
 		"clean": "rm -rf dist",
 		"build": "pnpm clean && tsc"
 	},
-	"devDependencies": {
-		"@simplewebauthn/types": "^10.0.0",
-		"@types/cookie": "^0.6.0",
-		"@types/qrcode": "^1.5.5"
+	"exports": {
+		"./client": "./dist/client/index.js",
+		"./server": "./dist/server/index.js",
+		"./package.json": "./package.json"
 	},
 	"dependencies": {
 		"@simplewebauthn/browser": "^10.0.0",
@@ -27,9 +28,9 @@
 		"qrcode": "^1.5.4",
 		"zod": "^3.23.8"
 	},
-	"exports": {
-		"./client": "./dist/client/index.js",
-		"./server": "./dist/server/index.js",
-		"./package.json": "./package.json"
+	"devDependencies": {
+		"@simplewebauthn/types": "^10.0.0",
+		"@types/cookie": "^0.6.0",
+		"@types/qrcode": "^1.5.5"
 	}
 }

@@ -1,9 +1,10 @@
 {
 	"name": "@samplekit/svelte-crop-window",
-	"description": "https://github.com/sabine/svelte-crop-window rewritten with Svelte 5 & builder pattern",
 	"private": true,
-	"type": "module",
+	"description": "https://github.com/sabine/svelte-crop-window rewritten with Svelte 5 & builder pattern",
 	"author": "Tim Cohen <contact@timcohen.dev>",
+	"license": "MIT",
+	"type": "module",
 	"scripts": {
 		"format": "prettier --ignore-path ../../.prettierignore --check .",
 		"format:fix": "prettier --ignore-path ../../.prettierignore --list-different --write .",

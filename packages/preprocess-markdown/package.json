@@ -2,8 +2,9 @@
 	"name": "@samplekit/preprocess-markdown",
 	"version": "1.0.1",
 	"description": "Svelte preprocessor for Markdown using Marked.",
-	"type": "module",
 	"author": "Tim Cohen <contact@timcohen.dev>",
+	"license": "MIT",
+	"type": "module",
 	"scripts": {
 		"format": "prettier --ignore-path ../../.prettierignore --check .",
 		"format:fix": "prettier --ignore-path ../../.prettierignore --list-different --write .",
@@ -26,5 +27,23 @@
 		"estree-walker": "^3.0.3",
 		"magic-string": "^0.30.11",
 		"marked": "^14.1.0"
-	}
+	},
+	"homepage": "https://preprocessors.samplekit.dev",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/timothycohen/samplekit/tree/staging/packages/preprocess-markdown"
+	},
+	"bugs": {
+		"url": "https://github.com/timothycohen/samplekit/issues"
+	},
+	"keywords": [
+		"markdown",
+		"md",
+		"svelte",
+		"sveltekit",
+		"preprocess",
+		"samplekit",
+		"preprocess-markdown",
+		"svelte-pp-markdown"
+	]
 }

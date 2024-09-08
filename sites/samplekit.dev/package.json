@@ -1,9 +1,10 @@
 {
 	"name": "samplekit.dev",
-	"description": "A collection of SvelteKit design pattern examples.",
-	"type": "module",
-	"author": "Tim Cohen <contact@timcohen.dev>",
 	"private": true,
+	"description": "A collection of SvelteKit design pattern examples.",
+	"author": "Tim Cohen <contact@timcohen.dev>",
+	"license": "MIT",
+	"type": "module",
 	"scripts": {
 		"format": "prettier --ignore-path ../../.prettierignore --check .",
 		"format:fix": "prettier --ignore-path ../../.prettierignore --list-different --write .",

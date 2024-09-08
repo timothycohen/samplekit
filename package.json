@@ -1,9 +1,10 @@
 {
 	"name": "samplekit-monorepo",
-	"description": "Monorepo for SampleKit",
-	"type": "module",
-	"author": "Tim Cohen <contact@timcohen.dev>",
 	"private": true,
+	"description": "Monorepo for SampleKit",
+	"author": "Tim Cohen <contact@timcohen.dev>",
+	"license": "MIT",
+	"type": "module",
 	"packageManager": "pnpm@9.5.0",
 	"engines": {
 		"node": "~20.14"
@@ -56,5 +57,12 @@
 		"prettier-plugin-tailwindcss": "^0.6.6",
 		"typescript": "^5.5.4",
 		"typescript-eslint": "^8.3.0"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/timothycohen/samplekit"
+	},
+	"bugs": {
+		"url": "https://github.com/timothycohen/samplekit/issues"
 	}
 }

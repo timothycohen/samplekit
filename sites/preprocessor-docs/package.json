@@ -1,9 +1,10 @@
 {
 	"name": "preprocessor-docs",
-	"description": "Docs for the @samplekit preprocessors.",
-	"type": "module",
-	"author": "Tim Cohen <contact@timcohen.dev>",
 	"private": true,
+	"description": "Docs for the @samplekit preprocessors.",
+	"author": "Tim Cohen <contact@timcohen.dev>",
+	"license": "MIT",
+	"type": "module",
 	"scripts": {
 		"format": "prettier --ignore-path ../../.prettierignore --check .",
 		"format:fix": "prettier --ignore-path ../../.prettierignore --list-different --write .",

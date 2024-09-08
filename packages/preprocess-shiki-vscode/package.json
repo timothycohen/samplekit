@@ -1,13 +1,17 @@
 {
 	"name": "svelte-pp-shiki",
 	"version": "1.0.0",
+	"private": true,
 	"displayName": "Svelte Shiki Preprocessor",
-	"publisher": "samplekit",
 	"description": "Syntax highlighting for code blocks in Svelte HTML comments.",
+	"author": "Tim Cohen <contact@timcohen.dev>",
+	"publisher": "samplekit",
 	"license": "MIT",
 	"type": "module",
-	"author": "Tim Cohen <contact@timcohen.dev>",
-	"private": true,
+	"icon": "static/sk-shiki.png",
+	"engines": {
+		"vscode": "^1.9.0"
+	},
 	"scripts": {
 		"format": "prettier --ignore-path ../../.prettierignore --check .",
 		"format:fix": "prettier --ignore-path ../../.prettierignore --list-different --write .",
@@ -16,27 +20,8 @@
 		"generate": "node ./scripts/generate/shiki-block.js && node ./scripts/generate/shiki-line.js",
 		"build": "pnpm clean && pnpm generate && vsce package"
 	},
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/timothycohen/samplekit/tree/staging/packages/preprocess-shiki-vscode"
-	},
-	"icon": "static/sk-shiki.png",
-	"bugs": {
-		"url": "https://github.com/timothycohen/samplekit/tree/staging/packages/preprocess-shiki-vscode/issues"
-	},
-	"engines": {
-		"vscode": "^1.9.0"
-	},
 	"categories": [
 		"Programming Languages"
-	],
-	"keywords": [
-		"shiki",
-		"highlight",
-		"svelte",
-		"preprocess",
-		"samplekit",
-		"preprocess-shiki"
 	],
 	"contributes": {
 		"grammars": [
@@ -61,5 +46,23 @@
 				"path": "./snippets/shiki.pp-svelte.code-snippets"
 			}
 		]
-	}
+	},
+	"homepage": "https://preprocessors.samplekit.dev",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/timothycohen/samplekit/tree/staging/packages/svelte-pp-shiki"
+	},
+	"bugs": {
+		"url": "https://github.com/timothycohen/samplekit/tree/staging/packages/svelte-pp-shiki/issues"
+	},
+	"keywords": [
+		"shiki",
+		"highlight",
+		"svelte",
+		"sveltekit",
+		"preprocess",
+		"samplekit",
+		"preprocess-shiki",
+		"svelte-pp-shiki"
+	]
 }
