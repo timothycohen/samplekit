@@ -27,6 +27,26 @@
     - `DOCKER_REGISTRY` is the registry where the images are pushed to, e.g. ghcr.io or registry.hub.docker.com
   - Add to GitHub: GitHub / [Repo] / Settings / Secrets and variables / Actions / Variables
 
+### Permissions in order to use `release_npm` job:
+
+- PR Permissions
+
+  - Reason: Give `changesets/action@v1` permission to make the PR.
+  - Modify on GitHub: GitHub / [Repo] / Settings / Actions / General / Workflow permissions -> Allow GitHub Actions to create and approve pull requests
+
+- `secrets.NPM_PUBLISH_TOKEN`
+  - Reason: `changesets/action@v1` uses `changeset publish` which runs `pnpm publish`.
+  - Generate: NPM -> Settings -> Access Tokens -> Generate New Token
+  - Add to GitHub: GitHub / [Repo] / Settings / Secrets / Actions / Secrets / New repository secret
+  - Note: Require two-factor authentication for write actions must be disabled
+
+### Permissions in order to use `release_vscode` job:
+
+- `secrets.VSCE_PAT`
+  - Reason: `changesets/action@v1` uses this to publish to the VS Code Marketplace.
+  - Generate: [Follow the official guide](https://code.visualstudio.com/api/working-with-extensions/publishing-extension#get-a-personal-access-token)
+  - Add to GitHub: GitHub / [Repo] / Settings / Secrets / Actions / Secrets / New repository secret
+
 ### Extra permissions to use workflow with private ghcr.io registries:
 
 - Personal Access Token

@@ -11,11 +11,12 @@
 		"lint:fix": "pnpm -w run lint:preprocess-shiki:fix",
 		"check": "tsc --noEmit",
 		"validate": "pnpm install --frozen-lockfile && pnpm format && pnpm lint && pnpm check",
+		"test": "vitest run",
+		"test:watch": "vitest",
+		"test:coverage": "vitest run --coverage",
 		"clean": "rm -rf dist",
 		"build": "pnpm clean && tsc",
-		"test": "vitest run",
-		"test:coverage": "vitest run --coverage",
-		"test:watch": "vitest"
+		"prepublishOnly": "pnpm build"
 	},
 	"exports": {
 		".": "./dist/index.js",

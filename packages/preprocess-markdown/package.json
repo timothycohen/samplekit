@@ -12,7 +12,8 @@
 		"check": "tsc --noEmit",
 		"validate": "pnpm install --frozen-lockfile && pnpm format && pnpm lint && pnpm check",
 		"clean": "rm -rf dist",
-		"build": "pnpm clean && tsc"
+		"build": "pnpm clean && tsc",
+		"prepublishOnly": "pnpm build"
 	},
 	"exports": {
 		".": "./dist/index.js",

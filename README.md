@@ -161,6 +161,39 @@ To create a production deployment, use `TAG=sk-prod/$(git rev-parse --short HEAD
 [deploy-sk-prod.yaml](./.github/workflows/deploy-sk-prod.yaml) will run a similar pipeline as `deploy-sk-staging`, except it obviously won't need to create the git tag.
 Again, the same goes for `sites/preprocessor-docs` (use `pp-docs-prod/{{ sha }}`).
 
+#### Packages
+
+The NPM packages and VS Code extensions use [changesets](https://github.com/changesets/changesets?).
+
+The workflow done locally:
+
+1. `pnpm changeset`
+   Run this command before you commit changes that will impact SEMVER on a published package.
+   It creates a Markdown file with a new unique name that lists each package:SEMVER change along with a summary.
+
+1. `pnpm changeset version`
+   This consumes the generated Markdown files, bumps the `package.json` versions, and updates the `CHANGELOG.md`s.
+   It requires a `GITHUB_TOKEN` environment variable
+
+1. `pnpm changeset publish`
+   This runs `pnpm publish` under the hood to push the changes to the NPM. It also generates git tags corresponding to the release.
+
+1. `git push --follow-tags`
+   This will push the generated release tags to the remote repo.
+
+The workflow done with `release-npm.yaml`:
+
+1. `pnpm changeset`
+   Run this command before you commit changes that will impact SEMVER on a published package.
+   It creates a Markdown file with a new unique name that lists each package:SEMVER change along with a summary.
+
+1. Review PR
+   The [release-npm.yaml workflow](./.github/workflows/release-npm.yaml) will automatically create a PR titled `Version Packages` which does the same thing as `pnpm changeset version`.
+   Each commit with changesets will automatically update the PR.
+
+1. Merge PR
+   When you merge the generated PR, it will run `pnpm changeset publish` and push the tags.
+
 #### Other Apps
 
 Additional apps like databases, kv storage, cron jobs, etc, are containerized.

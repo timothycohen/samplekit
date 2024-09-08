@@ -34,10 +34,15 @@
 		"sync": "pnpm --recursive sync",
 		"validate": "./scripts/.githooks/pre-commit --write",
 		"install:extensions": "fd .vsix -I | xargs -I {} code --install-extension {}",
-		"githooks:init": "git config core.hookspath ./scripts/.githooks"
+		"githooks:init": "git config core.hookspath ./scripts/.githooks",
+		"changeset:version": "changeset version",
+		"changeset:release": "scripts/release.sh"
 	},
 	"devDependencies": {
+		"@changesets/cli": "^2.27.7",
+		"@svitejs/changesets-changelog-github-compact": "^1.1.0",
 		"@types/node": "~20.14",
+		"@vscode/vsce": "^3.1.0",
 		"caprover": "^2.3.1",
 		"cspell": "^8.14.2",
 		"eslint": "^9.9.1",
