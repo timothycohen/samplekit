@@ -1,0 +1,86 @@
+##################### 🚧 WARNING: ENV VARS ARE BAKED INTO THE IMAGE 🚧 #####################
+# Expects:
+# permissions / variables / secrets defined in deploy-permissions.md
+
+name: Deploy sk-staging
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'Dockerfile.samplekit.gh'
+      - 'tsconfig.base.json'
+      - '.github/workflows/deploy-sk-staging.yaml'
+      - 'packages/auth/**'
+      - 'packages/preprocess-katex/**'
+      - 'packages/preprocess-markdown/**'
+      - 'packages/preprocess-shiki/**'
+      - 'packages/svelte-crop-window/**'
+      - 'sites/samplekit.dev/**'
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: true
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    outputs:
+      IMAGE_TAG: ${{ steps.create_image_tags.outputs.IMAGE_TAG }}
+      IMAGE_TAG_SHA: ${{ steps.create_image_tags.outputs.IMAGE_TAG_SHA }}
+    steps:
+      - name: Create Image Tags
+        id: create_image_tags
+        run: |
+          echo "IMAGE_TAG=${{ vars.DOCKER_REGISTRY }}/${{ github.repository }}/sk-staging:latest" >> $GITHUB_OUTPUT
+          echo "IMAGE_TAG_SHA=${{ vars.DOCKER_REGISTRY }}/${{ github.repository }}/sk-staging:$(echo ${{ github.sha }} | cut -c1-7)" >> $GITHUB_OUTPUT
+
+  build_publish:
+    runs-on: ubuntu-latest
+    needs: [setup]
+    steps:
+      - name: Log In to Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ vars.DOCKER_REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ github.token }}
+
+      - name: Build and Push Docker Image
+        uses: docker/build-push-action@v5
+        with:
+          build-args: |
+            "ENV_FILE=${{ secrets.SK_STAGING_ENV_FILE }}"
+            "MODE=staging"
+          push: true
+          file: Dockerfile.samplekit.gh
+          tags: ${{ needs.setup.outputs.IMAGE_TAG }},${{ needs.setup.outputs.IMAGE_TAG_SHA }}
+
+  pull_deploy:
+    runs-on: ubuntu-latest
+    needs: [setup, build_publish]
+    steps:
+      - name: Deploy CapRover App
+        uses: caprover/deploy-from-github@v1.1.2
+        with:
+          app: ${{ vars.SK_STAGING_CR_APP }}
+          token: ${{ secrets.SK_STAGING_CR_APP_TOKEN }}
+          server: ${{ vars.CR_SERVER }}
+          image: ${{ needs.setup.outputs.IMAGE_TAG }}
+
+  add_tag:
+    runs-on: ubuntu-latest
+    needs: [setup, build_publish, pull_deploy]
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+
+      - name: Set up Git
+        run: |
+          git config user.name "timothycohen"
+          git config user.email "contact@timcohen.dev"
+
+      - name: Add Git Tag
+        run: |
+          git tag -a sk-staging/$(echo ${{ github.sha }} | cut -c1-7) -m "Deployed image ${{ needs.setup.outputs.IMAGE_TAG_SHA }}"
+          git push origin tag sk-staging/$(echo ${{ github.sha }} | cut -c1-7)

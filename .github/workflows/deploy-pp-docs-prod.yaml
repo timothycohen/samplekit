@@ -1,0 +1,65 @@
+##################### 🚧 WARNING: ENV VARS ARE BAKED INTO THE IMAGE 🚧 #####################
+# Expects:
+# permissions / variables / secrets defined in deploy-permissions.md
+
+# Trigger from the command line like this:
+# TAG=pp-docs-prod/$(git rev-parse --short HEAD)
+# git tag $TAG
+# git push origin $TAG
+
+name: Deploy pp-docs-prod
+
+on:
+  push:
+    tags:
+      - 'pp-docs-prod/*'
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: true
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    outputs:
+      IMAGE_TAG: ${{ steps.create_image_tags.outputs.IMAGE_TAG }}
+      IMAGE_TAG_SHA: ${{ steps.create_image_tags.outputs.IMAGE_TAG_SHA }}
+    steps:
+      - name: Create Image Tags
+        id: create_image_tags
+        run: |
+          echo "IMAGE_TAG=${{ vars.DOCKER_REGISTRY }}/${{ github.repository }}/pp-docs-prod:latest" >> $GITHUB_OUTPUT
+          echo "IMAGE_TAG_SHA=${{ vars.DOCKER_REGISTRY }}/${{ github.repository }}/pp-docs-prod:$(echo ${{ github.sha }} | cut -c1-7)" >> $GITHUB_OUTPUT
+
+  build_publish:
+    runs-on: ubuntu-latest
+    needs: [setup]
+    steps:
+      - name: Log in to Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ vars.DOCKER_REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ github.token }}
+
+      - name: Build and Push Docker Image
+        uses: docker/build-push-action@v5
+        with:
+          build-args: |
+            "ENV_FILE=${{ secrets.PP_DOCS_PROD_ENV_FILE }}"
+            "MODE=prod"
+          push: true
+          file: Dockerfile.pp-docs.gh
+          tags: ${{ needs.setup.outputs.IMAGE_TAG }},${{ needs.setup.outputs.IMAGE_TAG_SHA }}
+
+  pull_deploy:
+    runs-on: ubuntu-latest
+    needs: [setup, build_publish]
+    steps:
+      - name: Deploy CapRover App
+        uses: caprover/deploy-from-github@v1.1.2
+        with:
+          app: ${{ vars.PP_DOCS_PROD_CR_APP }}
+          token: ${{ secrets.PP_DOCS_PROD_CR_APP_TOKEN }}
+          server: ${{ vars.CR_SERVER }}
+          image: ${{ needs.setup.outputs.IMAGE_TAG }}

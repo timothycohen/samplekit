@@ -81,7 +81,9 @@ Auth packages:
 
 ### Installation
 
-To run this repo you'll need to set up Redis and Postgres. The package.json scripts have one-off docker commands to start them. Just make sure your docker daemon is running!
+To run the `sites/samplekit.dev` app, you'll need to set up Redis and Postgres.
+The `package.json` scripts have one-off docker commands to start them.
+Just make sure your docker daemon is running!
 
 ```sh
 cd sites/samplekit.dev
@@ -138,3 +140,28 @@ To remove the docker containers, you can run the following:
 ```sh
 pnpm dev:down
 ```
+
+### DevOps
+
+See [deploy-permissions.md](./.github/workflows/deploy-permissions.md) for the necessary GitHub secrets, vars, and permissions.
+
+#### TL;DR Sites
+
+Merging feature branches into main will trigger validation and staging deployments for the sites as necessary.
+Push a `sk-prod/{{ sha }}` or `pp-docs-prod/{{ sha }}` tag to trigger a production deployment.
+
+#### Detailed Sites
+
+Creating a PR to main will cause the [validate.yaml workflow](./.github/workflows/validate.yaml) to run.
+
+When main receives pushes with changes that impact `sites/samplekit.dev`, [deploy-sk-staging.yaml](./.github/workflows/deploy-sk-staging.yaml) will build a staging docker image, push it to the GitHub container registry, pull it on the CapRover server, deploy it to the staging app in the swarm, and add a git tag associated with the docker image.
+The same goes for `sites/preprocessor-docs`.
+
+To create a production deployment, use `TAG=sk-prod/$(git rev-parse --short HEAD) && git tag $TAG && git push origin $TAG`.
+[deploy-sk-prod.yaml](./.github/workflows/deploy-sk-prod.yaml) will run a similar pipeline as `deploy-sk-staging`, except it obviously won't need to create the git tag.
+Again, the same goes for `sites/preprocessor-docs` (use `pp-docs-prod/{{ sha }}`).
+
+#### Other Apps
+
+Additional apps like databases, kv storage, cron jobs, etc, are containerized.
+Look at the `/caprover` folder for scripts to create them on the server.
