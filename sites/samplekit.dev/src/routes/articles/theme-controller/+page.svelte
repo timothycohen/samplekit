@@ -9,7 +9,7 @@
 		implementationPath: '/appearance',
 		srcCodeHref: 'https://github.com/timothycohen/samplekit/tree/main/sites/samplekit.dev/src/lib/styles',
 		description:
-			'A theme controller that uses CSS variables to control light/dark mode with multiple themes, saves user preference to Cookies and avoids flashes of unstyled content.',
+			'A theme controller that uses CSS variables to control light/dark mode with multiple themes, saves user preference to Cookies, and avoids flashes of unstyled content.',
 		publishedAt: new Date('2024-03-06 13:36:17 -0500'),
 		updates: [
 			{ at: new Date('2024-08-13 18:53:19 -0400'), descriptions: ['Update to runes.', 'Add view transition.'] },

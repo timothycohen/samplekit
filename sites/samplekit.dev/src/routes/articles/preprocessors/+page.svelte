@@ -7,7 +7,8 @@
 		title: 'Blog with Preprocessors',
 		implementationPath: '/articles/preprocessors/#demo',
 		srcCodeHref: 'https://github.com/timothycohen/samplekit/tree/main/packages/markdown',
-		description: 'Use preprocessors to format themed code blocks and Markdown tables alongside Svelte components.',
+		description:
+			'Use preprocessors to highlight code blocks, render math, and write Markdown directly in Svelte components – all without disrupting other tooling.',
 		publishedAt: new Date('2024-03-06 16:16:15 -0500'),
 		authors: [{ name: 'Tim Cohen', email: 'contact@timcohen.dev' }],
 		imgSm,

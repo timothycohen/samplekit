@@ -7,7 +7,7 @@ export default {
 	implementationPath: '/appearance',
 	srcCodeHref: 'https://github.com/timothycohen/samplekit/tree/main/sites/samplekit.dev/src/lib/styles',
 	description:
-		'A theme controller that uses CSS variables to control light/dark mode with multiple themes, saves user preference to Cookies and avoids flashes of unstyled content.',
+		'A theme controller that uses CSS variables to control light/dark mode with multiple themes, saves user preference to Cookies, and avoids flashes of unstyled content.',
 	publishedAt: new Date('2024-03-06T18:36:17.000Z'),
 	authors: [{ name: 'Tim Cohen', email: 'contact@timcohen.dev' }],
 	imgSm,
