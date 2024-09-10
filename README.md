@@ -4,7 +4,7 @@ SampleKit is a monorepo which houses NPM packages for [SvelteKit](https://kit.sv
 
 It's also home to a site dedicated to Svelte and SvelteKit learning resources.
 
-## External Packages, Extensions, & Sites
+## Packages, Extensions, & Sites
 
 | Package                                                                                                          | Kind              | Description                                            |
 | :--------------------------------------------------------------------------------------------------------------- | ----------------- | :----------------------------------------------------- |
