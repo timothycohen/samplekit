@@ -1,5 +1,11 @@
 # @samplekit/preprocess-katex
 
+## 1.0.2
+
+### Patch Changes
+
+- update metadata ([`c24ad8c135d779d0514222851cce9358770d991b`](https://github.com/timothycohen/samplekit/commit/c24ad8c135d779d0514222851cce9358770d991b))
+
 ## 1.0.1
 
 ### Patch Changes
