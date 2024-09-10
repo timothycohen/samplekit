@@ -16,11 +16,11 @@ By using HTML comments, it's trivial to write a preprocessor without running afo
 
 Before
 
-<img alt="KaTeX display in HTML comment without extension." src="https://raw.githubusercontent.com/timothycohen/samplekit/staging/packages/preprocess-katex-vscode/static/demo-comment-katex-before.png" width="300" />
+<img alt="KaTeX display in HTML comment without extension." src="https://raw.githubusercontent.com/timothycohen/samplekit/main/packages/preprocess-katex-vscode/static/demo-comment-katex-before.png" width="300" />
 
 After
 
-<img alt="KaTeX display in HTML comment with extension." src="https://raw.githubusercontent.com/timothycohen/samplekit/staging/packages/preprocess-katex-vscode/static/demo-comment-katex.png" width="300" />
+<img alt="KaTeX display in HTML comment with extension." src="https://raw.githubusercontent.com/timothycohen/samplekit/main/packages/preprocess-katex-vscode/static/demo-comment-katex.png" width="300" />
 
 ## JS/TS Template Literals
 
@@ -30,11 +30,11 @@ A tagged template literal is used to inject KaTeX highlighting into JS.
 
 Before
 
-<img alt="KaTeX in template literal without extension." src="https://raw.githubusercontent.com/timothycohen/samplekit/staging/packages/preprocess-katex-vscode/static/demo-template-katex-before.png" width="300" />
+<img alt="KaTeX in template literal without extension." src="https://raw.githubusercontent.com/timothycohen/samplekit/main/packages/preprocess-katex-vscode/static/demo-template-katex-before.png" width="300" />
 
 After
 
-<img alt="KaTeX in template literal with extension." src="https://raw.githubusercontent.com/timothycohen/samplekit/staging/packages/preprocess-katex-vscode/static/demo-template-katex.png" width="300" />
+<img alt="KaTeX in template literal with extension." src="https://raw.githubusercontent.com/timothycohen/samplekit/main/packages/preprocess-katex-vscode/static/demo-template-katex.png" width="300" />
 
 ## Extension
 
