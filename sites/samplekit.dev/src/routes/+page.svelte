@@ -36,7 +36,7 @@
 				</div>
 				<div class="relative flex items-center justify-center">
 					<div
-						class="relative grid h-36 w-36 animate-spin place-items-center animation-duration-[120s] md:h-48 md:w-48 lg:h-72 lg:w-72"
+						class="relative grid h-36 w-36 animate-spin place-items-center animation-duration-[120s] motion-reduce:animate-none md:h-48 md:w-48 lg:h-72 lg:w-72"
 					>
 						<div
 							class="pulse absolute inset-0 -z-10 rounded-full bg-gradient-to-r from-red-9/25 to-accent-11/35 blur-2xl"
