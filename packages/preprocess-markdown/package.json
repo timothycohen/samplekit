@@ -1,6 +1,6 @@
 {
 	"name": "@samplekit/preprocess-markdown",
-	"version": "1.0.3",
+	"version": "1.0.4",
 	"description": "Svelte preprocessor for Markdown using Marked.",
 	"author": "Tim Cohen <contact@timcohen.dev>",
 	"license": "MIT",

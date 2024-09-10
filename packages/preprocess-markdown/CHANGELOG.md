@@ -1,5 +1,11 @@
 # @samplekit/preprocess-markdown
 
+## 1.0.4
+
+### Patch Changes
+
+- update readme ([`a0b0efdaf12f89f64cfc3cbf2c43163ea8196f55`](https://github.com/timothycohen/samplekit/commit/a0b0efdaf12f89f64cfc3cbf2c43163ea8196f55))
+
 ## 1.0.3
 
 ### Patch Changes
