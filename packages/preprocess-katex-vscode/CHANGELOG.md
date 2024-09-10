@@ -1,5 +1,11 @@
 # svelte-pp-katex
 
+## 1.0.2
+
+### Patch Changes
+
+- Update readme image paths ([#2](https://github.com/timothycohen/samplekit/pull/2))
+
 ## 1.0.1
 
 ### Patch Changes
