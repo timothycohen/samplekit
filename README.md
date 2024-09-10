@@ -181,14 +181,14 @@ The workflow done locally:
 1. `git push --follow-tags`
    This will push the generated release tags to the remote repo.
 
-The workflow done with `release-npm.yaml`:
+The workflow done with `changesets.yaml`:
 
 1. `pnpm changeset`
    Run this command before you commit changes that will impact SEMVER on a published package.
    It creates a Markdown file with a new unique name that lists each package:SEMVER change along with a summary.
 
 1. Review PR
-   The [release-npm.yaml workflow](./.github/workflows/release-npm.yaml) will automatically create a PR titled `Version Packages` which does the same thing as `pnpm changeset version`.
+   The [changesets.yaml workflow](./.github/workflows/changesets.yaml) will automatically create a PR titled `Version Packages` which does the same thing as `pnpm changeset version`.
    Each commit with changesets will automatically update the PR.
 
 1. Merge PR
