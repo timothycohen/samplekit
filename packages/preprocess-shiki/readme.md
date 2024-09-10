@@ -1,6 +1,6 @@
 # Svelte Shiki Preprocessor
 
-<img alt="preprocess-shiki logo" src="https://raw.githubusercontent.com/timothycohen/samplekit/staging/packages/preprocess-shiki-vscode/static/sk-shiki.png" width="128" />
+<img alt="preprocess-shiki logo" src="https://raw.githubusercontent.com/timothycohen/samplekit/main/packages/preprocess-shiki-vscode/static/sk-shiki.png" width="128" />
 
 ## What is `preprocess-shiki`?
 
@@ -14,4 +14,4 @@ The [NPM package](https://www.npmjs.com/package/@samplekit/preprocess-shiki) has
 
 [Docs available here](https://preprocessors.samplekit.dev/docs/code-decoration/).
 
-<img alt="preprocessor family example" src="https://raw.githubusercontent.com/timothycohen/samplekit/staging/sites/preprocessor-docs/static/overview-photo-1420w.webp" width="768" />
+<img alt="preprocessor family example" src="https://raw.githubusercontent.com/timothycohen/samplekit/main/sites/preprocessor-docs/static/overview-photo-1420w.webp" width="768" />

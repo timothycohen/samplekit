@@ -15,11 +15,11 @@ By using HTML comments, it's trivial to write a preprocessor without running afo
 
 Before
 
-<img alt="Codeblock in HTML comment without extension." src="https://raw.githubusercontent.com/timothycohen/samplekit/staging/packages/preprocess-shiki-vscode/static/demo-comment-code-before.png" width="300" />
+<img alt="Codeblock in HTML comment without extension." src="https://raw.githubusercontent.com/timothycohen/samplekit/main/packages/preprocess-shiki-vscode/static/demo-comment-code-before.png" width="300" />
 
 After
 
-<img alt="Codeblock in HTML comment with extension." src="https://raw.githubusercontent.com/timothycohen/samplekit/staging/packages/preprocess-shiki-vscode/static/demo-comment-code.png" width="300" />
+<img alt="Codeblock in HTML comment with extension." src="https://raw.githubusercontent.com/timothycohen/samplekit/main/packages/preprocess-shiki-vscode/static/demo-comment-code.png" width="300" />
 
 ## Extension
 
