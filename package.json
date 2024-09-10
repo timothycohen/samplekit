@@ -37,7 +37,9 @@
 		"install:extensions": "fd .vsix -I | xargs -I {} code --install-extension {}",
 		"githooks:init": "git config core.hookspath ./scripts/.githooks",
 		"changeset:version": "changeset version",
-		"changeset:release": "scripts/release.sh"
+		"changeset:release": "scripts/release.sh",
+		"deploy:sk-prod": "TAG=sk-prod/$(git rev-parse --short HEAD) && git tag $TAG && git push origin $TAG",
+		"deploy:pp-docs-prod": "TAG=pp-docs-prod/$(git rev-parse --short HEAD) && git tag $TAG && git push origin $TAG"
 	},
 	"devDependencies": {
 		"@changesets/cli": "^2.27.7",
