@@ -47,7 +47,7 @@
 <VariantSelector options={product.options} variants={product.variants} {partialVariant} />
 
 {#if product.descriptionHtml}
-	<div class="prose my-4">
+	<div class="prose prose-radix my-4">
 		<!-- eslint-disable-next-line svelte/no-at-html-tags -->
 		{@html product.descriptionHtml}
 	</div>
