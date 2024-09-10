@@ -33,7 +33,7 @@
 		"build:packages": "pnpm --filter './packages/**' --filter '!./packages/*-vscode' build",
 		"build:extensions": "pnpm --filter './packages/*-vscode' build",
 		"sync": "pnpm --recursive sync",
-		"validate": "./scripts/.githooks/pre-commit --write",
+		"validate": "./scripts/.githooks/pre-commit",
 		"install:extensions": "fd .vsix -I | xargs -I {} code --install-extension {}",
 		"githooks:init": "git config core.hookspath ./scripts/.githooks",
 		"changeset:version": "changeset version",
