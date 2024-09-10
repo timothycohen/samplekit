@@ -1,26 +1,29 @@
-# Codeblock TextMate Grammar Injection into Svelte Templates
+# Syntax Highlighting for Decorated Code Blocks in Svelte Templates
 
-Accompanies the @samplekit/preprocess-shiki npm package to inject syntax highlighting into the Svelte template code blocks.
+This extension adds syntax highlighting to – and snippets for – the [@samplekit/preprocess-shiki](https://www.npmjs.com/package/@samplekit/preprocess-shiki) NPM package.
 
-## Features
+The NPM package allows you to write decorated code blocks (via Shiki) directly in Svelte templates without disrupting other tools like svelte-check, Prettier, ESLint, TypeScript, etc.
 
-- injects code highlighting into HTML comments inside Svelte markup.
-- adds snippets to make it quicker to generate the required HTML comments.
+## Examples
 
-## Svelte HTML Comments
-
-By using HTML comments, it's trivial to write a preprocessor without running afoul of svelte check, prettier, eslint, typescript, etc.
-
-#### `<!-- shiki-start shiki-end -->`
-
-Before
+### Without Extension
 
 <img alt="Codeblock in HTML comment without extension." src="https://raw.githubusercontent.com/timothycohen/samplekit/main/packages/preprocess-shiki-vscode/static/demo-comment-code-before.png" width="300" />
 
-After
+### With Extension
 
 <img alt="Codeblock in HTML comment with extension." src="https://raw.githubusercontent.com/timothycohen/samplekit/main/packages/preprocess-shiki-vscode/static/demo-comment-code.png" width="300" />
 
-## Extension
+## Supported Syntax
 
-> [VSCode Marketplace](https://marketplace.visualstudio.com/items?itemName=samplekit.svelte-pp-shiki)
+The supported syntax matches that of the NPM package's preprocessor.
+
+In Svelte markup, wrap blocks with `<!-- shiki-start shiki-end -->` and one liners with `<!-- shiki-svelte shiki-svelte -->`, `<!-- shiki-html shiki-html -->`, etc.
+
+## Links
+
+- [Docs](https://preprocessors.samplekit.dev/docs/code-decoration/)
+- [Extension on the VSCode Marketplace](https://marketplace.visualstudio.com/items?itemName=samplekit.svelte-pp-shiki)
+- [Extension Source](https://github.com/timothycohen/samplekit/tree/main/packages/preprocess-shiki-vscode)
+- [Companion NPM Package](https://www.npmjs.com/package/@samplekit/preprocess-shiki)
+- [Companion Package Source](https://github.com/timothycohen/samplekit/tree/main/packages/preprocess-shiki)

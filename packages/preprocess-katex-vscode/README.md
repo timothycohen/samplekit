@@ -1,41 +1,43 @@
-# KaTeX TextMate Grammar Injection into Svelte Templates
+# Syntax Highlighting for Math in Svelte Templates
 
-Accompanies the @samplekit/preprocess-katex npm package to inject syntax highlighting into the Svelte template math blocks.
+This extension adds syntax highlighting to – and snippets for – the [@samplekit/preprocess-katex](https://www.npmjs.com/package/@samplekit/preprocess-katex) NPM package.
 
-## Features
+The NPM package allows you to write math (via KaTeX) directly in Svelte templates without disrupting other tools like svelte-check, Prettier, ESLint, TypeScript, etc.
 
-- injects [text.tex.latex meta.math.block.latex support.class.math.block.environment.latex]() highlighting into HTML comments inside Svelte markup.
-- injects [text.katex scope](https://github.com/yzhang-gh/vscode-markdown/blob/master/syntaxes/katex.tmLanguage.json) into tagged template literals in JS
-- adds snippets to make it quicker to generate the required HTML comments.
+## Examples
 
-## Svelte HTML Comments
+### In Svelte Markup
 
-By using HTML comments, it's trivial to write a preprocessor without running afoul of svelte check, prettier, eslint, typescript, etc.
-
-#### `<!-- \[ \] -->` (KaTeX display mode) and `<!-- \( \) -->` (KaTeX inline mode)
-
-Before
+#### Without Extension
 
 <img alt="KaTeX display in HTML comment without extension." src="https://raw.githubusercontent.com/timothycohen/samplekit/main/packages/preprocess-katex-vscode/static/demo-comment-katex-before.png" width="300" />
 
-After
+#### With Extension
 
 <img alt="KaTeX display in HTML comment with extension." src="https://raw.githubusercontent.com/timothycohen/samplekit/main/packages/preprocess-katex-vscode/static/demo-comment-katex.png" width="300" />
 
-## JS/TS Template Literals
+### In JS Tagged Template Literal
 
-A tagged template literal is used to inject KaTeX highlighting into JS.
-
-#### <code>katex\`</code> or <code>latex\`</code> (case insensitive)
-
-Before
+#### Without Extension
 
 <img alt="KaTeX in template literal without extension." src="https://raw.githubusercontent.com/timothycohen/samplekit/main/packages/preprocess-katex-vscode/static/demo-template-katex-before.png" width="300" />
 
-After
+#### With Extension
 
 <img alt="KaTeX in template literal with extension." src="https://raw.githubusercontent.com/timothycohen/samplekit/main/packages/preprocess-katex-vscode/static/demo-template-katex.png" width="300" />
 
-## Extension
+## Supported Syntax
 
-> [VSCode Marketplace](https://marketplace.visualstudio.com/items?itemName=samplekit.svelte-pp-katex)
+The supported syntax matches that of the NPM package's preprocessor.
+
+In Svelte markup, use `<!-- \[ \] -->` for display mode and `<!-- \( \) -->` for inline mode.
+
+For JS tagged template literals, use <code>katex\`</code> or <code>latex\`</code> (case insensitive).
+
+## Links
+
+- [Docs](https://preprocessors.samplekit.dev/docs/math/)
+- [Extension on the VSCode Marketplace](https://marketplace.visualstudio.com/items?itemName=samplekit.svelte-pp-katex)
+- [Extension Source](https://github.com/timothycohen/samplekit/tree/main/packages/preprocess-katex-vscode)
+- [Companion NPM Package](https://www.npmjs.com/package/@samplekit/preprocess-katex)
+- [Companion Package Source](https://github.com/timothycohen/samplekit/tree/main/packages/preprocess-katex)
