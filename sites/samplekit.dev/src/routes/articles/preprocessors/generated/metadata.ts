@@ -4,7 +4,7 @@ import video from '/src/routes/articles/preprocessors/assets/2024-08-05_22-41-28
 export default {
 	title: 'Blog with Preprocessors',
 	implementationPath: '/articles/preprocessors/#demo',
-	srcCodeHref: 'https://github.com/timothycohen/samplekit/tree/main/packages/markdown',
+	srcCodeHref: 'https://github.com/timothycohen/samplekit/tree/main/packages/',
 	description:
 		'Use preprocessors to highlight code blocks, render math, and write Markdown directly in Svelte components – all without disrupting other tooling.',
 	publishedAt: new Date('2024-03-06T21:16:15.000Z'),
