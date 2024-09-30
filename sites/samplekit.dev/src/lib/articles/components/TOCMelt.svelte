@@ -1,4 +1,5 @@
 <script lang="ts">
+	import Self from './TOCMelt.svelte';
 	import type { TableOfContentsItem, TableOfContentsElements } from '@melt-ui/svelte';
 
 	interface Props {
@@ -32,7 +33,7 @@
 					</span>
 				</a>
 				{#if heading.children?.length}
-					<svelte:self {onclick} tree={heading.children} level={level + 1} {activeHeadingIdxs} {item} />
+					<Self {onclick} tree={heading.children} level={level + 1} {activeHeadingIdxs} {item} />
 				{/if}
 			</li>
 		{/each}

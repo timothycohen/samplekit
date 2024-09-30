@@ -1,4 +1,6 @@
 <script lang="ts">
+	import Self from './TOCBase.svelte';
+
 	type TocItem = {
 		title: string;
 		href: string;
@@ -27,7 +29,7 @@
 					{heading.title}
 				</a>
 				{#if heading.children?.length}
-					<svelte:self {onclick} tree={heading.children} level={level + 1} />
+					<Self {onclick} tree={heading.children} level={level + 1} />
 				{/if}
 			</li>
 		{/each}

@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/stores';
+	import Self from './MobileRoute.svelte';
 	import type { RouteGroup, RouteLeaf } from './routes';
 	import type { Snippet } from 'svelte';
 
@@ -22,7 +23,7 @@
 		</span>
 		<ul class="flex flex-col">
 			{#each route.children as subRoute}
-				<svelte:self {onNavItemClick} route={subRoute} />
+				<Self {onNavItemClick} route={subRoute} />
 			{/each}
 		</ul>
 	{:else}
