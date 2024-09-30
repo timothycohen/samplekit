@@ -87,6 +87,7 @@
 							onclick={() => save(theme)}
 							onmouseenter={() => (hovered = theme)}
 							onmouseleave={() => (hovered = null)}
+							aria-label={`Choose ${theme.name} theme`}
 						>
 							<span class="h-full flex-1 bg-app-bg"></span>
 							<span class="h-full flex-1 bg-accent-9"></span>
