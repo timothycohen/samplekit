@@ -150,8 +150,8 @@
 	<Avatar {avatar} size={300} />
 </div>
 
-<p class="my-4 text-center text-lg">
-	<a class="link" href="/login">Sign in</a> to use the demo or view
+<p class="my-4 flex flex-col gap-1 text-center text-lg">
+	<span><a class="link" href="/login">Sign in</a> to use the demo or view</span>
 	<button class="btn btn-accent inline-block px-2 py-1" onclick={() => happyPath()}> Happy Path Mock </button>
 	<button class="btn btn-accent inline-block px-2 py-1" onclick={() => moderationErrPath()}>
 		Moderation Error Mock

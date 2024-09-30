@@ -15,7 +15,7 @@
 	};
 </script>
 
-<div class="grid gap-x-12 gap-y-8">
+<div class="grid gap-x-12 gap-y-8 p-16">
 	<div class="col-span-2 sm:col-span-1">
 		<LangSelect onSelect={(lang) => (selectedLang = lang)} />
 	</div>

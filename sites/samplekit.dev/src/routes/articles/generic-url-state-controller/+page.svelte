@@ -66,7 +66,8 @@ shiki-end -->
 	We want to <a href="https://shopify.dev/docs/api/storefront/2023-10/objects/Product#query-products" data-external>
 		query a shopify endpoint
 	</a>. The search and filter state should be stored in the url.
-	<code>?sort_by=latest-desc&availability=true&price.gte=10&price.lte=100&q=shirt</code> should be represented as:
+	<code class="break-all">?sort_by=latest-desc&availability=true&price.gte=10&price.lte=100&q=shirt</code> should be represented
+	as:
 </p>
 
 <!-- shiki-start

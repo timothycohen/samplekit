@@ -15,7 +15,7 @@
 </script>
 
 <div
-	class="relative flex flex-col {opts?.noPadding ? '' : 'p-page'}
+	class="relative {opts?.noPadding ? '' : 'p-page'}
 	{opts?.noBorder ? '' : 'rounded-b-card border border-gray-9 dark:border-gray-5'}"
 >
 	{#if opts?.bg}
@@ -28,7 +28,7 @@
 		/>
 	{/if}
 
-	<div class="aspect-video h-full flex-1 {opts?.center ? 'grid place-content-center' : ''}">
+	<div class={opts?.center ? 'grid place-content-center' : ''}>
 		{@render children()}
 	</div>
 </div>

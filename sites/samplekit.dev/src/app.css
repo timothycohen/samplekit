@@ -20,6 +20,10 @@ select {
 .custom-icon {
 	@apply stroke-[1.25];
 }
+
+tbody code {
+	word-break: break-all;
+}
 /*#endregion Resets ########################## */
 
 /*#region Base Colors ######################## */
