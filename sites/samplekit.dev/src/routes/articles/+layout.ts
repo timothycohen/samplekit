@@ -5,9 +5,10 @@ import type { LayoutLoad, LayoutRouteId } from './$types';
 
 export const load: LayoutLoad = async ({ route, data: serverData }) => {
 	const articlePath = route.id as Exclude<LayoutRouteId, '/articles'>;
+
 	const article: ClientFrontMatter = {
 		...serverData.article,
-		demos: merge({ code: serverData.article.demos, components: processedComponentsMap[articlePath] }),
+		demos: await merge({ code: serverData.article.demos, components: processedComponentsMap[articlePath] }),
 	};
 
 	const meta: App.PageData['meta'] = {

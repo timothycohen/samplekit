@@ -1,6 +1,6 @@
 import { error } from '@sveltejs/kit';
 import { allPostData } from '$lib/articles/load';
-import { processedCodeMap, resolveMainPromise } from '$lib/articles/load/demos/server';
+import { processedCodeMap, loadMainOnce } from '$lib/articles/load/demos/server';
 import { type ServerFrontMatter } from '$lib/articles/schema';
 import type { LayoutRouteId, LayoutServerLoad } from './$types';
 
@@ -12,7 +12,9 @@ export const load: LayoutServerLoad = async ({ route }) => {
 
 	const article: ServerFrontMatter = frontMatter;
 	const demos = processedCodeMap[articlePath];
-	if (demos?.main) demos.main = await resolveMainPromise(demos.main);
-	if (demos) article.demos = demos;
+	if (demos) {
+		await loadMainOnce(demos);
+		article.demos = demos;
+	}
 	return { article };
 };

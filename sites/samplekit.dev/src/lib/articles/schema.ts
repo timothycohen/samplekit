@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import type { CodeProcessed, ComponentProcessed } from './load';
+import type { CodeProcessedEager, CodeProcessedLazy, ComponentProcessedEager, ComponentProcessedLazy } from './load';
 import type { LayoutRouteId } from '../../routes/articles/$types';
 
 export type ArticlePath = Exclude<LayoutRouteId, '/articles'>;
@@ -93,13 +93,13 @@ export type MetaRawCode = { modules: Array<{ rawCodePromise: () => Promise<strin
 
 export type ServerFrontMatter = ProcessedFrontMatter & {
 	demos?: {
-		main?: CodeProcessed[] | undefined;
-		lazy?: Record<string, CodeProcessed[]> | undefined;
+		main?: CodeProcessedEager[] | undefined;
+		lazy?: Record<string, CodeProcessedLazy[]> | undefined;
 	};
 };
 export type ClientFrontMatter = ProcessedFrontMatter & {
 	demos?: {
-		main?: (CodeProcessed | ComponentProcessed)[];
-		lazy?: Record<string, (CodeProcessed | ComponentProcessed)[]>;
+		main?: (CodeProcessedEager | ComponentProcessedEager)[];
+		lazy?: Record<string, (CodeProcessedLazy | ComponentProcessedLazy)[]>;
 	};
 };

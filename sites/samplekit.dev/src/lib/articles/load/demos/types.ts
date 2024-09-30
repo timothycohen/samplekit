@@ -25,33 +25,31 @@ export type ComponentDefined = {
 
 export type ModuleDefinitions = Array<ComponentDefined | CodeDefined>;
 
-export type CodeProcessed = {
-	title: string;
+type CodeProcessedBase = {
 	index: number;
-
-	rawHTML: string | Promise<string>;
+	title: string;
 	lang: string;
-
 	wrapperProps?: never;
 	icon?: never;
 	component?: never;
 };
+export type CodeProcessedEager = CodeProcessedBase & { rawHTML: string };
+export type CodeProcessedLazy = CodeProcessedBase & { rawHTML: Promise<string> };
 
-export type ComponentProcessed = {
-	title: string;
+type ComponentProcessedBase = {
 	index: number;
-
-	rawHTML?: never;
+	title: string;
 	lang?: never;
-
-	component: NoPropComponent | Promise<NoPropComponent>;
-	icon?: 'svelte';
 	wrapperProps?: WrapperProps;
+	icon?: 'svelte';
+	rawHTML?: never;
 };
+export type ComponentProcessedLazy = ComponentProcessedBase & { component: Promise<NoPropComponent> };
+export type ComponentProcessedEager = ComponentProcessedBase & { component: NoPropComponent };
 
 export type MergedProcessed = {
-	main?: (CodeProcessed | ComponentProcessed)[];
-	lazy?: Record<string, (CodeProcessed | ComponentProcessed)[]>;
+	main?: (CodeProcessedEager | ComponentProcessedEager)[];
+	lazy?: Record<string, (CodeProcessedLazy | ComponentProcessedLazy)[]>;
 };
 
 export type DemoName = string;

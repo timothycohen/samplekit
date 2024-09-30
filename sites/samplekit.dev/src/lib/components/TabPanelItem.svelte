@@ -1,4 +1,6 @@
 <script lang="ts">
+	/* eslint-disable svelte/no-at-html-tags */
+
 	import type { NoPropComponent } from '$lib/utils/common';
 
 	interface Props {
@@ -10,11 +12,12 @@
 	const { panel }: Props = $props();
 </script>
 
-{#await Promise.all([panel.component, panel.rawHTML]) then [Component, rawHTML]}
-	{#if rawHTML}
-		<!-- eslint-disable-next-line svelte/no-at-html-tags -->
-		{@html rawHTML}
-	{:else if Component}
-		<Component />
-	{/if}
-{/await}
+{#if panel.component}
+	{@const Component = panel.component}
+	{#if Component instanceof Promise}{#await Component then C}<C />{/await}
+	{:else}<Component />{/if}
+{:else if panel.rawHTML}
+	{@const rawHTML = panel.rawHTML}
+	{#if rawHTML instanceof Promise}{#await rawHTML then html}{@html html}{/await}
+	{:else}{@html panel.rawHTML}{/if}
+{/if}

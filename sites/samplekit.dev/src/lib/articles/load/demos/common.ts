@@ -1,14 +1,23 @@
 import type { ArticlePath } from '$lib/articles/schema';
-import type { ModuleDefinitions, DemoName, CodeProcessed, ComponentProcessed, MergedProcessed } from './types';
+import type {
+	ModuleDefinitions,
+	DemoName,
+	CodeProcessedEager,
+	CodeProcessedLazy,
+	MergedProcessed,
+	ComponentProcessedEager,
+	ComponentProcessedLazy,
+} from './types';
 
 /** @throws Error */
-export const demosMap = (() => {
+const demosMap = (() => {
 	const metaModules = Object.entries(
 		import.meta.glob('/src/routes/articles/**/demos/**/meta.preview.ts', { eager: true }),
 	) as [string, { default: ModuleDefinitions }][];
 
-	const map: Partial<Record<ArticlePath, { main?: ModuleDefinitions; lazy?: Record<DemoName, ModuleDefinitions> }>> =
-		{};
+	const map: Partial<
+		Record<ArticlePath, { mainPromise?: ModuleDefinitions; lazy?: Record<DemoName, ModuleDefinitions> }>
+	> = {};
 
 	for (const [url, loaded] of metaModules) {
 		const a = url.replace('/src/routes', '').split('/');
@@ -17,7 +26,7 @@ export const demosMap = (() => {
 		const articlePath = a.slice(0, demoIdx).join('/') as ArticlePath;
 		const demoName = a.slice(demoIdx + 1).join('/');
 		if (!map[articlePath]) map[articlePath] = {};
-		if (demoName === 'main') map[articlePath]!.main = loaded.default;
+		if (demoName === 'main') map[articlePath]!.mainPromise = loaded.default;
 		else {
 			if (!map[articlePath]!.lazy) map[articlePath]!.lazy = {};
 			map[articlePath]!.lazy![demoName] = loaded.default;
@@ -28,13 +37,13 @@ export const demosMap = (() => {
 })();
 
 export const splitAndProcess = <T>(processor: (moduleDefinitions: ModuleDefinitions) => T[]) =>
-	Object.entries(demosMap).reduce<Partial<Record<ArticlePath, { main?: T[]; lazy?: Record<DemoName, T[]> }>>>(
+	Object.entries(demosMap).reduce<Partial<Record<ArticlePath, { mainPromise?: T[]; lazy?: Record<DemoName, T[]> }>>>(
 		(acc, curr) => {
 			const [articlePath, demos] = curr;
-			const res: { main?: T[]; lazy?: Record<DemoName, T[]> } = {};
+			const res: { mainPromise?: T[]; lazy?: Record<DemoName, T[]> } = {};
 
-			if (demos.main) {
-				res.main = processor(demos.main);
+			if (demos.mainPromise) {
+				res.mainPromise = processor(demos.mainPromise);
 			}
 
 			if (Object.keys(demos.lazy ?? {}).length) {
@@ -43,24 +52,27 @@ export const splitAndProcess = <T>(processor: (moduleDefinitions: ModuleDefiniti
 					res.lazy[demoName] = processor(demo);
 				}
 			}
-			if (res.lazy || res.main) return { ...acc, [articlePath]: res };
+			if (res.lazy || res.mainPromise) return { ...acc, [articlePath]: res };
 			return acc;
 		},
 		{},
 	);
 
-export const merge = ({
+export const merge = async ({
 	code,
 	components,
 }: {
-	code?: { main?: CodeProcessed[]; lazy?: Record<DemoName, CodeProcessed[]> };
-	components?: { main?: ComponentProcessed[]; lazy?: Record<DemoName, ComponentProcessed[]> };
-}): MergedProcessed => {
-	const main: Array<CodeProcessed | ComponentProcessed> = [];
-	const lazy: Record<DemoName, Array<CodeProcessed | ComponentProcessed>> = {};
+	code?: { main?: CodeProcessedEager[]; lazy?: Record<DemoName, CodeProcessedLazy[]> };
+	components?: { mainPromise?: ComponentProcessedLazy[]; lazy?: Record<DemoName, ComponentProcessedLazy[]> };
+}): Promise<MergedProcessed> => {
+	const main: Array<CodeProcessedEager | ComponentProcessedEager> = [];
+	const lazy: Record<DemoName, Array<CodeProcessedLazy | ComponentProcessedLazy>> = {};
 
 	if (code?.main) main.push(...code.main);
-	if (components?.main) main.push(...components.main);
+	if (components?.mainPromise)
+		main.push(
+			...(await Promise.all(components.mainPromise.map(async (c) => ({ ...c, component: await c.component })))),
+		);
 
 	for (const [demoName, processed] of Object.entries(code?.lazy || {})) {
 		lazy[demoName] = [...processed];

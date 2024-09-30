@@ -1,7 +1,8 @@
 import { codeToDecoratedHtmlSync } from '@samplekit/preprocess-shiki';
 import { opts } from '$lib/shiki';
 import { splitAndProcess } from './common';
-import type { CodeProcessed, ModuleDefinitions } from './types';
+import type { ArticlePath } from '$lib/articles/schema';
+import type { CodeProcessedEager, CodeProcessedLazy, ModuleDefinitions } from './types';
 import type { CodeDefined } from './types';
 
 const processOne = <T extends string>(codeDefined: Omit<CodeDefined, 'title'> & { title: T }) => {
@@ -35,15 +36,28 @@ export const processCodeDefined = <T extends string>(codeDefined: Omit<CodeDefin
 		rawHTML,
 	}));
 
-export const processCode = (moduleDefinitions: ModuleDefinitions): Array<CodeProcessed> => {
-	return moduleDefinitions.reduce<Array<CodeProcessed>>((acc, curr, index) => {
+export const processCode = (moduleDefinitions: ModuleDefinitions): Array<CodeProcessedLazy> => {
+	return moduleDefinitions.reduce<Array<CodeProcessedLazy>>((acc, curr, index) => {
 		if (!curr.loadRaw) return acc;
 		return [...acc, { ...processOne(curr), index }];
 	}, []);
 };
 
-export const processedCodeMap = splitAndProcess(processCode);
+type ProcessedCode = {
+	main?: Array<CodeProcessedEager>;
+	mainPromise?: Array<CodeProcessedLazy>;
+	lazy?: Record<string, CodeProcessedLazy[]>;
+};
 
-export const resolveMainPromise = async (mainCode: CodeProcessed[]) => {
-	return await Promise.all(mainCode.map(async (mc) => ({ ...mc, rawHTML: await mc.rawHTML })));
+// the type cast adds an optional main field that doesn't exist yet so that we can
+// await the main demo (and then cache it) when the article is actually requested
+// this is to speed up the dev server
+export const processedCodeMap = splitAndProcess(processCode) as Partial<Record<ArticlePath, ProcessedCode>>;
+
+export const loadMainOnce = async (processedCode: ProcessedCode) => {
+	if (processedCode.main || !processedCode.mainPromise) return;
+	processedCode.main = await Promise.all(
+		processedCode.mainPromise.map(async (mc) => ({ ...mc, rawHTML: await mc.rawHTML })),
+	);
+	delete processedCode.mainPromise;
 };
