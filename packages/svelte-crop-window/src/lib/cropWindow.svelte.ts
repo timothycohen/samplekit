@@ -380,19 +380,10 @@ export class CropWindow {
 			},
 			get style() {
 				return styleToString({
-					...{
-						height: '100%',
-						width: '100%',
-						overflow: 'hidden',
-						position: 'relative',
-					},
-					...(insideCropWindowColor ? { 'background-color': insideCropWindowColor } : {}),
-					...{
-						height: '100%',
-						width: '100%',
-						overflow: 'hidden',
-						position: 'relative',
-					},
+					height: '100%',
+					width: '100%',
+					overflow: 'hidden',
+					position: 'relative',
 					...(insideCropWindowColor ? { 'background-color': insideCropWindowColor } : {}),
 				});
 			},
@@ -457,15 +448,13 @@ export class CropWindow {
 			get style() {
 				if (!klass.#r_cropWindowSize || !klass.#r_rootCenter) return styleToString({ display: 'none' });
 				return styleToString({
-					...{
-						position: 'absolute',
-						overflow: 'hidden',
-						height: `${klass.#r_cropWindowSize.height}px`,
-						width: `${klass.#r_cropWindowSize.width}px`,
-						left: `${klass.#r_rootCenter.x - klass.#r_cropWindowSize.width / 2}px`,
-						top: `${klass.#r_rootCenter.y - klass.#r_cropWindowSize.height / 2}px`,
-						'border-radius': klass.#r_cropValue.shape === 'round' ? '50%' : '0',
-					},
+					position: 'absolute',
+					overflow: 'hidden',
+					height: `${klass.#r_cropWindowSize.height}px`,
+					width: `${klass.#r_cropWindowSize.width}px`,
+					left: `${klass.#r_rootCenter.x - klass.#r_cropWindowSize.width / 2}px`,
+					top: `${klass.#r_rootCenter.y - klass.#r_cropWindowSize.height / 2}px`,
+					'border-radius': klass.#r_cropValue.shape === 'round' ? '50%' : '0',
 					...(outsideCropWindowColor ? { 'box-shadow': `${outsideCropWindowColor} 0 0 0 9999em` } : {}),
 				});
 			},
@@ -531,13 +520,11 @@ export class CropWindow {
 			return {
 				get style() {
 					return styleToString({
-						...{
-							position: 'absolute',
-							height,
-							width,
-							top,
-							left,
-						},
+						position: 'absolute',
+						height,
+						width,
+						top,
+						left,
 						...extra,
 					});
 				},

@@ -917,7 +917,7 @@ const createAllColors = () => {
 
 	for (const t of token) {
 		const outer: Record<string, Record<string, string>> = {};
-		for (const i of [...Array(12).keys()]) {
+		for (const i of Array(12).keys()) {
 			const inner: Record<string, string> = {
 				DEFAULT: `hsl(var(--${t}-${i + 1}) / <alpha-value>)`,
 				light: `hsl(var(--${t}-${i + 1}-light) / <alpha-value>)`,
@@ -931,7 +931,7 @@ const createAllColors = () => {
 
 	for (const t of tokenGray) {
 		const outer: Record<string, Record<string, string>> = {};
-		for (const i of [...Array(12).keys()]) {
+		for (const i of Array(12).keys()) {
 			const inner: Record<string, string> = {
 				DEFAULT: `hsl(var(--${t}-${i + 1}) / <alpha-value>)`,
 				light: `hsl(var(--${t}-${i + 1}-light) / <alpha-value>)`,
@@ -950,7 +950,7 @@ const createAllColors = () => {
 
 	for (const t of semantic) {
 		const outer: Record<string, string | Record<string, string>> = {};
-		for (const i of [...Array(12).keys()]) {
+		for (const i of Array(12).keys()) {
 			if (i === 8) {
 				outer[`${i + 1}`] = {
 					DEFAULT: `hsl(var(--${t}-${i + 1}) / <alpha-value>)`,
@@ -965,7 +965,7 @@ const createAllColors = () => {
 
 	for (const t of semanticGray) {
 		const outer: Record<string, string> = {};
-		for (const i of [...Array(12).keys()]) {
+		for (const i of Array(12).keys()) {
 			outer[`${i + 1}`] = `hsl(var(--${t}-${i + 1}) / <alpha-value>)`;
 			outer[`a${i + 1}`] = `var(--${t}-a${i + 1})`;
 		}
