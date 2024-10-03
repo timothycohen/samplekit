@@ -16,6 +16,7 @@
 				type="number"
 				class="input-text"
 				min="0"
+				aria-label={paramKey}
 				max={price.absMax}
 				placeholder={cap(paramKey)}
 				value={$price[paramKey]}

@@ -55,7 +55,7 @@
 		<div class="space-y-2">
 			<span class="text-sm font-bold">Query</span>
 			<SearchBar
-				onSubmit={(e) => {
+				onsubmit={(e) => {
 					e.preventDefault();
 					query.set(e.currentTarget.querySelector('input')?.value ?? null);
 				}}

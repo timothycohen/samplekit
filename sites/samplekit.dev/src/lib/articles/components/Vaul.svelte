@@ -9,7 +9,7 @@
 </script>
 
 <Drawer.Root bind:open>
-	<Drawer.Trigger class="btn btn-hollow rounded-r-none border-none px-3" aria-label="open menu">
+	<Drawer.Trigger class="btn btn-hollow rounded-r-none border-none px-3" title="Open Table of Contents">
 		<I.List />
 	</Drawer.Trigger>
 	<Drawer.Portal>

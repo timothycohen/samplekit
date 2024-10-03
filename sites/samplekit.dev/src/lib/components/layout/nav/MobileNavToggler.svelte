@@ -36,6 +36,7 @@
 />
 
 <label class="z-50 inline-block h-6 w-6 cursor-pointer peer-focus-visible:outline" for="mobile-nav-btn">
+	<span class="sr-only">Open mobile navigation menu</span>
 	<span class="flex h-full w-full shrink-0 justify-center overflow-hidden">
 		<svg viewBox="35 5 30 30" xmlns="http://www.w3.org/2000/svg">
 			<path class="line--1" d="M0 40l28-28c2-2 2-2 7-2h64" />

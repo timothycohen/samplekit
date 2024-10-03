@@ -12,12 +12,11 @@
 				<li class="animate-fade-in">
 					<a href={handleToPath({ handle: product.handle, kind: 'product' })} class="group ring-accent-9">
 						<GridTileImage
-							alt={product.title}
 							label={{
 								title: product.title,
 								price: product.priceRange.minVariantPrice,
 							}}
-							images={product.images.map((i) => i.url)}
+							images={product.images.map((i) => ({ src: i.url, alt: i.altText }))}
 							sizes="(min-width: 768px) 33vw, (min-width: 640px) 50vw, 100vw"
 						/>
 					</a>

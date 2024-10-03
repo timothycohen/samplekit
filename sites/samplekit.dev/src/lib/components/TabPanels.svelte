@@ -87,6 +87,7 @@
 		<button
 			onclick={() => (collapsed = !collapsed)}
 			class="grid min-h-10 w-10 shrink-0 place-content-center rounded-tr-card border-l border-gray-9 bg-gray-3 text-gray-10 -outline-offset-1 hover:bg-gray-4 dark:border-gray-5"
+			aria-label={collapsed ? 'Expand' : 'Hide'}
 		>
 			<div class="transition-transform {collapsed ? 'rotate-180' : ''}">
 				<I.ChevronUp />

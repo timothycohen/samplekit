@@ -16,10 +16,10 @@
 
 <h2 class="flex-1 overflow-hidden overflow-ellipsis whitespace-nowrap text-center text-xl">{title}</h2>
 
-<a href="https://samplekit.dev">
+<a href="https://samplekit.dev" aria-label="Go to SampleKit website">
 	<LogoIcon svgClasses="h-6 w-6" />
 </a>
 
-<a href="https://github.com/timothycohen/samplekit">
+<a href="https://github.com/timothycohen/samplekit" aria-label="Go to SampleKit source code">
 	<I.GitHub class="rounded-full hover:fill-accent-9/30" />
 </a>

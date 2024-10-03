@@ -90,6 +90,7 @@
 										<button
 											class="btn btn-ghost mr-1 rounded-badge px-2 py-1"
 											onclick={() => (sidebarOpen = !sidebarOpen)}
+											title="Close Table of Contents"
 										>
 											<I.ArrowRight class="h-5 w-5" />
 										</button>
@@ -134,7 +135,11 @@
 								<TOC tree={data.article.toc} onclick={closeVaul} />
 							{/snippet}
 						</Vaul>
-						<button class="btn btn-hollow rounded-l-none border-none px-3" onclick={() => globalCollapsed.toggle()}>
+						<button
+							class="btn btn-hollow rounded-l-none border-none px-3"
+							onclick={() => globalCollapsed.toggle()}
+							title={globalCollapsed.true ? 'Expand all code snippets' : 'Collapse all code snippets'}
+						>
 							{#if globalCollapsed.true}
 								<I.FoldVertical class="h-6 w-6" />
 							{:else}
@@ -150,6 +155,7 @@
 				class="fixed bottom-4 z-10 hidden h-12 w-12 items-center justify-center rounded-full border border-gray-5 bg-app-bg/75 text-gray-11 backdrop-blur-md lg:flex"
 				style="right: calc(var(--scrollbar-width, 0px) + 1rem);"
 				onclick={() => globalCollapsed.toggle()}
+				title={globalCollapsed.true ? 'Expand all code snippets' : 'Collapse all code snippets'}
 			>
 				{#if globalCollapsed.true}
 					<I.FoldVertical class="h-6 w-6" />

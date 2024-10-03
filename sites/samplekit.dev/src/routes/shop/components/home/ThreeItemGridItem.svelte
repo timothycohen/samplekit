@@ -18,10 +18,9 @@
 		href={handleToPath({ handle: product.handle, kind: 'product' })}
 	>
 		<GridTileImage
-			images={product.images.map((i) => i.url)}
 			sizes={size === 'full' ? '(min-width: 768px) 66vw, 100vw' : '(min-width: 768px) 33vw, 100vw'}
 			{loading}
-			alt={product.title}
+			images={product.images.map((i) => ({ src: i.url, alt: i.altText }))}
 			label={{
 				position: size === 'full' ? 'center' : 'bottom',
 				title: product.title,

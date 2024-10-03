@@ -59,7 +59,11 @@
 
 			<div class="flex justify-end gap-3">
 				{#if $desktopNav.showDrawerToggle}
-					<button use:melt={$trigger} class="btn btn-ghost animate-fade-up-and-in p-2">
+					<button
+						use:melt={$trigger}
+						class="btn btn-ghost animate-fade-up-and-in p-2"
+						aria-label="Open navigation menu."
+					>
 						<I.Menu />
 					</button>
 				{/if}

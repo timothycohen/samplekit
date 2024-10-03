@@ -23,6 +23,7 @@
 <button
 	class="btn w-full min-w-64 justify-between border border-accent-7 hover:border-accent-8 focus:border-accent-9"
 	use:melt={$trigger}
+	aria-labelledby={null}
 	aria-label={ariaLabel}
 >
 	<div class="flex gap-2">

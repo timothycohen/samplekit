@@ -65,6 +65,7 @@
 		{#if collapsible}
 			<button
 				onclick={() => (collapsed = !collapsed)}
+				aria-label={collapsed ? 'Expand code' : 'Hide code'}
 				class="{!shouldRenderMiddle && !showCopy ? 'border-l' : ''} {'rounded-tr-card'}
 				grid min-h-10 w-10 place-content-center border-gray-9 bg-gray-3 text-gray-10 -outline-offset-1 hover:bg-gray-4 dark:border-gray-5"
 			>

@@ -199,7 +199,7 @@ shiki-end -->
 <h3 id="a-markdown-table">A markdown table.</h3>
 <p>
 	Style however you want. Here's what it looks like with
-	<a  data-external href="https://github.com/tailwindlabs/tailwindcss-typography">Tailwind Typography</a>.
+	<a data-external href="https://github.com/tailwindlabs/tailwindcss-typography">Tailwind Typography</a>.
 </p>
 <table>
 	<thead>

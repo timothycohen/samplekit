@@ -75,9 +75,9 @@
 		<div class="mx-auto w-full max-w-7xl px-page">
 			<h2 class="flex gap-2 font-serif text-3xl lg:text-4xl">
 				Articles
-				<sup class="text-xs">
-					<span class="text-svelte">*</span>Now with
-					<span class="text-sm italic"> <span class="relative text-svelte">ᚱ</span>unes</span>
+				<sup class="text-sm">
+					<span class="font-bold text-svelte">*</span>Now with
+					<span class="text-base italic"> <span class="relative font-bold text-svelte">ᚱ</span>unes</span>
 				</sup>
 			</h2>
 

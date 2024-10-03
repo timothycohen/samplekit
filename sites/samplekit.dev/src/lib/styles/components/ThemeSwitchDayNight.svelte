@@ -29,6 +29,7 @@
 	style="--duration: {duration}ms;"
 	for="theme-switch-btn"
 >
+	<span class="sr-only">Open theme menu</span>
 	{#if version === 'horizon'}
 		<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" fill="currentColor" viewBox="0 0 32 32">
 			<clipPath id="color-mode-toggle__{version}__mask">

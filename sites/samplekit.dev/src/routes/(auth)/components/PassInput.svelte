@@ -57,7 +57,12 @@
 		{...attrs}
 	/>
 	<div class="input-text-btn-wrapper">
-		<button type="button" class="input-text-btn" onclick={togglePassVis}>
+		<button
+			type="button"
+			class="input-text-btn"
+			onclick={togglePassVis}
+			aria-label={passElType === 'password' ? 'Show password' : 'Hide password'}
+		>
 			{#if passElType === 'password'}<I.EyeOff class="h-5 w-5" />{:else}<I.Eye class="h-5 w-5" />{/if}
 		</button>
 	</div>

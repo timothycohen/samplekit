@@ -7,14 +7,14 @@
 	} = useSearchAndFilterService();
 
 	interface Props {
-		onSubmit: (e: SubmitEvent & { currentTarget: EventTarget & HTMLFormElement }) => void;
+		onsubmit: (e: SubmitEvent & { currentTarget: EventTarget & HTMLFormElement }) => void;
 	}
 
-	const { onSubmit }: Props = $props();
+	const { onsubmit }: Props = $props();
 </script>
 
 <div class="relative">
-	<form method="get" action="/" onsubmit={onSubmit}>
+	<form method="get" action="/" {onsubmit}>
 		<input
 			name="query"
 			type="text"
@@ -22,8 +22,9 @@
 			placeholder="Search for products..."
 			autocomplete="off"
 			value={$query}
+			aria-label="Search for products."
 		/>
-		<button type="submit" class="absolute right-0 top-0 mr-3 flex h-full items-center">
+		<button aria-label="Submit search query" type="submit" class="absolute right-0 top-0 mr-3 flex h-full items-center">
 			<I.Search class="h-4" />
 		</button>
 	</form>

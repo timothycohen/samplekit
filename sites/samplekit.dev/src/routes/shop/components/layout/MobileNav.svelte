@@ -15,7 +15,7 @@
 <nav
 	class="sticky top-0 z-50 flex w-full items-center justify-between self-start overflow-hidden border-b border-gray-5 bg-app-bg p-2 px-page"
 >
-	<button use:melt={$trigger} class="btn btn-ghost animate-fade-up-and-in p-2">
+	<button use:melt={$trigger} class="btn btn-ghost animate-fade-up-and-in p-2" aria-label="Open navigation menu.">
 		<I.Menu />
 	</button>
 

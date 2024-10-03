@@ -60,8 +60,7 @@
 					<button class="h-full w-full" aria-label="Enlarge product image" onclick={() => imageIndex.set(index)}>
 						<GridTileImage
 							{active}
-							images={[image.url]}
-							alt={image.altText ?? ''}
+							images={[{ src: image.url, alt: image.altText }]}
 							isInteractive
 							height={80}
 							width={80}

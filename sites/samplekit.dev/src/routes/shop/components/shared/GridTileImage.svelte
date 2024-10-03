@@ -14,8 +14,7 @@
 					};
 			  }
 			| undefined;
-		images: string[];
-		alt: string;
+		images: Array<{ src: string; alt: string | null | undefined }>;
 		sizes?: string | undefined;
 		loading?: 'lazy' | 'eager' | undefined;
 		height?: number | undefined;
@@ -27,7 +26,6 @@
 		active = false,
 		label = undefined,
 		images,
-		alt,
 		sizes = '',
 		loading = undefined,
 		height = undefined,
@@ -40,14 +38,15 @@
 			{label ? 'relative' : ''}
       {active ? 'border-2 border-accent-9' : 'border border-gray-5'}"
 >
-	{#if images.length}
+	{#if images[0]}
+		{@const img1 = images[0]}
 		<div class="figure">
 			<img
 				draggable="false"
 				class="h-full w-full object-cover {images[1] ? 'hover:opacity-0' : ''}
 							{isInteractive ? 'transition-transform duration-300 ease-in-out group-hover:scale-105' : ''}"
-				{alt}
-				src={images[0]}
+				src={img1.src}
+				alt={img1.alt ?? ''}
 				{loading}
 				{sizes}
 				{height}
@@ -55,12 +54,13 @@
 			/>
 
 			{#if images[1]}
+				{@const img2 = images[1]}
 				<img
 					draggable="false"
 					class="absolute inset-0 h-full w-full object-cover opacity-0 hover:opacity-100
 								{isInteractive ? 'transition-transform duration-300 ease-in-out group-hover:scale-105' : ''}"
-					{alt}
-					src={images[1]}
+					src={img2.src}
+					alt={img2.alt ?? ''}
 					{loading}
 					{sizes}
 					{height}
