@@ -35,7 +35,7 @@ It addresses common questions that come up when building a full stack applicatio
 
 It targets questions that are beyond the scope of the SvelteKit documentation but which fall squarely within the realm of SvelteKit apps.
 
-Here a few of the questions (in no particular order) that it addresses:
+Here are a few of the questions (in no particular order) that it addresses:
 
 How can I...
 
