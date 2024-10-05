@@ -1,7 +1,7 @@
 import { PUBLIC_ORIGIN, PUBLIC_TURNSTILE_SITE_KEY } from '$env/static/public';
 import { migrateDb, testDb } from '$lib/db/server/connect';
 import { getServerLogflare, setupLogger } from '$lib/logging/server/logger';
-import { getSentry } from '$lib/logging/server/sentry';
+import { initSentry } from '$lib/logging/server/sentry';
 import { INTERCEPT_TRANSPORTS } from '$lib/transport/server/consts';
 import { getCloudfront } from './cloudStorage/server/cloudfront';
 import { getRekognition } from './cloudStorage/server/rekognition';
@@ -24,8 +24,7 @@ if (getServerLogflare()) setupLogger.info('Logflare for server created.');
 else setupLogger.warn('Logflare for server init failure.');
 if (getBrowserLogflare()) setupLogger.info('Logflare for browser created.');
 else setupLogger.warn('Logflare for browser init failure.');
-if (getSentry()) setupLogger.info('Sentry initialized on server.');
-else setupLogger.warn('Sentry for server init failure.');
+initSentry();
 if (getTwilio()) setupLogger.info('TwilioClient created.');
 else setupLogger.error('TwilioClient init failure.');
 
