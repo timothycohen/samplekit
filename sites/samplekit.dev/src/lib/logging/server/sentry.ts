@@ -21,7 +21,7 @@ export const initSentry = () => {
 	mut_initialized = true;
 
 	if (PUBLIC_SENTRY_ENABLED !== 'true') {
-		setupLogger.info(`Sentry for server disabled.`);
+		setupLogger.info(`Sentry for server: disabled.`);
 		return;
 	}
 
@@ -45,7 +45,7 @@ export const initSentry = () => {
 	if (initError) {
 		setupLogger.error('Sentry for server error. `sentry.init` failure.');
 	} else {
-		setupLogger.info('Sentry initialized on server.');
+		setupLogger.info('Sentry for server: connected.');
 	}
 };
 

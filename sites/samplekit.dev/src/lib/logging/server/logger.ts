@@ -27,9 +27,11 @@ export const getServerLogflare = (() => {
 				accessToken: PUBLIC_LOGFLARE_ACCESS_TOKEN_SERVER,
 				sourceId: PUBLIC_LOGFLARE_SOURCE_ID_SERVER,
 			});
+			setupLogger.info('Logflare for server created.');
 			return logflareClient;
 		} catch {
 			disabled = true;
+			setupLogger.warn('Logflare for server init failure.');
 		}
 	};
 

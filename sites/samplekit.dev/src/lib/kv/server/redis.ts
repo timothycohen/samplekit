@@ -13,12 +13,19 @@ export const kv = (() => {
 	const connectOrExit = async () => {
 		// Prevent HMR from reconnecting
 		if (kv.status === 'wait') {
+			if (!REDIS_PASSWORD) setupLogger.fatal('Redis error: REDIS_PASSWORD is not set.');
+			if (!REDIS_PORT) setupLogger.fatal('Redis error: REDIS_PORT is not set.');
+			if (!REDIS_HOST) setupLogger.fatal('Redis error: REDIS_HOST is not set.');
+			if (!REDIS_PASSWORD || !REDIS_PORT || !REDIS_HOST) process.exit(1);
+
 			kv.addListener('error', setupListener);
 
 			await kv
 				.connect()
 				.catch((e) => {
-					setupLogger.fatal(`KV init failure: ${e.message}`);
+					setupLogger.fatal(
+						`KV init failure: ${e.message}. If you are using docker, is it running? Hint: use \`pnpm dev:up\`.`,
+					);
 					process.exit(1);
 				})
 				.then(() => {
