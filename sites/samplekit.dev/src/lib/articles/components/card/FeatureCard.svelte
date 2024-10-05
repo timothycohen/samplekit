@@ -21,10 +21,12 @@
 	const { metadata }: Props = $props();
 </script>
 
-<div class="feature-card relative z-10">
+<div
+	class="relative z-10 h-fit overflow-hidden rounded-card border border-gray-4 bg-app-bg transition-[transform,shadow] duration-500 hover:z-10 hover:scale-[1.01] hover:border-none hover:shadow-3"
+>
 	{#if metadata.video}
-		<!-- negative margin to get rid of macos rounded border bottom -->
-		<video autoplay loop muted playsinline class="relative -mb-1 w-full">
+		<!-- negative margin to get rid of metadata.video's rounded border bottom -->
+		<video autoplay loop muted playsinline class="-mb-1">
 			<source src={metadata.video} />
 		</video>
 		<hr class="text-gray-5" />
@@ -33,11 +35,13 @@
 		<hr class="text-gray-5" />
 	{/if}
 
-	<div class="relative bg-gradient-to-tr from-gray-1/25 to-gray-2/50">
-		<div class="feature-card-content">
-			<h3 class="feature-card-title">{metadata.title}</h3>
-			{metadata.description}
+	<div class="relative bg-app-bg">
+		<div class="bg-gradient-to-tr from-gray-1/25 to-gray-2/50">
+			<div class="prose prose-sm prose-radix p-4 pb-3 text-base text-gray-11 marker:text-gray-11">
+				<h3 class="mb-4 mt-1.5 font-serif font-bold">{metadata.title}</h3>
+				{metadata.description}
+			</div>
+			<LinksAndDate {metadata} />
 		</div>
-		<LinksAndDate {metadata} />
 	</div>
 </div>
