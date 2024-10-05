@@ -4,12 +4,10 @@
 # Even though the .env file created from ENV_FILE is not copied into the final image, the
 # build process moves env vars that are used by $env/static directly into the build output.
 # Anyone could sh in and grep for secrets.
-#
-# Do not make resulting images public.
 ##################### 🚧 WARNING: ENV VARS ARE BAKED INTO THE IMAGE 🚧 #####################
 
 # Expected args coming from gh actions:
-# `ENV_FILE`: full contents of .env
+# `ENV_FILE`: full contents of .env – vars will be baked into the image
 # `MODE`: staging or production
 
 FROM node:20.14-alpine AS build
@@ -25,7 +23,7 @@ COPY . $ROOT
 # The GitHub Actions secret ends up compressed onto one line. The sed cmd breaks it up.
 ARG ENV_FILE
 ARG MODE
-RUN echo $ENV_FILE >> $REPO/.env.$MODE
+RUN echo $ENV_FILE > $REPO/.env.$MODE
 RUN sed -i 's/ /\'$'\n/g' $REPO/.env.$MODE
 
 RUN corepack enable pnpm

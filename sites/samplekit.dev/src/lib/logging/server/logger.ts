@@ -41,7 +41,7 @@ const pretty = createPinoPretty({ ignore: 'context,status' });
 export const logger = new Logger({
 	base: {
 		context: {
-			mode: import.meta.env.MODE.startsWith('_') ? import.meta.env.MODE.slice(1) : import.meta.env.MODE,
+			mode: import.meta.env.MODE,
 			building,
 			version,
 		},

@@ -1,13 +1,11 @@
 ##################### 🚧 WARNING: ENV VARS ARE BAKED INTO THE IMAGE 🚧 #####################
-# Do not make resulting images public.
+# Do not make resulting sk-preview-web image public.
 #
 # Read Dockerfile.samplekit.preview for information.
-#
-# Do not make resulting images public.
 ##################### 🚧 WARNING: ENV VARS ARE BAKED INTO THE IMAGE 🚧 #####################
 
 # Expects:
-# `./sites/samplekit.dev/.env.preview' – vars will be baked into each image
+# `./sites/samplekit.dev/.env.preview' – vars will be baked into the image
 
 name: sk-preview
 
@@ -19,7 +17,7 @@ services:
     volumes:
       - db:/var/lib/postgresql/data
     env_file:
-      - sites/samplekit.dev/.env._preview
+      - sites/samplekit.dev/.env.preview
     ports:
       - '5432:5432'
 
@@ -30,7 +28,7 @@ services:
     volumes:
       - kv:/data/sk-preview-kv-redis-data
     env_file:
-      - sites/samplekit.dev/.env._preview
+      - sites/samplekit.dev/.env.preview
     ports:
       - '6379:6379'
     command:
