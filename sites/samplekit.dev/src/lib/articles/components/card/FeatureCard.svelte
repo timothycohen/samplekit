@@ -19,6 +19,11 @@
 	};
 
 	const { metadata }: Props = $props();
+
+	// workaround to safari blocking autoplay attribute despite being muted
+	const autoPlay = (node: HTMLVideoElement) => {
+		node.play();
+	};
 </script>
 
 <div
@@ -26,7 +31,7 @@
 >
 	{#if metadata.video}
 		<!-- negative margin to get rid of metadata.video's rounded border bottom -->
-		<video autoplay loop muted playsinline class="-mb-1">
+		<video autoplay loop muted playsinline class="-mb-1" use:autoPlay>
 			<source src={metadata.video} />
 		</video>
 		<hr class="text-gray-5" />
