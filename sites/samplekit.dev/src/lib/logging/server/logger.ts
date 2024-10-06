@@ -1,4 +1,3 @@
-import * as sentry from '@sentry/sveltekit';
 import { browser, building, version } from '$app/environment';
 import {
 	PUBLIC_LOGFLARE_ACCESS_TOKEN_SERVER,
@@ -9,6 +8,7 @@ import {
 import { createLogflareHttpClient, formatLogflare, type LogflareClient } from '../common/logflare';
 import { Logger } from '../common/logger';
 import { createPinoPretty } from '../common/pretty';
+import { getSentry } from './sentry';
 
 const consoleLevel = Logger.lvlStrToNum(PUBLIC_LOGLEVEL_CONSOLE_SERVER);
 const logflareLevel = Logger.lvlStrToNum(PUBLIC_LOGLEVEL_LOGFLARE_SERVER);
@@ -27,9 +27,11 @@ export const getServerLogflare = (() => {
 				accessToken: PUBLIC_LOGFLARE_ACCESS_TOKEN_SERVER,
 				sourceId: PUBLIC_LOGFLARE_SOURCE_ID_SERVER,
 			});
+			setupLogger.info('Logflare for server created.');
 			return logflareClient;
 		} catch {
 			disabled = true;
+			setupLogger.warn('Logflare for server init failure.');
 		}
 	};
 
@@ -41,7 +43,7 @@ const pretty = createPinoPretty({ ignore: 'context,status' });
 export const logger = new Logger({
 	base: {
 		context: {
-			mode: import.meta.env.MODE.startsWith('_') ? import.meta.env.MODE.slice(1) : import.meta.env.MODE,
+			mode: import.meta.env.MODE,
 			building,
 			version,
 		},
@@ -61,7 +63,7 @@ export const logger = new Logger({
 				pretty.write(json);
 			}
 			if (lvl >= logflareLevel) getServerLogflare()?.addLog(formatted);
-			if (lvl >= sentryLevel) sentry.captureException(raw.error ?? formatted);
+			if (lvl >= sentryLevel) getSentry()?.captureException(raw.error ?? formatted);
 		}
 	},
 });

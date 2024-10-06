@@ -1,8 +1,5 @@
-##################### 🚧 WARNING: ENV VARS ARE BAKED INTO THE IMAGE 🚧 #####################
-
 # Expects:
-# `./sites/samplekit.dev/.env._development' – vars will be baked into each image
-# to make variables available in the compose file, create a `.env` file next to this file
+# `./sites/samplekit.dev/.env.development' – vars will be baked into the image
 
 name: sk-dev
 
@@ -14,7 +11,7 @@ services:
     volumes:
       - db:/var/lib/postgresql/data
     env_file:
-      - sites/samplekit.dev/.env._development
+      - sites/samplekit.dev/.env.development
     ports:
       - '5432:5432'
 
@@ -25,7 +22,7 @@ services:
     volumes:
       - kv:/data/sk-dev-kv-redis-data
     env_file:
-      - sites/samplekit.dev/.env._development
+      - sites/samplekit.dev/.env.development
     ports:
       - '6379:6379'
     command:

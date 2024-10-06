@@ -47,7 +47,7 @@ jobs:
         with:
           build-args: |
             "ENV_FILE=${{ secrets.SK_PROD_ENV_FILE }}"
-            "MODE=prod"
+            "MODE=production"
           push: true
           file: Dockerfile.samplekit.gh
           tags: ${{ needs.setup.outputs.IMAGE_TAG }},${{ needs.setup.outputs.IMAGE_TAG_SHA }}

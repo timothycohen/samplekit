@@ -1,53 +1,69 @@
-import { PUBLIC_ORIGIN, PUBLIC_TURNSTILE_SITE_KEY } from '$env/static/public';
-import { migrateDb, testDb } from '$lib/db/server/connect';
-import { getServerLogflare, setupLogger } from '$lib/logging/server/logger';
-import { getSentry } from '$lib/logging/server/sentry';
-import { INTERCEPT_TRANSPORTS } from '$lib/transport/server/consts';
-import { getCloudfront } from './cloudStorage/server/cloudfront';
-import { getRekognition } from './cloudStorage/server/rekognition';
-import { getS3 } from './cloudStorage/server/s3';
-import { kv } from './kv/server';
-import { getBrowserLogflare } from './logging/client/logger';
-import { getStorefront } from './shop/shopify/storefront';
-import { getSES } from './transport/server/email';
-import { getTwilio } from './transport/server/sms';
+import { building, dev } from '$app/environment';
+import { AWS_SERVICE_REGION, IAM_ACCESS_KEY_ID, IAM_SECRET_ACCESS_KEY } from '$env/static/private';
+import {
+	PUBLIC_ORIGIN,
+	PUBLIC_SHOPIFY_API_VERSION,
+	PUBLIC_SHOPIFY_STORE_DOMAIN,
+	PUBLIC_SHOPIFY_STOREFRONT_ACCESS_TOKEN,
+	PUBLIC_TURNSTILE_SITE_KEY,
+} from '$env/static/public';
+import { getS3, getRekognition, getCloudfront } from '$lib/cloudStorage/server';
+import { migrateDb, dbConnectedOrExit } from '$lib/db/server/connect';
+import { kv } from '$lib/kv/server';
+import { getBrowserLogflare } from '$lib/logging/client/logger';
+import { initSentry, getServerLogflare, setupLogger } from '$lib/logging/server';
+import { shopConnectedOrExit } from '$lib/shop';
+import { INTERCEPT_TRANSPORTS, getTwilio, getSES } from '$lib/transport/server';
 
-// info / warn / error
-if (!PUBLIC_ORIGIN) setupLogger.warn(`Origin is ${PUBLIC_ORIGIN}`);
-else setupLogger.info(`Origin is ${PUBLIC_ORIGIN}`);
+getServerLogflare();
+initSentry();
 
+setupLogger.info(`SvelteKit dev mode: ${dev}.`);
+setupLogger.info(`SvelteKit building: ${building}.`);
+setupLogger.info(`Vite mode: ${import.meta.env.MODE}.`);
 setupLogger.info(`Email and SMS are ${INTERCEPT_TRANSPORTS ? 'blocked. Routing to console.' : 'active.'}`);
-
 if (!PUBLIC_TURNSTILE_SITE_KEY) setupLogger.warn('Turnstile site key is not set. Auth pages will not work.');
 
-if (getServerLogflare()) setupLogger.info('Logflare for server created.');
-else setupLogger.warn('Logflare for server init failure.');
-if (getBrowserLogflare()) setupLogger.info('Logflare for browser created.');
-else setupLogger.warn('Logflare for browser init failure.');
-if (getSentry()) setupLogger.info('Sentry initialized on server.');
-else setupLogger.warn('Sentry for server init failure.');
-if (getTwilio()) setupLogger.info('TwilioClient created.');
+if (!PUBLIC_ORIGIN) {
+	setupLogger.fatal(`PUBLIC_ORIGIN is not set.`);
+	process.exit(1);
+} else {
+	setupLogger.info(`Origin is ${PUBLIC_ORIGIN}`);
+}
+
+if (!AWS_SERVICE_REGION) {
+	setupLogger.fatal(`AWS_SERVICE_REGION is not set.`);
+	process.exit(1);
+} else {
+	if (!IAM_ACCESS_KEY_ID && !IAM_SECRET_ACCESS_KEY) {
+		setupLogger.warn(`IAM_ACCESS_KEY_ID and IAM_SECRET_ACCESS_KEY are not set. AWS services will fail at runtime.`);
+	} else if (!IAM_ACCESS_KEY_ID) {
+		setupLogger.warn(`IAM_ACCESS_KEY_ID is not set. AWS services will fail at runtime.`);
+	} else if (!IAM_SECRET_ACCESS_KEY) {
+		setupLogger.warn(`IAM_SECRET_ACCESS_KEY is not set. AWS services will fail at runtime.`);
+	} else {
+		getCloudfront();
+		setupLogger.info('AWS CloudFrontClient created (credentials have not been verified).');
+		getRekognition();
+		setupLogger.info('AWS RekognitionClient created (credentials have not been verified).');
+		getS3();
+		setupLogger.info('AWS S3Client created (credentials have not been verified).');
+		getSES();
+		setupLogger.info('AWS SESClient created (credentials have not been verified).');
+	}
+}
+if (getTwilio()) setupLogger.info('TwilioClient created (credentials have not been verified).');
 else setupLogger.error('TwilioClient init failure.');
 
-getCloudfront();
-setupLogger.info('(unverified) CloudFrontClient created.');
-getRekognition();
-setupLogger.info('(unverified) RekognitionClient created.');
-getS3();
-setupLogger.info('(unverified) S3Client created.');
-getSES();
-setupLogger.info('(unverified) SESClient created.');
-
-// fatal
-await testDb();
-await migrateDb();
-await kv.connectOrExit();
-
-try {
-	getStorefront();
-	setupLogger.info('Storefront client created.');
-} catch (err) {
-	if (err instanceof Error) setupLogger.fatal(`Storefront client init failure: ${err.message}`);
-	else setupLogger.fatal(`Storefront client init failure.`);
+if (!PUBLIC_SHOPIFY_API_VERSION || !PUBLIC_SHOPIFY_STOREFRONT_ACCESS_TOKEN || !PUBLIC_SHOPIFY_STORE_DOMAIN) {
+	if (!PUBLIC_SHOPIFY_API_VERSION) setupLogger.fatal(`PUBLIC_SHOPIFY_API_VERSION is not set.`);
+	if (!PUBLIC_SHOPIFY_STOREFRONT_ACCESS_TOKEN) setupLogger.fatal(`PUBLIC_SHOPIFY_STOREFRONT_ACCESS_TOKEN is not set.`);
+	if (!PUBLIC_SHOPIFY_STORE_DOMAIN) setupLogger.fatal(`PUBLIC_SHOPIFY_STORE_DOMAIN is not set.`);
 	process.exit(1);
 }
+
+await Promise.all([kv.connectOrExit(), dbConnectedOrExit(), shopConnectedOrExit()]);
+await migrateDb();
+
+if (getBrowserLogflare()) setupLogger.info('Logflare for browser created.');
+else setupLogger.warn('Logflare for browser init failure.');

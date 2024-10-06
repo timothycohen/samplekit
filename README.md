@@ -111,11 +111,11 @@ Just make sure your docker daemon is running!
 
 ```sh
 cd sites/samplekit.dev
-cp .env.example .env._development
-pnpm install
-pnpm dev:up
-pnpm build:dependencies
-pnpm run dev
+cp .env.example .env.development
+pnpm install # install node_modules
+pnpm build:dependencies # build the required @samplekit packages (see package.json)
+pnpm dev:up # start the docker services (see DockerCompose.samplekit.dev.yaml)
+pnpm dev # start the vite server
 
 # Find instructions on setting up services and creating environmental variables in .env.example
 ```

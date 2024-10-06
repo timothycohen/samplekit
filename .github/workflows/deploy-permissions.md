@@ -65,5 +65,5 @@
 
 The gh cli makes this easy to automate. For example:
 
-- `gh secret set SK_PROD_ENV_FILE -b "$(cat sites/samplekit.dev/.env._production)"`
+- `gh secret set SK_PROD_ENV_FILE -b "$(cat sites/samplekit.dev/.env.production)"`
 - `gh variable set DOCKER_REGISTRY -b ghcr.io`

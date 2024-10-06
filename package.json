@@ -38,8 +38,9 @@
 		"githooks:init": "git config core.hookspath ./scripts/.githooks",
 		"changeset:version": "changeset version",
 		"changeset:release": "scripts/release.sh",
-		"deploy:sk-prod": "TAG=sk-prod/$(git rev-parse --short HEAD) && git tag $TAG && git push origin $TAG",
-		"deploy:pp-docs-prod": "TAG=pp-docs-prod/$(git rev-parse --short HEAD) && git tag $TAG && git push origin $TAG"
+		"require-main-branch": "if [ \"$(git rev-parse --abbrev-ref HEAD)\" != \"main\" ]; then echo 'ERROR: Not on main branch.'; exit 1; fi",
+		"deploy:sk-prod": "pnpm require-main-branch && TAG=sk-prod/$(git rev-parse --short HEAD) && git tag $TAG && git push origin $TAG",
+		"deploy:pp-docs-prod": "pnpm require-main-branch && TAG=pp-docs-prod/$(git rev-parse --short HEAD) && git tag $TAG && git push origin $TAG"
 	},
 	"devDependencies": {
 		"@changesets/cli": "^2.27.7",

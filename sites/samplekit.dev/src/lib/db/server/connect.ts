@@ -21,15 +21,20 @@ export const getDb = (() => {
 	return get;
 })();
 
-export const testDb = async () => {
+export const dbConnectedOrExit = async () => {
+	if (!PG_CONNECTION_STRING) {
+		setupLogger.fatal('DB Error: PG_CONNECTION_STRING is not set.');
+		process.exit(1);
+	}
+
 	try {
 		const { pgPool } = getDb();
 		const client = await pgPool.connect();
 		client.release();
-		setupLogger.info(`Connected to DB ${DB_NAME}`);
+		setupLogger.info(`Connected to DB \`${DB_NAME}\` successfully.`);
 	} catch (err) {
 		setupLogger.fatal(
-			`Connection to db DB_NAME=\`${DB_NAME}\` failed using PG_CONNECTION_STRING with message \`${(err as Error)['message']}\`. If you are using docker, is it running? (look at package.json db: scripts)`,
+			`Connection to db DB_NAME=\`${DB_NAME}\` failed using PG_CONNECTION_STRING with message \`${(err as Error)['message']}\`. If you are using docker, is it running? Hint: use \`pnpm dev:up\`.`,
 		);
 		process.exit(1);
 	}

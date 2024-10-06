@@ -30,8 +30,6 @@ try {
 	await client.end();
 	console.info(`INFO: Checked migrations folder and migrated ${db_name} if necessary.`);
 } catch {
-	console.error(
-		'FATAL: Unable to create PG client. If you are using docker, is it running? (look at package.json db: scripts)',
-	);
+	console.error('FATAL: Unable to create PG client. If you are using docker, is it running? Hint: use `pnpm dev:up`.');
 	process.exit(1);
 }

@@ -1,15 +1,13 @@
 ##################### 🚧 WARNING: ENV VARS ARE BAKED INTO THE IMAGE 🚧 #####################
-# Do not make resulting images public.
+# Do not make resulting sk-preview-web image public.
 #
-# Even though .env_preview is not copied into the final image, the build process moves env
+# Even though .env.preview is not copied into the final image, the build process moves env
 # vars that are used by $env/static directly into the build output.
 # Anyone could sh in and grep for secrets.
-#
-# Do not make resulting images public.
 ##################### 🚧 WARNING: ENV VARS ARE BAKED INTO THE IMAGE 🚧 #####################
 
 # Expects:
-# `./sites/samplekit.dev/.env._preview' to exist
+# `./sites/samplekit.dev/.env.preview' – vars will be baked into the image
 
 FROM node:20.14-alpine AS build
 WORKDIR /usr/src/app
@@ -23,7 +21,7 @@ COPY . $ROOT
 
 RUN corepack enable pnpm
 RUN pnpm install
-RUN echo _preview | pnpm --filter samplekit.dev build
+RUN echo preview | pnpm --filter samplekit.dev build
 
 FROM node:20.14-alpine
 WORKDIR /usr/src/app

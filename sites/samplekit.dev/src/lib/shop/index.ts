@@ -13,6 +13,7 @@ export {
 	getMenu,
 	// getPage,
 	// getPages,
+	shopConnectedOrExit,
 } from './shopify';
 
 export type {

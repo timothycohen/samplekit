@@ -38,7 +38,9 @@ Body: ${body}
 
 const safeSend = async ({ phoneNumber, body }: Props): Promise<{ transportErr: boolean }> => {
 	try {
-		await getTwilio()?.messages.create({ body, from, to: phoneNumber });
+		const twilio = getTwilio();
+		if (!twilio) return { transportErr: true };
+		await twilio.messages.create({ body, from, to: phoneNumber });
 		return { transportErr: false };
 	} catch (err) {
 		logger.error(err);
