@@ -48,7 +48,6 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           build-args: |
-            "ENV_FILE=${{ secrets.PP_DOCS_STAGING_ENV_FILE }}"
             "MODE=staging"
           push: true
           file: Dockerfile.pp-docs.gh

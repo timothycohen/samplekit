@@ -46,7 +46,6 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           build-args: |
-            "ENV_FILE=${{ secrets.PP_DOCS_PROD_ENV_FILE }}"
             "MODE=production"
           push: true
           file: Dockerfile.pp-docs.gh
