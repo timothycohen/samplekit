@@ -1,6 +1,6 @@
 import { setupLogger } from '$lib/logging/server';
-import { getShopNameQuery } from './gql';
-import { requestStorefront } from './storefront';
+import { getShopNameQuery } from './shopify/gql';
+import { requestStorefront } from './shopify/storefront';
 
 export async function shopConnectedOrExit(): Promise<void> {
 	const res = await requestStorefront({ operation: getShopNameQuery, fetch });

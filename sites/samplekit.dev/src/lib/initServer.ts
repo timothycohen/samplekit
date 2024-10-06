@@ -12,7 +12,7 @@ import { migrateDb, dbConnectedOrExit } from '$lib/db/server/connect';
 import { kv } from '$lib/kv/server';
 import { getBrowserLogflare } from '$lib/logging/client/logger';
 import { initSentry, getServerLogflare, setupLogger } from '$lib/logging/server';
-import { shopConnectedOrExit } from '$lib/shop';
+import { shopConnectedOrExit } from '$lib/shop/connectedOrExit.server';
 import { INTERCEPT_TRANSPORTS, getTwilio, getSES } from '$lib/transport/server';
 
 getServerLogflare();
