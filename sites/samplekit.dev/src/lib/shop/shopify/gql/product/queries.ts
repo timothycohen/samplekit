@@ -9,7 +9,7 @@ export const getProductQuery = /* GraphQL */ `
 	${productFragment}
 `;
 
-/** https://shopify.dev/docs/api/storefront/2023-10/objects/Product#query-products */
+/** https://shopify.dev/docs/api/storefront/2024-10/objects/Product#query-products */
 export const getProductsQuery = /* GraphQL */ `
 	query getProducts($sortKey: ProductSortKeys, $reverse: Boolean, $query: String, $first: Int) {
 		products(sortKey: $sortKey, reverse: $reverse, query: $query, first: $first) {
@@ -32,7 +32,7 @@ export const getProductRecommendationsQuery = /* GraphQL */ `
 	${productFragment}
 `;
 
-/** https://shopify.dev/docs/api/storefront/2023-10/objects/Collection#connection-collection-products */
+/** https://shopify.dev/docs/api/storefront/2024-10/objects/Collection#connection-collection-products */
 export const getCollectionProductsQuery = /* GraphQL */ `
 	query getCollectionProducts(
 		$handle: String!

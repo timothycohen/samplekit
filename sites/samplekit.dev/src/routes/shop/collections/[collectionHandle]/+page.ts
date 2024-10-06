@@ -8,13 +8,13 @@ export const load = async ({ params, url, fetch }) => {
 
 	if (collectionHandle === 'all') return { products: await getProducts({ filters, fetch }) };
 
-	// https://shopify.dev/docs/api/storefront/2023-10/objects/Collection#connection-collection-products
+	// https://shopify.dev/docs/api/storefront/2024-10/objects/Collection#connection-collection-products
 	// collection().products doesn't support title search
 
-	// https://shopify.dev/docs/api/storefront/2023-10/queries/products#query-arguments
+	// https://shopify.dev/docs/api/storefront/2024-10/queries/products#query-arguments
 	// products() doesn't support collection
 
-	// https://shopify.dev/docs/api/storefront/2023-10/queries/search
+	// https://shopify.dev/docs/api/storefront/2024-10/queries/search
 	// search() doesn't support collection
 
 	// This calls collection() and filters with JS afterwards, which would affect the $first count if we had enough products for it to matter

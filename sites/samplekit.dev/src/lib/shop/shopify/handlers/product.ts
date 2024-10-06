@@ -106,7 +106,7 @@ export async function getProductRecommendations({
 	}));
 }
 
-// https://shopify.dev/docs/api/storefront/2023-10/queries/products#argument-products-query
+// https://shopify.dev/docs/api/storefront/2024-10/queries/products#argument-products-query
 const queryBuilder = (
 	options: {
 		availability?: boolean;
