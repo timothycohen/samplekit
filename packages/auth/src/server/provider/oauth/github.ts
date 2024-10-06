@@ -69,13 +69,13 @@ const createFetchUserData: CreateFetchOAuthUserData =
 	async ({ accessToken }) => {
 		try {
 			const [githubData, primaryEmail] = await Promise.all([
-				await fetch('https://api.github.com/user', {
+				fetch('https://api.github.com/user', {
 					headers: { Authorization: `Bearer ${accessToken}` },
 				})
 					.then((res) => res.json())
 					.then((json) => dataSchema.parse(json)),
 
-				await fetch('https://api.github.com/user/emails', {
+				fetch('https://api.github.com/user/emails', {
 					headers: {
 						Authorization: `Bearer ${accessToken}`,
 						Accept: 'application/vnd.github+json',
