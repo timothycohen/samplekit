@@ -1,4 +1,4 @@
-export * from './handlers';
+export { shop } from './repository';
 
 // this shop is created from the default data when you create a partner dev store
 // https://shopify.dev/docs/apps/tools/development-stores/generated-data

@@ -1,7 +1,14 @@
 import { getCollectionProductsQuery, getProductQuery, getProductRecommendationsQuery, getProductsQuery } from '../gql';
 import { requestStorefront } from '../storefront';
 import type { ProductFilter } from '$generated/shopify-graphql-types/storefront.types';
-import type { Product, SearchQuery, SortKey } from '../../types';
+import type {
+	GetCollectionProducts,
+	GetProduct,
+	GetProductRecommendations,
+	GetProducts,
+	SortKey,
+	Product,
+} from '../../types';
 
 // prettier-ignore
 type ProductCollectionSortKeys = 'BEST_SELLING' | 'COLLECTION_DEFAULT' | 'CREATED' | 'ID' | 'MANUAL' | 'PRICE' | 'RELEVANCE' | 'TITLE'
@@ -27,15 +34,7 @@ const sortKeyToProductSortKey = (sortKey?: SortKey): ProductSortKeys => {
 	}
 };
 
-export async function getCollectionProducts({
-	filters,
-	collectionHandle,
-	fetch,
-}: {
-	filters: Partial<SearchQuery>;
-	collectionHandle: string;
-	fetch: Fetch;
-}): Promise<Product[] | null> {
+export const getCollectionProducts: GetCollectionProducts = async ({ filters, collectionHandle, fetch }) => {
 	const { reverse, sortKey, availability, query, price } = filters;
 	const productFilter: ProductFilter[] = [];
 	if (availability !== undefined) productFilter.push({ available: availability });
@@ -69,9 +68,9 @@ export async function getCollectionProducts({
 	}, [] as Product[]);
 
 	return products;
-}
+};
 
-export async function getProduct({ handle, fetch }: { handle: string; fetch: Fetch }): Promise<Product | undefined> {
+export const getProduct: GetProduct = async ({ handle, fetch }) => {
 	const res = await requestStorefront({ operation: getProductQuery, variables: { handle }, fetch });
 	const product = res.data?.product;
 	if (!product) return undefined;
@@ -79,16 +78,10 @@ export async function getProduct({ handle, fetch }: { handle: string; fetch: Fet
 		const images = product.images.edges.map((e) => e.node);
 		return { ...product, images, variants: product.variants.edges.map((e) => e.node) };
 	}
-}
+};
 
 /** @throws Error */
-export async function getProductRecommendations({
-	productId,
-	fetch,
-}: {
-	productId: string;
-	fetch: Fetch;
-}): Promise<Product[]> {
+export const getProductRecommendations: GetProductRecommendations = async ({ productId, fetch }) => {
 	const res = await requestStorefront({
 		operation: getProductRecommendationsQuery,
 		variables: { productId },
@@ -104,7 +97,7 @@ export async function getProductRecommendations({
 		variants: p.variants.edges.map((e) => e.node),
 		images: p.images.edges.map((e) => e.node),
 	}));
-}
+};
 
 // https://shopify.dev/docs/api/storefront/2024-10/queries/products#argument-products-query
 const queryBuilder = (
@@ -125,13 +118,7 @@ const queryBuilder = (
 };
 
 /** @throws Error */
-export async function getProducts({
-	filters,
-	fetch,
-}: {
-	filters: Partial<SearchQuery> & { first?: number };
-	fetch: Fetch;
-}): Promise<Product[]> {
+export const getProducts: GetProducts = async ({ filters, fetch }) => {
 	const { first, reverse, sortKey, availability, query, price } = filters;
 	const res = await requestStorefront({
 		operation: getProductsQuery,
@@ -150,4 +137,4 @@ export async function getProducts({
 		variants: e.node.variants.edges.map((e) => e.node),
 		images: e.node.images.edges.map((e) => e.node),
 	}));
-}
+};
