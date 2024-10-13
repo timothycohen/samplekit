@@ -19,7 +19,7 @@ const clientFiles = [
 	'**/*.svelte.ts',
 ];
 
-/** @type {import('eslint').Linter.FlatConfig} */
+/** @type {import('eslint').Linter.Config} */
 const config = [
 	// js
 	{
