@@ -1,12 +1,10 @@
 import { mfaKinds, mfaLabels } from '$lib/auth/common';
 import { auth } from '$lib/auth/server';
 import { transports } from '$lib/auth/server';
-import { checkedRedirect } from '$lib/http/server';
-import { jsonFail } from '$lib/http/server';
-import type { Actions, PageServerLoad } from './$types';
+import { checkedRedirect, jsonFail } from '$lib/http/server';
 import type { Action } from '@sveltejs/kit';
 
-export const load: PageServerLoad = async ({ locals }) => {
+export const load = async ({ locals }) => {
 	const { user } = await locals.seshHandler.userOrRedirect();
 
 	const meta: App.PageData['meta'] = { title: 'Remove MFA | SampleKit' };
@@ -33,4 +31,4 @@ const removeMFAWithSeshConf: Action<{ mfaKind: string }> = async ({ locals, para
 	return checkedRedirect(`/account/security/auth`);
 };
 
-export const actions: Actions = { removeMFAWithSeshConf };
+export const actions = { removeMFAWithSeshConf };

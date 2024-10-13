@@ -1,7 +1,8 @@
 import { PUBLIC_ORIGIN } from '$env/static/public';
 import { securityEmail } from '$routes/(api)/consts';
+import type { RequestHandler } from '@sveltejs/kit';
 
-export const GET = () => {
+const security: RequestHandler = () => {
 	const endOfYear = new Date(new Date().getFullYear(), 11, 31, 23, 59, 59, 999).toISOString();
 	const canonicalLink = `${PUBLIC_ORIGIN}/.well-known/security.txt`;
 	const policyLink = `${PUBLIC_ORIGIN}/security-policy`;
@@ -19,3 +20,5 @@ Policy: ${policyLink}`,
 		},
 	);
 };
+
+export const GET = security;

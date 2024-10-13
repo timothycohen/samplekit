@@ -6,14 +6,13 @@ import {
 	generateS3UploadPost,
 	invalidateCloudfront,
 	keyController,
+	detectModerationLabels,
 } from '$lib/cloudStorage/server';
-import { detectModerationLabels } from '$lib/cloudStorage/server';
 import { db, presigned, users } from '$lib/db/server';
 import { jsonFail, jsonOk } from '$lib/http/server';
 import { toHumanReadableTime } from '$lib/utils/common';
 import { MAX_UPLOAD_SIZE, putReqSchema, type GetRes, type PutRes } from '.';
-import type { RequestHandler } from './$types';
-import type { RequestEvent } from '@sveltejs/kit';
+import type { RequestHandler } from '@sveltejs/kit';
 
 // generateS3UploadPost enforces max upload size and denies any upload that we don't sign
 // uploadLimiter rate limits the number of uploads a user can do
@@ -38,7 +37,7 @@ const unsavedUploadCleaner = createUnsavedUploadCleaner({
 		(await db.select().from(users).where(eq(users.id, userId)).limit(1))[0]?.avatar?.url,
 });
 
-const getSignedAvatarUploadUrl = async (event: RequestEvent) => {
+const getSignedAvatarUploadUrl: RequestHandler = async (event) => {
 	const { locals } = event;
 	const { user } = await locals.seshHandler.userOrRedirect();
 
@@ -67,8 +66,7 @@ const getSignedAvatarUploadUrl = async (event: RequestEvent) => {
 	return jsonOk<GetRes>({ bucketUrl: res.bucketUrl, formDataFields: res.formDataFields, objectKey: key });
 };
 
-const checkAndSaveUploadedAvatar = async (event: RequestEvent) => {
-	const { request, locals } = event;
+const checkAndSaveUploadedAvatar: RequestHandler = async ({ request, locals }) => {
 	const { user } = await locals.seshHandler.userOrRedirect();
 
 	const body = await request.json().catch(() => null);
@@ -115,7 +113,7 @@ const checkAndSaveUploadedAvatar = async (event: RequestEvent) => {
 	return jsonOk<PutRes>({ savedImg: newAvatar });
 };
 
-const deleteAvatar = async ({ locals }: RequestEvent) => {
+const deleteAvatar: RequestHandler = async ({ locals }) => {
 	const { user } = await locals.seshHandler.userOrRedirect();
 	if (!user.avatar) return jsonFail(404, 'No avatar to delete');
 
@@ -134,6 +132,6 @@ const deleteAvatar = async ({ locals }: RequestEvent) => {
 	return jsonOk<PutRes>({ savedImg: null });
 };
 
-export const GET: RequestHandler = getSignedAvatarUploadUrl;
-export const PUT: RequestHandler = checkAndSaveUploadedAvatar;
-export const DELETE: RequestHandler = deleteAvatar;
+export const GET = getSignedAvatarUploadUrl;
+export const PUT = checkAndSaveUploadedAvatar;
+export const DELETE = deleteAvatar;

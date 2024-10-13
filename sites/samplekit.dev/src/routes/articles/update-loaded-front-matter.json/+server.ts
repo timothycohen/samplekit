@@ -16,7 +16,7 @@ import { logger } from '$lib/logging/server';
 import prettierConfig from '../../../../prettier.config';
 import { putReqSchema } from '.';
 import type { Result } from '$lib/utils/common/types';
-import type { RequestEvent, RequestHandler } from '@sveltejs/kit';
+import type { RequestHandler } from '@sveltejs/kit';
 import type { Component } from 'svelte';
 
 const WPM = 225;
@@ -92,7 +92,7 @@ const pages = Object.entries(
 	{} as Record<ArticlePath, { metadata: RawFrontMatter }>,
 );
 
-const updateLoadedFrontMatter = async ({ request }: RequestEvent) => {
+const updateLoadedFrontMatter: RequestHandler = async ({ request }) => {
 	if (!dev) return jsonFail(404);
 	const validated = putReqSchema.safeParse(await request.json().catch(() => null));
 	if (!validated.success) return jsonFail(400);
@@ -133,8 +133,6 @@ const updateLoadedFrontMatter = async ({ request }: RequestEvent) => {
 	logger.info(`Updated front matter for \`${articlePath}\``);
 	return jsonOk<Result.Success>({ message: 'Success' });
 };
-
-export const PUT: RequestHandler = updateLoadedFrontMatter;
 
 // save as TS code instead of JSON
 // this is not strictly necessary but is a nice QOL.
@@ -186,3 +184,5 @@ function codeGen(obj: object) {
 
 // 	return neu;
 // }
+
+export const PUT = updateLoadedFrontMatter;

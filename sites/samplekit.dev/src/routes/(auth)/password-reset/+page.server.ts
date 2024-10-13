@@ -1,4 +1,4 @@
-import { error } from '@sveltejs/kit';
+import { error, type Action } from '@sveltejs/kit';
 import { auth } from '$lib/auth/server';
 import { transports } from '$lib/auth/server';
 import { createLimiter } from '$lib/botProtection/rateLimit/server';
@@ -6,10 +6,8 @@ import { turnstileFormInputName } from '$lib/botProtection/turnstile/common';
 import { validateTurnstile } from '$lib/botProtection/turnstile/server';
 import { message, superValidate, zod } from '$lib/superforms/server';
 import { emailPassResetSchema } from '$routes/(auth)/validators';
-import type { Actions, PageServerLoad } from './$types';
-import type { Action } from '@sveltejs/kit';
 
-export const load: PageServerLoad = async () => {
+export const load = async () => {
 	error(404);
 };
 
@@ -80,4 +78,4 @@ const emailPassReset: Action = async (event) => {
 	return message(emailPassResetForm, { success: 'Sent' });
 };
 
-export const actions: Actions = { emailPassReset };
+export const actions = { emailPassReset };

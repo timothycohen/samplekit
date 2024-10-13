@@ -12,9 +12,12 @@ export default {
 	imgLg,
 	tags: ['typescript', 'http', 'DX', 'client-server', 'request handlers', 'endpoints'],
 	featured: true,
-	updates: [{ at: new Date('2024-08-13T22:26:40.000Z'), descriptions: ['Update to runes.'] }],
+	updates: [
+		{ at: new Date('2024-10-13T21:24:39.000Z'), descriptions: ['Tweak RequestHandler placement.'] },
+		{ at: new Date('2024-08-13T22:26:40.000Z'), descriptions: ['Update to runes.'] },
+	],
 	articlePath: '/articles/typesafe-fetch-handler',
-	wordCount: 1823,
+	wordCount: 1833,
 	readingTime: 9,
 	toc: [
 		{

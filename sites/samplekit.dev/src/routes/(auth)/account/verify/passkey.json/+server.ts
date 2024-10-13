@@ -1,10 +1,9 @@
 import { auth } from '$lib/auth/server';
 import { jsonFail, jsonOk } from '$lib/http/server';
 import type { PostReq } from '.';
-import type { RequestHandler } from './$types';
-import type { RequestEvent } from '@sveltejs/kit';
+import type { RequestHandler } from '@sveltejs/kit';
 
-const seshConfFromPasskey = async ({ request, locals }: RequestEvent) => {
+const seshConfFromPasskey: RequestHandler = async ({ request, locals }) => {
 	const { user, session } = await locals.seshHandler.userOrRedirect();
 	const userId = user.id;
 
@@ -35,4 +34,4 @@ const seshConfFromPasskey = async ({ request, locals }: RequestEvent) => {
 	return jsonOk();
 };
 
-export const POST: RequestHandler = seshConfFromPasskey;
+export const POST = seshConfFromPasskey;

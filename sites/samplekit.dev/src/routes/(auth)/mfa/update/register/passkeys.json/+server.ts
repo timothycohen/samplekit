@@ -1,13 +1,11 @@
 import { mfaLabels } from '$lib/auth/common';
 import { auth } from '$lib/auth/server';
 import { transports } from '$lib/auth/server';
-import { checkedRedirect } from '$lib/http/server';
-import { jsonFail, jsonOk } from '$lib/http/server';
+import { checkedRedirect, jsonFail, jsonOk } from '$lib/http/server';
 import type { PostReq } from '.';
-import type { RequestHandler } from './$types';
-import type { RequestEvent } from '@sveltejs/kit';
+import type { RequestHandler } from '@sveltejs/kit';
 
-const registerMFA_Passkey_WithSeshConfAndPasskey = async ({ request, locals }: RequestEvent): Promise<Response> => {
+const registerMFA_Passkey_WithSeshConfAndPasskey: RequestHandler = async ({ request, locals }) => {
 	const seshUser = await locals.seshHandler.getSessionUser();
 	if (!seshUser) return checkedRedirect('/login');
 
@@ -39,4 +37,4 @@ const registerMFA_Passkey_WithSeshConfAndPasskey = async ({ request, locals }: R
 	return jsonOk();
 };
 
-export const POST: RequestHandler = registerMFA_Passkey_WithSeshConfAndPasskey;
+export const POST = registerMFA_Passkey_WithSeshConfAndPasskey;

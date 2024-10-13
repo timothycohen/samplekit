@@ -5,9 +5,8 @@ import { pluralize } from '$lib/utils/common';
 import { confirmPassSchema, sendSMSTokenSchema, verifyOTPSchema } from '$routes/(auth)/validators';
 import { desiredParamsOrRedirect } from './utils';
 import type { VerifierProps } from '$routes/(auth)/components';
-import type { LayoutServerLoad } from './$types';
 
-export const load: LayoutServerLoad = async ({ locals, url }) => {
+export const load = async ({ locals, url }) => {
 	const { user, session } = await locals.seshHandler.userOrRedirect();
 
 	const authDetails = await auth.provider.pass.MFA.getDetailsOrThrow(user.id);

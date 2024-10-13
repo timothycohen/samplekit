@@ -1,14 +1,12 @@
-import { error, redirect } from '@sveltejs/kit';
+import { error, redirect, type Action } from '@sveltejs/kit';
 import { auth } from '$lib/auth/server';
 import { transports } from '$lib/auth/server';
 import { createLimiter } from '$lib/botProtection/rateLimit/server';
 import { checkedRedirect, sanitizeRedirectUrl } from '$lib/http/server';
 import { message, superValidate, zod } from '$lib/superforms/server';
 import { sendSMSTokenSchema } from '$routes/(auth)/validators';
-import type { Actions, PageServerLoad } from './$types';
-import type { Action } from '@sveltejs/kit';
 
-export const load: PageServerLoad = () => {
+export const load = () => {
 	error(404);
 };
 
@@ -57,4 +55,4 @@ const sendSMSVeri: Action = async (event) => {
 	else return message(sendSMSTokenForm, { success: 'Text Resent!' });
 };
 
-export const actions: Actions = { sendSMSVeri };
+export const actions = { sendSMSVeri };

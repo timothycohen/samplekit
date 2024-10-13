@@ -1,6 +1,7 @@
 import { PUBLIC_ORIGIN } from '$env/static/public';
 import { allPostData } from '$lib/articles/load';
 import { shop } from '$lib/shop';
+import type { RequestHandler } from '@sveltejs/kit';
 
 /** https://www.sitemaps.org/protocol.html */
 type SiteMapUrl = {
@@ -10,7 +11,7 @@ type SiteMapUrl = {
 	priority?: number;
 };
 
-export const GET = async ({ fetch }) => {
+const sitemap: RequestHandler = async ({ fetch }) => {
 	const rootUrls = ['/login', '/signup'].map((p) => ({
 		loc: `${PUBLIC_ORIGIN}${p}`,
 	})) satisfies SiteMapUrl[];
@@ -59,3 +60,5 @@ ${sitemapUrls
 	)
 	.join('\n')}
 </urlset>`;
+
+export const GET = sitemap;

@@ -2,10 +2,9 @@ import { auth } from '$lib/auth/server';
 import { checkedRedirect } from '$lib/http/server';
 import { message, superValidate, zod } from '$lib/superforms/server';
 import { sendSMSTokenSchema, verifyOTPSchema } from '$routes/(auth)/validators';
-import type { Actions, PageServerLoad } from './$types';
 import type { Action } from '@sveltejs/kit';
 
-export const load: PageServerLoad = async ({ locals }) => {
+export const load = async ({ locals }) => {
 	const seshUser = await locals.seshHandler.getSessionUser();
 	if (!seshUser) return checkedRedirect('/login');
 	if (seshUser.session.awaitingEmailVeri) return checkedRedirect('/email-verification');
@@ -76,4 +75,4 @@ const loginWithAuthenticator: Action = async ({ request, locals }) => {
 	return checkedRedirect(`/account/profile`);
 };
 
-export const actions: Actions = { loginWithSMS, loginWithAuthenticator };
+export const actions = { loginWithSMS, loginWithAuthenticator };

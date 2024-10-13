@@ -1,14 +1,11 @@
-import { fail as formFail } from '@sveltejs/kit';
+import { fail as formFail, type Action } from '@sveltejs/kit';
 import platform from 'platform';
-import { auth } from '$lib/auth/server';
-import { transports } from '$lib/auth/server';
+import { auth, transports } from '$lib/auth/server';
 import { checkedRedirect } from '$lib/http/server';
 import { message, superValidate, zod } from '$lib/superforms/server';
 import { createNewPassSchema } from '$routes/(auth)/validators';
-import type { Actions, PageServerLoad } from './$types';
-import type { Action } from '@sveltejs/kit';
 
-export const load: PageServerLoad = async ({ params }) => {
+export const load = async ({ params }) => {
 	const { token } = params;
 	const { tokenErr, userId } = await auth.token.pwReset.validate({ token: token, checkOnly: true });
 	if (tokenErr) return checkedRedirect('/invalid-token');
@@ -73,4 +70,4 @@ const createNewPassFromPwReset: Action<{ token: string }> = async ({ request, pa
 	return checkedRedirect('/account/profile');
 };
 
-export const actions: Actions = { createNewPassFromPwReset };
+export const actions = { createNewPassFromPwReset };

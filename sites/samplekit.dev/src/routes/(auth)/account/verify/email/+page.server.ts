@@ -2,10 +2,8 @@ import { fail as formFail, redirect } from '@sveltejs/kit';
 import { auth } from '$lib/auth/server';
 import { transports } from '$lib/auth/server';
 import { sanitizeRedirectUrl } from '$lib/http/server';
-import type { Actions } from './$types';
-import type { Action } from '@sveltejs/kit';
 
-const sendEmailVeriToSeshConfEmailLink: Action = async ({ locals, url }) => {
+const sendEmailVeriToSeshConfEmailLink: App.CommonServerAction = async ({ locals, url }) => {
 	const { user } = await locals.seshHandler.userOrRedirect();
 	const sanitizedPath = sanitizeRedirectUrl(url.searchParams.get('next'));
 
@@ -31,4 +29,4 @@ const sendEmailVeriToSeshConfEmailLink: Action = async ({ locals, url }) => {
 	else return { success: 'Sent' };
 };
 
-export const actions: Actions = { sendEmailVeriToSeshConfEmailLink };
+export const actions = { sendEmailVeriToSeshConfEmailLink };

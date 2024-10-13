@@ -6,10 +6,9 @@ import { superValidate, zod } from '$lib/superforms/server';
 import { pluralize } from '$lib/utils/common';
 import { confirmPassSchema, sendSMSTokenSchema, verifyOTPSchema } from '$routes/(auth)/validators';
 import type { VerifierProps } from '$routes/(auth)/components';
-import type { Actions, PageServerLoad } from './$types';
 import type { Action } from '@sveltejs/kit';
 
-export const load: PageServerLoad = async ({ locals }) => {
+export const load = async ({ locals }) => {
 	const { user, session } = await locals.seshHandler.userOrRedirect();
 
 	const authDetails = await auth.provider.pass.MFA.getDetailsOrThrow(user.id);
@@ -79,4 +78,4 @@ const deleteUserWithSeshConf: Action = async ({ locals }) => {
 	return checkedRedirect('/');
 };
 
-export const actions: Actions = { deleteUserWithSeshConf };
+export const actions = { deleteUserWithSeshConf };

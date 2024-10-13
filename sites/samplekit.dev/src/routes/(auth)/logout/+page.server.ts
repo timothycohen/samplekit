@@ -1,12 +1,10 @@
-import { error, fail as formFail, redirect } from '@sveltejs/kit';
+import { error, fail as formFail, redirect, type Action } from '@sveltejs/kit';
 import { auth } from '$lib/auth/server';
 import { checkedRedirect } from '$lib/http/server';
 import { superValidate, zod } from '$lib/superforms/server';
 import { deleteSessionSchema } from '$routes/(auth)/validators';
-import type { Actions, PageServerLoad } from './$types';
-import type { Action } from '@sveltejs/kit';
 
-export const load: PageServerLoad = () => {
+export const load = () => {
 	error(404);
 };
 
@@ -47,4 +45,4 @@ const logoutAll: Action = async ({ locals }) => {
 	return checkedRedirect('/login');
 };
 
-export const actions: Actions = { logoutCurrent, logoutSingle, logoutAll };
+export const actions = { logoutCurrent, logoutSingle, logoutAll };
