@@ -18,4 +18,4 @@ const getRandomColor: RequestHandler = async ({ request }) => {
 	return jsonOk<PostRes>({ color: newColor });
 };
 
-export const POST: RequestHandler = getRandomColor;
+export const POST = getRandomColor;

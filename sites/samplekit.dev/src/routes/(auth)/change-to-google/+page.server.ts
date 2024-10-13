@@ -1,14 +1,12 @@
-import { fail as formFail, redirect } from '@sveltejs/kit';
+import { fail as formFail, redirect, type Action } from '@sveltejs/kit';
 import { PUBLIC_GOOGLE_OAUTH_CLIENT_ID } from '$env/static/public';
 import { auth } from '$lib/auth/server';
 import { checkedRedirect } from '$lib/http/server';
 import { message, superValidate, zod } from '$lib/superforms/server';
 import { PUBLIC_GOOGLE_OAUTH_LINK_PATHNAME } from '$routes/(auth)/consts';
 import { confirmPassSchema } from '$routes/(auth)/validators';
-import type { Actions, PageServerLoad } from './$types';
-import type { Action } from '@sveltejs/kit';
 
-export const load: PageServerLoad = async ({ locals, url }) => {
+export const load = async ({ locals, url }) => {
 	const seshUser = await locals.seshHandler.getSessionUser();
 	if (!seshUser) return checkedRedirect('/login');
 	const authDetails = await auth.provider.pass.MFA.getDetailsOrThrow(seshUser.user.id);
@@ -60,4 +58,4 @@ const passwordToLinkGoogle: Action = async ({ locals, request, cookies }) => {
 	return redirect(302, googleLink);
 };
 
-export const actions: Actions = { passwordToLinkGoogle };
+export const actions = { passwordToLinkGoogle };

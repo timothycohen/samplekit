@@ -2,9 +2,8 @@ import { fail as formFail } from '@sveltejs/kit';
 import { auth } from '$lib/auth/server';
 import { transports } from '$lib/auth/server';
 import { checkedRedirect } from '$lib/http/server';
-import type { Actions, PageServerLoad } from './$types';
 
-export const load: PageServerLoad = async ({ locals }) => {
+export const load = async ({ locals }) => {
 	const seshUser = await locals.seshHandler.getSessionUser();
 	if (!seshUser) return checkedRedirect('/login');
 	if ((await auth.provider.getMethodOrThrow(seshUser.user.id)) === 'pass') return checkedRedirect('/account/profile');
@@ -21,4 +20,4 @@ const changeToEmailPassProvider: App.CommonServerAction = async ({ locals }) => 
 	return { success: 'Password setup email sent.' };
 };
 
-export const actions: Actions = { changeToEmailPassProvider };
+export const actions = { changeToEmailPassProvider };

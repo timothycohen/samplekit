@@ -3,10 +3,9 @@ import { db, users } from '$lib/db/server';
 import { jsonFail, jsonOk } from '$lib/http/server';
 import { croppedImgSchema } from '$lib/image/common';
 import type { PutRes } from '.';
-import type { RequestHandler } from './$types';
-import type { RequestEvent } from '@sveltejs/kit';
+import type { RequestHandler } from '@sveltejs/kit';
 
-const updateAvatarCrop = async ({ locals, request }: RequestEvent) => {
+const updateAvatarCrop: RequestHandler = async ({ locals, request }) => {
 	const { user } = await locals.seshHandler.userOrRedirect();
 	if (!user.avatar) return jsonFail(400, 'No avatar to crop');
 
@@ -21,4 +20,4 @@ const updateAvatarCrop = async ({ locals, request }: RequestEvent) => {
 	return jsonOk<PutRes>({ savedImg: avatar });
 };
 
-export const PUT: RequestHandler = updateAvatarCrop;
+export const PUT = updateAvatarCrop;

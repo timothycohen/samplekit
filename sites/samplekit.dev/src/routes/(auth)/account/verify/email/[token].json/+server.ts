@@ -1,10 +1,8 @@
-import { redirect, type RequestEvent } from '@sveltejs/kit';
+import { redirect, type RequestHandler } from '@sveltejs/kit';
 import { auth } from '$lib/auth/server';
-import { checkedRedirect } from '$lib/http/server';
-import { sanitizeRedirectUrl } from '$lib/http/server';
-import type { RequestHandler } from './$types';
+import { checkedRedirect, sanitizeRedirectUrl } from '$lib/http/server';
 
-const seshConfFromEmailVeri = async ({ params, url, locals }: RequestEvent<{ token: string }>): Promise<Response> => {
+const seshConfFromEmailVeri: RequestHandler<{ token: string }> = async ({ params, url, locals }) => {
 	const { session } = await locals.seshHandler.userOrRedirect();
 	const { token } = params;
 
@@ -19,4 +17,4 @@ const seshConfFromEmailVeri = async ({ params, url, locals }: RequestEvent<{ tok
 	return checkedRedirect('/account/profile');
 };
 
-export const GET: RequestHandler = seshConfFromEmailVeri;
+export const GET = seshConfFromEmailVeri;

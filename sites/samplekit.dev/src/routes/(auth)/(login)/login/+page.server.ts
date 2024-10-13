@@ -1,4 +1,4 @@
-import { fail as formFail } from '@sveltejs/kit';
+import { fail as formFail, type Action } from '@sveltejs/kit';
 import platform from 'platform';
 import { auth } from '$lib/auth/server';
 import { createLimiter } from '$lib/botProtection/rateLimit/server';
@@ -7,12 +7,10 @@ import { validateTurnstile } from '$lib/botProtection/turnstile/server';
 import { checkedRedirect } from '$lib/http/server';
 import { message, superValidate, zod } from '$lib/superforms/server';
 import { emailPassResetSchema, signinSchema } from '$routes/(auth)/validators';
-import type { Actions, PageServerLoad } from './$types';
-import type { Action } from '@sveltejs/kit';
 
 const signinLimiter = createLimiter({ id: 'signinWithPassword', limiters: [{ kind: 'ipUa', rate: [5, '15m'] }] });
 
-export const load: PageServerLoad = async ({ locals }) => {
+export const load = async ({ locals }) => {
 	const seshUser = await locals.seshHandler.getSessionUser();
 	if (seshUser) {
 		if (seshUser.session.awaitingEmailVeri) return checkedRedirect('/email-verification');
@@ -100,4 +98,4 @@ const loginWithPassword: Action = async (event) => {
 	return checkedRedirect(sanitizedPath);
 };
 
-export const actions: Actions = { loginWithPassword };
+export const actions = { loginWithPassword };

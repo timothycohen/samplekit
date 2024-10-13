@@ -1,11 +1,9 @@
 import { auth } from '$lib/auth/server';
-import { checkedRedirect } from '$lib/http/server';
-import { jsonFail, jsonOk } from '$lib/http/server';
+import { checkedRedirect, jsonFail, jsonOk } from '$lib/http/server';
 import type { PostReq } from '.';
-import type { RequestHandler } from './$types';
-import type { RequestEvent } from '@sveltejs/kit';
+import type { RequestHandler } from '@sveltejs/kit';
 
-const loginWithPasskey = async ({ request, locals }: RequestEvent) => {
+const loginWithPasskey: RequestHandler = async ({ request, locals }) => {
 	const seshUser = await locals.seshHandler.getSessionUser();
 	if (!seshUser) return checkedRedirect('/login');
 	const userId = seshUser.user.id;
@@ -37,4 +35,4 @@ const loginWithPasskey = async ({ request, locals }: RequestEvent) => {
 	return jsonOk();
 };
 
-export const POST: RequestHandler = loginWithPasskey;
+export const POST = loginWithPasskey;

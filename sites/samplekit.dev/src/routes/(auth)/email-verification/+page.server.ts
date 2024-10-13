@@ -2,9 +2,8 @@ import { fail as formFail } from '@sveltejs/kit';
 import { auth } from '$lib/auth/server';
 import { transports } from '$lib/auth/server';
 import { checkedRedirect } from '$lib/http/server';
-import type { Actions, PageServerLoad } from './$types';
 
-export const load: PageServerLoad = async ({ locals }) => {
+export const load = async ({ locals }) => {
 	const seshUser = await locals.seshHandler.getSessionUser();
 	if (!seshUser) return checkedRedirect('/login');
 	if (!seshUser.session.awaitingEmailVeri) return checkedRedirect('/account/profile');
@@ -25,4 +24,4 @@ const resendEmailVeriToVerifyEmailLink: App.CommonServerAction = async ({ locals
 	return { success: 'Sent' };
 };
 
-export const actions: Actions = { resendEmailVeriToVerifyEmailLink };
+export const actions = { resendEmailVeriToVerifyEmailLink };

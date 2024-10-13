@@ -3,13 +3,12 @@ import { createLimiter } from '$lib/botProtection/rateLimit/server';
 import { clearBucket } from '$lib/cloudStorage/server';
 import { resetDb } from '$lib/db/server';
 import { guardApiKey } from '../guard';
-import type { RequestHandler } from './$types';
-import type { RequestEvent } from '@sveltejs/kit';
+import type { RequestHandler } from '@sveltejs/kit';
 
 const resetDbLimiter = createLimiter({ id: 'resetDb', limiters: [{ kind: 'ipUa', rate: [2, '6h'] }] });
 
 // curl -X POST http://localhost:5173/api/reset-db.json -H 'Content-Type: application/json' -d '{"cron_api_key":"...", "expected_db_name":"..."}'
-const resetDbAndBucket = async (event: RequestEvent) =>
+const resetDbAndBucket: RequestHandler = async (event) =>
 	guardApiKey({
 		id: 'resetDb',
 		event,
@@ -22,4 +21,4 @@ const resetDbAndBucket = async (event: RequestEvent) =>
 		},
 	});
 
-export const POST: RequestHandler = resetDbAndBucket;
+export const POST = resetDbAndBucket;

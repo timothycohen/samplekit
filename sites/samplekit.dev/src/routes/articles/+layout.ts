@@ -1,9 +1,9 @@
 import { merge } from '$lib/articles/load';
 import { processedComponentsMap } from '$lib/articles/load/demos/client';
 import type { ClientFrontMatter } from '$lib/articles/schema';
-import type { LayoutLoad, LayoutRouteId } from './$types';
+import type { LayoutRouteId } from './$types';
 
-export const load: LayoutLoad = async ({ route, data: serverData }) => {
+export const load = async ({ route, data: serverData }) => {
 	const articlePath = route.id as Exclude<LayoutRouteId, '/articles'>;
 
 	const article: ClientFrontMatter = {

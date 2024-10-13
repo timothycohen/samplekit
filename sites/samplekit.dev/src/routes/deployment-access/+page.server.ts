@@ -1,7 +1,6 @@
 import { fail as formFail } from '@sveltejs/kit';
 import { createLimiter } from '$lib/botProtection/rateLimit/server';
 import { deploymentAccessController } from './controller';
-import type { Actions } from './$types';
 
 const signinLimiter = createLimiter({ id: 'deployment-access-signin', limiters: [{ kind: 'ipUa', rate: [5, '5m'] }] });
 
@@ -37,4 +36,4 @@ const signoutAll: App.CommonServerAction = async ({ cookies }) => {
 	return { success: 'true' };
 };
 
-export const actions: Actions = { signin, signout, signoutAll };
+export const actions = { signin, signout, signoutAll };

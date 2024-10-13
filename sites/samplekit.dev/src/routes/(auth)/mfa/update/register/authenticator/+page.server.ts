@@ -4,10 +4,9 @@ import { transports } from '$lib/auth/server';
 import { checkedRedirect } from '$lib/http/server';
 import { message, superValidate, zod } from '$lib/superforms/server';
 import { verifyOTPSchema } from '$routes/(auth)/validators';
-import type { Actions, PageServerLoad } from './$types';
 import type { Action } from '@sveltejs/kit';
 
-export const load: PageServerLoad = async ({ locals }) => {
+export const load = async ({ locals }) => {
 	const { user } = await locals.seshHandler.userOrRedirect();
 
 	const [verifyAuthenticatorTokenForm, { secret }] = await Promise.all([
@@ -55,4 +54,4 @@ const registerMFA_Authenticator_WithSeshConf: Action = async ({ request, locals 
 	return checkedRedirect(`/account/security/auth`);
 };
 
-export const actions: Actions = { registerMFA_Authenticator_WithSeshConf };
+export const actions = { registerMFA_Authenticator_WithSeshConf };

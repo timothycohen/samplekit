@@ -15,7 +15,10 @@
 		imgLg,
 		tags: ['typescript', 'http', 'DX', 'client-server', 'request handlers', 'endpoints'],
 		featured: true,
-		updates: [{ at: new Date('2024-08-13 18:26:40 -0400'), descriptions: ['Update to runes.'] }],
+		updates: [
+			{ at: new Date('2024-10-13 17:24:39 -0400'), descriptions: ['Tweak RequestHandler placement.'] },
+			{ at: new Date('2024-08-13 18:26:40 -0400'), descriptions: ['Update to runes.'] },
+		],
 	} satisfies RawFrontMatter;
 </script>
 
@@ -272,14 +275,15 @@ shiki-end -->
 <p>
 	It's already easy to understand what's going on because the files are side by side, but for uniformity and ease of
 	search, I name the server endpoint handler and client fetch wrapper the same thing. Explicit naming instead of lambdas
-	serves as a form of documentation.
+	serves as a form of documentation. Another bonus is that every endpoint can be grepped with
+	<code>": RequestHandler"</code>.
 </p>
 
 <CodeTopper title="$routes/demos/name-list.json/+server.ts">
 	<!-- shiki-start
 ```ts
-const addNameToList = async ({ locals, request }: RequestEvent) => { ... };
-export const PUT: RequestHandler = addNameToList;
+const addNameToList: RequestHandler = async ({ locals, request }) => { ... };
+export const PUT = addNameToList;
 ```
 shiki-end -->
 </CodeTopper>
@@ -369,12 +373,12 @@ shiki-end -->
 <CodeTopper title="$routes/demos/name-list.json/+server.ts">
 	<!-- shiki-start
 ```ts
-const addNameToList = async ({ locals, request }: RequestEvent) => {
+const addNameToList: RequestHandler = async ({ locals, request }) => {
 	return jsonFail(403);
 	// or
 	return jsonOk<GetRes>(res);
 };
-export const PUT: RequestHandler = addNameToList;
+export const PUT = addNameToList;
 ```
 shiki-end -->
 </CodeTopper>

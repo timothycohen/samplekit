@@ -1,12 +1,10 @@
-import { error, redirect } from '@sveltejs/kit';
+import { error, redirect, type Action } from '@sveltejs/kit';
 import { PUBLIC_GOOGLE_OAUTH_CLIENT_ID } from '$env/static/public';
 import { auth } from '$lib/auth/server';
 import { checkedRedirect } from '$lib/http/server';
 import { PUBLIC_GOOGLE_OAUTH_LOGIN_PATHNAME } from '$routes/(auth)/consts';
-import type { Actions, PageServerLoad } from './$types';
-import type { Action } from '@sveltejs/kit';
 
-export const load: PageServerLoad = () => {
+export const load = () => {
 	error(404);
 };
 
@@ -25,4 +23,4 @@ const passToGoogleOAuth: Action = async ({ locals, cookies, request }) => {
 	return redirect(302, googleLink);
 };
 
-export const actions: Actions = { passToGoogleOAuth };
+export const actions = { passToGoogleOAuth };

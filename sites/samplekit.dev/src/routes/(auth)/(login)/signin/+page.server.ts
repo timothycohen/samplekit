@@ -1,6 +1,5 @@
 import { checkedRedirect } from '$lib/http/server';
-import type { PageServerLoad } from './$types';
 
-export const load: PageServerLoad = async () => {
+export const load = async () => {
 	return checkedRedirect('/login', 301);
 };

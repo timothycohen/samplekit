@@ -1,15 +1,14 @@
 import platform from 'platform';
 import { auth } from '$lib/auth/server';
 import { checkedRedirect } from '$lib/http/server';
-import type { RequestHandler } from './$types';
-import type { RequestEvent } from '@sveltejs/kit';
+import type { RequestHandler } from '@sveltejs/kit';
 
-const verifyEmailWithEmailVeri = async ({
+const verifyEmailWithEmailVeri: RequestHandler<{ token: string }> = async ({
 	params,
 	locals,
 	request,
 	getClientAddress,
-}: RequestEvent<{ token: string }>): Promise<Response> => {
+}) => {
 	const { token } = params;
 
 	const { tokenErr, userId } = await auth.token.emailVeri.validate({ token });
@@ -39,4 +38,4 @@ const verifyEmailWithEmailVeri = async ({
 	return checkedRedirect('/account/profile');
 };
 
-export const GET: RequestHandler = verifyEmailWithEmailVeri;
+export const GET = verifyEmailWithEmailVeri;

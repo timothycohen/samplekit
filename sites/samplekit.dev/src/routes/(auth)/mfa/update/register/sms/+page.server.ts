@@ -1,14 +1,12 @@
-import { fail as formFail, redirect } from '@sveltejs/kit';
+import { fail as formFail, redirect, type Action } from '@sveltejs/kit';
 import { mfaLabels } from '$lib/auth/common';
 import { auth } from '$lib/auth/server';
 import { transports } from '$lib/auth/server';
 import { checkedRedirect } from '$lib/http/server';
 import { message, superValidate, zod } from '$lib/superforms/server';
 import { phoneNumberSchema, verifyOTPSchema } from '$routes/(auth)/validators';
-import type { Actions, PageServerLoad } from './$types';
-import type { Action } from '@sveltejs/kit';
 
-export const load: PageServerLoad = async ({ url }) => {
+export const load = async ({ url }) => {
 	const phoneNumber = url.searchParams.get('phone');
 	const [phoneNumberForm, sanitizedPhone, verifySMSTokenForm] = await Promise.all([
 		superValidate(zod(phoneNumberSchema), { id: 'phoneNumberForm_/mfa/update/register/sms' }),
@@ -79,4 +77,4 @@ const registerMFA_SMS_WithSeshConfAndSetupSMS: Action = async ({ request, locals
 	return checkedRedirect(`/account/security/auth`);
 };
 
-export const actions: Actions = { SMSSetupFromSeshConf, registerMFA_SMS_WithSeshConfAndSetupSMS };
+export const actions = { SMSSetupFromSeshConf, registerMFA_SMS_WithSeshConfAndSetupSMS };

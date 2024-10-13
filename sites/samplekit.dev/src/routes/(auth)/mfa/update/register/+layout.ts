@@ -1,6 +1,4 @@
-import type { LayoutLoad } from './$types';
-
-export const load: LayoutLoad = async () => {
+export const load = async () => {
 	const meta: App.PageData['meta'] = { title: 'Register MFA | SampleKit' };
 
 	return { meta };

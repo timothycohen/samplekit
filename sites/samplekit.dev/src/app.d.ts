@@ -33,7 +33,7 @@ declare global {
 
 		/** Restrict a form element's action to known endpoints */
 		namespace Form {
-			// search for export const actions: Actions =
+			// search for export const actions =
 			type _query = `&${string}` | '';
 			type _next = `&next=${string}`;
 

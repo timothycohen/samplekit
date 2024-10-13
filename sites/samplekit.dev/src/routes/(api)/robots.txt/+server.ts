@@ -1,6 +1,7 @@
 import { PUBLIC_ORIGIN } from '$env/static/public';
+import type { RequestHandler } from '@sveltejs/kit';
 
-export const GET = () => {
+const robots: RequestHandler = () => {
 	return new Response(
 		`User-agent: *
 Sitemap: ${PUBLIC_ORIGIN}/sitemap.xml`,
@@ -12,3 +13,5 @@ Sitemap: ${PUBLIC_ORIGIN}/sitemap.xml`,
 		},
 	);
 };
+
+export const GET = robots;
