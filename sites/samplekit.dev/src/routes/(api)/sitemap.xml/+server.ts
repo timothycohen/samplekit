@@ -16,8 +16,8 @@ export const GET = async ({ fetch }) => {
 	})) satisfies SiteMapUrl[];
 
 	const articleUrls = allPostData.map((post) => ({
-		loc: `${PUBLIC_ORIGIN}/articles/${post.articlePath}`,
-		lastmod: (post.updates?.at ?? post.publishedAt).toString(),
+		loc: `${PUBLIC_ORIGIN}${post.articlePath}`,
+		lastmod: (post.updates?.[0]?.at ?? post.publishedAt).toString(),
 	})) satisfies SiteMapUrl[];
 
 	const shopUrls = [
