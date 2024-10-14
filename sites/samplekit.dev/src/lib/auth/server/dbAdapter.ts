@@ -135,9 +135,16 @@ const token: DbAdapterToken = {
 		const { table } = getTable(tokenKind);
 		const res = (await db.select().from(table).where(eq(table.userId, userId)).limit(1))[0];
 		if (!res) return null;
-		// @ts-expect-error getTable ensures res is this kind
-		res.kind = tokenKind;
-		return res as Auth.Token.All;
+		const token = { ...res, kind: tokenKind } as typeof tokenKind extends 'passkey_challenge'
+			? Auth.Token.UnlimSendUnlimAttempt
+			: typeof tokenKind extends 'setup_authenticator'
+				? Auth.Token.UnlimSendLimAttempt
+				: typeof tokenKind extends 'email_veri' | 'pw_reset'
+					? Auth.Token.LimSendUnlimAttempt
+					: typeof tokenKind extends 'sms_veri' | 'setup_sms_veri'
+						? Auth.Token.LimSendLimAttempt
+						: never;
+		return token;
 	},
 	getByToken: async ({ token, tokenKind }) => {
 		const { table } = getLimSendUnlimAttemptTable(tokenKind);

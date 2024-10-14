@@ -1,4 +1,4 @@
-import type { Auth } from '../types/index.js';
+import type { Auth } from './auth.js';
 
 export interface DefaultConfig {
 	authenticator: {

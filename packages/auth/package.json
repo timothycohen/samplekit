@@ -18,6 +18,7 @@
 	"exports": {
 		"./client": "./dist/client/index.js",
 		"./server": "./dist/server/index.js",
+		"./common": "./dist/common/index.js",
 		"./package.json": "./package.json"
 	},
 	"dependencies": {

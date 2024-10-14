@@ -1,6 +1,6 @@
 import type { Auth } from './auth.js';
 
-export type Empty = undefined | null;
+type Empty = undefined | null;
 
 export interface DbAdapterUser<ConfigUser> {
 	insert: (a: ConfigUser) => Promise<void>;
@@ -41,7 +41,22 @@ export interface DbAdapterUserAndSession<ConfigUser, ConfigSession> {
 }
 
 export interface DbAdapterToken {
-	getByUserId: (a: { userId: string; tokenKind: Auth.Token.Kind.All }) => Promise<Auth.Token.All | Empty>;
+	getByUserId(a: {
+		userId: string;
+		tokenKind: Auth.Token.Kind.UnlimSendUnlimAttempt;
+	}): Promise<Auth.Token.UnlimSendUnlimAttempt | Empty>;
+	getByUserId(a: {
+		userId: string;
+		tokenKind: Auth.Token.Kind.UnlimSendLimAttempt;
+	}): Promise<Auth.Token.UnlimSendLimAttempt | Empty>;
+	getByUserId(a: {
+		userId: string;
+		tokenKind: Auth.Token.Kind.LimSendUnlimAttempt;
+	}): Promise<Auth.Token.LimSendUnlimAttempt | Empty>;
+	getByUserId(a: {
+		userId: string;
+		tokenKind: Auth.Token.Kind.LimSendLimAttempt;
+	}): Promise<Auth.Token.LimSendLimAttempt | Empty>;
 	// Only LimSendUnlimAttempt have unique token properties
 	getByToken: (a: {
 		token: string;

@@ -4,7 +4,7 @@ import { customAlphabet, nanoid } from 'nanoid';
 // @ts-ignore cjs only
 import { authenticator } from 'otplib';
 import QRCode from 'qrcode';
-import type { DefaultConfig } from './types/config.js';
+import type { DefaultConfig } from '../types/server/config.js';
 
 const hashScrypt = (password: string): Promise<string> => {
 	return new Promise((resolve, reject) => {

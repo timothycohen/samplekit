@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { startPasskeyReg } from '@samplekit/auth/client';
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
+	import { auth } from '$lib/auth/client';
 	import { Admonition } from '$lib/components';
 	import { registerMFA_Passkey_WithSeshConfAndPasskey } from '$routes/(auth)/mfa/update/register/passkeys.json';
 
@@ -10,7 +10,7 @@
 	let err = $state('');
 
 	const handlePasskey = async () => {
-		const { data: passkeyData, error: startErr } = await startPasskeyReg(data.passkey.opts);
+		const { data: passkeyData, error: startErr } = await auth.passkey.startReg(data.passkey.opts);
 		if (startErr) return (err = startErr.message);
 
 		const { error } = await registerMFA_Passkey_WithSeshConfAndPasskey.send({ passkeyData });

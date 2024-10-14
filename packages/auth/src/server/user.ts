@@ -1,4 +1,4 @@
-import { tokenKinds } from '../token/vars.js';
+import { tokenKinds } from './token/consts.js';
 import type {
 	Auth,
 	Config,
@@ -8,17 +8,10 @@ import type {
 	DbAdapterUser,
 	TransformProvider,
 	TransformUser,
-} from '../types/index.js';
+	ServerAuthUser,
+} from '../types/server/index.js';
 
-export const createAuthUser = <U, P, PWOP, S, UCtx, PCtx>({
-	config,
-	dbUser,
-	dbProvider,
-	transformUser,
-	transformProvider,
-	dbSession,
-	dbToken,
-}: {
+export const createAuthUser: <U, P, PWOP, S, UCtx, PCtx>(a: {
 	config: Config;
 	dbUser: DbAdapterUser<U>;
 	dbProvider: DbAdapterProvider<P, PWOP>;
@@ -26,23 +19,20 @@ export const createAuthUser = <U, P, PWOP, S, UCtx, PCtx>({
 	transformProvider: TransformProvider<P, PCtx>;
 	dbSession: DbAdapterSession<S>;
 	dbToken: DbAdapterToken;
+}) => ServerAuthUser<U, P, UCtx, PCtx> = ({
+	config,
+	dbUser,
+	dbProvider,
+	transformUser,
+	transformProvider,
+	dbSession,
+	dbToken,
 }) => ({
-	get: async (
-		args: { userId: string; email?: never } | { userId?: never; email: string },
-	): Promise<U | undefined | null> => {
+	get: async (args) => {
 		if (args.email) return await dbUser.getByEmail({ cleanEmail: config.clean.email(args.email) });
 		else if (args.userId) return await dbUser.getById({ userId: args.userId });
 	},
-	createEmailPass: async (
-		args: {
-			email: string;
-			givenName: string;
-			familyName: string;
-			rawPassword: string;
-		},
-		passToTransformUser: UCtx,
-		passToTransformProvider: PCtx,
-	): Promise<{ user: U; error?: never } | { user?: never; error: 'email_taken' }> => {
+	createEmailPass: async (args, passToTransformUser, passToTransformProvider) => {
 		const cleanEmail = config.clean.email(args.email);
 		const storedUser = await dbUser.getByEmail({ cleanEmail });
 		if (storedUser) return { error: 'email_taken' };
@@ -76,17 +66,7 @@ export const createAuthUser = <U, P, PWOP, S, UCtx, PCtx>({
 
 		return { user: configUser };
 	},
-	getOrCreateOAuth: async (
-		args: {
-			clean_email: string;
-			given_name: string;
-			family_name: string;
-			picture: string | null;
-		},
-		oauthProvider: Auth.Provider.OAuth['provider'],
-		passToTransformUser: UCtx,
-		passToTransformProvider: PCtx,
-	): Promise<{ user: U; provider: P; error?: never } | { user?: never; provider?: never; error: 'email_taken' }> => {
+	getOrCreateOAuth: async (args, oauthProvider, passToTransformUser, passToTransformProvider) => {
 		const storedUser = await dbUser.getByEmail({ cleanEmail: args.clean_email });
 
 		if (!storedUser) {
@@ -130,7 +110,7 @@ export const createAuthUser = <U, P, PWOP, S, UCtx, PCtx>({
 		return { user: storedUser, provider: storedOAuthProvider };
 	},
 	/** Delete sessions, providers, and user */
-	delete: async ({ userId }: { userId: string }): Promise<void> => {
+	delete: async ({ userId }) => {
 		await Promise.all([
 			tokenKinds.map(async (tokenKind) => dbToken.deleteByUserId({ tokenKind, userId })),
 			dbSession.deleteMany({ userId }),
