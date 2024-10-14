@@ -4,3 +4,5 @@ export const mfaLabels: Record<DB.MFAs.Kind, string> = {
 	passkeys: 'Passkey / Biometric',
 	authenticator: 'Authenticator App',
 };
+
+export type * from '@samplekit/auth/common';

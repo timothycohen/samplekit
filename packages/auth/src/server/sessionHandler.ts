@@ -1,4 +1,12 @@
-import type { Auth, Config, DbAdapterSession, DbAdapterUserAndSession, TransformSession } from '../types/index.js';
+import type {
+	Auth,
+	Config,
+	DbAdapterSession,
+	DbAdapterUserAndSession,
+	TransformSession,
+	ISessionHandler,
+	MiddlewareContext,
+} from '../types/server/index.js';
 
 // https://github.com/lucia-auth/lucia/blob/main/packages/lucia/src/auth/request.ts
 
@@ -10,16 +18,7 @@ import type { Auth, Config, DbAdapterSession, DbAdapterUserAndSession, Transform
 // 5) reimplemented framework features. Lucia is framework agnostic, so it reimplemented things like cookies and CSRF protection, which SvelteKit already provides
 // 6) doesn't support things like passkeys, and the schema isn't conducive to modifications: https://github.com/lucia-auth/lucia/issues/577
 
-export type MiddlewareContext = {
-	requestCookie: string | null;
-	cookie: {
-		setPersistent: (a: { sessionId: string; expires: Date }) => void;
-		setSession: (a: { sessionId: string }) => void;
-		delete: () => void;
-	};
-};
-
-export type SessionHandlerContext<U, S, SCtx> = {
+type SessionHandlerContext<U, S, SCtx> = {
 	dbSession: DbAdapterSession<S>;
 	transformSession: TransformSession<S, SCtx>;
 	dbUserAndSession: DbAdapterUserAndSession<U, S>;
@@ -32,7 +31,7 @@ export type SessionHandlerContext<U, S, SCtx> = {
  *
  *  Force a fresh db call with `({ skipCache: true })`
  */
-export class SessionHandler<U, S, SCtx> {
+export class SessionHandler<U, S, SCtx> implements ISessionHandler<U, S> {
 	private seshUserCache: Promise<{ user: U; session: S } | null> | null;
 	private sessionIdCache: string | null;
 

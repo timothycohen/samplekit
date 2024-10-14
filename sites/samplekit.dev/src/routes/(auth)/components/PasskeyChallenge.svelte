@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { startPasskeyAuth } from '@samplekit/auth/client';
 	import { onMount } from 'svelte';
+	import { auth } from '$lib/auth/client';
 	import { assertUnreachable } from '$lib/utils/common';
 	import { seshConfFromPasskey } from '$routes/(auth)/account/verify/passkey.json';
 	import { loginWithPasskey } from '$routes/(auth)/login/verify-mfa/passkey.json';
@@ -18,11 +18,11 @@
 		const pipeline = (() => {
 			switch (passkeyAction) {
 				case 'login':
-					return { getOptions: getPasskeyAuthOpts, awaitUser: startPasskeyAuth, callback: loginWithPasskey };
+					return { getOptions: getPasskeyAuthOpts, awaitUser: auth.passkey.startAuth, callback: loginWithPasskey };
 				case 'confirmUser':
 					return {
 						getOptions: getPasskeyAuthOpts,
-						awaitUser: startPasskeyAuth,
+						awaitUser: auth.passkey.startAuth,
 						callback: seshConfFromPasskey,
 					};
 			}
