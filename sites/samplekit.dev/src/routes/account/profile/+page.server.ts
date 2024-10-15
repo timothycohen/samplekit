@@ -1,5 +1,4 @@
-import { eq } from 'drizzle-orm';
-import { db, users } from '$lib/db/server';
+import { db } from '$lib/db/server';
 import { superValidate, zod } from '$lib/superforms/server';
 import { nameSchema } from '$routes/(auth)/validators';
 import type { Action } from '@sveltejs/kit';
@@ -18,10 +17,10 @@ const updateName: Action = async ({ locals, request }) => {
 	const nameForm = await superValidate(request, zod(nameSchema));
 	if (!nameForm.valid) return { nameForm };
 
-	await db
-		.update(users)
-		.set({ familyName: nameForm.data.family_name, givenName: nameForm.data.given_name })
-		.where(eq(users.id, user.id));
+	await db.user.update({
+		userId: user.id,
+		values: { familyName: nameForm.data.family_name, givenName: nameForm.data.given_name },
+	});
 
 	locals.seshHandler.invalidateCache();
 };

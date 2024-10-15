@@ -1,5 +1,4 @@
-import { eq } from 'drizzle-orm';
-import { db, users } from '$lib/db/server';
+import { db } from '$lib/db/server';
 import { jsonFail, jsonOk } from '$lib/http/server';
 import { croppedImgSchema } from '$lib/image/common';
 import type { PutRes } from '.';
@@ -15,7 +14,7 @@ const updateAvatarCrop: RequestHandler = async ({ locals, request }) => {
 	if (!parsed.success) return jsonFail(400);
 	const avatar = parsed.data;
 
-	await db.update(users).set({ avatar }).where(eq(users.id, user.id));
+	await db.user.update({ userId: user.id, values: { avatar } });
 
 	return jsonOk<PutRes>({ savedImg: avatar });
 };

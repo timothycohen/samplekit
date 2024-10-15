@@ -1,11 +1,11 @@
 import { createAuth, type TokenErr } from '@samplekit/auth/server';
 import { fail as formFail } from '@sveltejs/kit';
+import { authAdapter } from '$lib/db/server/repository/authAdapter';
 import { jsonFail } from '$lib/http/server';
 import { message, type SuperValidated, type Schema } from '$lib/superforms/server';
 import { config } from './config';
-import { dbAdapter } from './dbAdapter';
 
-const authLib = createAuth({ config, dbAdapter });
+const authLib = createAuth({ config, dbAdapter: authAdapter });
 
 const errMap: Record<TokenErr.All, { code: 403 | 429; msg: string }> = {
 	send_timeout: { code: 429, msg: 'Please wait a moment before resending.' },

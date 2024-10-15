@@ -13,5 +13,3 @@ export const users = pgTable('user_account', {
 	avatar: jsonb('avatar').$type<z.infer<typeof croppedImgSchema>>(),
 });
 export const userSchema = createSelectSchema(users);
-
-export type UserT = typeof users.$inferSelect;

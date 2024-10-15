@@ -33,14 +33,14 @@ export namespace ProviderNS {
 
 	export type Pass = {
 		kind: 'pass';
+		email: string;
 		userId: string;
 		emailVerified: boolean;
 		hashedPassword: string;
 		authenticator: string | null; // secret
 		passkeys: AuthenticatorDevice[] | null; // user devices
 		sms: string | null; // sanitized phone number
-	} & { provider: (typeof supportedPassProviders)[number]; email: string };
-	// | { provider: 'username'; email: string | null; username: string }
+	} & { provider: (typeof supportedPassProviders)[number] };
 
 	export type Id =
 		| { kind: Auth.Provider.OAuth['kind']; provider: Auth.Provider.OAuth['provider'] }

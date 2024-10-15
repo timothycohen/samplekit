@@ -1,5 +1,6 @@
 import { sql } from 'drizzle-orm';
-import { db } from '..';
+import { db } from '../singleton';
+import type { DBRepository } from './types';
 
 const resetSql = /*sql*/ `
 DO $$
@@ -18,4 +19,8 @@ BEGIN
 END $$;
 `;
 
-export const resetDb = () => db.execute(sql.raw(resetSql));
+export const meta: DBRepository['meta'] = {
+	resetDb: async () => {
+		await db.execute(sql.raw(resetSql));
+	},
+};
