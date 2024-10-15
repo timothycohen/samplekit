@@ -1,4 +1,3 @@
-import { createLimiter } from '$lib/botProtection/rateLimit/server';
 import {
 	createUnsavedUploadCleaner,
 	deleteS3Object,
@@ -9,6 +8,7 @@ import {
 } from '$lib/cloudStorage/server';
 import { db } from '$lib/db/server';
 import { jsonFail, jsonOk } from '$lib/http/server';
+import { createLimiter } from '$lib/rate-limit/server';
 import { toHumanReadableTime } from '$lib/utils/common';
 import { MAX_UPLOAD_SIZE, putReqSchema, type GetRes, type PutRes } from '.';
 import type { RequestHandler } from '@sveltejs/kit';

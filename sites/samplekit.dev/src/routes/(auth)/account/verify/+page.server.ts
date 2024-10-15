@@ -1,7 +1,7 @@
 import { fail as formFail, redirect, type Action } from '@sveltejs/kit';
 import { auth } from '$lib/auth/server';
-import { createLimiter } from '$lib/botProtection/rateLimit/server';
 import { checkedRedirect, sanitizeRedirectUrl } from '$lib/http/server';
+import { createLimiter } from '$lib/rate-limit/server';
 import { message, superValidate, zod } from '$lib/superforms/server';
 import { confirmPassSchema, verifyOTPSchema } from '$routes/(auth)/validators';
 

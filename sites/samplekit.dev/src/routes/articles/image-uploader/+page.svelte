@@ -1284,7 +1284,7 @@ shiki-end -->
 <p>
 	SampleKit uses its
 	<a
-		href="https://github.com/timothycohen/samplekit/blob/staging/sites/samplekit.dev/src/lib/botProtection/rateLimit/server.ts"
+		href="https://github.com/timothycohen/samplekit/blob/staging/sites/samplekit.dev/src/lib/rate-limit/server.ts"
 		data-external
 	>
 		own rate limiter

@@ -1,7 +1,7 @@
 import { RESET_DB_IP_WHITELIST, RESET_DB_KEY } from '$env/static/private';
-import { createLimiter } from '$lib/botProtection/rateLimit/server';
 import { clearBucket } from '$lib/cloudStorage/server';
 import { db } from '$lib/db/server';
+import { createLimiter } from '$lib/rate-limit/server';
 import { guardApiKey } from '../guard';
 import type { RequestHandler } from '@sveltejs/kit';
 

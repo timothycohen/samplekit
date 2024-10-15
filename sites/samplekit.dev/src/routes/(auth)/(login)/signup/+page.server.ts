@@ -1,11 +1,11 @@
 import { fail as formFail, type Action } from '@sveltejs/kit';
 import platform from 'platform';
 import { auth } from '$lib/auth/server';
-import { createLimiter } from '$lib/botProtection/rateLimit/server';
 import { turnstileFormInputName } from '$lib/botProtection/turnstile/common';
 import { validateTurnstile } from '$lib/botProtection/turnstile/server';
 import { checkedRedirect } from '$lib/http/server';
 import { logger } from '$lib/logging/server';
+import { createLimiter } from '$lib/rate-limit/server';
 import { message, superValidate, zod } from '$lib/superforms/server';
 import { transports } from '$lib/transport/server';
 import { signupSchema } from '$routes/(auth)/validators';

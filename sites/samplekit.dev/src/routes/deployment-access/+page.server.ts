@@ -1,5 +1,5 @@
 import { fail as formFail } from '@sveltejs/kit';
-import { createLimiter } from '$lib/botProtection/rateLimit/server';
+import { createLimiter } from '$lib/rate-limit/server';
 import { deploymentAccessController } from './controller';
 
 const signinLimiter = createLimiter({ id: 'deployment-access-signin', limiters: [{ kind: 'ipUa', rate: [5, '5m'] }] });

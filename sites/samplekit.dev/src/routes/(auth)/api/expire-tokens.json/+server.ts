@@ -1,6 +1,6 @@
 import { DELETE_EXPIRED_TOKENS_KEY, DELETE_EXPIRED_TOKENS_IP_WHITELIST } from '$env/static/private';
 import { auth } from '$lib/auth/server';
-import { createLimiter } from '$lib/botProtection/rateLimit/server';
+import { createLimiter } from '$lib/rate-limit/server';
 import { guardApiKey } from '../guard';
 import type { RequestHandler } from '@sveltejs/kit';
 
