@@ -1,5 +1,12 @@
 // See https://kit.svelte.dev/docs/types#app
 // for information about these interfaces
+
+import type { SEOMeta } from '$lib/components/SEO.svelte';
+import type { SessionHandler } from '$routes/(auth)/hooks.server';
+import type { Action, ActionFailure } from '@sveltejs/kit';
+import type { HTMLFormAttributes } from 'svelte/elements';
+import type { TurnstileObject } from 'turnstile-types';
+
 declare global {
 	namespace App {
 		interface Error {
@@ -13,10 +20,10 @@ declare global {
 
 		interface PageData {
 			layout: { showFooter: boolean; showHeader: boolean };
-			meta?: Partial<import('$lib/components/SEO.svelte').SEOMeta>;
+			meta?: Partial<SEOMeta>;
 		}
 		interface Locals extends Record<string, unknown> {
-			seshHandler: import('./hooks.server').SessionHandler;
+			seshHandler: SessionHandler;
 		}
 		// interface PageState {}
 		// interface Platform {}
@@ -25,10 +32,9 @@ declare global {
 			type Message = { success?: never; fail: string } | { fail?: never; success: string };
 		}
 
-		type CommonServerAction = import('@sveltejs/kit').Action<
+		type CommonServerAction = Action<
 			Record<string, never>,
-			| import('@sveltejs/kit').ActionFailure<{ success?: undefined; fail: string }>
-			| { fail?: undefined; success: string }
+			ActionFailure<{ success?: undefined; fail: string }> | { fail?: undefined; success: string }
 		>;
 
 		/** Restrict a form element's action to known endpoints */
@@ -70,7 +76,7 @@ declare global {
 
 	namespace svelteHTML {
 		interface IntrinsicElements {
-			form: Omit<import('svelte/elements').HTMLFormAttributes, 'action'> & {
+			form: Omit<HTMLFormAttributes, 'action'> & {
 				action: App.Form.Action;
 			};
 		}
@@ -78,7 +84,7 @@ declare global {
 
 	interface Window {
 		/** loaded in Turnstile.svelte */
-		turnstile: import('turnstile-types').TurnstileObject;
+		turnstile: TurnstileObject;
 	}
 
 	type Fetch = typeof globalThis.fetch;
