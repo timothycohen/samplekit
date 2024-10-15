@@ -3,9 +3,9 @@ import platform from 'platform';
 import { GOOGLE_OAUTH_CLIENT_SECRET } from '$env/static/private';
 import { PUBLIC_GOOGLE_OAUTH_CLIENT_ID } from '$env/static/public';
 import { auth } from '$lib/auth/server';
-import { transports } from '$lib/auth/server';
 import { checkedRedirect } from '$lib/http/server';
 import { logger } from '$lib/logging/server';
+import { transports } from '$lib/transport/server';
 import { PUBLIC_GOOGLE_OAUTH_LINK_PATHNAME } from '$routes/(auth)/consts';
 
 const changeToGoogleProvider: RequestHandler = async ({ url, cookies, locals, request, getClientAddress }) => {
@@ -45,7 +45,7 @@ const changeToGoogleProvider: RequestHandler = async ({ url, cookies, locals, re
 			),
 		),
 		auth.provider.changeToOAuth({ userId: user.id, provider: 'google' }),
-		transports.sendEmail.changedProviderMethod({
+		transports.email.send.providerMethodChanged({
 			email: user.email,
 			newProvider: { kind: 'oauth', provider: 'google' },
 		}),

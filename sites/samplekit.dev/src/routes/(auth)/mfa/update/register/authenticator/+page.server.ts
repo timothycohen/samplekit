@@ -1,8 +1,8 @@
 import { mfaLabels } from '$lib/auth/common';
 import { auth } from '$lib/auth/server';
-import { transports } from '$lib/auth/server';
 import { checkedRedirect } from '$lib/http/server';
 import { message, superValidate, zod } from '$lib/superforms/server';
+import { transports } from '$lib/transport/server';
 import { verifyOTPSchema } from '$routes/(auth)/validators';
 import type { Action } from '@sveltejs/kit';
 
@@ -48,7 +48,7 @@ const registerMFA_Authenticator_WithSeshConf: Action = async ({ request, locals 
 		auth.provider.pass.MFA.enable({ userId: user.id, authenticator: secret }),
 		auth.session.deleteOthers({ userId: user.id, sessionId: session.id }),
 		auth.session.removeTempConf({ sessionId: session.id }).then(() => locals.seshHandler.invalidateCache()),
-		transports.sendEmail.MFAUpdate({ editKind: 'added', email: user.email, mfaLabel: mfaLabels['authenticator'] }),
+		transports.email.send.MFAChanged({ editKind: 'added', email: user.email, mfaLabel: mfaLabels['authenticator'] }),
 	]);
 
 	return checkedRedirect(`/account/security/auth`);

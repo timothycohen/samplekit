@@ -1,9 +1,9 @@
 import { fail as formFail, redirect, type Action } from '@sveltejs/kit';
 import { mfaLabels } from '$lib/auth/common';
 import { auth } from '$lib/auth/server';
-import { transports } from '$lib/auth/server';
 import { checkedRedirect } from '$lib/http/server';
 import { message, superValidate, zod } from '$lib/superforms/server';
+import { transports } from '$lib/transport/server';
 import { phoneNumberSchema, verifyOTPSchema } from '$routes/(auth)/validators';
 
 export const load = async ({ url }) => {
@@ -71,7 +71,7 @@ const registerMFA_SMS_WithSeshConfAndSetupSMS: Action = async ({ request, locals
 		auth.provider.pass.MFA.enable({ userId: user.id, sms: phoneNumber }),
 		auth.session.deleteOthers({ userId: user.id, sessionId: session.id }),
 		auth.session.removeTempConf({ sessionId: session.id }).then(() => locals.seshHandler.invalidateCache()),
-		transports.sendEmail.MFAUpdate({ editKind: 'added', email: user.email, mfaLabel: mfaLabels['sms'] }),
+		transports.email.send.MFAChanged({ editKind: 'added', email: user.email, mfaLabel: mfaLabels['sms'] }),
 	]);
 
 	return checkedRedirect(`/account/security/auth`);

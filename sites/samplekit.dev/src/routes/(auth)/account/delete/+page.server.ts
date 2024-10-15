@@ -1,8 +1,8 @@
 import { auth } from '$lib/auth/server';
-import { transports } from '$lib/auth/server';
 import { deleteS3Object, invalidateCloudfront, keyController } from '$lib/cloudStorage/server';
 import { checkedRedirect } from '$lib/http/server';
 import { superValidate, zod } from '$lib/superforms/server';
+import { transports } from '$lib/transport/server';
 import { pluralize } from '$lib/utils/common';
 import { confirmPassSchema, sendSMSTokenSchema, verifyOTPSchema } from '$routes/(auth)/validators';
 import type { VerifierProps } from '$routes/(auth)/components';
@@ -71,7 +71,10 @@ const deleteUserWithSeshConf: Action = async ({ locals }) => {
 		]);
 	}
 
-	await Promise.all([auth.user.delete({ userId: user.id }), transports.sendEmail.delete({ email: user.email })]);
+	await Promise.all([
+		auth.user.delete({ userId: user.id }),
+		transports.email.send.accountDeleted({ email: user.email }),
+	]);
 
 	locals.seshHandler.set({ session: null });
 

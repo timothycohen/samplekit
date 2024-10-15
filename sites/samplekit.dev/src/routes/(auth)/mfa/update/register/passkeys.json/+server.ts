@@ -1,7 +1,7 @@
 import { mfaLabels } from '$lib/auth/common';
 import { auth } from '$lib/auth/server';
-import { transports } from '$lib/auth/server';
 import { checkedRedirect, jsonFail, jsonOk } from '$lib/http/server';
+import { transports } from '$lib/transport/server';
 import type { PostReq } from '.';
 import type { RequestHandler } from '@sveltejs/kit';
 
@@ -31,7 +31,11 @@ const registerMFA_Passkey_WithSeshConfAndPasskey: RequestHandler = async ({ requ
 		auth.session.deleteOthers({ userId: seshUser.user.id, sessionId: seshUser.session.id }),
 		auth.session.removeTempConf({ sessionId: seshUser.session.id }).then(() => locals.seshHandler.invalidateCache()),
 		auth.token.passkeyChallenge.delete({ userId: seshUser.user.id }),
-		transports.sendEmail.MFAUpdate({ editKind: 'added', email: seshUser.user.email, mfaLabel: mfaLabels['passkeys'] }),
+		transports.email.send.MFAChanged({
+			editKind: 'added',
+			email: seshUser.user.email,
+			mfaLabel: mfaLabels['passkeys'],
+		}),
 	]);
 
 	return jsonOk();

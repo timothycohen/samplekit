@@ -1,9 +1,9 @@
 import { error, redirect, type Action } from '@sveltejs/kit';
 import { auth } from '$lib/auth/server';
-import { transports } from '$lib/auth/server';
 import { createLimiter } from '$lib/botProtection/rateLimit/server';
 import { checkedRedirect, sanitizeRedirectUrl } from '$lib/http/server';
 import { message, superValidate, zod } from '$lib/superforms/server';
+import { transports } from '$lib/transport/server';
 import { sendSMSTokenSchema } from '$routes/(auth)/validators';
 
 export const load = () => {

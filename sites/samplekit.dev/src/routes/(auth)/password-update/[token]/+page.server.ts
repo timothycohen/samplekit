@@ -1,8 +1,9 @@
 import { fail as formFail, type Action } from '@sveltejs/kit';
 import platform from 'platform';
-import { auth, transports } from '$lib/auth/server';
+import { auth } from '$lib/auth/server';
 import { checkedRedirect } from '$lib/http/server';
 import { message, superValidate, zod } from '$lib/superforms/server';
+import { transports } from '$lib/transport/server';
 import { createNewPassSchema } from '$routes/(auth)/validators';
 
 export const load = async ({ params }) => {
@@ -47,12 +48,12 @@ const createNewPassFromPwReset: Action<{ token: string }> = async ({ request, pa
 	if (authDetails.method === 'oauth') {
 		await Promise.all([
 			auth.provider.changeToPass({ email, userId, password: createNewPassForm.data.password, provider: 'email' }),
-			transports.sendEmail.changedProviderMethod({ email, newProvider: { kind: 'pass', provider: 'email' } }),
+			transports.email.send.providerMethodChanged({ email, newProvider: { kind: 'pass', provider: 'email' } }),
 		]);
 	} else {
 		const promises = [
 			auth.provider.pass.email.updatePass({ email, newPassword: createNewPassForm.data.password }),
-			transports.sendEmail.passwordChanged({ email }),
+			transports.email.send.passwordChanged({ email }),
 		];
 		if (!authDetails.emailVerified) promises.push(auth.provider.pass.email.verifyEmail({ userId }));
 		await Promise.all(promises);

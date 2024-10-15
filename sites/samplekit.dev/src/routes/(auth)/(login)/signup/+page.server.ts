@@ -1,13 +1,13 @@
 import { fail as formFail, type Action } from '@sveltejs/kit';
 import platform from 'platform';
 import { auth } from '$lib/auth/server';
-import { transports } from '$lib/auth/server';
 import { createLimiter } from '$lib/botProtection/rateLimit/server';
 import { turnstileFormInputName } from '$lib/botProtection/turnstile/common';
 import { validateTurnstile } from '$lib/botProtection/turnstile/server';
 import { checkedRedirect } from '$lib/http/server';
 import { logger } from '$lib/logging/server';
 import { message, superValidate, zod } from '$lib/superforms/server';
+import { transports } from '$lib/transport/server';
 import { signupSchema } from '$routes/(auth)/validators';
 
 const signupLimiter = createLimiter({ id: 'signupWithPassword', limiters: [{ kind: 'ipUa', rate: [3, 'd'] }] });
@@ -85,7 +85,7 @@ const signupWithPassword: Action = async (event) => {
 
 	const { tokenErr, token } = await auth.token.emailVeri.createOrRefresh({ userId: user.id });
 	if (tokenErr) return auth.token.err.toMessage(tokenErr, signupForm);
-	const { transportErr } = await transports.sendEmail.verification({ token, email: user.email });
+	const { transportErr } = await transports.email.send.emailVeriToken({ token, email: user.email });
 	if (transportErr) {
 		logger.error('Unable to send email verification email. Sending user to email-verification page with resend link.');
 	}

@@ -1,10 +1,10 @@
 import { error, type Action } from '@sveltejs/kit';
 import { auth } from '$lib/auth/server';
-import { transports } from '$lib/auth/server';
 import { createLimiter } from '$lib/botProtection/rateLimit/server';
 import { turnstileFormInputName } from '$lib/botProtection/turnstile/common';
 import { validateTurnstile } from '$lib/botProtection/turnstile/server';
 import { message, superValidate, zod } from '$lib/superforms/server';
+import { transports } from '$lib/transport/server';
 import { emailPassResetSchema } from '$routes/(auth)/validators';
 
 export const load = async () => {
@@ -52,7 +52,7 @@ const emailPassReset: Action = async (event) => {
 	const storedUser = await auth.user.get({ email: emailPassResetForm.data.email });
 
 	if (!storedUser) {
-		const { transportErr } = await transports.sendEmail.passwordResetNotFound({
+		const { transportErr } = await transports.email.send.passwordResetNoAccount({
 			email: emailPassResetForm.data.email,
 		});
 		if (transportErr) {
@@ -64,14 +64,14 @@ const emailPassReset: Action = async (event) => {
 
 	const method = await auth.provider.getMethodOrThrow(storedUser.id);
 	if (method === 'oauth') {
-		await transports.sendEmail.noResetWithGoogle({ email: storedUser.email });
+		await transports.email.send.passwordResetNotPassProvider({ email: storedUser.email });
 		return message(emailPassResetForm, { success: 'Sent' });
 	}
 
 	const { tokenErr, token } = await auth.token.pwReset.createOrRefresh({ userId: storedUser.id });
 	if (tokenErr) return auth.token.err.toMessage(tokenErr, emailPassResetForm);
 
-	const { transportErr } = await transports.sendEmail.passwordReset({ token, email: storedUser.email });
+	const { transportErr } = await transports.email.send.passwordResetToken({ token, email: storedUser.email });
 	if (transportErr)
 		return message(emailPassResetForm, { fail: 'Sorry, we are unable to send email at this time.' }, { status: 500 });
 
