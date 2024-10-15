@@ -1,2 +1,3 @@
-export * from './logger';
-export * from './sentry';
+export { logger } from './logger';
+export { getBrowserLogflare } from './logflare';
+export { handleErrorWithSentry, initSentry } from './sentry';

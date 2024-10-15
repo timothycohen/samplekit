@@ -10,7 +10,7 @@ import {
 import { getS3, getRekognition, getCloudfront } from '$lib/cloudStorage/server';
 import { migrateDb, dbConnectedOrExit } from '$lib/db/server/connect';
 import { kv } from '$lib/kv/server';
-import { getBrowserLogflare } from '$lib/logging/client/logger';
+import { getBrowserLogflare } from '$lib/logging/client';
 import { initSentry, getServerLogflare, setupLogger } from '$lib/logging/server';
 import { shopConnectedOrExit } from '$lib/shop/connectedOrExit.server';
 import { INTERCEPT_TRANSPORTS } from '$lib/transport/server';

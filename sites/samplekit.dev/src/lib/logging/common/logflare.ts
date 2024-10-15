@@ -1,4 +1,5 @@
-import { Logger, type Log } from './logger';
+import { Logger } from './logger';
+import type { Log } from './types';
 
 export type FormattedLogflare = {
 	message: string;

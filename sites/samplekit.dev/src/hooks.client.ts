@@ -1,5 +1,5 @@
 import '$lib/initClient';
 
-import { handleErrorWithSentry } from '@sentry/sveltekit';
+import { handleErrorWithSentry } from '$lib/logging/client';
 
 export const handleError = handleErrorWithSentry();
