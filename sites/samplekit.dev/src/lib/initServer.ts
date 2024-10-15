@@ -13,7 +13,9 @@ import { kv } from '$lib/kv/server';
 import { getBrowserLogflare } from '$lib/logging/client/logger';
 import { initSentry, getServerLogflare, setupLogger } from '$lib/logging/server';
 import { shopConnectedOrExit } from '$lib/shop/connectedOrExit.server';
-import { INTERCEPT_TRANSPORTS, getTwilio, getSES } from '$lib/transport/server';
+import { INTERCEPT_TRANSPORTS } from '$lib/transport/server';
+import { getSES } from '$lib/transport/server/email/ses';
+import { getTwilio } from '$lib/transport/server/sms/twilio';
 
 getServerLogflare();
 initSentry();

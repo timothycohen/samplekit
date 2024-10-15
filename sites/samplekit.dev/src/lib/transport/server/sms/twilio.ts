@@ -1,7 +1,7 @@
 import twilio, { type Twilio } from 'twilio';
 import { TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_NUMBER } from '$env/static/private';
 import { logger } from '$lib/logging/server';
-import { INTERCEPT_TRANSPORTS } from './consts';
+import type { SendSMS } from './types';
 
 export const getTwilio = (() => {
 	let twilioClient: Twilio | null = null;
@@ -23,37 +23,16 @@ export const getTwilio = (() => {
 	return get;
 })();
 
-const from = TWILIO_NUMBER;
-
-type Props = { phoneNumber: string; body: string };
-
-const log = ({ phoneNumber, body }: Props) => {
-	// eslint-disable-next-line no-console
-	console.info(`
-From: ${from}
-To: ${phoneNumber}
-Body: ${body}
-`);
-};
-
-const safeSend = async ({ phoneNumber, body }: Props): Promise<{ transportErr: boolean }> => {
+export const sendTwilioSMS: SendSMS = async ({ phoneNumber, body }) => {
 	try {
 		const twilio = getTwilio();
 		if (!twilio) return { transportErr: true };
-		await twilio.messages.create({ body, from, to: phoneNumber });
+		await twilio.messages.create({ body, from: TWILIO_NUMBER, to: phoneNumber });
 		return { transportErr: false };
 	} catch (err) {
 		logger.error(err);
 		return { transportErr: true };
 	}
-};
-
-export const sendSms = async ({ phoneNumber, body }: Props): Promise<{ transportErr: boolean }> => {
-	if (INTERCEPT_TRANSPORTS) {
-		log({ phoneNumber, body });
-		return { transportErr: false };
-	}
-	return await safeSend({ phoneNumber, body });
 };
 
 export const lookupPhoneNumber = async (phoneNumber: string): Promise<string | null> =>

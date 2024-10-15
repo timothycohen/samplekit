@@ -1,7 +1,7 @@
 import { fail as formFail } from '@sveltejs/kit';
 import { auth } from '$lib/auth/server';
-import { transports } from '$lib/auth/server';
 import { checkedRedirect } from '$lib/http/server';
+import { transports } from '$lib/transport/server';
 
 export const load = async ({ locals }) => {
 	const seshUser = await locals.seshHandler.getSessionUser();

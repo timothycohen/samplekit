@@ -1,8 +1,9 @@
 import { fail as formFail, type Action } from '@sveltejs/kit';
 import platform from 'platform';
-import { auth, transports } from '$lib/auth/server';
+import { auth } from '$lib/auth/server';
 import { checkedRedirect } from '$lib/http/server';
 import { message, superValidate, zod } from '$lib/superforms/server';
+import { transports } from '$lib/transport/server';
 import { createNewPassSchema } from '$routes/(auth)/validators';
 
 export const load = async ({ params }) => {

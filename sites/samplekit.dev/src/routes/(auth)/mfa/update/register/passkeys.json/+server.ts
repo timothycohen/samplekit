@@ -1,7 +1,7 @@
 import { mfaLabels } from '$lib/auth/common';
 import { auth } from '$lib/auth/server';
-import { transports } from '$lib/auth/server';
 import { checkedRedirect, jsonFail, jsonOk } from '$lib/http/server';
+import { transports } from '$lib/transport/server';
 import type { PostReq } from '.';
 import type { RequestHandler } from '@sveltejs/kit';
 

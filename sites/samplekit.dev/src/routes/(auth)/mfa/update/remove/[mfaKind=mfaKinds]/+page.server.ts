@@ -1,7 +1,7 @@
 import { mfaKinds, mfaLabels } from '$lib/auth/common';
 import { auth } from '$lib/auth/server';
-import { transports } from '$lib/auth/server';
 import { checkedRedirect, jsonFail } from '$lib/http/server';
+import { transports } from '$lib/transport/server';
 import type { Action } from '@sveltejs/kit';
 
 export const load = async ({ locals }) => {

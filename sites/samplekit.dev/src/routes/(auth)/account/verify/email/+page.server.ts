@@ -1,7 +1,7 @@
 import { fail as formFail, redirect } from '@sveltejs/kit';
 import { auth } from '$lib/auth/server';
-import { transports } from '$lib/auth/server';
 import { sanitizeRedirectUrl } from '$lib/http/server';
+import { transports } from '$lib/transport/server';
 
 const sendEmailVeriToSeshConfEmailLink: App.CommonServerAction = async ({ locals, url }) => {
 	const { user } = await locals.seshHandler.userOrRedirect();

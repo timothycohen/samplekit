@@ -7,7 +7,7 @@ import {
 } from '$env/static/private';
 import { PUBLIC_ORIGIN } from '$env/static/public';
 import { logger } from '$lib/logging/server';
-import { INTERCEPT_TRANSPORTS } from './consts';
+import type { SendEmail } from './types';
 
 export const getSES = (() => {
 	let ses: SESClient | null = null;
@@ -26,35 +26,7 @@ export const getSES = (() => {
 	return get;
 })();
 
-type Props = {
-	from?: string;
-	to: string;
-	dynamicTemplateData: {
-		subject: string;
-		header: string;
-		body: string;
-		button_text: string;
-		href: string;
-		templateId: 'authEmails';
-		PUBLIC_ORIGIN?: string;
-	};
-};
-
-const log = ({ from, to, dynamicTemplateData }: Props) => {
-	// eslint-disable-next-line no-console
-	console.info(`
-From: SampleKit <${from ?? EMAIL_DEFAULT_SENDER}>
-To: ${to}
-Subject: ${dynamicTemplateData.subject}
-Header: ${dynamicTemplateData.header}
-Body: ${dynamicTemplateData.body}
-Button Text: ${dynamicTemplateData.button_text}
-Button Link: ${dynamicTemplateData.href}
-Template ID: ${dynamicTemplateData.templateId}
-`);
-};
-
-const safeSend = async ({ from, to, dynamicTemplateData }: Props): Promise<{ transportErr: boolean }> => {
+export const sendSESEmail: SendEmail = async ({ dynamicTemplateData, to, from }) => {
 	try {
 		const command = new SendTemplatedEmailCommand({
 			Destination: { ToAddresses: [to] },
@@ -69,12 +41,4 @@ const safeSend = async ({ from, to, dynamicTemplateData }: Props): Promise<{ tra
 		logger.error(err);
 		return { transportErr: true };
 	}
-};
-
-export const sendEmail = async (props: Props): Promise<{ transportErr: boolean }> => {
-	if (INTERCEPT_TRANSPORTS) {
-		log(props);
-		return { transportErr: false };
-	}
-	return await safeSend(props);
 };
