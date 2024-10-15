@@ -1,4 +1,3 @@
-import { createConfigDefaults } from './config.js';
 import { createAuthProvider } from './provider/index.js';
 import { createAuthSession } from './session.js';
 import { SessionHandler } from './sessionHandler.js';
@@ -8,7 +7,6 @@ import type {
 	Auth,
 	Config,
 	DbAdapter,
-	RequiredConfig,
 	ServerAuth,
 	TransformProvider,
 	TransformSession,
@@ -27,7 +25,7 @@ export const createAuth = <
 	config,
 	dbAdapter,
 }: {
-	config: RequiredConfig;
+	config: Config;
 	dbAdapter: DbAdapter<User, Provider, ProviderWithoutPass, Session, UserContext, ProviderContext, SessionContext>;
 }): ServerAuth<User, Provider, ProviderWithoutPass, Session, UserContext, ProviderContext, SessionContext> => {
 	const {
@@ -59,30 +57,27 @@ export const createAuth = <
 			}),
 	};
 
-	const configDefaults = createConfigDefaults({ authenticatorName: config.authenticatorName });
-	const fullConfig: Config = { ...configDefaults, ...config };
-
 	return {
-		config: fullConfig,
+		config,
 		createSessionHandler: (middlewareContext) =>
 			new SessionHandler({
 				middlewareContext,
-				sessionHandlerContext: { config: fullConfig, dbSession, dbUserAndSession, transformSession },
+				sessionHandlerContext: { config, dbSession, dbUserAndSession, transformSession },
 			}),
 		provider: createAuthProvider({
-			config: fullConfig,
+			config,
 			dbProvider,
 			transformProvider,
 		}),
-		session: createAuthSession({ config: fullConfig, dbSession, transformSession }),
+		session: createAuthSession({ config, dbSession, transformSession }),
 		token: createAuthToken({
-			config: fullConfig,
+			config,
 			dbProvider,
 			dbToken,
 			transformProvider,
 		}),
 		user: createAuthUser({
-			config: fullConfig,
+			config,
 			dbUser,
 			dbProvider,
 			dbSession,

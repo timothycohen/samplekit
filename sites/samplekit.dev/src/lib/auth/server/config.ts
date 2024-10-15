@@ -1,8 +1,8 @@
+import { createConfig } from '@samplekit/auth/server';
 import { dev } from '$app/environment';
 import { PUBLIC_EFFECTIVE_DOMAIN, PUBLIC_ORIGIN } from '$env/static/public';
-import type { RequiredConfig } from '@samplekit/auth/server';
 
-export const requiredConfig: RequiredConfig = {
+export const config = createConfig({
 	env: {
 		secureCookie: !dev,
 		PUBLIC_ORIGIN,
@@ -19,4 +19,4 @@ export const requiredConfig: RequiredConfig = {
 		rpName: 'SampleKit', // https://simplewebauthn.dev/docs/packages/server
 		rpID: PUBLIC_EFFECTIVE_DOMAIN, // https://www.w3.org/TR/webauthn-2/#rp-id
 	},
-};
+});
