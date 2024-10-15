@@ -241,7 +241,7 @@ const getLimAttemptTable = (tokenName: DB.Token.Kind.LimAttempt) => {
 	assertUnreachable(tokenName);
 };
 
-export const authDbAdapter: DbAdapter<
+export const dbAdapter: DbAdapter<
 	DB.User,
 	DB.Provider,
 	Omit<DB.Provider, 'hashedPassword'>,
