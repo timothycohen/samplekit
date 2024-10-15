@@ -1,5 +1,4 @@
 <script lang="ts" module>
-	import { TabPanelItem } from '$lib/components';
 	import imgSm from './assets/generic-url-state-controller-thumbnail-1200w.webp';
 	import type { RawFrontMatter } from '$lib/articles/schema';
 
@@ -20,7 +19,7 @@
 
 <script lang="ts">
 	import CodeTopper from '$lib/articles/components/CodeTopper.svelte';
-	import { HAnchor, Admonition, TabPanels } from '$lib/components';
+	import { TabPanelItem, HAnchor, Admonition, TabPanels } from '$lib/components';
 
 	const { data } = $props();
 </script>

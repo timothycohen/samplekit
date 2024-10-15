@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { fly } from 'svelte/transition';
-	import { Switch } from '$lib/components';
-	import { LoadingDots } from '$lib/components';
+	import { Switch, LoadingDots } from '$lib/components';
 	import I from '$lib/icons';
 	import { TempValue } from '$lib/stores';
 	import LangSelect from './LangSelect.svelte';
