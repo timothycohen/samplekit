@@ -1,12 +1,11 @@
 import '$lib/initServer';
 
-import { sentryHandle, handleErrorWithSentry } from '@sentry/sveltekit';
-import { type HandleServerError, type Handle } from '@sveltejs/kit';
 import { sequence } from '@sveltejs/kit/hooks';
-import { logger } from '$lib/logging/server';
+import { logger, sentryHandle, handleErrorWithSentry } from '$lib/logging/server';
 import { addSeshHandlerToLocals } from '$routes/(auth)/hooks.server';
 import { handleAccountRedirects } from '$routes/account/hooks.server';
 import { protectStagingDeployments } from '$routes/deployment-access/hooks.server';
+import type { HandleServerError, Handle } from '@sveltejs/kit';
 
 // https://github.com/sveltejs/kit/issues/8549
 const deleteLinkHeaders: Handle = async ({ event, resolve }) => {

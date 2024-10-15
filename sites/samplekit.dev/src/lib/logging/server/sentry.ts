@@ -2,7 +2,6 @@ import * as sentry from '@sentry/sveltekit';
 import { PUBLIC_SENTRY_ENABLED, PUBLIC_SENTRY_DSN } from '$env/static/public';
 import { setupLogger } from './logger';
 
-let mut_sentry: null | typeof sentry = null;
 let mut_initialized = false;
 
 /**
@@ -12,12 +11,8 @@ let mut_initialized = false;
  *
  * Specifically, do not destructure the import in universal code (.svelte, +page.ts, etc.) as it may not exist in one env.
  */
-export const getSentry: () => typeof sentry | null = () => {
-	if (!mut_initialized) initSentry();
-	return mut_sentry;
-};
-
 export const initSentry = () => {
+	if (mut_initialized) return;
 	mut_initialized = true;
 
 	if (PUBLIC_SENTRY_ENABLED !== 'true') {
@@ -34,7 +29,6 @@ export const initSentry = () => {
 	catchStdErr({
 		trappedFn: () => {
 			sentry.init({ dsn: PUBLIC_SENTRY_DSN, tracesSampleRate: 1 });
-			if (!initError) mut_sentry = sentry;
 		},
 		tmpWrite: (str: string) => {
 			if (str.startsWith('Invalid')) initError = true;
@@ -48,6 +42,10 @@ export const initSentry = () => {
 		setupLogger.info('Sentry for server: connected.');
 	}
 };
+
+export const handleErrorWithSentry = sentry.handleErrorWithSentry;
+export const sentryHandle = sentry.sentryHandle;
+export const captureExceptionWithSentry = sentry.captureException;
 
 const catchStdErr = ({ tmpWrite, trappedFn }: { trappedFn: () => void; tmpWrite: (str: string) => boolean }) => {
 	const write = process.stdout.write;
