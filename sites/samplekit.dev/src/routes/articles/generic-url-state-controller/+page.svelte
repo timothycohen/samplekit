@@ -18,7 +18,7 @@
 </script>
 
 <script lang="ts">
-	import CodeTopper from '$lib/articles/components/CodeTopper.svelte';
+	import { CodeTopper } from '$lib/articles/components';
 	import { TabPanelItem, HAnchor, Admonition, TabPanels } from '$lib/components';
 
 	const { data } = $props();

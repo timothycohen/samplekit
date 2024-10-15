@@ -1,8 +1,7 @@
 <script lang="ts">
 	import { fly } from 'svelte/transition';
 	import { dev } from '$app/environment';
-	import { Vaul, Changelog, DateLine, Series, TOC } from '$lib/articles/components';
-	import { FeatureCard } from '$lib/articles/components/card';
+	import { Vaul, Changelog, DateLine, Series, TOC, FeatureCard } from '$lib/articles/components';
 	import { TabPanels, HAnchor, Portal } from '$lib/components';
 	import I from '$lib/icons';
 	import { createCollapsedService, useCollapsedService } from '$lib/services/codeCollapse';

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-	import CardList from '$lib/articles/components/card/CardList.svelte';
+	import { CardList } from '$lib/articles/components';
 	import { featureCards } from '$lib/articles/load';
 </script>
 

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { FeatureCard } from '$lib/articles/components/card';
+	import { FeatureCard } from '$lib/articles/components';
 	import metadata from './generated/metadata';
 </script>
 
