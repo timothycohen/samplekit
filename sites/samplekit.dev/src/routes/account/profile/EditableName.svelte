@@ -1,9 +1,8 @@
 <script lang="ts">
 	import { slide } from 'svelte/transition';
 	import I from '$lib/icons';
-	import { superForm, zodClient } from '$lib/superforms/client';
+	import { superForm, zodClient, type SuperValidated } from '$lib/superforms/client';
 	import { nameSchema } from '$routes/(auth)/validators';
-	import type { SuperValidated } from '$lib/superforms/client';
 
 	interface Props {
 		user: DB.User;

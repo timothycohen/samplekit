@@ -24,8 +24,7 @@
 
 <script lang="ts">
 	import { CodeTopper } from '$lib/articles/components';
-	import { HAnchor } from '$lib/components';
-	import TabPanels from '$lib/components/TabPanels.svelte';
+	import { HAnchor, TabPanels } from '$lib/components';
 	import I from '$lib/icons';
 
 	let showQuizAnswer = $state(false);

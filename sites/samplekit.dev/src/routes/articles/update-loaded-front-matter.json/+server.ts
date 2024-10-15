@@ -15,7 +15,7 @@ import { jsonFail, jsonOk } from '$lib/http/server';
 import { logger } from '$lib/logging/server';
 import prettierConfig from '../../../../prettier.config';
 import { putReqSchema } from '.';
-import type { Result } from '$lib/utils/common/types';
+import type { Result } from '$lib/utils/common';
 import type { RequestHandler } from '@sveltejs/kit';
 import type { Component } from 'svelte';
 
