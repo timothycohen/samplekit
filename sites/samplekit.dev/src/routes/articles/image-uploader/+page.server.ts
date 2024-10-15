@@ -80,11 +80,11 @@ const code = {
 	presigned: processCode([
 		{
 			title: 'presignedUrls.ts',
-			loadRaw: () => import('/src/lib/db/server/schema/image/index.ts?raw'),
+			loadRaw: () => import('/src/lib/db/server/schema/presignedUrls.ts?raw'),
 		},
 		{
 			title: 'presignedUrlsController.ts',
-			loadRaw: () => import('/src/lib/db/server/controllers/image.ts?raw'),
+			loadRaw: () => import('/src/lib/db/server/repository/presigned.ts?raw'),
 		},
 	]),
 	imageSchema: await processCodeDefined({

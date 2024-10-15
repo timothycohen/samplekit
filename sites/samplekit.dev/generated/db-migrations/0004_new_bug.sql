@@ -1,0 +1,1 @@
+ALTER TABLE "presigned_url" ALTER COLUMN "created" SET DEFAULT now();

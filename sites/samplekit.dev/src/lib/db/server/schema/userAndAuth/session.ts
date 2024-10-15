@@ -30,5 +30,3 @@ export const sessions = pgTable('session', {
 	temporaryConfirmationExpires: timestamp('send_time', { mode: 'date' }).notNull(),
 });
 export const sessionSchema = createSelectSchema(sessions);
-
-export type SessionT = typeof sessions.$inferSelect;

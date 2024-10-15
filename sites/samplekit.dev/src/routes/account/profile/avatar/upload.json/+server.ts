@@ -1,4 +1,3 @@
-import { eq } from 'drizzle-orm';
 import { createLimiter } from '$lib/botProtection/rateLimit/server';
 import {
 	createUnsavedUploadCleaner,
@@ -8,7 +7,7 @@ import {
 	keyController,
 	detectModerationLabels,
 } from '$lib/cloudStorage/server';
-import { db, presigned, users } from '$lib/db/server';
+import { db } from '$lib/db/server';
 import { jsonFail, jsonOk } from '$lib/http/server';
 import { toHumanReadableTime } from '$lib/utils/common';
 import { MAX_UPLOAD_SIZE, putReqSchema, type GetRes, type PutRes } from '.';
@@ -33,8 +32,7 @@ const uploadLimiter = createLimiter({
 
 const unsavedUploadCleaner = createUnsavedUploadCleaner({
 	jobDelaySeconds: EXPIRE_SECONDS,
-	getStoredUrl: async ({ userId }) =>
-		(await db.select().from(users).where(eq(users.id, userId)).limit(1))[0]?.avatar?.url,
+	getStoredUrl: async ({ userId }) => (await db.user.get({ userId }))?.avatar?.url,
 });
 
 const getSignedAvatarUploadUrl: RequestHandler = async (event) => {
@@ -57,7 +55,7 @@ const getSignedAvatarUploadUrl: RequestHandler = async (event) => {
 		expireSeconds: EXPIRE_SECONDS,
 	});
 	if (!res) return jsonFail(500, 'Failed to generate upload URL');
-	await presigned.insert({ bucketUrl: keyController.transform.keyToS3Url(key), userId: user.id, key });
+	await db.presigned.insertOrOverwrite({ bucketUrl: keyController.transform.keyToS3Url(key), userId: user.id, key });
 	unsavedUploadCleaner.addDelayedJob({
 		cloudfrontUrl: keyController.transform.keyToCloudfrontUrl(key),
 		userId: user.id,
@@ -73,13 +71,13 @@ const checkAndSaveUploadedAvatar: RequestHandler = async ({ request, locals }) =
 	const parsed = putReqSchema.safeParse(body);
 	if (!parsed.success) return jsonFail(400);
 
-	const presignedObjectUrl = await presigned.get({ userId: user.id });
+	const presignedObjectUrl = await db.presigned.get({ userId: user.id });
 	if (!presignedObjectUrl) return jsonFail(400);
 
 	const cloudfrontUrl = keyController.transform.s3UrlToCloudfrontUrl(presignedObjectUrl.bucketUrl);
 	const imageExists = await fetch(cloudfrontUrl, { method: 'HEAD' }).then((res) => res.ok);
 	if (!imageExists) {
-		await presigned.delete({ userId: user.id });
+		await db.presigned.delete({ userId: user.id });
 		unsavedUploadCleaner.removeJob({ cloudfrontUrl });
 		return jsonFail(400);
 	}
@@ -92,7 +90,7 @@ const checkAndSaveUploadedAvatar: RequestHandler = async ({ request, locals }) =
 
 	if (moderationError) {
 		unsavedUploadCleaner.removeJob({ cloudfrontUrl });
-		await Promise.all([deleteS3Object({ key: newKey, guard: null }), presigned.delete({ userId: user.id })]);
+		await Promise.all([deleteS3Object({ key: newKey, guard: null }), db.presigned.delete({ userId: user.id })]);
 		return jsonFail(422, moderationError.message);
 	}
 
@@ -106,8 +104,8 @@ const checkAndSaveUploadedAvatar: RequestHandler = async ({ request, locals }) =
 
 	unsavedUploadCleaner.removeJob({ cloudfrontUrl });
 	await Promise.all([
-		presigned.delete({ userId: user.id }),
-		db.update(users).set({ avatar: newAvatar }).where(eq(users.id, user.id)),
+		db.presigned.delete({ userId: user.id }),
+		db.user.update({ userId: user.id, values: { avatar: newAvatar } }),
 	]);
 
 	return jsonOk<PutRes>({ savedImg: newAvatar });
@@ -117,7 +115,7 @@ const deleteAvatar: RequestHandler = async ({ locals }) => {
 	const { user } = await locals.seshHandler.userOrRedirect();
 	if (!user.avatar) return jsonFail(404, 'No avatar to delete');
 
-	const promises: Array<Promise<unknown>> = [db.update(users).set({ avatar: null }).where(eq(users.id, user.id))];
+	const promises: Array<Promise<unknown>> = [db.user.update({ userId: user.id, values: { avatar: null } })];
 
 	if (keyController.is.cloudfrontUrl(user.avatar.url)) {
 		const key = keyController.transform.cloudfrontUrlToKey(user.avatar.url);
