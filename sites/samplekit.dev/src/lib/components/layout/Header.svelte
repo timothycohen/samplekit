@@ -5,7 +5,7 @@
 	import DesktopNavItem from './nav/DesktopNavItem.svelte';
 	import MobileNav from './nav/MobileNav.svelte';
 	import MobileNavToggler from './nav/MobileNavToggler.svelte';
-	import { useMobileNavCtx } from './nav/ctx.svelte';
+	import { useMobileNavCtx } from './nav/mobileNav.ctx.svelte';
 	import { getDesktopNavRoutes, getMobileNavRoutes } from './nav/routes';
 
 	type Props = {

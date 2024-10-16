@@ -1,9 +1,9 @@
 <script lang="ts">
-	import { useTurnstileLoadedFlag } from './turnstileLoaded.ctx.svelte';
+	import { useTurnstileLoadedFlagCtx } from './turnstileLoaded.ctx.svelte';
 	import type { Turnstile } from './turnstile.svelte';
 
 	const { turnstile }: { turnstile: Turnstile } = $props();
-	const turnstileLoaded = useTurnstileLoadedFlag();
+	const turnstileLoaded = useTurnstileLoadedFlagCtx();
 	const onload = () => {
 		turnstileLoaded.flag = true;
 	};

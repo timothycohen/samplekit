@@ -2,8 +2,8 @@ import { derived, get, type Readable } from 'svelte/store';
 import { browser } from '$app/environment';
 import { goto } from '$app/navigation';
 import { page } from '$app/stores';
-import { defineCtx } from '$lib/svelte-context';
 import { createFlagParam, createSelectParam, createMinMaxParams, createStringParam } from '$lib/svelte-stores';
+import { defineCtx } from '$lib/utils/client';
 import { type SortItem, defaultSortItem, maxPrice, paramNames, sortItems } from '../searchAndFilter';
 
 const [getCtx, setCtx] = defineCtx<{

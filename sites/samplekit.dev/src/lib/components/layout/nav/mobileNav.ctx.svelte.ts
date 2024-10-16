@@ -1,4 +1,4 @@
-import { defineCtx } from '$lib/svelte-context';
+import { defineCtx } from '$lib/utils/client';
 import { MobileNavController } from './mobileNavController.svelte';
 
 const [getCtx, setCtx] = defineCtx<{ mobileNav: MobileNavController; position: 'left' | 'center' }>();

@@ -1,4 +1,4 @@
-import { defineCtx } from '$lib/svelte-context';
+import { defineCtx } from '$lib/utils/client';
 import { ThemeController, type InitialTheme } from './themeController.svelte';
 import { getSystemScheme } from './themeUtils';
 

@@ -15,7 +15,7 @@
 	import I from '$lib/icons';
 	import PatternWrapper from './PatternWrapper.svelte';
 	import TabPanelItem from './TabPanelItem.svelte';
-	import { useCollapsedService } from './ctx.svelte';
+	import { useCollapsedCtx } from './collapsed.ctx.svelte';
 
 	interface Props {
 		files: Array<TabPanel>;
@@ -35,7 +35,7 @@
 		},
 	});
 
-	const globalCollapsed = useCollapsedService();
+	const globalCollapsed = useCollapsedCtx();
 	$effect(() => {
 		collapsed = globalCollapsed.true;
 	});
