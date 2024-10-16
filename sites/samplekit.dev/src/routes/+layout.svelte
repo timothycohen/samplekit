@@ -8,7 +8,7 @@
 	import { createTurnstileLoadedFlag } from '$lib/botProtection/turnstile/client';
 	import { Header, SEO } from '$lib/components';
 	import { createMobileNavCtx } from '$lib/components/layout/nav/ctx.svelte';
-	import { createThemeControllerCtx } from '$lib/styles';
+	import { createThemeControllerCtx, ThemeToggler } from '$lib/styles';
 
 	const { children, data } = $props();
 
@@ -37,7 +37,9 @@
 <SEO meta={$page.data.meta} />
 
 {#if $page.data.layout.showHeader}
-	<Header />
+	<Header>
+		<ThemeToggler />
+	</Header>
 {/if}
 
 <div class="{$page.data.layout.showHeader ? 'min-h-screen-nav' : 'min-h-screen'} relative flex flex-col">

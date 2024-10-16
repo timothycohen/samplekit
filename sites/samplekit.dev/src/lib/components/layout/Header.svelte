@@ -1,13 +1,18 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
+	import { onMount, type Snippet } from 'svelte';
 	import { page } from '$app/stores';
 	import LogoLink from '../LogoLink.svelte';
-	import ThemeToggler from './ThemeToggler.svelte';
 	import DesktopNavItem from './nav/DesktopNavItem.svelte';
 	import MobileNav from './nav/MobileNav.svelte';
 	import MobileNavToggler from './nav/MobileNavToggler.svelte';
 	import { useMobileNavCtx } from './nav/ctx.svelte';
 	import { getDesktopNavRoutes, getMobileNavRoutes } from './nav/routes';
+
+	type Props = {
+		children?: Snippet;
+	};
+
+	const { children }: Props = $props();
 
 	const { mobileNav, position } = useMobileNavCtx();
 
@@ -48,7 +53,7 @@
 				</ul>
 			</nav>
 
-			<ThemeToggler />
+			{@render children?.()}
 
 			<span class="flex items-center justify-center md:hidden">
 				<MobileNavToggler toggle={mobileNav.toggle} mobileNavOpen={mobileNav.open} />
