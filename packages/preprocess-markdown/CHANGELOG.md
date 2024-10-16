@@ -1,5 +1,11 @@
 # @samplekit/preprocess-markdown
 
+## 1.0.5
+
+### Patch Changes
+
+- update repository url ([`c7d2d00f3e01627f12ad514778f4f06eb52d02e4`](https://github.com/timothycohen/samplekit/commit/c7d2d00f3e01627f12ad514778f4f06eb52d02e4))
+
 ## 1.0.4
 
 ### Patch Changes
