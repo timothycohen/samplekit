@@ -1,6 +1,6 @@
 {
 	"name": "svelte-pp-markdown",
-	"version": "1.0.3",
+	"version": "1.0.4",
 	"private": true,
 	"displayName": "Svelte Markdown Preprocessor",
 	"description": "Syntax highlighting for Markdown in Svelte HTML comments.",
