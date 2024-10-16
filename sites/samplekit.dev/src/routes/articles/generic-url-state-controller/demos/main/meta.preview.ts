@@ -7,8 +7,8 @@ export default [
 		title: 'searchAndFilterService.ts',
 		loadRaw: () => import('/src/routes/shop/services/searchAndFilter/defineService.ts?raw'),
 	},
-	{ title: 'params.ts', loadRaw: () => import('/src/lib/stores/params/params.ts?raw') },
-	{ title: 'paramsGeneric.ts', loadRaw: () => import('/src/lib/stores/params/paramsGeneric.ts?raw') },
+	{ title: 'params.ts', loadRaw: () => import('/src/lib/svelte-stores/params/params.ts?raw') },
+	{ title: 'paramsGeneric.ts', loadRaw: () => import('/src/lib/svelte-stores/params/paramsGeneric.ts?raw') },
 	{
 		title: 'Available.svelte',
 		loadRaw: () => import('/src/routes/shop/components/searchAndFilter/Available.svelte?raw'),

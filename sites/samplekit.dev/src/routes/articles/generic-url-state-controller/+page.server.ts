@@ -12,7 +12,7 @@ const typedVariantFiles = (() => {
 	];
 	const pattern = new RegExp(`(${delimiters.map((delimiter) => `(?=${delimiter})`).join('|')})`);
 
-	const rawCode = import('/src/lib/stores/params/params.ts?raw').then(({ default: rawCode }) => {
+	const rawCode = import('/src/lib/svelte-stores/params/params.ts?raw').then(({ default: rawCode }) => {
 		return rawCode.split(pattern).filter((item) => item.trim() !== '');
 	});
 
@@ -44,7 +44,7 @@ const { paramGeneric, paramsGeneric, paramsGenericInterface } = (() => {
 	const delimiters = ['const createUrl', 'interface ParamsGeneric<', 'export const createParams'];
 	const pattern = new RegExp(`(${delimiters.map((delimiter) => `(?=${delimiter})`).join('|')})`);
 
-	const rawCode = import('/src/lib/stores/params/paramsGeneric.ts?raw').then(({ default: rawCode }) => {
+	const rawCode = import('/src/lib/svelte-stores/params/paramsGeneric.ts?raw').then(({ default: rawCode }) => {
 		return rawCode.split(pattern).filter((item) => item.trim() !== '');
 	});
 

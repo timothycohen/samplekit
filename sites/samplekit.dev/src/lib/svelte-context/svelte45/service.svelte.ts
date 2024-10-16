@@ -1,4 +1,4 @@
-import { CookieClientStorage } from '$lib/runes/storage.svelte';
+import { CookieClientStorage } from '$lib/svelte-runes/storage.svelte';
 
 export class Svelte45Controller {
 	#prefers = $state() as 4 | 5;

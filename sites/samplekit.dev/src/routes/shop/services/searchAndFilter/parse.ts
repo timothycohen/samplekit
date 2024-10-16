@@ -1,4 +1,4 @@
-import { cleanMinMaxStr } from '$lib/stores';
+import { cleanMinMaxStr } from '$lib/svelte-stores';
 import { paramNames, sortItems, defaultSortItem, maxPrice, type SearchQuery } from './consts';
 
 /**

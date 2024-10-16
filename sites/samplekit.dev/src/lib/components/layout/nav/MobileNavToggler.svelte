@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { keyboard } from '$lib/actions';
+	import { keyboard } from '$lib/svelte-actions';
 
 	interface Props {
 		mobileNavOpen: boolean;

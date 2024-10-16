@@ -1,6 +1,6 @@
 <script lang="ts">
 	// svg from https://toggles.dev/
-	import { clickOn } from '$lib/actions';
+	import { clickOn } from '$lib/svelte-actions';
 
 	interface Props {
 		modeApplied: 'day' | 'night';

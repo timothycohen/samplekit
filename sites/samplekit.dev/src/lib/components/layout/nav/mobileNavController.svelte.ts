@@ -1,4 +1,4 @@
-import { keyboard, trapFocus } from '$lib/actions';
+import { keyboard, trapFocus } from '$lib/svelte-actions';
 
 /** ### Progressive enhancement for the mobile nav:
  * 1) Traps the tab focus in the opened menu.

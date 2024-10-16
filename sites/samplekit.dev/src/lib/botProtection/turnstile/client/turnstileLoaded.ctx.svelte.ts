@@ -1,4 +1,4 @@
-import { defineCtx } from '$lib/context';
+import { defineCtx } from '$lib/svelte-context';
 
 const [getCtx, setCtx] = defineCtx<{ flag: boolean }>();
 

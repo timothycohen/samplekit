@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-	import { keyboard } from '$lib/actions';
 	import I from '$lib/icons';
+	import { keyboard } from '$lib/svelte-actions';
 	import Self from './SidebarRoute.svelte';
 	import type { RouteLeaf, RouteGroup } from './routes';
 

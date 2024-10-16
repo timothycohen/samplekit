@@ -33,7 +33,7 @@
 ```svelte
 <script lang="ts">
 	import { writable } from 'svelte/store'
-	import { searchParams, searchParam } from '$lib/stores';
+	import { searchParams, searchParam } from '$lib/svelte-stores';
 
 	const store = writable<string | null>(null)
 	$store = 'hello';

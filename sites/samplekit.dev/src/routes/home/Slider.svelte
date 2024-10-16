@@ -2,7 +2,7 @@
 	import { fade } from 'svelte/transition';
 	import { ScrollIndicator } from '$lib/components';
 	import I from '$lib/icons';
-	import { AccordionSlider } from '$lib/stores';
+	import { AccordionSlider } from '$lib/svelte-stores';
 
 	import auth_1420_jpeg from './assets/auth-1420w.jpeg';
 	import auth_1420_webp from './assets/auth-1420w.webp';

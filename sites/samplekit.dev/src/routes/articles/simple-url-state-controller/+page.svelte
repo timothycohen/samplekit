@@ -6,7 +6,7 @@
 	export const metadata = {
 		title: 'Simple URL State Controller',
 		implementationPath: '/articles/simple-url-state-controller#demo',
-		srcCodeHref: 'https://github.com/timothycohen/samplekit/tree/main/sites/samplekit.dev/src/lib/stores/params',
+		srcCodeHref: 'https://github.com/timothycohen/samplekit/tree/main/sites/samplekit.dev/src/lib/svelte-stores/params',
 		description: 'Store state in the URL with a few simple Svelte stores.',
 		publishedAt: new Date('2024-03-07 13:29:34 -0500'),
 		authors: [{ name: 'Tim Cohen', email: 'contact@timcohen.dev' }],
@@ -22,7 +22,7 @@
 	import { CodeTopper } from '$lib/articles/components';
 	import { HAnchor, Admonition } from '$lib/components';
 	import I from '$lib/icons';
-	import { searchParam } from '$lib/stores';
+	import { searchParam } from '$lib/svelte-stores';
 
 	const setSwitch = searchParam('set-switch');
 	const toggleSwitch = searchParam('toggle-switch');
@@ -482,7 +482,7 @@ shiki-end -->
 <!-- shiki-start
 ```svelte
 <script lang="ts">
-	import { searchParam } from '$lib/stores';
+	import { searchParam } from '$lib/svelte-stores';
 
 	const singleSearchParam = searchParam('single-search-param');
 	const easter = searchParam('easter', { clean: (v) => (v === 'egg' ? '🐰' : v) });

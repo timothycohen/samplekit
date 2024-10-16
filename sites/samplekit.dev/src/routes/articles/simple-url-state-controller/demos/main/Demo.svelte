@@ -2,7 +2,7 @@
 	import { derived } from 'svelte/store';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
-	import { searchParam, searchParams } from '$lib/stores';
+	import { searchParam, searchParams } from '$lib/svelte-stores';
 	import FilterInputs from './FilterInputs.svelte';
 	import Posts from './Posts.svelte';
 	import { loadDummyData } from './demoData';
