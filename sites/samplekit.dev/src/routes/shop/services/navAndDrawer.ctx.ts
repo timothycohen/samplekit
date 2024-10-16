@@ -2,7 +2,7 @@ import { createDialog } from '@melt-ui/svelte';
 import { get, writable, type Writable } from 'svelte/store';
 import { browser } from '$app/environment';
 import { navigating } from '$app/stores';
-import { defineContext } from '$lib/utils/client';
+import { defineCtx } from '$lib/context';
 
 type DesktopNav = {
 	menuUnderneath: boolean;
@@ -16,7 +16,7 @@ type MobileDrawer = {
 	showSortAndFilters: boolean;
 };
 
-const [getService, setService] = defineContext<{
+const [getCtx, setCtx] = defineCtx<{
 	desktopNav: Writable<DesktopNav> & { collapseOnScroll: () => { destroy: () => void } };
 	desktopDrawer: Writable<DesktopDrawer>;
 	mobileDrawer: Writable<MobileDrawer>;
@@ -82,7 +82,7 @@ const createNavService = () => {
 
 	desktopNav.collapseOnScroll = collapseOnScroll;
 
-	setService({ desktopNav, desktopDrawer, mobileDrawer, drawerProps, closeOnNavListener });
+	setCtx({ desktopNav, desktopDrawer, mobileDrawer, drawerProps, closeOnNavListener });
 };
 
-export { createNavService, getService as useNavService };
+export { createNavService, getCtx as useNavService };

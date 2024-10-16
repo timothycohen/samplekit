@@ -11,7 +11,7 @@ function get<T>(key: string | symbol): () => T {
 	return () => getContext(key) as T;
 }
 
-export function defineContext<T>(key: string | symbol = Symbol()): [() => T, (service: T) => T] {
+export function defineCtx<T>(key: string | symbol = Symbol()): [() => T, (service: T) => T] {
 	return [
 		get<T>(key),
 		(service: T) => {

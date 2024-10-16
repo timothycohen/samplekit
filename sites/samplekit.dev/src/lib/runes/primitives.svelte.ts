@@ -1,4 +1,4 @@
-export class BoolService {
+export class BoxedBool {
 	#true = $state() as { true: boolean };
 
 	constructor(initial: boolean) {

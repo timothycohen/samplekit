@@ -1,6 +1,6 @@
 import { get } from 'svelte/store';
 import { page } from '$app/stores';
-import { defineContext } from '$lib/utils/client';
+import { defineCtx } from '$lib/context';
 import {
 	getCartItems as getItems,
 	removeCartItem as removeItem,
@@ -9,7 +9,7 @@ import {
 } from '$routes/shop/cart.json';
 import { handleToPath, type CartWithPaths, DEFAULT_SELECTED_OPTION } from '$routes/shop/utils';
 
-const [getCtx, setCtx] = defineContext<{
+const [getCtx, setCtx] = defineCtx<{
 	value: CartWithPaths | null;
 	drawer: boolean;
 	addItem: typeof addItem;

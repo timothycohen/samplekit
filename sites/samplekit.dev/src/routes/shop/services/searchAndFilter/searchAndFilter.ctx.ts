@@ -2,11 +2,11 @@ import { derived, get, type Readable } from 'svelte/store';
 import { browser } from '$app/environment';
 import { goto } from '$app/navigation';
 import { page } from '$app/stores';
+import { defineCtx } from '$lib/context';
 import { createFlagParam, createSelectParam, createMinMaxParams, createStringParam } from '$lib/stores';
-import { defineContext } from '$lib/utils/client';
 import { type SortItem, defaultSortItem, maxPrice, paramNames, sortItems } from './consts';
 
-const [getService, setService] = defineContext<{
+const [getCtx, setCtx] = defineCtx<{
 	params: {
 		sortBy: ReturnType<typeof createSelectParam<SortItem['value']>>;
 		query: ReturnType<typeof createStringParam>;
@@ -70,7 +70,7 @@ const createSearchAndFilterService = () => {
 		pushToUrl();
 	}
 
-	setService({
+	setCtx({
 		params,
 		pullFromUrl,
 		pushToUrl,
@@ -79,4 +79,4 @@ const createSearchAndFilterService = () => {
 	});
 };
 
-export { createSearchAndFilterService, getService as useSearchAndFilterService };
+export { createSearchAndFilterService, getCtx as useSearchAndFilterService };

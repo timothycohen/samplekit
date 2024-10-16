@@ -1,6 +1,6 @@
 import { Turnstile } from '$lib/botProtection/turnstile/client';
-import { defineContext } from '$lib/utils/client';
+import { defineCtx } from '$lib/context';
 
-const [get, set] = defineContext<Turnstile>();
-export const createTurnstileCtx = () => set(new Turnstile());
-export const useTurnstileCtx = get;
+const [getCtx, setCtx] = defineCtx<Turnstile>();
+export const createTurnstileCtx = () => setCtx(new Turnstile());
+export const useTurnstileCtx = getCtx;

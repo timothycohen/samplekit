@@ -1,2 +1,2 @@
-export * from './defineContext';
+export * from './defineCtx';
 export * from './storage';
