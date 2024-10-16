@@ -1,6 +1,6 @@
 import { get } from 'svelte/store';
 import { page } from '$app/stores';
-import { defineCtx } from '$lib/context';
+import { defineCtx } from '$lib/svelte-context';
 import {
 	getCartItems as getItems,
 	removeCartItem as removeItem,

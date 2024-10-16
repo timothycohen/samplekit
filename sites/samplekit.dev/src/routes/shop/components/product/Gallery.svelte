@@ -1,6 +1,6 @@
 <script lang="ts">
 	import I from '$lib/icons';
-	import { createNumParam } from '$lib/stores';
+	import { createNumParam } from '$lib/svelte-stores';
 	import { GridTileImage } from '..';
 	import type { Image } from '$lib/shop';
 

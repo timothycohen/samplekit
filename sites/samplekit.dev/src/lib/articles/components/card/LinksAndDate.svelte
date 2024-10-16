@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { clickOn } from '$lib/actions';
 	import I from '$lib/icons';
+	import { clickOn } from '$lib/svelte-actions';
 	import type { LoadedFrontMatter } from '$lib/articles/schema';
 
 	const {

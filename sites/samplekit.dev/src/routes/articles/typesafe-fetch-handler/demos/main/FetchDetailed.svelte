@@ -2,7 +2,7 @@
 	import { fly } from 'svelte/transition';
 	import { Switch, LoadingDots } from '$lib/components';
 	import I from '$lib/icons';
-	import { TempValue } from '$lib/stores';
+	import { TempValue } from '$lib/svelte-stores';
 	import LangSelect from './LangSelect.svelte';
 	import { type Lang, langOptions } from './lang.service.common';
 	import { getRandomColor as get } from './index';

@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { keyboard } from '$lib/actions';
 	import { useThemeControllerCtx, ThemeSwitchDayNightSystem } from '$lib/styles';
+	import { keyboard } from '$lib/svelte-actions';
 
 	const themeController = useThemeControllerCtx();
 

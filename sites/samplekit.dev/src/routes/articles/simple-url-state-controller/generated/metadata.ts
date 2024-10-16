@@ -4,7 +4,7 @@ import imgLg from '/src/routes/articles/simple-url-state-controller/assets/simpl
 export default {
 	title: 'Simple URL State Controller',
 	implementationPath: '/articles/simple-url-state-controller#demo',
-	srcCodeHref: 'https://github.com/timothycohen/samplekit/tree/main/sites/samplekit.dev/src/lib/stores/params',
+	srcCodeHref: 'https://github.com/timothycohen/samplekit/tree/main/sites/samplekit.dev/src/lib/svelte-stores/params',
 	description: 'Store state in the URL with a few simple Svelte stores.',
 	publishedAt: new Date('2024-03-07T18:29:34.000Z'),
 	authors: [{ name: 'Tim Cohen', email: 'contact@timcohen.dev' }],

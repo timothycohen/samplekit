@@ -3,8 +3,8 @@
 	import { dev } from '$app/environment';
 	import { Vaul, Changelog, DateLine, Series, TOC, FeatureCard } from '$lib/articles/components';
 	import { TabPanels, HAnchor, Portal } from '$lib/components';
-	import { createCollapsedService, useCollapsedService } from '$lib/context/codeCollapse';
 	import I from '$lib/icons';
+	import { createCollapsedService, useCollapsedService } from '$lib/svelte-context/codeCollapse';
 	import { pluralize } from '$lib/utils/common';
 	import { updateLoadedFrontMatter } from './update-loaded-front-matter.json';
 

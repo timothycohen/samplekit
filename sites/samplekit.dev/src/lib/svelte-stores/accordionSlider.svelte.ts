@@ -1,4 +1,4 @@
-import { ActiveIndex, PausableTweened } from '$lib/stores';
+import { ActiveIndex, PausableTweened } from '$lib/svelte-stores';
 
 //#region Props & Types
 type PropsDefaults = {

@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { fade, fly } from 'svelte/transition';
-	import { windowEscape } from '$lib/actions';
 	import { Notice } from '$lib/components';
 	import I from '$lib/icons';
+	import { windowEscape } from '$lib/svelte-actions';
 	import { RemoveFromCartBtn } from '$routes/shop/components';
 	import { useCartCtx } from '$routes/shop/services';
 	import { DEFAULT_SELECTED_OPTION, formatPrice } from '$routes/shop/utils';

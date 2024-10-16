@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { useCollapsedService } from '$lib/context/codeCollapse';
 	import I from '$lib/icons';
+	import { useCollapsedService } from '$lib/svelte-context/codeCollapse';
 	import Copy from './Copy.svelte';
 	import type { Snippet } from 'svelte';
 
