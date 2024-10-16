@@ -8,19 +8,19 @@ const code = {
 		},
 		{
 			title: 'ImageCrop.svelte',
-			loadRaw: () => import('/src/lib/image/client/ImageCrop.svelte?raw'),
+			loadRaw: () => import('/src/lib/image/components/ImageCrop.svelte?raw'),
 		},
 		{
 			title: 'ImageCardBtns.svelte',
-			loadRaw: () => import('/src/lib/image/client/ImageCardBtns.svelte?raw'),
+			loadRaw: () => import('/src/lib/image/components/ImageCardBtns.svelte?raw'),
 		},
 		{
 			title: 'ImageCardOverlays.svelte',
-			loadRaw: () => import('/src/lib/image/client/ImageCardOverlays.svelte?raw'),
+			loadRaw: () => import('/src/lib/image/components/ImageCardOverlays.svelte?raw'),
 		},
 		{
 			title: 'UploadProgress.svelte',
-			loadRaw: () => import('/src/lib/image/client/UploadProgress.svelte?raw'),
+			loadRaw: () => import('/src/lib/image/components/UploadProgress.svelte?raw'),
 		},
 		{
 			title: 'ConfirmDelAvatarModal.svelte',

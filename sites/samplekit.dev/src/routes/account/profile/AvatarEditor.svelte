@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { fade } from 'svelte/transition';
 	import { FileInput } from '$lib/components';
-	import { ImageCrop, UploadProgress, ImageCardBtns, ImageCardOverlays } from '$lib/image/client';
+	import { ImageCrop, UploadProgress, ImageCardBtns, ImageCardOverlays } from '$lib/image/components';
 	import { objectStorage, CropImgUploadController } from '$lib/object-storage/client';
 	import ConfirmDelAvatarModal from './ConfirmDelAvatarModal.svelte';
 	import { updateAvatarCrop } from './avatar/crop.json';

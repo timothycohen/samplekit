@@ -1,6 +1,6 @@
 <script lang="ts">
 	import I from '$lib/icons';
-	import type { CropValue } from '$lib/image/common';
+	import type { CropValue } from '../common';
 
 	interface Props {
 		img?:

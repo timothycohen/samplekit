@@ -6,7 +6,7 @@
 	import { writable } from 'svelte/store';
 	import { fade } from 'svelte/transition';
 	import { Avatar } from '$lib/components';
-	import { UploadProgress, ImageCardBtns, ImageCardOverlays } from '$lib/image/client';
+	import { UploadProgress, ImageCardBtns, ImageCardOverlays } from '$lib/image/components';
 	import img_owl from '$routes/articles/image-uploader/assets/owl-400w.webp';
 	import img_smoky from '$routes/articles/image-uploader/assets/smoky-400w.webp';
 	import type { CropControllerState } from '$lib/object-storage/client';

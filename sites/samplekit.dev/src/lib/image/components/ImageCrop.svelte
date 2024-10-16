@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { CropWindow, defaultCropValue } from '$lib/image/client';
-	import type { CropValue } from '$lib/image/common';
+	import { CropWindow, defaultCropValue } from '../client';
+	import type { CropValue } from '../common';
 
 	interface Props {
 		url: string;
