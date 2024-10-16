@@ -1,5 +1,5 @@
-import platform from 'platform';
 import { auth } from '$lib/auth/server';
+import { getDeviceInfo } from '$lib/device-info';
 import { checkedRedirect } from '$lib/http/server';
 import type { RequestHandler } from '@sveltejs/kit';
 
@@ -16,8 +16,6 @@ const verifyEmailWithEmailVeri: RequestHandler<{ token: string }> = async ({
 
 	const res = await locals.seshHandler.getSessionUser();
 
-	const pf = platform.parse(request.headers.get('user-agent') ?? undefined);
-
 	const [session] = await Promise.all([
 		auth.session.deleteAll({ userId }).then(() =>
 			auth.session.create(
@@ -28,7 +26,7 @@ const verifyEmailWithEmailVeri: RequestHandler<{ token: string }> = async ({
 					awaitingEmailVeri: false,
 					persistent: res?.session.persistent ?? false,
 				},
-				{ os: pf.os?.family ?? null, browser: pf.name ?? null, ip: getClientAddress() },
+				getDeviceInfo({ headers: request.headers, getClientAddress }),
 			),
 		),
 		auth.provider.pass.email.verifyEmail({ userId }),

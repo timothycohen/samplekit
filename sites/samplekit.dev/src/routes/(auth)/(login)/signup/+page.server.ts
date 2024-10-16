@@ -1,8 +1,8 @@
 import { fail as formFail, type Action } from '@sveltejs/kit';
-import platform from 'platform';
 import { auth } from '$lib/auth/server';
 import { turnstileFormInputName } from '$lib/botProtection/turnstile/common';
 import { validateTurnstile } from '$lib/botProtection/turnstile/server';
+import { getDeviceInfo } from '$lib/device-info';
 import { checkedRedirect } from '$lib/http/server';
 import { logger } from '$lib/logging/server';
 import { createLimiter } from '$lib/rate-limit/server';
@@ -71,7 +71,6 @@ const signupWithPassword: Action = async (event) => {
 		return message(signupForm, { fail: rateCheck.humanTryAfter('new accounts') }, { status: 429 });
 	}
 
-	const pf = platform.parse(request.headers.get('user-agent') ?? undefined);
 	const session = await auth.session.create(
 		{
 			userId: user.id,
@@ -79,7 +78,7 @@ const signupWithPassword: Action = async (event) => {
 			awaitingEmailVeri: true,
 			persistent: signupForm.data.persistent,
 		},
-		{ os: pf.os?.family ?? null, browser: pf.name ?? null, ip: getClientAddress() },
+		getDeviceInfo({ headers: request.headers, getClientAddress }),
 	);
 	locals.seshHandler.set({ session });
 

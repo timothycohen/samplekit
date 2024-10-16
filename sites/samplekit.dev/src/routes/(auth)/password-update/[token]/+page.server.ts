@@ -1,6 +1,6 @@
 import { fail as formFail, type Action } from '@sveltejs/kit';
-import platform from 'platform';
 import { auth } from '$lib/auth/server';
+import { getDeviceInfo } from '$lib/device-info';
 import { checkedRedirect } from '$lib/http/server';
 import { message, superValidate, zod } from '$lib/superforms/server';
 import { transports } from '$lib/transport/server';
@@ -59,10 +59,9 @@ const createNewPassFromPwReset: Action<{ token: string }> = async ({ request, pa
 		await Promise.all(promises);
 	}
 
-	const pf = platform.parse(request.headers.get('user-agent') ?? undefined);
 	const session = await auth.session.create(
 		{ userId, awaitingMFA, awaitingEmailVeri: false, persistent: createNewPassForm.data.persistent },
-		{ os: pf.os?.family ?? null, browser: pf.name ?? null, ip: getClientAddress() },
+		getDeviceInfo({ headers: request.headers, getClientAddress }),
 	);
 	locals.seshHandler.set({ session });
 

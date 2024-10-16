@@ -1,8 +1,8 @@
 import { redirect, type RequestHandler } from '@sveltejs/kit';
-import platform from 'platform';
 import { GOOGLE_OAUTH_CLIENT_SECRET } from '$env/static/private';
 import { PUBLIC_GOOGLE_OAUTH_CLIENT_ID } from '$env/static/public';
 import { auth } from '$lib/auth/server';
+import { getDeviceInfo } from '$lib/device-info';
 import { checkedRedirect } from '$lib/http/server';
 import { logger } from '$lib/logging/server';
 import { transports } from '$lib/transport/server';
@@ -31,7 +31,6 @@ const changeToGoogleProvider: RequestHandler = async ({ url, cookies, locals, re
 		return redirect(302, '/change-to-google?error=email-mismatch');
 	}
 
-	const pf = platform.parse(request.headers.get('user-agent') ?? undefined);
 	const [session] = await Promise.all([
 		auth.session.deleteAll({ userId: user.id }).then(() =>
 			auth.session.create(
@@ -41,7 +40,7 @@ const changeToGoogleProvider: RequestHandler = async ({ url, cookies, locals, re
 					awaitingEmailVeri: false,
 					persistent: oldSession.persistent,
 				},
-				{ os: pf.os?.family ?? null, browser: pf.name ?? null, ip: getClientAddress() },
+				getDeviceInfo({ headers: request.headers, getClientAddress }),
 			),
 		),
 		auth.provider.changeToOAuth({ userId: user.id, provider: 'google' }),
