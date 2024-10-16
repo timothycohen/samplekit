@@ -1,6 +1,6 @@
 import { PUBLIC_SHOPIFY_STORE_DOMAIN } from '$env/static/public';
 import { shop } from '$lib/shop';
-import { handleToPath, type CollectionWithPath, type MenuWithPath } from '$routes/shop/utils';
+import { handleToPath, type CollectionWithPath, type MenuWithPath } from '$routes/shop/lib/utils';
 
 export const load = async ({ fetch }) => {
 	const menu: MenuWithPath = (await shop.menu.get({ handle: 'main-menu', fetch })).map((item) => ({

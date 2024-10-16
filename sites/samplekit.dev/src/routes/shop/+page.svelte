@@ -1,10 +1,10 @@
 <script lang="ts">
-	import { Carousel, ThreeItemGrid } from '$routes/shop/components';
-	import { useNavService } from './services';
+	import { Carousel, ThreeItemGrid } from '$routes/shop/lib/components';
+	import { useNavCtx } from './lib/ctx';
 
 	const { data } = $props();
 
-	const { desktopNav, desktopDrawer, mobileDrawer } = useNavService();
+	const { desktopNav, desktopDrawer, mobileDrawer } = useNavCtx();
 	$desktopNav = { menuUnderneath: false, showDrawerToggle: true };
 	$desktopDrawer = { showSortAndFilters: false };
 	$mobileDrawer = { showSearch: true, showSortAndFilters: false };
