@@ -1,11 +1,11 @@
 import { fail as formFail } from '@sveltejs/kit';
 import { createLimiter } from '$lib/rate-limit/server';
-import { deploymentAccessController } from './controller';
+import { deploymentAccess } from './repository';
 
 const signinLimiter = createLimiter({ id: 'deployment-access-signin', limiters: [{ kind: 'ipUa', rate: [5, '5m'] }] });
 
 export const load = async ({ cookies }) => {
-	return { deploymentAuth: await deploymentAccessController.countAuthenticatedSessions({ cookies }) };
+	return { deploymentAuth: await deploymentAccess.countAuthenticatedSessions({ cookies }) };
 };
 
 const signin: App.CommonServerAction = async (event) => {
@@ -19,7 +19,7 @@ const signin: App.CommonServerAction = async (event) => {
 	if (typeof accessToken !== 'string')
 		return formFail(400, { fail: `Missing token. ${rateCheck.humanAttemptsRemaining}` });
 
-	const { success } = await deploymentAccessController.createSession({ accessToken, cookies });
+	const { success } = await deploymentAccess.createSession({ accessToken, cookies });
 	if (!success) return formFail(403, { fail: `Invalid token. ${rateCheck.humanAttemptsRemaining}` });
 
 	signinLimiter.clear(event);
@@ -27,12 +27,12 @@ const signin: App.CommonServerAction = async (event) => {
 };
 
 const signout: App.CommonServerAction = async ({ cookies }) => {
-	await deploymentAccessController.deleteSession({ cookies });
+	await deploymentAccess.deleteSession({ cookies });
 	return { success: 'true' };
 };
 
 const signoutAll: App.CommonServerAction = async ({ cookies }) => {
-	await deploymentAccessController.deleteAllSessions({ cookies });
+	await deploymentAccess.deleteAllSessions({ cookies });
 	return { success: 'true' };
 };
 

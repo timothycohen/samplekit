@@ -1,7 +1,7 @@
 import { type Handle, redirect, error } from '@sveltejs/kit';
 import { dev } from '$app/environment';
 import { PUBLIC_ORIGIN } from '$env/static/public';
-import { deploymentAccessController } from '$routes/deployment-access/controller';
+import { deploymentAccess } from '$routes/deployment-access/repository';
 
 export const protectStagingDeployments: Handle = async ({ event, resolve }) => {
 	if (PUBLIC_ORIGIN === 'https://www.samplekit.dev') {
@@ -13,8 +13,8 @@ export const protectStagingDeployments: Handle = async ({ event, resolve }) => {
 		PUBLIC_ORIGIN.startsWith('http://localhost:') ||
 		event.url.pathname === '/deployment-access' ||
 		(event.route.id?.endsWith('.json') &&
-			(await deploymentAccessController.isAuthenticated({ headers: event.request.headers }))) ||
-		(await deploymentAccessController.isAuthenticated({ cookies: event.cookies }))
+			(await deploymentAccess.isAuthenticated({ headers: event.request.headers }))) ||
+		(await deploymentAccess.isAuthenticated({ cookies: event.cookies }))
 	)
 		return resolve(event);
 

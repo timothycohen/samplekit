@@ -2,45 +2,38 @@ import { Redis } from 'ioredis';
 import { PUBLIC_ORIGIN } from '$env/static/public';
 import { auth } from '$lib/auth/server';
 import { logger } from '$lib/logging/server';
+import type { DeploymentAccessRepository } from './types';
 import type { Cookies } from '@sveltejs/kit';
 
 const generateToken = () =>
 	auth.config.randomString.generate({ size: 36, alphabet: auth.config.randomString.alphabet.default });
 
 const accessTokenHeaderName = 'x-deployment-access';
+const sessionCookKey = `deployment-session`;
+const accessTokenPrefix = `da:${PUBLIC_ORIGIN}:token:`;
+const sessionIdPrefix = `da:${PUBLIC_ORIGIN}:session:`;
+const ownerIdToSessionsPrefix = `da:${PUBLIC_ORIGIN}:sessions-for:`;
+const ownerIdToAccessTokensPrefix = `da:${PUBLIC_ORIGIN}:tokens-for:`;
+const sessionRefreshThresholdSec = 60 * 60 * 24 * 4;
+const sessionTtlSec = 60 * 60 * 24 * 14;
 
-const cookieSessionController = (() => {
-	const sessionCookKey = `deployment-session`;
-
-	const get = ({ cookies }: { cookies: Cookies }) => {
-		return cookies.get(sessionCookKey);
-	};
-
-	const set = ({ cookies, value }: { cookies: Cookies; value: string }) => {
+const cookieSessionRepository = {
+	get: ({ cookies }: { cookies: Cookies }) => cookies.get(sessionCookKey),
+	set: ({ cookies, value }: { cookies: Cookies; value: string }) => {
 		cookies.set(sessionCookKey, value, {
 			path: '/',
 			sameSite: 'lax',
 			secure: true,
 			httpOnly: true,
-			expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 14),
+			expires: new Date(Date.now() + 1000 * sessionTtlSec),
 		});
-	};
-
-	const rm = ({ cookies }: { cookies: Cookies }) => {
+	},
+	rm: ({ cookies }: { cookies: Cookies }) => {
 		cookies.delete(sessionCookKey, { path: '/', sameSite: 'lax', secure: true, httpOnly: true });
-	};
+	},
+};
 
-	return { get, set, rm };
-})();
-
-const kvController = (() => {
-	const accessTokenPrefix = `da:${PUBLIC_ORIGIN}:token:`;
-	const sessionIdPrefix = `da:${PUBLIC_ORIGIN}:session:`;
-	const ownerIdToSessionsPrefix = `da:${PUBLIC_ORIGIN}:sessions-for:`;
-	const ownerIdToAccessTokensPrefix = `da:${PUBLIC_ORIGIN}:tokens-for:`;
-	const sessionRefreshThresholdSec = 60 * 60 * 24 * 4;
-	const sessionTtlSec = 60 * 60 * 24 * 14;
-
+const kvRepository = (() => {
 	const redis = (() => {
 		let client: Redis | null = null;
 
@@ -179,37 +172,24 @@ const kvController = (() => {
 	};
 })();
 
-export const deploymentAccessController = (() => {
+export const deploymentAccess: DeploymentAccessRepository = (() => {
 	const hasHeader = async (headers: Headers) => {
 		const accessToken = headers.get(accessTokenHeaderName);
 		if (!accessToken) return false;
-		return !!(await kvController.accessToken.getOwnerId({ token: accessToken }));
+		return !!(await kvRepository.accessToken.getOwnerId({ token: accessToken }));
 	};
 
 	const hasCookie = async (cookies: Cookies) => {
-		const clientSessionId = cookieSessionController.get({ cookies });
+		const clientSessionId = cookieSessionRepository.get({ cookies });
 		if (!clientSessionId) return false;
 
-		const clientSessionIdStoredOnServer = !!(await kvController.session.getOwnerId({ sessionId: clientSessionId }));
+		const clientSessionIdStoredOnServer = !!(await kvRepository.session.getOwnerId({ sessionId: clientSessionId }));
 		if (!clientSessionIdStoredOnServer) {
-			cookieSessionController.rm({ cookies });
+			cookieSessionRepository.rm({ cookies });
 			return false;
 		}
 
 		return true;
-	};
-
-	const isAuthenticated = async ({
-		cookies,
-		headers,
-	}:
-		| { cookies: Cookies; headers?: never }
-		| { cookies?: never; headers: Headers }
-		| { cookies: Cookies; headers: Headers }): Promise<boolean> => {
-		if (headers && cookies) return (await hasHeader(headers)) || (await hasCookie(cookies));
-		if (headers) return hasHeader(headers);
-		if (cookies) return hasCookie(cookies);
-		return false;
 	};
 
 	const countAuthenticatedSessions = async ({
@@ -217,16 +197,16 @@ export const deploymentAccessController = (() => {
 	}: {
 		cookies: Cookies;
 	}): Promise<{ authenticated: false } | { authenticated: true; sessionCount: number }> => {
-		const clientSessionId = cookieSessionController.get({ cookies });
+		const clientSessionId = cookieSessionRepository.get({ cookies });
 		if (!clientSessionId) return { authenticated: false };
 
-		const ownerId = await kvController.session.getOwnerId({ sessionId: clientSessionId });
+		const ownerId = await kvRepository.session.getOwnerId({ sessionId: clientSessionId });
 		if (!ownerId) {
-			cookieSessionController.rm({ cookies });
+			cookieSessionRepository.rm({ cookies });
 			return { authenticated: false };
 		}
 
-		const sessionCount = (await kvController.session.getAllByOwnerId({ ownerId }))?.length ?? 0;
+		const sessionCount = (await kvRepository.session.getAllByOwnerId({ ownerId }))?.length ?? 0;
 		return { authenticated: true, sessionCount };
 	};
 
@@ -238,45 +218,38 @@ export const deploymentAccessController = (() => {
 		cookies: Cookies;
 	}): Promise<{ sessionId: string }> => {
 		const sessionId = generateToken();
-		await kvController.session.set({ sessionId, ownerId });
-		cookieSessionController.set({ cookies, value: sessionId });
+		await kvRepository.session.set({ sessionId, ownerId });
+		cookieSessionRepository.set({ cookies, value: sessionId });
 		return { sessionId };
 	};
 
-	const deleteSession = async ({ cookies }: { cookies: Cookies }): Promise<void> => {
-		const clientSessionId = cookieSessionController.get({ cookies });
-		if (!clientSessionId) return;
-		cookieSessionController.rm({ cookies });
-		await kvController.session.rm({ sessionId: clientSessionId });
-	};
-
-	const deleteAllSessions = async ({ cookies }: { cookies: Cookies }): Promise<void> => {
-		const clientSessionId = cookieSessionController.get({ cookies });
-		if (!clientSessionId) return;
-		cookieSessionController.rm({ cookies });
-		const ownerId = await kvController.session.getOwnerId({ sessionId: clientSessionId });
-		if (!ownerId) return;
-		await kvController.session.rmAllByOwnerId({ ownerId });
-	};
-
-	const createSessionWithAccessToken = async ({
-		accessToken,
-		cookies,
-	}: {
-		accessToken: string;
-		cookies: Cookies;
-	}): Promise<{ success: boolean }> => {
-		const ownerId = await kvController.accessToken.getOwnerId({ token: accessToken });
-		if (!ownerId) return { success: false };
-		await createSession({ ownerId, cookies });
-		return { success: true };
-	};
-
 	return {
-		isAuthenticated,
-		createSession: createSessionWithAccessToken,
-		deleteSession,
-		deleteAllSessions,
+		isAuthenticated: async ({ cookies, headers }) => {
+			if (headers && cookies) return (await hasHeader(headers)) || (await hasCookie(cookies));
+			if (headers) return hasHeader(headers);
+			if (cookies) return hasCookie(cookies);
+			return false;
+		},
+		createSession: async ({ accessToken, cookies }) => {
+			const ownerId = await kvRepository.accessToken.getOwnerId({ token: accessToken });
+			if (!ownerId) return { success: false };
+			await createSession({ ownerId, cookies });
+			return { success: true };
+		},
+		deleteSession: async ({ cookies }) => {
+			const clientSessionId = cookieSessionRepository.get({ cookies });
+			if (!clientSessionId) return;
+			cookieSessionRepository.rm({ cookies });
+			await kvRepository.session.rm({ sessionId: clientSessionId });
+		},
+		deleteAllSessions: async ({ cookies }) => {
+			const clientSessionId = cookieSessionRepository.get({ cookies });
+			if (!clientSessionId) return;
+			cookieSessionRepository.rm({ cookies });
+			const ownerId = await kvRepository.session.getOwnerId({ sessionId: clientSessionId });
+			if (!ownerId) return;
+			await kvRepository.session.rmAllByOwnerId({ ownerId });
+		},
 		countAuthenticatedSessions,
 	};
 })();
