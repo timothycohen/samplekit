@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { useTurnstileLoadedFlag } from './turnstileCtx.svelte';
+	import { useTurnstileLoadedFlag } from './turnstileLoaded.ctx.svelte';
 	import type { Turnstile } from './turnstile.svelte';
 
 	const { turnstile }: { turnstile: Turnstile } = $props();

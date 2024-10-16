@@ -12,8 +12,8 @@
 
 <script lang="ts">
 	import { createTabs, melt } from '@melt-ui/svelte';
+	import { useCollapsedService } from '$lib/context/codeCollapse';
 	import I from '$lib/icons';
-	import { useCollapsedService } from '$lib/services/codeCollapse';
 	import PatternWrapper from './PatternWrapper.svelte';
 	import TabPanelItem from './TabPanelItem.svelte';
 

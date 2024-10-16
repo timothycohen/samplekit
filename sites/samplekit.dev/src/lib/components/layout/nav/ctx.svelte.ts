@@ -1,12 +1,12 @@
-import { defineContext } from '$lib/utils/client';
+import { defineCtx } from '$lib/context';
 import { MobileNavController } from './mobileNavController.svelte';
 
-const [get, set] = defineContext<{ mobileNav: MobileNavController; position: 'left' | 'center' }>();
+const [getCtx, setCtx] = defineCtx<{ mobileNav: MobileNavController; position: 'left' | 'center' }>();
 
 const createMobileNavCtx = () => {
 	let position: 'left' | 'center' = $state('left');
 
-	set({
+	setCtx({
 		mobileNav: new MobileNavController({
 			transitionWidth: 768,
 			animationDuration: 0,
@@ -22,6 +22,6 @@ const createMobileNavCtx = () => {
 	});
 };
 
-const useMobileNavCtx = get;
+const useMobileNavCtx = getCtx;
 
 export { createMobileNavCtx, useMobileNavCtx };

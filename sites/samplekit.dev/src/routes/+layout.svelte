@@ -7,7 +7,7 @@
 	import { page } from '$app/stores';
 	import { createTurnstileLoadedFlag } from '$lib/botProtection/turnstile/client';
 	import { Header, SEO } from '$lib/components';
-	import { createMobileNavCtx } from '$lib/components/layout/nav/context.svelte';
+	import { createMobileNavCtx } from '$lib/components/layout/nav/ctx.svelte';
 	import { createThemeControllerCtx } from '$lib/styles';
 
 	const { children, data } = $props();
