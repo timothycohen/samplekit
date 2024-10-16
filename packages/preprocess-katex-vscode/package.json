@@ -52,7 +52,7 @@
 	"homepage": "https://preprocessors.samplekit.dev",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/timothycohen/samplekit/tree/staging/packages/preprocess-katex-vscode"
+		"url": "https://github.com/timothycohen/samplekit/tree/main/packages/preprocess-katex-vscode"
 	},
 	"bugs": {
 		"url": "https://github.com/timothycohen/samplekit/issues"

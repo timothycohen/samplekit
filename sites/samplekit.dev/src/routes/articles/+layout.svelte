@@ -4,6 +4,7 @@
 	import { Vaul, Changelog, DateLine, Series, TOC } from '$lib/articles/components';
 	import { FeatureCard } from '$lib/articles/components/card';
 	import { TabPanels, HAnchor, Portal } from '$lib/components';
+	import { GH_ROOT } from '$lib/consts';
 	import I from '$lib/icons';
 	import { createCollapsedService, useCollapsedService } from '$lib/services/codeCollapse';
 	import { pluralize } from '$lib/utils/common';
@@ -191,7 +192,7 @@
 			<Changelog updates={article.updates} />
 			<p>
 				Have a suggestion? File an
-				<a href="https://github.com/timothycohen/samplekit/issues" data-external>issue</a>.
+				<a href="{GH_ROOT}/issues" data-external>issue</a>.
 			</p>
 		</div>
 	</footer>

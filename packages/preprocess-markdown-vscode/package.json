@@ -42,7 +42,7 @@
 	"homepage": "https://preprocessors.samplekit.dev",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/timothycohen/samplekit/tree/staging/packages/preprocess-markdown-vscode"
+		"url": "https://github.com/timothycohen/samplekit/tree/main/packages/preprocess-markdown-vscode"
 	},
 	"bugs": {
 		"url": "https://github.com/timothycohen/samplekit/issues"

@@ -1,13 +1,13 @@
 <script lang="ts" module>
 	import { TabPanelItem } from '$lib/components';
+	import { GH_TREE } from '$lib/consts';
 	import imgSm from './assets/generic-url-state-controller-thumbnail-1200w.webp';
 	import type { RawFrontMatter } from '$lib/articles/schema';
 
 	export const metadata = {
 		title: 'Generic URL State Controller',
 		implementationPath: '/articles/generic-url-state-controller#demo',
-		srcCodeHref:
-			'https://github.com/timothycohen/samplekit/tree/main/sites/samplekit.dev/src/routes/articles/generic-url-state-controller',
+		srcCodeHref: `${GH_TREE}/sites/samplekit.dev/src/routes/articles/generic-url-state-controller`,
 		description: 'Sync validated, generic store state to the URL with a flexible API.',
 		publishedAt: new Date('2024-03-08 13:31:26 -0500'),
 		authors: [{ name: 'Tim Cohen', email: 'contact@timcohen.dev' }],
@@ -21,6 +21,7 @@
 <script lang="ts">
 	import CodeTopper from '$lib/articles/components/CodeTopper.svelte';
 	import { HAnchor, Admonition, TabPanels } from '$lib/components';
+	import { GH_ROOT } from '$lib/consts';
 
 	const { data } = $props();
 </script>
@@ -447,5 +448,5 @@ shiki-end -->
 	together to create rich services like the one used in the demo. You can see it in action in the
 	<a href="/shop/collections/apparel">demo shop</a>. Hope the article has been useful for you! Have any questions,
 	comments, or want to share your own implementation? Reach out in the
-	<a href="https://github.com/timothycohen/samplekit/discussions" data-external>GitHub discussions</a>!
+	<a href="{GH_ROOT}/discussions" data-external>GitHub discussions</a>!
 </p>

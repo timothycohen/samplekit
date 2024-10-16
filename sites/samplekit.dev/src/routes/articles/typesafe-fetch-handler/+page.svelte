@@ -1,4 +1,5 @@
 <script lang="ts" module>
+	import { GH_BLOB } from '$lib/consts';
 	import imgLg from './assets/typesafe-fetch-handler-q30.webp';
 	import imgSm from './assets/typesafe-fetch-handler-thumbnail-1200w.webp';
 	import type { RawFrontMatter } from '$lib/articles/schema';
@@ -6,8 +7,7 @@
 	export const metadata = {
 		title: 'TypeSafe Fetch Handler',
 		implementationPath: '/articles/typesafe-fetch-handler#demo',
-		srcCodeHref:
-			'https://github.com/timothycohen/samplekit/blob/main/sites/samplekit.dev/src/lib/http/client.svelte.ts',
+		srcCodeHref: `${GH_BLOB}/sites/samplekit.dev/src/lib/http/client.svelte.ts`,
 		description: 'A typesafe fetch handler that stores the route, method, res/req types, and fetch state.',
 		publishedAt: new Date('2024-03-05 20:39:38 -0500'),
 		authors: [{ name: 'Tim Cohen', email: 'contact@timcohen.dev' }],
@@ -23,6 +23,7 @@
 	import { CodeTopper } from '$lib/articles/components';
 	import { HAnchor } from '$lib/components';
 	import TabPanels from '$lib/components/TabPanels.svelte';
+	import { GH_ROOT } from '$lib/consts';
 	import I from '$lib/icons';
 
 	let showQuizAnswer = $state(false);
@@ -436,5 +437,5 @@ shiki-end -->
 	I really enjoy working with this API. With only around a hundred lines of code, loading states are baked in, errors
 	are accounted for, and type / route / method checks are all moved to compile time. Do you use something similar? Have
 	you found an even better way? Share it in the
-	<a href="https://github.com/timothycohen/samplekit/discussions" data-external>GitHub discussions</a>!
+	<a href="{GH_ROOT}/discussions" data-external>GitHub discussions</a>!
 </p>

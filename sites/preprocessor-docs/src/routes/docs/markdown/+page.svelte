@@ -63,10 +63,7 @@ md-end -->
 		<I.CircleCheckBig class="feature-icon" />
 		<span class="feature-title">Code with TextMate support.</span>
 		<span class="feature-content">
-			The <a
-				data-external
-				href="https://github.com/timothycohen/samplekit/tree/staging/packages/preprocess-markdown-vscode"
-			>
+			The <a data-external href="https://marketplace.visualstudio.com/items?itemName=samplekit.svelte-pp-markdown">
 				<span class="font-mono text-base">VS Code extension</span>
 			</a> provides you with full highlighting support. It injects the TextMate grammar scope between the delimiters to work
 			with your VS Code theme.

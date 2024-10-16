@@ -74,10 +74,7 @@ A = \\pi r^2 &= ${A} \\\\
 		<I.CircleCheckBig class="feature-icon" />
 		<span class="feature-title">Code with TextMate support.</span>
 		<span class="feature-content">
-			The <a
-				data-external
-				href="https://github.com/timothycohen/samplekit/tree/staging/packages/preprocess-katex-vscode"
-			>
+			The <a data-external href="https://marketplace.visualstudio.com/items?itemName=samplekit.svelte-pp-katex">
 				<span class="font-mono text-base">VS Code extension</span>
 			</a>
 			provides you with full highlighting support. It injects the LaTeX TextMate grammar scope between the delimiters to

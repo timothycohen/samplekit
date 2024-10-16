@@ -1,4 +1,5 @@
 <script lang="ts" module>
+	import { GH_TREE } from '$lib/consts';
 	import video from './assets/2024-08-05_22-41-28_889x627.mp4';
 	import imgSm from './assets/preprocessors-thumbnail-1200w.webp';
 	import type { RawFrontMatter } from '$lib/articles/schema';
@@ -6,7 +7,7 @@
 	export const metadata = {
 		title: 'Blog with Preprocessors',
 		implementationPath: '/articles/preprocessors/#demo',
-		srcCodeHref: 'https://github.com/timothycohen/samplekit/tree/main/packages/',
+		srcCodeHref: `${GH_TREE}/packages/`,
 		description:
 			'Use preprocessors to highlight code blocks, render math, and write Markdown directly in Svelte components – all without disrupting other tooling.',
 		publishedAt: new Date('2024-03-06 16:16:15 -0500'),
@@ -26,6 +27,7 @@
 <script lang="ts">
 	import { CodeTopper } from '$lib/articles/components';
 	import { TabPanels, HAnchor } from '$lib/components';
+	import { GH_ROOT } from '$lib/consts';
 
 	const { data } = $props();
 
@@ -1180,7 +1182,7 @@ shiki-end -->
 
 <p>
 	Voilà. Now rinse and repeat for the other two – though they're all subtly different. Find the
-	<a href="https://github.com/timothycohen/samplekit/tree/main/packages/">source code</a> here.
+	<a href="{GH_TREE}/packages/">source code</a> here.
 </p>
 
 <HAnchor tag="h2" title="Conclusion" />
@@ -1206,7 +1208,7 @@ md-end -->
 	<a href="https://melt-ui.com/docs/preprocessor" data-external>Melt UI</a>
 	for introducing them to me, and I hope this article helps you get started with your own preprocessors. If you have a question
 	or want to share your preprocessor, share it in the
-	<a href="https://github.com/timothycohen/samplekit/discussions" data-external>GitHub discussions</a>!
+	<a href="{GH_ROOT}/discussions" data-external>GitHub discussions</a>!
 </p>
 
 <p>Happy coding!</p>
