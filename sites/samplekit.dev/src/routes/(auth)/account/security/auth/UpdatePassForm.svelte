@@ -3,7 +3,7 @@
 	import I from '$lib/icons';
 	import { superForm, type SuperValidated } from '$lib/superforms/client';
 	import { PassInput } from '$routes/(auth)/components';
-	import type { updatePassSchema } from '$routes/(auth)/validators';
+	import type { updatePassSchema } from '$routes/(auth)/schemas';
 
 	interface Props {
 		updatePassForm: SuperValidated<typeof updatePassSchema>;

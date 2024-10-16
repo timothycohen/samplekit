@@ -1,6 +1,6 @@
 <script lang="ts" module>
 	import imgSm from './assets/generic-url-state-controller-thumbnail-1200w.webp';
-	import type { RawFrontMatter } from '$lib/articles/schema';
+	import type { RawFrontMatter } from '$lib/articles/schemas';
 
 	export const metadata = {
 		title: 'Generic URL State Controller',

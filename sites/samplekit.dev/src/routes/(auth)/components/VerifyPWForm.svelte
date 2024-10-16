@@ -1,7 +1,7 @@
 <script lang="ts">
 	import I from '$lib/icons';
 	import { superForm, zodClient, type SuperValidated } from '$lib/superforms/client';
-	import { confirmPassSchema } from '$routes/(auth)/validators';
+	import { confirmPassSchema } from '$routes/(auth)/schemas';
 	import PassInput from './PassInput.svelte';
 	import type { Snippet } from 'svelte';
 

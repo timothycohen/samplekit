@@ -4,7 +4,7 @@
 	import I from '$lib/icons';
 	import { superForm, zodClient } from '$lib/superforms/client';
 	import { PassInput } from '$routes/(auth)/components';
-	import { createNewPassSchema } from '$routes/(auth)/validators';
+	import { createNewPassSchema } from '$routes/(auth)/schemas';
 
 	const { data } = $props();
 

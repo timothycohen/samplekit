@@ -1,7 +1,7 @@
 import { dev } from '$app/environment';
-import { loadedFrontMatter } from '$lib/articles/schema';
+import { loadedFrontMatter } from '$lib/articles/schemas';
 import { logger } from '$lib/logging/client';
-import type { ProcessedFrontMatter, LoadedFrontMatter, ArticlePath } from '$lib/articles/schema';
+import type { ProcessedFrontMatter, LoadedFrontMatter, ArticlePath } from '$lib/articles/schemas';
 import type { Component } from 'svelte';
 
 const dummyData = (articlePath: ArticlePath): LoadedFrontMatter => ({

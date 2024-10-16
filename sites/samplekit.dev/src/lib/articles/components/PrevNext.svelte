@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { FeatureCard } from './card';
-	import type { LoadedFrontMatter } from '../schema';
+	import type { LoadedFrontMatter } from '../schemas';
 
 	interface Props {
 		prev: LoadedFrontMatter | undefined;

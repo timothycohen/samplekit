@@ -4,7 +4,7 @@
 	import { superForm, zodClient } from '$lib/superforms/client';
 	import { GoogleFormButton, Or } from '$routes/(auth)/(login)/components';
 	import { PassInput } from '$routes/(auth)/components';
-	import { signupSchema } from '$routes/(auth)/validators';
+	import { signupSchema } from '$routes/(auth)/schemas';
 	import { useTurnstileCtx } from '../turnstile.ctx.svelte';
 
 	const { data } = $props();

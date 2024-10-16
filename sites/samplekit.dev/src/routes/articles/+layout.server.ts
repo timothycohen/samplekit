@@ -1,7 +1,7 @@
 import { error } from '@sveltejs/kit';
 import { allPostData } from '$lib/articles/load';
 import { processedCodeMap, loadMainOnce } from '$lib/articles/load/demos/server';
-import { type ServerFrontMatter } from '$lib/articles/schema';
+import { type ServerFrontMatter } from '$lib/articles/schemas';
 import type { LayoutRouteId } from './$types';
 
 export const load = async ({ route }) => {

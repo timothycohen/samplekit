@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { articlePathSchema } from '$lib/articles/schema';
+import { articlePathSchema } from '$lib/articles/schemas';
 import { ClientFetcher } from '$lib/http/client.svelte';
 import type { Result } from '$lib/utils/common';
 import type { RouteId } from './$types';
