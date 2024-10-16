@@ -23,8 +23,7 @@
 </script>
 
 <script lang="ts">
-	import { CodeTopper } from '$lib/articles/components';
-	import { HAnchor, TabPanels } from '$lib/components';
+	import { CodeTopper, HAnchor, TabPanels } from '$lib/articles/components';
 	import I from '$lib/icons';
 
 	let showQuizAnswer = $state(false);

@@ -21,8 +21,8 @@
 </script>
 
 <script lang="ts">
-	import { CodeTopper } from '$lib/articles/components';
-	import { TabPanels, HAnchor, Admonition } from '$lib/components';
+	import { CodeTopper, HAnchor, TabPanels } from '$lib/articles/components';
+	import { Admonition } from '$lib/components';
 	import img_uploaderFlow from './assets/image-uploader-flow-q30.webp';
 
 	const { data } = $props();

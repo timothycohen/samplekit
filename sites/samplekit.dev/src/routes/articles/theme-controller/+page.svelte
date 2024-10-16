@@ -24,8 +24,7 @@
 </script>
 
 <script lang="ts">
-	import { CodeTopper } from '$lib/articles/components';
-	import { HAnchor } from '$lib/components';
+	import { CodeTopper, HAnchor } from '$lib/articles/components';
 </script>
 
 <p>

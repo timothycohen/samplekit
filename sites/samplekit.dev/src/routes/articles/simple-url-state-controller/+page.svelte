@@ -19,8 +19,8 @@
 </script>
 
 <script lang="ts">
-	import { CodeTopper } from '$lib/articles/components';
-	import { HAnchor, Admonition } from '$lib/components';
+	import { HAnchor, CodeTopper } from '$lib/articles/components';
+	import { Admonition } from '$lib/components';
 	import I from '$lib/icons';
 	import { searchParam } from '$lib/svelte-stores';
 

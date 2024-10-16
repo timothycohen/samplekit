@@ -1,6 +1,6 @@
 <script lang="ts" module>
+	import type { WrapperProps } from '$lib/articles/load';
 	import type { NoPropComponent } from '$lib/utils/common';
-	import type { WrapperProps } from './PatternWrapper.svelte';
 	import type { Snippet } from 'svelte';
 
 	export type TabPanel = { wrapperProps?: WrapperProps; title: string; icon?: 'svelte' } & (
@@ -13,9 +13,9 @@
 <script lang="ts">
 	import { createTabs, melt } from '@melt-ui/svelte';
 	import I from '$lib/icons';
-	import { useCollapsedService } from '$lib/svelte-context/codeCollapse';
 	import PatternWrapper from './PatternWrapper.svelte';
 	import TabPanelItem from './TabPanelItem.svelte';
+	import { useCollapsedService } from './ctx.svelte';
 
 	interface Props {
 		files: Array<TabPanel>;
