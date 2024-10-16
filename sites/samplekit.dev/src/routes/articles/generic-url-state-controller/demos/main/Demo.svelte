@@ -1,15 +1,15 @@
 <script lang="ts">
 	import { page } from '$app/stores';
 	import { Switch } from '$lib/components';
-	import { SearchBar, Price, SortBy } from '$routes/shop/components';
-	import { createSearchAndFilterService, useSearchAndFilterService } from '$routes/shop/services';
+	import { SearchBar, Price, SortBy } from '$routes/shop/lib/components';
+	import { createSearchAndFilterCtx, useSearchAndFilterCtx } from '$routes/shop/lib/ctx';
 
-	createSearchAndFilterService();
+	createSearchAndFilterCtx();
 
 	const {
 		params: { query, available, price, sortBy },
 		reset,
-	} = useSearchAndFilterService();
+	} = useSearchAndFilterCtx();
 </script>
 
 <div class="flex h-full flex-col justify-around gap-8">

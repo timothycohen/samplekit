@@ -1,6 +1,6 @@
 import { error } from '@sveltejs/kit';
 import { shop } from '$lib/shop';
-import { parseSearchAndFilterParams } from '$routes/shop/services';
+import { parseSearchAndFilterParams } from '$routes/shop/lib/searchAndFilter';
 
 export const load = async ({ params, url, fetch }) => {
 	const { collectionHandle } = params;

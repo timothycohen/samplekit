@@ -1,12 +1,12 @@
 <script lang="ts">
 	import I from '$lib/icons';
-	import { NoResults } from '$routes/shop/components';
-	import { useNavService } from '$routes/shop/services';
-	import { handleToPath } from '$routes/shop/utils';
+	import { NoResults } from '$routes/shop/lib/components';
+	import { useNavCtx } from '$routes/shop/lib/ctx';
+	import { handleToPath } from '$routes/shop/lib/utils';
 
 	const { data } = $props();
 
-	const { desktopNav, desktopDrawer, mobileDrawer } = useNavService();
+	const { desktopNav, desktopDrawer, mobileDrawer } = useNavCtx();
 	$desktopNav = { menuUnderneath: false, showDrawerToggle: false };
 	$desktopDrawer = { showSortAndFilters: false };
 	$mobileDrawer = { showSearch: true, showSortAndFilters: false };
