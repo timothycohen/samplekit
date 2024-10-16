@@ -1,0 +1,1 @@
+export { getDeviceInfo } from './platform';
