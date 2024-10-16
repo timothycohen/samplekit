@@ -1,6 +1,7 @@
 import { DetectModerationLabelsCommand, RekognitionClient } from '@aws-sdk/client-rekognition';
 import { AWS_SERVICE_REGION, IAM_ACCESS_KEY_ID, IAM_SECRET_ACCESS_KEY, S3_BUCKET_NAME } from '$env/static/private';
 import { logger } from '$lib/logging/server';
+import type { ObjectStorage } from './types';
 
 export const getRekognition = (() => {
 	let rekognition: RekognitionClient | null = null;
@@ -19,13 +20,7 @@ export const getRekognition = (() => {
 	return get;
 })();
 
-export const detectModerationLabels = async ({
-	s3Key,
-	confidence = 75,
-}: {
-	s3Key: string;
-	confidence?: number;
-}): Promise<{ error: App.Error } | { error?: never }> => {
+export const detectModerationLabels: ObjectStorage['detectModerationLabels'] = async ({ s3Key, confidence = 75 }) => {
 	const labelCommand = new DetectModerationLabelsCommand({
 		Image: { S3Object: { Bucket: S3_BUCKET_NAME, Name: s3Key } },
 		MinConfidence: confidence,

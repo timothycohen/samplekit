@@ -6,6 +6,7 @@ import {
 	IAM_SECRET_ACCESS_KEY,
 } from '$env/static/private';
 import { logger } from '$lib/logging/server';
+import type { ObjectStorage } from './types';
 
 export const getCloudfront = (() => {
 	let cloudfront: CloudFrontClient | null = null;
@@ -24,7 +25,7 @@ export const getCloudfront = (() => {
 	return get;
 })();
 
-export const invalidateCloudfront = async ({ keys }: { keys: string[] }): Promise<boolean> => {
+export const invalidateCloudfront: ObjectStorage['invalidateCDN'] = async ({ keys }) => {
 	const command = new CreateInvalidationCommand({
 		DistributionId: CLOUDFRONT_DISTRIBUTION_ID,
 		InvalidationBatch: {
