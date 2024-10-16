@@ -1,4 +1,4 @@
-import type { LoadedFrontMatter } from '$lib/articles/schema';
+import type { LoadedFrontMatter } from '$lib/articles/schemas';
 import imgSm from '/src/routes/articles/generic-url-state-controller/assets/generic-url-state-controller-thumbnail-1200w.webp';
 export default {
 	title: 'Generic URL State Controller',

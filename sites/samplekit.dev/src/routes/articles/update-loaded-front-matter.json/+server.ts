@@ -10,7 +10,7 @@ import {
 	type ArticlePath,
 	type RawFrontMatter,
 	type ReadingTime,
-} from '$lib/articles/schema';
+} from '$lib/articles/schemas';
 import { jsonFail, jsonOk } from '$lib/http/server';
 import { logger } from '$lib/logging/server';
 import prettierConfig from '../../../../prettier.config';
@@ -142,7 +142,7 @@ const updateLoadedFrontMatter: RequestHandler = async ({ request }) => {
 
 function codeGen(obj: object) {
 	const entries = Object.entries(obj);
-	let importStr = `import type { LoadedFrontMatter } from '$lib/articles/schema';\n`;
+	let importStr = `import type { LoadedFrontMatter } from '$lib/articles/schemas';\n`;
 
 	const props = entries.map(([key, value]) => {
 		if ((key === 'imgSm' || key === 'imgLg' || key === 'video') && value.startsWith('/src/')) {

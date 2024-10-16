@@ -1,7 +1,7 @@
 <script lang="ts" module>
 	import video from './assets/2024-08-05_22-41-28_889x627.mp4';
 	import imgSm from './assets/preprocessors-thumbnail-1200w.webp';
-	import type { RawFrontMatter } from '$lib/articles/schema';
+	import type { RawFrontMatter } from '$lib/articles/schemas';
 
 	export const metadata = {
 		title: 'Blog with Preprocessors',

@@ -1,7 +1,7 @@
 <script lang="ts" module>
 	import imgLg from './assets/typesafe-fetch-handler-q30.webp';
 	import imgSm from './assets/typesafe-fetch-handler-thumbnail-1200w.webp';
-	import type { RawFrontMatter } from '$lib/articles/schema';
+	import type { RawFrontMatter } from '$lib/articles/schemas';
 
 	export const metadata = {
 		title: 'TypeSafe Fetch Handler',

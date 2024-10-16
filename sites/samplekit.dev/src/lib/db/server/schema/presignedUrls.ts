@@ -1,5 +1,5 @@
 import { pgTable, timestamp, varchar } from 'drizzle-orm/pg-core';
-import { uniqueUserReference } from './userAndAuth/utils';
+import { uniqueUserReference } from './user-and-auth/utils';
 
 export const presignedUrls = pgTable('presigned_url', {
 	...uniqueUserReference({ onDelete: 'cascade' }),

@@ -1,4 +1,4 @@
-import type { LoadedFrontMatter } from '$lib/articles/schema';
+import type { LoadedFrontMatter } from '$lib/articles/schemas';
 import imgSm from '/src/routes/articles/theme-controller/assets/theme-controller-thumbnail-1200w.webp';
 import imgLg from '/src/routes/articles/theme-controller/assets/theme-controller-q30.webp';
 import video from '/src/routes/articles/theme-controller/assets/2024-08-05_19-56-30_800x645.mp4';

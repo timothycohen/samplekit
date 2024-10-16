@@ -5,7 +5,7 @@ import { validateTurnstile } from '$lib/botProtection/turnstile/server';
 import { createLimiter } from '$lib/rate-limit/server';
 import { message, superValidate, zod } from '$lib/superforms/server';
 import { transports } from '$lib/transport/server';
-import { emailPassResetSchema } from '$routes/(auth)/validators';
+import { emailPassResetSchema } from '$routes/(auth)/schemas';
 
 export const load = async () => {
 	error(404);

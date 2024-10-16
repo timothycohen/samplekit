@@ -2,7 +2,7 @@ import { auth } from '$lib/auth/server';
 import { checkedRedirect } from '$lib/http/server';
 import { superValidate, zod } from '$lib/superforms/server';
 import { pluralize } from '$lib/utils/common';
-import { confirmPassSchema, sendSMSTokenSchema, verifyOTPSchema } from '$routes/(auth)/validators';
+import { confirmPassSchema, sendSMSTokenSchema, verifyOTPSchema } from '$routes/(auth)/schemas';
 import { desiredParamsOrRedirect } from './utils';
 import type { VerifierProps } from '$routes/(auth)/components';
 

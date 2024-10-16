@@ -1,7 +1,7 @@
 import { fail as formFail, type Action } from '@sveltejs/kit';
 import { auth } from '$lib/auth/server';
 import { message, superValidate, zod } from '$lib/superforms/server';
-import { updatePassSchema } from '$routes/(auth)/validators';
+import { updatePassSchema } from '$routes/(auth)/schemas';
 
 export const load = async ({ locals }) => {
 	const { user } = await locals.seshHandler.userOrRedirect();

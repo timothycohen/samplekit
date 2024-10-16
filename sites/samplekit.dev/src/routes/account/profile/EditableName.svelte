@@ -2,7 +2,7 @@
 	import { slide } from 'svelte/transition';
 	import I from '$lib/icons';
 	import { superForm, zodClient, type SuperValidated } from '$lib/superforms/client';
-	import { nameSchema } from '$routes/(auth)/validators';
+	import { nameSchema } from '$routes/(auth)/schemas';
 
 	interface Props {
 		user: DB.User;

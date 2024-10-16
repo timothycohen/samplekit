@@ -1,8 +1,8 @@
 import type { presignedUrls } from './presignedUrls';
-import type { ProviderNS, ProviderT, MFAsT, MFAsNS } from './userAndAuth/provider';
-import type { sessions } from './userAndAuth/session';
-import type { TokenNS } from './userAndAuth/tokens';
-import type { users } from './userAndAuth/user';
+import type { ProviderNS, ProviderT, MFAsT, MFAsNS } from './user-and-auth/provider';
+import type { sessions } from './user-and-auth/session';
+import type { TokenNS } from './user-and-auth/tokens';
+import type { users } from './user-and-auth/user';
 
 declare global {
 	namespace DB {

@@ -1,6 +1,6 @@
 <script lang="ts" module>
 	import type { SuperValidated } from '$lib/superforms/client';
-	import type { confirmPassSchema, sendSMSTokenSchema, verifyOTPSchema } from '$routes/(auth)/validators';
+	import type { confirmPassSchema, sendSMSTokenSchema, verifyOTPSchema } from '$routes/(auth)/schemas';
 
 	export type VerifierProps = {
 		email: string;

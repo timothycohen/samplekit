@@ -6,7 +6,7 @@ import { getDeviceInfo } from '$lib/device-info';
 import { checkedRedirect } from '$lib/http/server';
 import { createLimiter } from '$lib/rate-limit/server';
 import { message, superValidate, zod } from '$lib/superforms/server';
-import { emailPassResetSchema, signinSchema } from '$routes/(auth)/validators';
+import { emailPassResetSchema, signinSchema } from '$routes/(auth)/schemas';
 
 const signinLimiter = createLimiter({ id: 'signinWithPassword', limiters: [{ kind: 'ipUa', rate: [5, '15m'] }] });
 

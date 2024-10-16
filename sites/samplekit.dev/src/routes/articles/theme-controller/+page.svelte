@@ -2,7 +2,7 @@
 	import video from './assets/2024-08-05_19-56-30_800x645.mp4';
 	import imgLg from './assets/theme-controller-q30.webp';
 	import imgSm from './assets/theme-controller-thumbnail-1200w.webp';
-	import type { RawFrontMatter } from '$lib/articles/schema';
+	import type { RawFrontMatter } from '$lib/articles/schemas';
 
 	export const metadata = {
 		title: 'Theme Controller',

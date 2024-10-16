@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { LoadedFrontMatter } from '$lib/articles/schema';
+	import type { LoadedFrontMatter } from '$lib/articles/schemas';
 
 	const { tags }: { tags: LoadedFrontMatter['tags'] } = $props();
 </script>

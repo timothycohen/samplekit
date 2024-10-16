@@ -1,4 +1,4 @@
-import type { LoadedFrontMatter } from '$lib/articles/schema';
+import type { LoadedFrontMatter } from '$lib/articles/schemas';
 import imgSm from '/src/routes/articles/image-uploader/assets/image-uploader-thumbnail-1200w.webp';
 export default {
 	title: 'Image Cropper And Uploader',

@@ -2,7 +2,7 @@
 	import { InputMessage } from '$lib/components';
 	import I from '$lib/icons';
 	import { superForm, zodClient, type SuperValidated } from '$lib/superforms/client';
-	import { phoneNumberSchema } from '$routes/(auth)/validators';
+	import { phoneNumberSchema } from '$routes/(auth)/schemas';
 
 	interface Props {
 		phoneNumberForm: SuperValidated<typeof phoneNumberSchema>;

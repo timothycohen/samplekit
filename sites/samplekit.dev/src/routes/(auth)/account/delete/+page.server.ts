@@ -4,7 +4,7 @@ import { objectStorage } from '$lib/object-storage/server';
 import { superValidate, zod } from '$lib/superforms/server';
 import { transports } from '$lib/transport/server';
 import { pluralize } from '$lib/utils/common';
-import { confirmPassSchema, sendSMSTokenSchema, verifyOTPSchema } from '$routes/(auth)/validators';
+import { confirmPassSchema, sendSMSTokenSchema, verifyOTPSchema } from '$routes/(auth)/schemas';
 import type { VerifierProps } from '$routes/(auth)/components';
 import type { Action } from '@sveltejs/kit';
 

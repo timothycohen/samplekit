@@ -1,5 +1,4 @@
 import { z } from 'zod';
-import { turnstileRequired } from '$lib/botProtection/turnstile/client';
 
 const email = { email: z.string().email().trim().toLowerCase() };
 
@@ -43,6 +42,8 @@ const code = {
 };
 
 const persistent = { persistent: z.boolean() };
+
+const turnstileRequired = { 'turnstile-used': z.boolean() };
 
 export const phoneNumberSchema = z.object({ ...phone });
 

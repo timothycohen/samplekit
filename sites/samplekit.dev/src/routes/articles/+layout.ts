@@ -1,6 +1,6 @@
 import { merge } from '$lib/articles/load';
 import { processedComponentsMap } from '$lib/articles/load/demos/client';
-import type { ClientFrontMatter } from '$lib/articles/schema';
+import type { ClientFrontMatter } from '$lib/articles/schemas';
 import type { LayoutRouteId } from './$types';
 
 export const load = async ({ route, data: serverData }) => {

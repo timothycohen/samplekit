@@ -3,7 +3,7 @@ import { auth } from '$lib/auth/server';
 import { checkedRedirect, sanitizeRedirectUrl } from '$lib/http/server';
 import { createLimiter } from '$lib/rate-limit/server';
 import { message, superValidate, zod } from '$lib/superforms/server';
-import { confirmPassSchema, verifyOTPSchema } from '$routes/(auth)/validators';
+import { confirmPassSchema, verifyOTPSchema } from '$routes/(auth)/schemas';
 
 const seshConfLimiter = createLimiter({
 	id: 'seshConfFromPassword',

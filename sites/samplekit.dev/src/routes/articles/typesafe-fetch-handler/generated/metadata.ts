@@ -1,4 +1,4 @@
-import type { LoadedFrontMatter } from '$lib/articles/schema';
+import type { LoadedFrontMatter } from '$lib/articles/schemas';
 import imgSm from '/src/routes/articles/typesafe-fetch-handler/assets/typesafe-fetch-handler-thumbnail-1200w.webp';
 import imgLg from '/src/routes/articles/typesafe-fetch-handler/assets/typesafe-fetch-handler-q30.webp';
 export default {

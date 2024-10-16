@@ -4,7 +4,7 @@ import { auth } from '$lib/auth/server';
 import { checkedRedirect } from '$lib/http/server';
 import { message, superValidate, zod } from '$lib/superforms/server';
 import { PUBLIC_GOOGLE_OAUTH_LINK_PATHNAME } from '$routes/(auth)/consts';
-import { confirmPassSchema } from '$routes/(auth)/validators';
+import { confirmPassSchema } from '$routes/(auth)/schemas';
 
 export const load = async ({ locals, url }) => {
 	const seshUser = await locals.seshHandler.getSessionUser();
