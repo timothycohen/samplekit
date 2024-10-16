@@ -2,7 +2,7 @@ import { createDialog } from '@melt-ui/svelte';
 import { get, writable, type Writable } from 'svelte/store';
 import { browser } from '$app/environment';
 import { navigating } from '$app/stores';
-import { defineCtx } from '$lib/svelte-context';
+import { defineCtx } from '$lib/utils/client';
 
 type DesktopNav = {
 	menuUnderneath: boolean;

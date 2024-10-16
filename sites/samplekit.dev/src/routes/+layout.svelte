@@ -5,16 +5,16 @@
 	import { browser } from '$app/environment';
 	import { beforeNavigate, afterNavigate } from '$app/navigation';
 	import { page } from '$app/stores';
-	import { createTurnstileLoadedFlag } from '$lib/botProtection/turnstile/client';
+	import { createTurnstileLoadedFlagCtx } from '$lib/botProtection/turnstile/client';
 	import { Header, SEO } from '$lib/components';
-	import { createMobileNavCtx } from '$lib/components/layout/nav/ctx.svelte';
+	import { createMobileNavCtx } from '$lib/components/layout';
 	import { createThemeControllerCtx, ThemeToggler } from '$lib/styles';
 
 	const { children, data } = $props();
 
 	createThemeControllerCtx(data.initialTheme);
 	createMobileNavCtx();
-	createTurnstileLoadedFlag();
+	createTurnstileLoadedFlagCtx();
 
 	const smoothNavigationOnlyOnSamePage = () => {
 		if (browser) document.documentElement.style.scrollBehavior = 'smooth';

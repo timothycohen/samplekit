@@ -1,7 +1,7 @@
 <script lang="ts">
 	import I from '$lib/icons';
 	import Copy from './Copy.svelte';
-	import { useCollapsedService } from './ctx.svelte';
+	import { useCollapsedCtx } from './collapsed.ctx.svelte';
 	import type { Snippet } from 'svelte';
 
 	interface Props {
@@ -33,7 +33,7 @@
 		return codeFragment?.textContent;
 	}
 
-	const globalCollapsed = useCollapsedService();
+	const globalCollapsed = useCollapsedCtx();
 	$effect(() => {
 		collapsed = globalCollapsed.true;
 	});

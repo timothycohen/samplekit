@@ -10,8 +10,8 @@
 		TOC,
 		FeatureCard,
 		TabPanels,
-		createCollapsedService,
-		useCollapsedService,
+		createCollapsedCtx,
+		useCollapsedCtx,
 	} from '$lib/articles/components';
 	import { Portal } from '$lib/components';
 	import I from '$lib/icons';
@@ -23,8 +23,8 @@
 
 	let sidebarOpen = $state(true);
 
-	createCollapsedService(false);
-	const globalCollapsed = useCollapsedService();
+	createCollapsedCtx(false);
+	const globalCollapsed = useCollapsedCtx();
 
 	if (dev) {
 		$effect(() => {
