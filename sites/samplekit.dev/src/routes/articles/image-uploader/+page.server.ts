@@ -31,9 +31,9 @@ const code = {
 		title: 'AvatarEditor.svelte',
 		loadRaw: () => import('/src/routes/account/profile/AvatarEditor.svelte?raw'),
 	}),
-	cloudStorage: await processCodeDefined({
+	objectStorage: await processCodeDefined({
 		title: 'uploadToCloudStorage.ts',
-		loadRaw: () => import('/src/lib/cloudStorage/client/uploadToCloudStorage.ts?raw'),
+		loadRaw: () => import('/src/lib/object-storage/client/uploadToCloudStorage.ts?raw'),
 	}),
 	api: {
 		client: processCode([
@@ -58,24 +58,24 @@ const code = {
 	aws: processCode([
 		{
 			title: 's3.ts',
-			loadRaw: () => import('/src/lib/cloudStorage/server/s3.ts?raw'),
+			loadRaw: () => import('/src/lib/object-storage/server/s3.ts?raw'),
 		},
 		{
 			title: 'cloudfront.ts',
-			loadRaw: () => import('/src/lib/cloudStorage/server/cloudfront.ts?raw'),
+			loadRaw: () => import('/src/lib/object-storage/server/cloudfront.ts?raw'),
 		},
 		{
 			title: 'rekognition.ts',
-			loadRaw: () => import('/src/lib/cloudStorage/server/rekognition.ts?raw'),
+			loadRaw: () => import('/src/lib/object-storage/server/rekognition.ts?raw'),
 		},
 	]),
 	keyController: await processCodeDefined({
-		title: '$lib/cloudStorage/server/utils.ts',
-		loadRaw: () => import('/src/lib/cloudStorage/server/utils.ts?raw'),
+		title: '$lib/object-storage/server/s3CloudfrontKeyController.ts',
+		loadRaw: () => import('/src/lib/object-storage/server/s3CloudfrontKeyController.ts?raw'),
 	}),
 	unsavedUploadsCleaner: await processCodeDefined({
-		title: '$lib/cloudStorage/server/unsavedUploadsCleaner.ts',
-		loadRaw: () => import('/src/lib/cloudStorage/server/unsavedUploadsCleaner.ts?raw'),
+		title: '$lib/object-storage/server/unsavedUploadsCleaner.ts',
+		loadRaw: () => import('/src/lib/object-storage/server/unsavedUploadsCleaner.ts?raw'),
 	}),
 	presigned: processCode([
 		{

@@ -1,6 +1,6 @@
 import { RESET_DB_IP_WHITELIST, RESET_DB_KEY } from '$env/static/private';
-import { clearBucket } from '$lib/cloudStorage/server';
 import { db } from '$lib/db/server';
+import { objectStorage } from '$lib/object-storage/server';
 import { createLimiter } from '$lib/rate-limit/server';
 import { guardApiKey } from '../guard';
 import type { RequestHandler } from '@sveltejs/kit';
@@ -17,7 +17,7 @@ const resetDbAndBucket: RequestHandler = async (event) =>
 		ipWhitelist: RESET_DB_IP_WHITELIST.split(','),
 		protectedFn: async () => {
 			await db.meta.resetDb();
-			await clearBucket();
+			await objectStorage.deleteAll();
 		},
 	});
 

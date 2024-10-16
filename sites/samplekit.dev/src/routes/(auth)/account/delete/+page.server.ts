@@ -1,6 +1,6 @@
 import { auth } from '$lib/auth/server';
-import { deleteS3Object, invalidateCloudfront, keyController } from '$lib/cloudStorage/server';
 import { checkedRedirect } from '$lib/http/server';
+import { objectStorage } from '$lib/object-storage/server';
 import { superValidate, zod } from '$lib/superforms/server';
 import { transports } from '$lib/transport/server';
 import { pluralize } from '$lib/utils/common';
@@ -63,11 +63,11 @@ const deleteUserWithSeshConf: Action = async ({ locals }) => {
 	const timeRemaining = auth.session.getTempConf({ session });
 	if (timeRemaining === null) return checkedRedirect('/account/delete');
 
-	if (keyController.is.cloudfrontUrl(user.avatar?.url)) {
-		const key = keyController.transform.cloudfrontUrlToKey(user.avatar.url);
+	if (objectStorage.keyController.is.cdnUrl(user.avatar?.url)) {
+		const key = objectStorage.keyController.transform.cdnUrlToKey(user.avatar.url);
 		await Promise.all([
-			deleteS3Object({ key, guard: () => keyController.guard.root({ key }) }),
-			invalidateCloudfront({ keys: [key] }),
+			objectStorage.delete({ key, guard: () => objectStorage.keyController.guard.root({ key }) }),
+			objectStorage.invalidateCDN({ keys: [key] }),
 		]);
 	}
 

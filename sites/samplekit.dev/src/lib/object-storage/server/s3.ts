@@ -1,7 +1,14 @@
-import { DeleteObjectCommand, S3Client } from '@aws-sdk/client-s3';
+import { DeleteObjectsCommand, ListObjectsCommand, DeleteObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import { createPresignedPost } from '@aws-sdk/s3-presigned-post';
-import { AWS_SERVICE_REGION, IAM_ACCESS_KEY_ID, IAM_SECRET_ACCESS_KEY, S3_BUCKET_NAME } from '$env/static/private';
+import {
+	DB_NAME,
+	AWS_SERVICE_REGION,
+	IAM_ACCESS_KEY_ID,
+	IAM_SECRET_ACCESS_KEY,
+	S3_BUCKET_NAME,
+} from '$env/static/private';
 import { logger } from '$lib/logging/server';
+import type { ObjectStorage } from './types';
 
 export const getS3 = (() => {
 	let s3: S3Client | null = null;
@@ -28,7 +35,7 @@ export const getS3 = (() => {
  *
  * To use, convert `formDataFields` to a `FormData` object, append `('file', file)`, and `POST` to `bucketUrl`.
  */
-export const generateS3UploadPost = async (a: { key: string; maxContentLength?: number; expireSeconds?: number }) => {
+export const generateS3UploadPost: ObjectStorage['generateUploadFormDataFields'] = async (a) => {
 	try {
 		const res = await createPresignedPost(getS3(), {
 			Bucket: S3_BUCKET_NAME,
@@ -38,7 +45,7 @@ export const generateS3UploadPost = async (a: { key: string; maxContentLength?: 
 		});
 
 		return {
-			bucketUrl: res.url,
+			url: res.url,
 			formDataFields: res.fields,
 		};
 	} catch (err) {
@@ -47,13 +54,7 @@ export const generateS3UploadPost = async (a: { key: string; maxContentLength?: 
 	}
 };
 
-export const deleteS3Object = async ({
-	key,
-	guard,
-}: {
-	key: string;
-	guard: null | (() => boolean);
-}): Promise<boolean> => {
+export const deleteS3Object: ObjectStorage['delete'] = async ({ key, guard }) => {
 	if (guard && !guard()) return false;
 
 	try {
@@ -63,5 +64,35 @@ export const deleteS3Object = async ({
 	} catch (err) {
 		logger.error(err);
 		return false;
+	}
+};
+
+export const clearBucket: ObjectStorage['deleteAll'] = async () => {
+	const objects = await (async () => {
+		try {
+			const listObjectsCommand = new ListObjectsCommand({ Bucket: S3_BUCKET_NAME, Prefix: DB_NAME });
+			return (
+				(await getS3()
+					.send(listObjectsCommand)
+					.then((o) => o.Contents?.map((o) => ({ Key: o.Key })))) ?? false
+			);
+		} catch (err) {
+			logger.error(err);
+			return false;
+		}
+	})();
+
+	if (!objects) return { deletedCount: 0 };
+
+	try {
+		const deleteObjectsCommand = new DeleteObjectsCommand({
+			Bucket: S3_BUCKET_NAME,
+			Delete: { Objects: objects },
+		});
+
+		return { deletedCount: (await getS3().send(deleteObjectsCommand)).Deleted?.length ?? 0 };
+	} catch (err) {
+		logger.error(err);
+		return { deletedCount: 0 };
 	}
 };

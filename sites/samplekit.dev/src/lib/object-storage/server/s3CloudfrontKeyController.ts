@@ -1,5 +1,6 @@
 import crypto from 'crypto';
 import { CLOUDFRONT_URL, DB_NAME, S3_BUCKET_URL } from '$env/static/private';
+import type { ObjectStorage } from './types';
 
 const createId = ({ length }: { length: number } = { length: 16 }) =>
 	crypto
@@ -7,24 +8,24 @@ const createId = ({ length }: { length: number } = { length: 16 }) =>
 		.toString('base64url')
 		.slice(0, length);
 
-export const keyController = (() => {
+export const s3CloudfrontKeyController: ObjectStorage['keyController'] = (() => {
 	const keys = {
 		user: 'user',
 		avatar: 'avatar',
 	};
 
 	const transform = {
-		keyToS3Url: (key: string) => `${S3_BUCKET_URL}/${key}`,
-		keyToCloudfrontUrl: (key: string) => `${CLOUDFRONT_URL}/${key}`,
-		s3UrlToKey: (url: string) => url.replace(`${S3_BUCKET_URL}/`, ''),
-		s3UrlToCloudfrontUrl: (url: string) => url.replace(S3_BUCKET_URL, CLOUDFRONT_URL),
-		cloudfrontUrlToKey: (url: string) => url.replace(`${CLOUDFRONT_URL}/`, ''),
-		cloudfrontUrlToS3Url: (url: string) => url.replace(CLOUDFRONT_URL, S3_BUCKET_URL),
+		keyToObjectUrl: (key: string) => `${S3_BUCKET_URL}/${key}`,
+		keyToCDNUrl: (key: string) => `${CLOUDFRONT_URL}/${key}`,
+		objectUrlToKey: (url: string) => url.replace(`${S3_BUCKET_URL}/`, ''),
+		objectUrlToCDNUrl: (url: string) => url.replace(S3_BUCKET_URL, CLOUDFRONT_URL),
+		cdnUrlToKey: (url: string) => url.replace(`${CLOUDFRONT_URL}/`, ''),
+		cdnUrlToObjectUrl: (url: string) => url.replace(CLOUDFRONT_URL, S3_BUCKET_URL),
 	};
 
 	const is = {
-		s3Url: (url?: string): url is string => !!url?.startsWith(S3_BUCKET_URL),
-		cloudfrontUrl: (url?: string): url is string => !!url?.startsWith(CLOUDFRONT_URL),
+		objectUrl: (url?: string): url is string => !!url?.startsWith(S3_BUCKET_URL),
+		cdnUrl: (url?: string): url is string => !!url?.startsWith(CLOUDFRONT_URL),
 	};
 
 	const create = {

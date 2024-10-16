@@ -1,2 +1,2 @@
-export * from './uploadToCloudStorage';
 export * from './cropImgUploadController.svelte';
+export { objectStorage } from './repository';

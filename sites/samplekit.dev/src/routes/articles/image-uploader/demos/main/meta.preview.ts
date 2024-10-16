@@ -13,11 +13,11 @@ export default [
 	},
 	{
 		title: 'cropImgUploadController.ts',
-		loadRaw: () => import('/src/lib/cloudStorage/client/cropImgUploadController.svelte.ts?raw'),
+		loadRaw: () => import('/src/lib/object-storage/client/cropImgUploadController.svelte.ts?raw'),
 	},
 	{
 		title: 'uploadToCloudStorage.ts',
-		loadRaw: () => import('/src/lib/cloudStorage/client/uploadToCloudStorage.ts?raw'),
+		loadRaw: () => import('/src/lib/object-storage/client/uploadToCloudStorage.ts?raw'),
 	},
 	{
 		title: 'crop.json/index.ts',

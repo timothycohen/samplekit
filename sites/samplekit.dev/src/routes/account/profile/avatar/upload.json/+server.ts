@@ -1,13 +1,6 @@
-import {
-	createUnsavedUploadCleaner,
-	deleteS3Object,
-	generateS3UploadPost,
-	invalidateCloudfront,
-	keyController,
-	detectModerationLabels,
-} from '$lib/cloudStorage/server';
 import { db } from '$lib/db/server';
 import { jsonFail, jsonOk } from '$lib/http/server';
+import { objectStorage } from '$lib/object-storage/server';
 import { createLimiter } from '$lib/rate-limit/server';
 import { toHumanReadableTime } from '$lib/utils/common';
 import { MAX_UPLOAD_SIZE, putReqSchema, type GetRes, type PutRes } from '.';
@@ -30,7 +23,7 @@ const uploadLimiter = createLimiter({
 	],
 });
 
-const unsavedUploadCleaner = createUnsavedUploadCleaner({
+const unsavedUploadCleaner = objectStorage.createUnsavedUploadCleaner({
 	jobDelaySeconds: EXPIRE_SECONDS,
 	getStoredUrl: async ({ userId }) => (await db.user.get({ userId }))?.avatar?.url,
 });
@@ -48,20 +41,24 @@ const getSignedAvatarUploadUrl: RequestHandler = async (event) => {
 		);
 	if (rateCheck.limited) return jsonFail(429, rateCheck.humanTryAfter('uploads'));
 
-	const key = keyController.create.user.avatar({ userId: user.id });
-	const res = await generateS3UploadPost({
+	const key = objectStorage.keyController.create.user.avatar({ userId: user.id });
+	const res = await objectStorage.generateUploadFormDataFields({
 		key,
 		maxContentLength: MAX_UPLOAD_SIZE,
 		expireSeconds: EXPIRE_SECONDS,
 	});
 	if (!res) return jsonFail(500, 'Failed to generate upload URL');
-	await db.presigned.insertOrOverwrite({ bucketUrl: keyController.transform.keyToS3Url(key), userId: user.id, key });
+	await db.presigned.insertOrOverwrite({
+		bucketUrl: objectStorage.keyController.transform.keyToObjectUrl(key),
+		userId: user.id,
+		key,
+	});
 	unsavedUploadCleaner.addDelayedJob({
-		cloudfrontUrl: keyController.transform.keyToCloudfrontUrl(key),
+		cdnUrl: objectStorage.keyController.transform.keyToCDNUrl(key),
 		userId: user.id,
 	});
 
-	return jsonOk<GetRes>({ bucketUrl: res.bucketUrl, formDataFields: res.formDataFields, objectKey: key });
+	return jsonOk<GetRes>({ url: res.url, formDataFields: res.formDataFields, objectKey: key });
 };
 
 const checkAndSaveUploadedAvatar: RequestHandler = async ({ request, locals }) => {
@@ -74,35 +71,38 @@ const checkAndSaveUploadedAvatar: RequestHandler = async ({ request, locals }) =
 	const presignedObjectUrl = await db.presigned.get({ userId: user.id });
 	if (!presignedObjectUrl) return jsonFail(400);
 
-	const cloudfrontUrl = keyController.transform.s3UrlToCloudfrontUrl(presignedObjectUrl.bucketUrl);
-	const imageExists = await fetch(cloudfrontUrl, { method: 'HEAD' }).then((res) => res.ok);
+	const cdnUrl = objectStorage.keyController.transform.objectUrlToCDNUrl(presignedObjectUrl.bucketUrl);
+	const imageExists = await fetch(cdnUrl, { method: 'HEAD' }).then((res) => res.ok);
 	if (!imageExists) {
 		await db.presigned.delete({ userId: user.id });
-		unsavedUploadCleaner.removeJob({ cloudfrontUrl });
+		unsavedUploadCleaner.removeJob({ cdnUrl });
 		return jsonFail(400);
 	}
 
-	const newAvatar = { crop: parsed.data.crop, url: cloudfrontUrl };
+	const newAvatar = { crop: parsed.data.crop, url: cdnUrl };
 	const oldAvatar = user.avatar;
-	const newKey = keyController.transform.s3UrlToKey(presignedObjectUrl.bucketUrl);
+	const newKey = objectStorage.keyController.transform.objectUrlToKey(presignedObjectUrl.bucketUrl);
 
-	const { error: moderationError } = await detectModerationLabels({ s3Key: newKey });
+	const { error: moderationError } = await objectStorage.detectModerationLabels({ s3Key: newKey });
 
 	if (moderationError) {
-		unsavedUploadCleaner.removeJob({ cloudfrontUrl });
-		await Promise.all([deleteS3Object({ key: newKey, guard: null }), db.presigned.delete({ userId: user.id })]);
+		unsavedUploadCleaner.removeJob({ cdnUrl });
+		await Promise.all([objectStorage.delete({ key: newKey, guard: null }), db.presigned.delete({ userId: user.id })]);
 		return jsonFail(422, moderationError.message);
 	}
 
-	if (keyController.is.cloudfrontUrl(oldAvatar?.url) && newAvatar.url !== oldAvatar.url) {
-		const oldKey = keyController.transform.cloudfrontUrlToKey(oldAvatar.url);
+	if (objectStorage.keyController.is.cdnUrl(oldAvatar?.url) && newAvatar.url !== oldAvatar.url) {
+		const oldKey = objectStorage.keyController.transform.cdnUrlToKey(oldAvatar.url);
 		await Promise.all([
-			deleteS3Object({ key: oldKey, guard: () => keyController.guard.user.avatar({ key: oldKey, ownerId: user.id }) }),
-			invalidateCloudfront({ keys: [oldKey] }),
+			objectStorage.delete({
+				key: oldKey,
+				guard: () => objectStorage.keyController.guard.user.avatar({ key: oldKey, ownerId: user.id }),
+			}),
+			objectStorage.invalidateCDN({ keys: [oldKey] }),
 		]);
 	}
 
-	unsavedUploadCleaner.removeJob({ cloudfrontUrl });
+	unsavedUploadCleaner.removeJob({ cdnUrl });
 	await Promise.all([
 		db.presigned.delete({ userId: user.id }),
 		db.user.update({ userId: user.id, values: { avatar: newAvatar } }),
@@ -117,11 +117,14 @@ const deleteAvatar: RequestHandler = async ({ locals }) => {
 
 	const promises: Array<Promise<unknown>> = [db.user.update({ userId: user.id, values: { avatar: null } })];
 
-	if (keyController.is.cloudfrontUrl(user.avatar.url)) {
-		const key = keyController.transform.cloudfrontUrlToKey(user.avatar.url);
+	if (objectStorage.keyController.is.cdnUrl(user.avatar.url)) {
+		const key = objectStorage.keyController.transform.cdnUrlToKey(user.avatar.url);
 		promises.push(
-			deleteS3Object({ key, guard: () => keyController.guard.user.avatar({ key, ownerId: user.id }) }),
-			invalidateCloudfront({ keys: [key] }),
+			objectStorage.delete({
+				key,
+				guard: () => objectStorage.keyController.guard.user.avatar({ key, ownerId: user.id }),
+			}),
+			objectStorage.invalidateCDN({ keys: [key] }),
 		);
 	}
 

@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { fade } from 'svelte/transition';
-	import { uploadS3PresignedPost, CropImgUploadController } from '$lib/cloudStorage/client';
 	import { FileInput } from '$lib/components';
 	import { ImageCrop, UploadProgress, ImageCardBtns, ImageCardOverlays } from '$lib/image/client';
+	import { objectStorage, CropImgUploadController } from '$lib/object-storage/client';
 	import ConfirmDelAvatarModal from './ConfirmDelAvatarModal.svelte';
 	import { updateAvatarCrop } from './avatar/crop.json';
 	import {
@@ -24,7 +24,7 @@
 		saveCropToDb: updateAvatarCrop.send,
 		delImg: deleteAvatar.send,
 		getUploadArgs: getSignedAvatarUploadUrl.send,
-		upload: uploadS3PresignedPost,
+		upload: objectStorage.upload,
 		saveToDb: checkAndSaveUploadedAvatar.send,
 	});
 

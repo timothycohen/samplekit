@@ -7,7 +7,7 @@
 		title: 'Image Cropper And Uploader',
 		implementationPath: '/account/profile',
 		srcCodeHref:
-			'https://github.com/timothycohen/samplekit/blob/main/sites/samplekit.dev/src/lib/cloudStorage/client/cropImgUploadController.svelte.ts',
+			'https://github.com/timothycohen/samplekit/blob/main/sites/samplekit.dev/src/lib/object-storage/client/cropImgUploadController.svelte.ts',
 		description:
 			'Select an image, crop it, upload it to an AWS S3 Bucket with a progress indicator, moderate it with Rekognition, save it to the DB, and serve it via AWS Cloudfront.',
 		publishedAt: new Date('2024-03-20 16:37:01 -0400'),
@@ -892,7 +892,7 @@ md-end -->
 
 <!-- shiki-start
 ```ts
-import { uploadS3PresignedPost, CropImgUploadController } from '$lib/cloudStorage/client';
+import { objectStorage, CropImgUploadController } from '$lib/object-storage/client';
 import { updateAvatarCrop } from './avatar/crop.json';
 import {
 	MAX_UPLOAD_SIZE,
@@ -924,7 +924,7 @@ shiki-end -->
 	callbacks, we'll promisify it and split the <code>promise</code> and <code>abort</code>.
 </p>
 
-{@render Code(data.code.cloudStorage)}
+{@render Code(data.code.objectStorage)}
 
 <HAnchor tag="h3" title="Client Endpoints" />
 

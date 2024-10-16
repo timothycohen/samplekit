@@ -9,7 +9,7 @@
 	import { UploadProgress, ImageCardBtns, ImageCardOverlays } from '$lib/image/client';
 	import img_owl from '$routes/articles/image-uploader/assets/owl-400w.webp';
 	import img_smoky from '$routes/articles/image-uploader/assets/smoky-400w.webp';
-	import type { CropControllerState } from '$lib/cloudStorage/client';
+	import type { CropControllerState } from '$lib/object-storage/client';
 
 	const noop = () => {};
 
