@@ -1,9 +1,6 @@
-<script lang="ts" module>
-	export type WrapperProps = { bg?: true; center?: true; noBorder?: true; noPadding?: true };
-</script>
-
 <script lang="ts">
 	import DiagonalLines from './DiagonalLines.svelte';
+	import type { WrapperProps } from '$lib/articles/load';
 	import type { Snippet } from 'svelte';
 
 	interface Props {

@@ -1,5 +1,5 @@
+import { defineCtx } from '$lib/svelte-context';
 import { BoxedBool } from '$lib/svelte-runes/primitives.svelte';
-import { defineCtx } from '../defineCtx';
 
 const [getCtx, setCtx] = defineCtx<BoxedBool>();
 

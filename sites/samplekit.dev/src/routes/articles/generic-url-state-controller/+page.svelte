@@ -18,8 +18,8 @@
 </script>
 
 <script lang="ts">
-	import { CodeTopper } from '$lib/articles/components';
-	import { TabPanelItem, HAnchor, Admonition, TabPanels } from '$lib/components';
+	import { CodeTopper, HAnchor, TabPanels, TabPanelItem } from '$lib/articles/components';
+	import { Admonition } from '$lib/components';
 
 	const { data } = $props();
 </script>

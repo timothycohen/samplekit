@@ -1,10 +1,20 @@
 <script lang="ts">
 	import { fly } from 'svelte/transition';
 	import { dev } from '$app/environment';
-	import { Vaul, Changelog, DateLine, Series, TOC, FeatureCard } from '$lib/articles/components';
-	import { TabPanels, HAnchor, Portal } from '$lib/components';
+	import {
+		HAnchor,
+		Vaul,
+		Changelog,
+		DateLine,
+		Series,
+		TOC,
+		FeatureCard,
+		TabPanels,
+		createCollapsedService,
+		useCollapsedService,
+	} from '$lib/articles/components';
+	import { Portal } from '$lib/components';
 	import I from '$lib/icons';
-	import { createCollapsedService, useCollapsedService } from '$lib/svelte-context/codeCollapse';
 	import { pluralize } from '$lib/utils/common';
 	import { updateLoadedFrontMatter } from './update-loaded-front-matter.json';
 

@@ -24,8 +24,7 @@
 </script>
 
 <script lang="ts">
-	import { CodeTopper } from '$lib/articles/components';
-	import { TabPanels, HAnchor } from '$lib/components';
+	import { CodeTopper, HAnchor, TabPanels } from '$lib/articles/components';
 
 	const { data } = $props();
 

@@ -1,6 +1,5 @@
 import { splitAndProcess } from './common';
-import type { NoPropComponent } from '$lib/utils/common';
-import type { ComponentProcessedLazy, ModuleDefinitions } from './types';
+import type { ComponentProcessedLazy, DemoComponent, ModuleDefinitions } from './types';
 
 export const processComponents = (moduleDefinitions: ModuleDefinitions) => {
 	return moduleDefinitions.reduce<Array<ComponentProcessedLazy>>((acc, curr, index) => {
@@ -12,7 +11,7 @@ export const processComponents = (moduleDefinitions: ModuleDefinitions) => {
 			{
 				title,
 				index,
-				component: (loadComponent() as Promise<{ default: NoPropComponent }>).then((c) => c.default),
+				component: (loadComponent() as Promise<{ default: DemoComponent }>).then((c) => c.default),
 				wrapperProps,
 				icon,
 			},
