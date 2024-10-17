@@ -1,5 +1,5 @@
 import { PUBLIC_ORIGIN } from '$env/static/public';
-import { securityEmail } from '$routes/(api)/consts';
+import { SECURITY_EMAIL } from '$lib/consts';
 import type { RequestHandler } from '@sveltejs/kit';
 
 const security: RequestHandler = () => {
@@ -8,7 +8,7 @@ const security: RequestHandler = () => {
 	const policyLink = `${PUBLIC_ORIGIN}/security-policy`;
 
 	return new Response(
-		`Contact: mailto:${securityEmail}
+		`Contact: mailto:${SECURITY_EMAIL}
 Expires: ${endOfYear}
 Canonical: ${canonicalLink}
 Policy: ${policyLink}`,

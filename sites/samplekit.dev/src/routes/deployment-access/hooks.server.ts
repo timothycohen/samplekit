@@ -1,7 +1,7 @@
 import { type Handle, redirect, error } from '@sveltejs/kit';
 import { dev } from '$app/environment';
 import { PUBLIC_ORIGIN } from '$env/static/public';
-import { deploymentAccess } from '$routes/deployment-access/repository';
+import { deploymentAccess } from './repository';
 
 export const protectStagingDeployments: Handle = async ({ event, resolve }) => {
 	if (PUBLIC_ORIGIN === 'https://www.samplekit.dev') {

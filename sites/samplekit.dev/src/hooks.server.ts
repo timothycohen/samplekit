@@ -2,9 +2,9 @@ import '$lib/initServer';
 
 import { sequence } from '@sveltejs/kit/hooks';
 import { logger, sentryHandle, handleErrorWithSentry } from '$lib/logging/server';
-import { addSeshHandlerToLocals } from '$routes/(auth)/hooks.server';
-import { handleAccountRedirects } from '$routes/account/hooks.server';
-import { protectStagingDeployments } from '$routes/deployment-access/hooks.server';
+import { addSeshHandlerToLocals } from './routes/(auth)/hooks.server';
+import { handleAccountRedirects } from './routes/account/hooks.server';
+import { protectStagingDeployments } from './routes/deployment-access/hooks.server';
 import type { HandleServerError, Handle } from '@sveltejs/kit';
 
 // https://github.com/sveltejs/kit/issues/8549
