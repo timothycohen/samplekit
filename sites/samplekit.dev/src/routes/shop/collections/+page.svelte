@@ -1,8 +1,8 @@
 <script lang="ts">
 	import I from '$lib/icons';
-	import { NoResults } from '$routes/shop/lib/components';
-	import { useNavCtx } from '$routes/shop/lib/ctx';
-	import { handleToPath } from '$routes/shop/lib/utils';
+	import { handleToPath } from '$lib/shop';
+	import { NoResults } from '../components';
+	import { useNavCtx } from '../navAndDrawer.ctx';
 
 	const { data } = $props();
 

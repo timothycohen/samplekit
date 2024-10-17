@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { Carousel, ThreeItemGrid } from '$routes/shop/lib/components';
-	import { useNavCtx } from './lib/ctx';
+	import { Carousel, ThreeItemGrid } from './components';
+	import { useNavCtx } from './navAndDrawer.ctx';
 
 	const { data } = $props();
 

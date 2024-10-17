@@ -3,14 +3,10 @@
 	import { beforeNavigate, afterNavigate } from '$app/navigation';
 	import { page } from '$app/stores';
 	import I from '$lib/icons';
-	import { DesktopNav, Sidebar, MobileNav, Cart } from '$routes/shop/lib/components';
-	import {
-		createSearchAndFilterCtx,
-		useSearchAndFilterCtx,
-		createNavCtx,
-		useNavCtx,
-		createCartCtx,
-	} from '$routes/shop/lib/ctx';
+	import { createCartCtx } from './cart.ctx.svelte';
+	import { DesktopNav, Sidebar, MobileNav, Cart } from './components';
+	import { createNavCtx, useNavCtx } from './navAndDrawer.ctx';
+	import { createSearchAndFilterCtx, useSearchAndFilterCtx } from './searchAndFilter.ctx';
 
 	createSearchAndFilterCtx();
 	createNavCtx();

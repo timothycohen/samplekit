@@ -1,8 +1,9 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import I from '$lib/icons';
-	import { Available, SortBy, Price } from '$routes/shop/lib/components';
-	import { useNavCtx, useSearchAndFilterCtx } from '$routes/shop/lib/ctx';
+	import { Available, SortBy, Price } from '../../components';
+	import { useNavCtx } from '../../navAndDrawer.ctx';
+	import { useSearchAndFilterCtx } from '../../searchAndFilter.ctx';
 
 	const { filterCount } = useSearchAndFilterCtx();
 

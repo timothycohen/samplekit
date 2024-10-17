@@ -14,7 +14,7 @@ import { initSentry, getServerLogflare, setupLogger } from '$lib/logging/server'
 import { getCloudfront } from '$lib/object-storage/server/cloudfront';
 import { getRekognition } from '$lib/object-storage/server/rekognition';
 import { getS3 } from '$lib/object-storage/server/s3';
-import { shopConnectedOrExit } from '$lib/shop/connectedOrExit.server';
+import { shopConnectedOrExit } from '$lib/shop/api/connectedOrExit.server';
 import { INTERCEPT_TRANSPORTS } from '$lib/transport/server';
 import { getSES } from '$lib/transport/server/email/ses';
 import { getTwilio } from '$lib/transport/server/sms/twilio';

@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { page } from '$app/stores';
 	import { Switch } from '$lib/components';
-	import { SearchBar, Price, SortBy } from '$routes/shop/lib/components';
-	import { createSearchAndFilterCtx, useSearchAndFilterCtx } from '$routes/shop/lib/ctx';
+	import { SearchBar, Price, SortBy } from '$routes/shop/components';
+	import { createSearchAndFilterCtx, useSearchAndFilterCtx } from '$routes/shop/searchAndFilter.ctx';
 
 	createSearchAndFilterCtx();
 
