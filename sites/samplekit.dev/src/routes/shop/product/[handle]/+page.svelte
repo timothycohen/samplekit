@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { Gallery, ProductDescription, RelatedProducts } from '$routes/shop/lib/components';
-	import { useNavCtx } from '$routes/shop/lib/ctx';
+	import { Gallery, ProductDescription, RelatedProducts } from '../../components';
+	import { useNavCtx } from '../../navAndDrawer.ctx';
 
 	const { data } = $props();
 

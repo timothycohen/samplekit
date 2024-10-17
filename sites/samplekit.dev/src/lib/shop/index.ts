@@ -1,2 +1,3 @@
-export * from './types';
-export { shop } from './shopify/repository';
+export * from './api';
+export * from './searchAndFilter';
+export * from './utils';

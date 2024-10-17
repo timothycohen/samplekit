@@ -1,6 +1,6 @@
 <script lang="ts">
 	import I from '$lib/icons';
-	import { useSearchAndFilterCtx } from '$routes/shop/lib/ctx';
+	import { useSearchAndFilterCtx } from '$routes/shop/searchAndFilter.ctx';
 
 	const {
 		params: { query },
