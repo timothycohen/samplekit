@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { securityEmail } from '../consts';
+	import { SECURITY_EMAIL } from '$lib/consts';
 </script>
 
 <div class="page">
@@ -15,7 +15,7 @@
 		<p>Please do not report security vulnerabilities through GitHub or any public arena.</p>
 		<p>
 			Instead, please email us at
-			<a href="mailto:{securityEmail}">{securityEmail}</a>
+			<a href="mailto:{SECURITY_EMAIL}">{SECURITY_EMAIL}</a>
 		</p>
 
 		<h2>Reporting Security Issues</h2>
