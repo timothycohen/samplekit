@@ -6,6 +6,7 @@
 
 	let innerWidth = $state(1);
 
+	// css masonry isn't supported yet: https://caniuse.com/?search=masonry
 	const cols = $derived(innerWidth >= 1280 ? 3 : innerWidth >= 768 ? 2 : 1);
 	const parts = $derived.by(() => {
 		const result: FeatureCard[][] = Array.from({ length: cols }, () => []);

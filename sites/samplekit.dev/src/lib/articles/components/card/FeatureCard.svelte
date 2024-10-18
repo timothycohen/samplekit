@@ -20,9 +20,9 @@
 
 	const { metadata }: Props = $props();
 
-	// workaround to safari blocking autoplay attribute despite being muted
+	// safari doesn't even show the first frame of the autoplay video, despite being muted
 	const autoPlay = (node: HTMLVideoElement) => {
-		node.play();
+		node.play().catch(() => {});
 	};
 </script>
 
