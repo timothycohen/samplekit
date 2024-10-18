@@ -1,5 +1,6 @@
 import { json } from '@sveltejs/kit';
 import { httpCodeMap } from '../common';
+import type { ZodObject, ZodRawShape } from 'zod';
 
 export function jsonOk(): Response;
 export function jsonOk<Obliged extends Record<string, unknown> = never, T extends Obliged = Obliged>(body: T): Response;
@@ -15,3 +16,14 @@ export function jsonFail(status: number, message?: string): Response {
 	else e = { error: { message: httpCodeMap[status] ?? 'Unknown Error', status } };
 	return json(e, { status });
 }
+
+export const parseReqJson = async <RS extends ZodRawShape>(
+	r: Request,
+	schema: ZodObject<RS>,
+	{ defaults, overrides }: { defaults?: Record<string, unknown>; overrides?: Record<string, unknown> } = {},
+) => {
+	if (defaults || overrides) {
+		return schema.safeParse({ ...defaults, ...(await r.json().catch(() => ({}))), ...overrides });
+	}
+	return schema.safeParse(await r.json().catch(() => ({})));
+};

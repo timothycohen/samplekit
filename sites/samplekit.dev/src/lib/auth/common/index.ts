@@ -5,4 +5,4 @@ export const mfaLabels: Record<DB.MFAs.Kind, string> = {
 	authenticator: 'Authenticator App',
 };
 
-export type * from '@samplekit/auth/common';
+export * from '@samplekit/auth/common';

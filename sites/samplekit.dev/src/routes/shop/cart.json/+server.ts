@@ -1,13 +1,13 @@
 import { dev } from '$app/environment';
-import { jsonFail, jsonOk } from '$lib/http/server';
+import { jsonFail, jsonOk, parseReqJson } from '$lib/http/server';
 import { shop } from '$lib/shop';
 import { delSchema, postSchema, putSchema, type GetRes } from '.';
 import type { RequestHandler } from '@sveltejs/kit';
 
 const addCartItem: RequestHandler = async ({ request, cookies, fetch }) => {
-	const res = postSchema.safeParse(await request.json().catch(() => ({})));
-	if (!res.success) return jsonFail(400);
-	const merchandiseId = res.data.id;
+	const body = await parseReqJson(request, postSchema);
+	if (!body.success) return jsonFail(400);
+	const merchandiseId = body.data.id;
 
 	let cartId = cookies.get('cartId');
 	let cart;
@@ -34,9 +34,9 @@ const addCartItem: RequestHandler = async ({ request, cookies, fetch }) => {
 };
 
 const removeCartItem: RequestHandler = async ({ request, cookies, fetch }) => {
-	const res = delSchema.safeParse(await request.json().catch(() => ({})));
-	if (!res.success) return jsonFail(400);
-	const { lineId } = res.data;
+	const body = await parseReqJson(request, delSchema);
+	if (!body.success) return jsonFail(400);
+	const { lineId } = body.data;
 
 	const cartId = cookies.get('cartId');
 	if (!cartId) return jsonFail(400, 'Missing cart ID');
@@ -50,9 +50,9 @@ const removeCartItem: RequestHandler = async ({ request, cookies, fetch }) => {
 };
 
 const updateCartItemQty: RequestHandler = async ({ request, cookies, fetch }) => {
-	const res = putSchema.safeParse(await request.json().catch(() => ({})));
-	if (!res.success) return jsonFail(400);
-	const { lineId, quantity, variantId } = res.data;
+	const body = await parseReqJson(request, putSchema);
+	if (!body.success) return jsonFail(400);
+	const { lineId, quantity, variantId } = body.data;
 
 	const cartId = cookies.get('cartId');
 	if (!cartId) return jsonFail(400, 'Missing cart ID');

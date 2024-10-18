@@ -1,6 +1,6 @@
 import { auth } from '$lib/auth/server';
-import { checkedRedirect, jsonFail, jsonOk } from '$lib/http/server';
-import type { PostReq } from '.';
+import { checkedRedirect, jsonFail, jsonOk, parseReqJson } from '$lib/http/server';
+import { postReqSchema } from '.';
 import type { RequestHandler } from '@sveltejs/kit';
 
 const loginWithPasskey: RequestHandler = async ({ request, locals }) => {
@@ -8,9 +8,9 @@ const loginWithPasskey: RequestHandler = async ({ request, locals }) => {
 	if (!seshUser) return checkedRedirect('/login');
 	const userId = seshUser.user.id;
 
-	const body = await (request.json() as Promise<PostReq>).catch(() => null);
-	if (!body) return jsonFail(400);
-	const clientAuthResponse = body.passkeyData;
+	const body = await parseReqJson(request, postReqSchema);
+	if (!body.success) return jsonFail(400);
+	const clientAuthResponse = body.data.passkeyData;
 
 	const [savedPasskeys, validated] = await Promise.all([
 		auth.provider.pass.MFA.passkey.getSaved(userId),

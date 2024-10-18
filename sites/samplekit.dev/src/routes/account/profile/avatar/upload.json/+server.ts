@@ -1,5 +1,5 @@
 import { db } from '$lib/db/server';
-import { jsonFail, jsonOk } from '$lib/http/server';
+import { jsonFail, jsonOk, parseReqJson } from '$lib/http/server';
 import { objectStorage } from '$lib/object-storage/server';
 import { createLimiter } from '$lib/rate-limit/server';
 import { toHumanReadableTime } from '$lib/utils/common';
@@ -64,9 +64,8 @@ const getSignedAvatarUploadUrl: RequestHandler = async (event) => {
 const checkAndSaveUploadedAvatar: RequestHandler = async ({ request, locals }) => {
 	const { user } = await locals.seshHandler.userOrRedirect();
 
-	const body = await request.json().catch(() => null);
-	const parsed = putReqSchema.safeParse(body);
-	if (!parsed.success) return jsonFail(400);
+	const body = await parseReqJson(request, putReqSchema);
+	if (!body.success) return jsonFail(400);
 
 	const presignedObjectUrl = await db.presigned.get({ userId: user.id });
 	if (!presignedObjectUrl) return jsonFail(400);
@@ -79,7 +78,7 @@ const checkAndSaveUploadedAvatar: RequestHandler = async ({ request, locals }) =
 		return jsonFail(400);
 	}
 
-	const newAvatar = { crop: parsed.data.crop, url: cdnUrl };
+	const newAvatar = { crop: body.data.crop, url: cdnUrl };
 	const oldAvatar = user.avatar;
 	const newKey = objectStorage.keyController.transform.objectUrlToKey(presignedObjectUrl.bucketUrl);
 

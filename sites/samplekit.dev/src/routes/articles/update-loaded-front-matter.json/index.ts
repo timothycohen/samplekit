@@ -6,8 +6,8 @@ import type { RouteId } from './$types';
 
 export const putReqSchema = z.object({ wordCount: z.number(), articlePath: articlePathSchema });
 type PutReq = z.infer<typeof putReqSchema>;
-
-export const updateLoadedFrontMatter = new ClientFetcher<RouteId, Result.Success, PutReq>(
+type PutRes = Result.Success;
+export const updateLoadedFrontMatter = new ClientFetcher<RouteId, PutRes, PutReq>(
 	'PUT',
 	'/articles/update-loaded-front-matter.json',
 );

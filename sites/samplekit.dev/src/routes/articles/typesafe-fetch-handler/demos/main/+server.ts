@@ -1,13 +1,13 @@
-import { jsonFail, jsonOk } from '$lib/http/server';
+import { jsonFail, jsonOk, parseReqJson } from '$lib/http/server';
 import { getNewColor } from './lang.service.server';
 import { postReqSchema, type PostRes } from './index';
 import type { RequestHandler } from '@sveltejs/kit';
 
 const getRandomColor: RequestHandler = async ({ request }) => {
-	const verifiedBody = postReqSchema.safeParse(await request.json().catch(() => null));
-	if (!verifiedBody.success) return jsonFail(400);
+	const body = await parseReqJson(request, postReqSchema);
+	if (!body.success) return jsonFail(400);
 
-	const { excludeColor, lang, simulateDelay } = verifiedBody.data;
+	const { excludeColor, lang, simulateDelay } = body.data;
 	const newColor = getNewColor({ lang, excludeColor });
 
 	if (simulateDelay) {

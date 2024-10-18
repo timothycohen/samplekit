@@ -8,10 +8,8 @@ export const postReqSchema = z.object({
 	excludeColor: z.string(),
 	simulateDelay: z.boolean().optional(),
 });
-
 export type PostReq = z.infer<typeof postReqSchema>;
 export type PostRes = { color: string };
-
 export const getRandomColor = new ClientFetcher<RouteId, PostRes, PostReq>(
 	'POST',
 	'/articles/typesafe-fetch-handler/demos/main',

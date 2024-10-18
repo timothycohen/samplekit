@@ -1,15 +1,15 @@
 import { auth } from '$lib/auth/server';
-import { jsonFail, jsonOk } from '$lib/http/server';
-import type { PostReq } from '.';
+import { jsonFail, jsonOk, parseReqJson } from '$lib/http/server';
+import { postReqSchema } from '.';
 import type { RequestHandler } from '@sveltejs/kit';
 
 const seshConfFromPasskey: RequestHandler = async ({ request, locals }) => {
 	const { user, session } = await locals.seshHandler.userOrRedirect();
 	const userId = user.id;
 
-	const body = await (request.json() as Promise<PostReq>).catch(() => null);
-	if (!body) return jsonFail(400);
-	const clientAuthResponse = body.passkeyData;
+	const body = await parseReqJson(request, postReqSchema);
+	if (!body.success) return jsonFail(400);
+	const clientAuthResponse = body.data.passkeyData;
 
 	const [savedPasskeys, validated] = await Promise.all([
 		auth.provider.pass.MFA.passkey.getSaved(userId),

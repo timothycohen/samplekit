@@ -11,7 +11,7 @@ import {
 	type RawFrontMatter,
 	type ReadingTime,
 } from '$lib/articles/schemas';
-import { jsonFail, jsonOk } from '$lib/http/server';
+import { jsonFail, jsonOk, parseReqJson } from '$lib/http/server';
 import { logger } from '$lib/logging/server';
 import prettierConfig from '../../../../prettier.config';
 import { putReqSchema } from '.';
@@ -94,10 +94,10 @@ const pages = Object.entries(
 
 const updateLoadedFrontMatter: RequestHandler = async ({ request }) => {
 	if (!dev) return jsonFail(404);
-	const validated = putReqSchema.safeParse(await request.json().catch(() => null));
-	if (!validated.success) return jsonFail(400);
+	const body = await parseReqJson(request, putReqSchema);
+	if (!body.success) return jsonFail(400);
 
-	const { wordCount, articlePath } = validated.data;
+	const { wordCount, articlePath } = body.data;
 	const routesFilePath = path.join(import.meta.dirname, '..', '..', '..', '..', 'src', 'routes');
 	const articleDirname = path.join(routesFilePath, articlePath);
 	const articleUrlPath = path.join(articleDirname, '+page.svelte');

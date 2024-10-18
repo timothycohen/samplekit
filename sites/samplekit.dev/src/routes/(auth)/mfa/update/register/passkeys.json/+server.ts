@@ -1,17 +1,17 @@
 import { mfaLabels } from '$lib/auth/common';
 import { auth } from '$lib/auth/server';
-import { checkedRedirect, jsonFail, jsonOk } from '$lib/http/server';
+import { checkedRedirect, jsonFail, jsonOk, parseReqJson } from '$lib/http/server';
 import { transports } from '$lib/transport/server';
-import type { PostReq } from '.';
+import { postReqSchema } from '.';
 import type { RequestHandler } from '@sveltejs/kit';
 
 const registerMFA_Passkey_WithSeshConfAndPasskey: RequestHandler = async ({ request, locals }) => {
 	const seshUser = await locals.seshHandler.getSessionUser();
 	if (!seshUser) return checkedRedirect('/login');
 
-	const body = await (request.json() as Promise<PostReq>).catch(() => null);
-	if (!body) return jsonFail(400);
-	const clientRegResponse = body.passkeyData;
+	const body = await parseReqJson(request, postReqSchema);
+	if (!body.success) return jsonFail(400);
+	const clientRegResponse = body.data.passkeyData;
 
 	const { tokenErr, challenge } = await auth.token.passkeyChallenge.getChallenge({ userId: seshUser.user.id });
 	if (tokenErr) return auth.token.err.toJsonFail(tokenErr);

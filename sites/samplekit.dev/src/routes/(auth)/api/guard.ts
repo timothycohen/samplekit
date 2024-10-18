@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { DB_NAME } from '$env/static/private';
-import { jsonFail, jsonOk } from '$lib/http/server';
+import { jsonFail, jsonOk, parseReqJson } from '$lib/http/server';
 import { logger } from '$lib/logging/server';
 import type { createLimiter } from '$lib/rate-limit/server';
 import type { RequestEvent } from '@sveltejs/kit';
@@ -42,19 +42,19 @@ export const guardApiKey = async ({
 	protectedFn: () => Promise<Record<string, unknown> | void | null | undefined>;
 }) => {
 	const { request, getClientAddress } = event;
-	const req = postReq.safeParse(await request.json().catch(() => ({})));
+	const body = await parseReqJson(request, postReq);
 
 	const err: null | { err_code: string; status: 400 | 403 | 429 } = await (async () => {
-		if (!req.success) {
-			return { err_code: req.error.issues[0]?.code ?? 'bad_request', status: 400 };
+		if (!body.success) {
+			return { err_code: body.error.issues[0]?.code ?? 'bad_request', status: 400 };
 		}
-		if (req.data.expected_db_name !== DB_NAME) {
+		if (body.data.expected_db_name !== DB_NAME) {
 			return { err_code: 'incorrect_env', status: 403 };
 		}
 		if (await limiter.check(event).then((r) => r.forbidden || r.limited)) {
 			return { err_code: 'rate_limited', status: 429 };
 		}
-		if (expectedKey === '' || expectedKey !== req.data.cron_api_key) {
+		if (expectedKey === '' || expectedKey !== body.data.cron_api_key) {
 			return { err_code: 'incorrect_key', status: 403 };
 		}
 
