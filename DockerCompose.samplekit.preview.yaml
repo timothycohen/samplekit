@@ -26,7 +26,7 @@ services:
     container_name: sk-preview-kv
     restart: unless-stopped
     volumes:
-      - kv:/data/sk-preview-kv-redis-data
+      - kv:/data
     env_file:
       - sites/samplekit.dev/.env.preview
     ports:

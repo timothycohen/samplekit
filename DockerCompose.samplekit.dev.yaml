@@ -20,7 +20,7 @@ services:
     container_name: sk-dev-kv
     restart: unless-stopped
     volumes:
-      - kv:/data/sk-dev-kv-redis-data
+      - kv:/data
     env_file:
       - sites/samplekit.dev/.env.development
     ports:
