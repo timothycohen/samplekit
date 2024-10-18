@@ -16,6 +16,7 @@
 		tags: ['typescript', 'http', 'DX', 'client-server', 'request handlers', 'endpoints'],
 		featured: true,
 		updates: [
+			{ at: new Date('2024-10-18 19:05:58 -0400'), descriptions: ['Improve jsonOk type.'] },
 			{ at: new Date('2024-10-13 17:24:39 -0400'), descriptions: ['Tweak RequestHandler placement.'] },
 			{ at: new Date('2024-08-13 18:26:40 -0400'), descriptions: ['Update to runes.'] },
 		],
