@@ -11,7 +11,7 @@ export type Action =
 	| `/change-to-google?/passwordToLinkGoogle`
 	| `/change-to-password?/changeToEmailPassProvider`
 	| `/signup/email-verification?/resendSignupEmailVerification`
-	| `/oauth/google?/passToGoogleOAuth`
+	| `/oauth/google/send-to-oauth.json`
 	| `/login/verify-mfa?/loginWithSMS`
 	| `/login/verify-mfa?/loginWithAuthenticator`
 	| `/logout?/logoutCurrent`
@@ -31,7 +31,7 @@ export const actionsMap = {
 	emailPassReset: '/login?/emailPassReset',
 	loginWithSMS: '/login/verify-mfa?/loginWithSMS',
 	loginWithAuthenticator: '/login/verify-mfa?/loginWithAuthenticator',
-	passToGoogleOAuth: '/oauth/google?/passToGoogleOAuth',
+	passToGoogleOAuth: '/oauth/google/send-to-oauth.json',
 	signupWithPassword: '/signup?/signupWithPassword',
 	resendSignupEmailVerification: '/signup/email-verification?/resendSignupEmailVerification',
 	deleteUserWithSeshConf: '/account/delete?/deleteUserWithSeshConf',

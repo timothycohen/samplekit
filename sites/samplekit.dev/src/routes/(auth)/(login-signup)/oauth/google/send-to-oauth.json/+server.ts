@@ -1,14 +1,11 @@
-import { error, redirect, type Action } from '@sveltejs/kit';
+import { redirect } from '@sveltejs/kit';
 import { PUBLIC_GOOGLE_OAUTH_CLIENT_ID } from '$env/static/public';
 import { auth } from '$lib/auth/server';
 import { checkedRedirect } from '$lib/http/server';
-import { PUBLIC_GOOGLE_OAUTH_LOGIN_PATHNAME } from './consts';
+import { PUBLIC_GOOGLE_OAUTH_LOGIN_PATHNAME } from '../consts';
+import type { RequestHandler } from './$types';
 
-export const load = () => {
-	error(404);
-};
-
-const passToGoogleOAuth: Action = async ({ locals, cookies, request }) => {
+const passToGoogleOAuth: RequestHandler = async ({ locals, cookies, request }) => {
 	const formData = await request.formData().catch(() => new FormData());
 	const persistent = formData.get('persistent') === 'true';
 
@@ -23,4 +20,4 @@ const passToGoogleOAuth: Action = async ({ locals, cookies, request }) => {
 	return redirect(302, googleLink);
 };
 
-export const actions = { passToGoogleOAuth };
+export const POST = passToGoogleOAuth;
