@@ -1,8 +1,8 @@
 <script lang="ts">
 	import I from '$lib/icons';
 	import LangSelect from './LangSelect.svelte';
+	import { getRandomColor as get } from './demo.json/client';
 	import { defaultLang, type Lang } from './lang.service.common';
-	import { getRandomColor as get } from '.';
 
 	let currentColor = $state('Yellow');
 	let selectedLang: Lang = $state(defaultLang.value.lang);

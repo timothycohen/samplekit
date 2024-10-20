@@ -4,8 +4,8 @@
 	import I from '$lib/icons';
 	import { TempValue } from '$lib/svelte-stores';
 	import LangSelect from './LangSelect.svelte';
+	import { getRandomColor as get } from './demo.json/client';
 	import { type Lang, langOptions } from './lang.service.common';
-	import { getRandomColor as get } from './index';
 
 	let currentColor = $state('Yellow');
 	let simulateDelay = $state(false);

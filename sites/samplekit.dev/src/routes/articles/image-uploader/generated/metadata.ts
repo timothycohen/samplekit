@@ -14,7 +14,7 @@ export default {
 	featured: true,
 	updates: [{ at: new Date('2024-08-16T22:59:25.000Z'), descriptions: ['Use runes.'] }],
 	articlePath: '/articles/image-uploader',
-	wordCount: 6082,
+	wordCount: 6096,
 	readingTime: 28,
 	toc: [
 		{

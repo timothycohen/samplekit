@@ -7,7 +7,7 @@ import {
 	removeCartItem as removeItem,
 	updateCartItemQty as updateItemQty,
 	addCartItem as addItem,
-} from './cart.json';
+} from './cart.json/client';
 
 type CartWithPaths = Omit<Cart, 'lines'> & { lines: Array<CartItem & { path: string }> };
 

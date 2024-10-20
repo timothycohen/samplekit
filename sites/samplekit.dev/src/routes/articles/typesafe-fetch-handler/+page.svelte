@@ -194,7 +194,7 @@ shiki-end -->
 <!-- shiki-start
 ```svelte
 <script lang="ts">
-	import { addNameToList } from '$routes/demos/name-list.json';
+	import { addNameToList } from '$routes/demos/name-list.json/client';
 
 	const loadNames = async () => {
 		// fully typed body. no route or method to remember
@@ -268,7 +268,8 @@ shiki-end -->
 
 <p>
 	Let's declare that every endpoint has a <code>*.json</code> folder. Inside is a <code>+server.ts</code> with
-	<code>RequestHandler</code>s and an <code>index.ts</code> file with types and client fetch wrappers.
+	<code>RequestHandler</code>s, a <code>common.ts</code> file with types and constants, and a <code>client.ts</code> file
+	with client fetch wrappers.
 </p>
 
 <p>
@@ -287,11 +288,19 @@ export const PUT = addNameToList;
 shiki-end -->
 </CodeTopper>
 
-<CodeTopper title="$routes/demos/name-list.json/index.ts">
+<CodeTopper title="$routes/demos/name-list.json/common.ts">
 	<!-- shiki-start
 ```ts
-type AddNameToListReq = { name: string };
+export type AddNameToListReq = { name: string };
 export type AddNameToListRes = { allNames: string[] };
+```
+shiki-end -->
+</CodeTopper>
+
+<CodeTopper title="$routes/demos/name-list.json/client.ts">
+	<!-- shiki-start
+```ts
+import type { AddNameToListReq, AddNameToListRes } from './common.ts'
 export const addNameToList = new ClientFetcher();
 ```
 shiki-end -->
@@ -310,15 +319,17 @@ shiki-end -->
 	Love ya SvelteKit!
 </p>
 
-<CodeTopper title="$routes/demos/name-list.json/index.ts">
+<CodeTopper title="$routes/demos/name-list.json/client.ts">
 	<!-- shiki-start
 ```ts
-import type { RouteId } from './$types';//!d"diff-add"
+import type { RouteId } from './$types'; //!d"diff-add"
+import type { AddNameToListReq, AddNameToListRes } from './common.ts';
 
-type AddNameToListReq = { name: string };
-export type AddNameToListRes = { allNames: string[] };
-export const addNameToList = new ClientFetcher();//!d"diff-remove"
-export const addNameToList = new ClientFetcher<RouteId, AddNameToListRes, AddNameToListReq>('PUT', '/demos/name-list.json');//!d"diff-add"
+export const addNameToList = new ClientFetcher(); //!d"diff-remove"
+export const addNameToList = new ClientFetcher<RouteId, AddNameToListRes, AddNameToListReq>(//!d"diff-add"
+	'PUT',//!d"diff-add"
+	'/demos/name-list.json/client'//!d"diff-add"
+);//!d"diff-add"
 ```
 shiki-end -->
 </CodeTopper>
@@ -390,11 +401,19 @@ shiki-end -->
 	to create the url. Let's call it <code>DynClientFetcher</code>.
 </p>
 
-<CodeTopper title="$routes/demos/[id]/name/index.ts">
+<CodeTopper title="$routes/demos/[id]/name/common.ts">
 	<!-- shiki-start
 ```ts
-type AddNameToListReq = { name: string };
+export type AddNameToListReq = { name: string };
 export type AddNameToListRes = { allNames: string[] };
+```
+shiki-end -->
+</CodeTopper>
+
+<CodeTopper title="$routes/demos/[id]/name/client.ts">
+	<!-- shiki-start
+```ts
+import type { AddNameToListReq, AddNameToListRes } from './common.ts'
 export const addNameToList = new DynClientFetcher<AddNameToListRes, AddNameToListReq, { id: string }>('PUT', ({ id }) => `/demos/${id}/name.json`);
 ```
 shiki-end -->

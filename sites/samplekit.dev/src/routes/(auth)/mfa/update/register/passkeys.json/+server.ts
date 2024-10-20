@@ -5,7 +5,7 @@ import { transports } from '$lib/transport/server';
 import {
 	registerMFA_Passkey_WithSeshConfAndPasskeyReqSchema,
 	type RegisterMFA_Passkey_WithSeshConfAndPasskeyRes,
-} from '.';
+} from './common';
 import type { RequestHandler } from '@sveltejs/kit';
 
 const registerMFA_Passkey_WithSeshConfAndPasskey: RequestHandler = async ({ request, locals }) => {

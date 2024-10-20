@@ -893,13 +893,9 @@ md-end -->
 <!-- shiki-start
 ```ts
 import { objectStorage, CropImgUploadController } from '$lib/object-storage/client';
-import { updateAvatarCrop } from './avatar/crop.json';
-import {
-	MAX_UPLOAD_SIZE,
-	getSignedAvatarUploadUrl,
-	checkAndSaveUploadedAvatar,
-	deleteAvatar,
-} from './avatar/upload.json';
+import { updateAvatarCrop } from './avatar/crop.json/client';
+import { getSignedAvatarUploadUrl, checkAndSaveUploadedAvatar, deleteAvatar } from './avatar/upload.json/client';
+import { MAX_UPLOAD_SIZE } from './avatar/upload.json/common';
 ```
 shiki-end -->
 <!--#endregion UI -->

@@ -1,6 +1,6 @@
 import { auth } from '$lib/auth/server';
 import { checkedRedirect, jsonFail, jsonOk } from '$lib/http/server';
-import type { GetPasskeyAuthOptsRes } from '.';
+import type { GetPasskeyAuthOptsRes } from './common';
 import type { RequestHandler } from '@sveltejs/kit';
 
 const getPasskeyAuthOpts: RequestHandler = async ({ locals }) => {

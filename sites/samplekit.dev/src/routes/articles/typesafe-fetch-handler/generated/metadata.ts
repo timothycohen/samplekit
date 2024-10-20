@@ -18,7 +18,7 @@ export default {
 		{ at: new Date('2024-08-13T22:26:40.000Z'), descriptions: ['Update to runes.'] },
 	],
 	articlePath: '/articles/typesafe-fetch-handler',
-	wordCount: 1907,
+	wordCount: 1913,
 	readingTime: 9,
 	toc: [
 		{

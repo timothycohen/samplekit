@@ -1,7 +1,7 @@
 import { db } from '$lib/db/server';
 import { jsonFail, jsonOk, parseReqJson } from '$lib/http/server';
 import { croppedImgSchema } from '$lib/image/common';
-import type { UpdateAvatarCropRes } from '.';
+import type { UpdateAvatarCropRes } from './common';
 import type { RequestHandler } from '@sveltejs/kit';
 
 const updateAvatarCrop: RequestHandler = async ({ locals, request }) => {

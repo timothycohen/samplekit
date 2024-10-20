@@ -14,7 +14,7 @@ import {
 import { jsonFail, jsonOk, parseReqJson } from '$lib/http/server';
 import { logger } from '$lib/logging/server';
 import prettierConfig from '../../../../prettier.config';
-import { updateLoadedFrontMatterReqSchema, type UpdateLoadedFrontMatterRes } from '.';
+import { updateLoadedFrontMatterReqSchema, type UpdateLoadedFrontMatterRes } from './common';
 import type { RequestHandler } from '@sveltejs/kit';
 import type { Component } from 'svelte';
 

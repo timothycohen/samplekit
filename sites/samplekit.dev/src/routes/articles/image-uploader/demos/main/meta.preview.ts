@@ -20,16 +20,24 @@ export default [
 		loadRaw: () => import('/src/lib/object-storage/client/uploadToCloudStorage.ts?raw'),
 	},
 	{
-		title: 'crop.json/index.ts',
-		loadRaw: () => import('/src/routes/account/profile/avatar/crop.json/index.ts?raw'),
+		title: 'crop.json/common.ts',
+		loadRaw: () => import('/src/routes/account/profile/avatar/crop.json/common.ts?raw'),
+	},
+	{
+		title: 'crop.json/client.ts',
+		loadRaw: () => import('/src/routes/account/profile/avatar/crop.json/client.ts?raw'),
 	},
 	{
 		title: 'crop.json/+server.ts',
 		loadRaw: () => import('/src/routes/account/profile/avatar/crop.json/+server.ts?raw'),
 	},
 	{
-		title: 'upload.json/index.ts',
-		loadRaw: () => import('/src/routes/account/profile/avatar/upload.json/index.ts?raw'),
+		title: 'upload.json/common.ts',
+		loadRaw: () => import('/src/routes/account/profile/avatar/upload.json/common.ts?raw'),
+	},
+	{
+		title: 'upload.json/client.ts',
+		loadRaw: () => import('/src/routes/account/profile/avatar/upload.json/client.ts?raw'),
 	},
 	{
 		title: 'upload.json/+server.ts',

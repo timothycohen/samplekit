@@ -9,7 +9,7 @@ import {
 	type RemoveCartItemRes,
 	type UpdateCartItemQtyRes,
 	type GetCartItemsRes,
-} from '.';
+} from './common';
 import type { RequestHandler } from '@sveltejs/kit';
 
 const addCartItem: RequestHandler = async ({ request, cookies, fetch }) => {

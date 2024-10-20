@@ -1,6 +1,6 @@
 import { auth } from '$lib/auth/server';
 import { checkedRedirect, jsonFail, jsonOk, parseReqJson } from '$lib/http/server';
-import { loginWithPasskeyReqSchema, type LoginWithPasskeyRes } from '.';
+import { loginWithPasskeyReqSchema, type LoginWithPasskeyRes } from './common';
 import type { RequestHandler } from '@sveltejs/kit';
 
 const loginWithPasskey: RequestHandler = async ({ request, locals }) => {

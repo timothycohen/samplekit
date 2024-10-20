@@ -4,13 +4,9 @@
 	import { ImageCrop, UploadProgress, ImageCardBtns, ImageCardOverlays } from '$lib/image/components';
 	import { objectStorage, CropImgUploadController } from '$lib/object-storage/client';
 	import ConfirmDelAvatarModal from './ConfirmDelAvatarModal.svelte';
-	import { updateAvatarCrop } from './avatar/crop.json';
-	import {
-		MAX_UPLOAD_SIZE,
-		getSignedAvatarUploadUrl,
-		checkAndSaveUploadedAvatar,
-		deleteAvatar,
-	} from './avatar/upload.json';
+	import { updateAvatarCrop } from './avatar/crop.json/client';
+	import { getSignedAvatarUploadUrl, checkAndSaveUploadedAvatar, deleteAvatar } from './avatar/upload.json/client';
+	import { MAX_UPLOAD_SIZE } from './avatar/upload.json/common';
 
 	interface Props {
 		avatar: DB.User['avatar'];

@@ -9,7 +9,7 @@ import {
 	type DeleteAvatarRes,
 	type CheckAndSaveUploadedAvatarRes,
 	type GetSignedAvatarUploadUrlRes,
-} from '.';
+} from './common';
 import type { RequestHandler } from '@sveltejs/kit';
 
 // generateS3UploadPost enforces max upload size and denies any upload that we don't sign

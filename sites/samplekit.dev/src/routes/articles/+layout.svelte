@@ -16,7 +16,7 @@
 	import { Portal } from '$lib/components';
 	import I from '$lib/icons';
 	import { pluralize } from '$lib/utils/common';
-	import { updateLoadedFrontMatter } from './update-loaded-front-matter.json';
+	import { updateLoadedFrontMatter } from './update-loaded-front-matter.json/client';
 
 	const { data, children } = $props();
 	const article = $derived(data.article);

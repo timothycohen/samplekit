@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { auth } from '$lib/auth/client';
-	import { loginWithPasskey } from '$routes/(auth)/(login-signup)/login/verify-mfa/passkey.json';
+	import { loginWithPasskey } from '$routes/(auth)/(login-signup)/login/verify-mfa/passkey.json/client';
 	import { seshConfFromPasskey } from '$routes/(auth)/account/verify/handlers.client';
-	import { getPasskeyAuthOpts } from '$routes/(auth)/mfa/passkey/getAuthOptions.json';
+	import { getPasskeyAuthOpts } from '$routes/(auth)/mfa/passkey/getAuthOptions.json/client';
 
 	interface Props {
 		passkeyAction: 'login' | 'confirmUser';
