@@ -14,7 +14,7 @@
 </script>
 
 <div class="relative">
-	<form method="get" action="/" {onsubmit}>
+	<form action={null} method="get" {onsubmit}>
 		<input
 			name="query"
 			type="text"

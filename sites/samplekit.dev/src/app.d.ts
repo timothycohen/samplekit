@@ -44,7 +44,7 @@ declare global {
 			type _next = `&next=${string}`;
 
 			type Action =
-				| string
+				| null
 				| `/login?/loginWithPassword`
 				| `/signup?/signupWithPassword`
 				| `/account/delete?/deleteUserWithSeshConf`
@@ -70,7 +70,10 @@ declare global {
 				| `/password-reset?/emailPassReset`
 				| `/password-update/${string}?/createNewPassFromPwReset`
 				| `/account/profile?/updateName`
-				| '/shop/collections/all';
+				| '/shop/collections/all'
+				| '/deployment-access?/signin'
+				| '/deployment-access?/signout'
+				| '/deployment-access?/signoutAll';
 		}
 	}
 

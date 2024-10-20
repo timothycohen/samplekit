@@ -11,7 +11,7 @@
 
 <div class="grid place-content-center page">
 	{#if !data.deploymentAuth.authenticated}
-		<form use:enhance action="?/signin" method="post" class="max-w-sm">
+		<form use:enhance action="/deployment-access?/signin" method="post" class="max-w-sm">
 			<input type="text" name="username" value="deployment_access_token" class="hidden" />
 
 			<label for="password" class="text-center text-xl font-bold">Access Token</label>
@@ -28,10 +28,10 @@
 		</form>
 	{:else}
 		<p>You have {data.deploymentAuth.sessionCount} {pluralize('session', data.deploymentAuth.sessionCount)}</p>
-		<form action="?/signout" method="post" use:enhance>
+		<form action="/deployment-access?/signout" method="post" use:enhance>
 			<button type="submit" class="btn btn-hollow h-10 w-full py-0 transition-colors"> Sign Out </button>
 		</form>
-		<form action="?/signoutAll" method="post" use:enhance>
+		<form action="/deployment-access?/signoutAll" method="post" use:enhance>
 			<button type="submit" class="btn btn-hollow h-10 w-full py-0 transition-colors"> Sign Out Everywhere</button>
 		</form>
 	{/if}
