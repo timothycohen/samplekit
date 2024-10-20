@@ -6,7 +6,7 @@ import { checkedRedirect } from '$lib/http/server';
 import { createLimiter } from '$lib/rate-limit/server';
 import { message, superValidate, zod } from '$lib/superforms/server';
 import { transports } from '$lib/transport/server';
-import { emailPassResetSchema, signinSchema } from '$routes/(auth)/schemas';
+import { emailPassResetSchema, signinSchema } from '$routes/(auth)';
 
 const signinLimiter = createLimiter({ id: 'signinWithPassword', limiters: [{ kind: 'ipUa', rate: [5, '15m'] }] });
 const resetPassLimiter = createLimiter({ id: 'emailPassReset', limiters: [{ kind: 'ipUa', rate: [3, '6h'] }] });

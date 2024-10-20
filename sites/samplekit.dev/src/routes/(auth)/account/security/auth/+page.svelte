@@ -5,7 +5,7 @@
 	import { mfaLabels } from '$lib/auth/common';
 	import { Admonition } from '$lib/components';
 	import I from '$lib/icons';
-	import { actionsMap } from '$routes/(auth)/actionsMap';
+	import { actionsMap } from '$routes/(auth)';
 	import UpdatePassForm from './UpdatePassForm.svelte';
 
 	const { data } = $props();

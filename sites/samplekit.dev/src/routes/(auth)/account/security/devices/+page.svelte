@@ -2,7 +2,7 @@
 	import { page } from '$app/stores';
 	import { Admonition } from '$lib/components';
 	import I from '$lib/icons';
-	import { actionsMap } from '$routes/(auth)/actionsMap';
+	import { actionsMap } from '$routes/(auth)';
 
 	const { data } = $props();
 

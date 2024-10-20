@@ -3,7 +3,7 @@ import { PUBLIC_GOOGLE_OAUTH_CLIENT_ID } from '$env/static/public';
 import { auth } from '$lib/auth/server';
 import { checkedRedirect } from '$lib/http/server';
 import { message, superValidate, zod } from '$lib/superforms/server';
-import { confirmPassSchema } from '$routes/(auth)/schemas';
+import { confirmPassSchema } from '$routes/(auth)';
 import { PUBLIC_GOOGLE_OAUTH_LINK_PATHNAME, type ChangeToGoogleError } from './consts';
 
 export const load = async ({ locals, url }) => {

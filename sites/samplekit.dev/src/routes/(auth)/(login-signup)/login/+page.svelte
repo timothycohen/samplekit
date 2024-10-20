@@ -3,9 +3,7 @@
 	import { InputMessage } from '$lib/components';
 	import I from '$lib/icons';
 	import { superForm, zodClient } from '$lib/superforms/client';
-	import { actionsMap } from '$routes/(auth)/actionsMap';
-	import { PassInput } from '$routes/(auth)/components';
-	import { signinSchema } from '$routes/(auth)/schemas';
+	import { actionsMap, signinSchema, PassInput } from '$routes/(auth)';
 	import { GoogleFormButton, Or } from '../components';
 	import { useTurnstileCtx } from '../turnstile.ctx.svelte';
 

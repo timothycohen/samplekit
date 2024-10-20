@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { mfaLabels } from '$lib/auth/common';
-	import { actionsMap } from '$routes/(auth)/actionsMap';
+	import { actionsMap } from '$routes/(auth)';
 
 	const { data } = $props();
 </script>

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { mfaLabels } from '$lib/auth/common';
-	import { Verifier } from '$routes/(auth)/components';
+	import { Verifier } from '$routes/(auth)';
 
 	const { data, children } = $props();
 </script>

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { Admonition } from '$lib/components';
-	import { actionsMap } from '$routes/(auth)/actionsMap';
+	import { actionsMap } from '$routes/(auth)';
 
 	const { form } = $props();
 </script>

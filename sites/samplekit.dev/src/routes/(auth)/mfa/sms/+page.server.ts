@@ -4,7 +4,7 @@ import { checkedRedirect, sanitizeRedirectUrl } from '$lib/http/server';
 import { createLimiter } from '$lib/rate-limit/server';
 import { message, superValidate, zod } from '$lib/superforms/server';
 import { transports } from '$lib/transport/server';
-import { sendSMSTokenSchema } from '$routes/(auth)/schemas';
+import { sendSMSTokenSchema } from '$routes/(auth)';
 
 export const load = () => {
 	error(404, 'Not Found');

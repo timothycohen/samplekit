@@ -5,7 +5,7 @@ import { jsonFail, jsonOk, parseReqJson } from '$lib/http/server';
 import { createLimiter } from '$lib/rate-limit/server';
 import { message, superValidate, zod } from '$lib/superforms/server';
 import { transports } from '$lib/transport/server';
-import { confirmPassSchema, verifyOTPSchema } from '$routes/(auth)/schemas';
+import { confirmPassSchema, verifyOTPSchema } from '$routes/(auth)';
 import { seshConfFromPasskeyReqSchema, type SeshConfFromPasskeyRes } from './dtos.common';
 
 const seshConfLimiter = createLimiter({

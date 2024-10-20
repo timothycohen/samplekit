@@ -4,7 +4,7 @@ import { getDeviceInfo } from '$lib/device-info';
 import { checkedRedirect } from '$lib/http/server';
 import { message, superValidate, zod } from '$lib/superforms/server';
 import { transports } from '$lib/transport/server';
-import { createNewPassSchema } from '$routes/(auth)/schemas';
+import { createNewPassSchema } from '$routes/(auth)';
 
 export const load = async ({ params }) => {
 	const { token } = params;

@@ -2,8 +2,7 @@
 	import { InputMessage } from '$lib/components';
 	import I from '$lib/icons';
 	import { superForm, type SuperValidated } from '$lib/superforms/client';
-	import { actionsMap } from '$routes/(auth)/actionsMap';
-	import type { sendSMSTokenSchema } from '$routes/(auth)/schemas';
+	import { actionsMap, type sendSMSTokenSchema } from '$routes/(auth)';
 
 	interface Props {
 		sendSMSTokenForm: SuperValidated<typeof sendSMSTokenSchema>;

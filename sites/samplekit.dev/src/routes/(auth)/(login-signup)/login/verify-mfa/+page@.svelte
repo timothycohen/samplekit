@@ -1,6 +1,5 @@
 <script lang="ts">
-	import { actionsMap } from '$routes/(auth)/actionsMap';
-	import { VerifyMFAForm, LoginAsDiffUserForm } from '$routes/(auth)/components';
+	import { actionsMap, VerifyMFAForm, LoginAsDiffUserForm } from '$routes/(auth)';
 
 	const { data } = $props();
 </script>

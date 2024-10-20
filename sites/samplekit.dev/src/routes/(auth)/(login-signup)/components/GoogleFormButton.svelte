@@ -1,6 +1,6 @@
 <script lang="ts">
 	import I from '$lib/icons';
-	import { actionsMap } from '$routes/(auth)/actionsMap';
+	import { actionsMap } from '$routes/(auth)';
 
 	interface Props {
 		submitGoogle?: boolean;

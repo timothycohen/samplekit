@@ -1,6 +1,6 @@
 <script lang="ts" module>
 	import type { SuperValidated } from '$lib/superforms/client';
-	import type { confirmPassSchema, sendSMSTokenSchema, verifyOTPSchema } from '$routes/(auth)/schemas';
+	import type { confirmPassSchema, sendSMSTokenSchema, verifyOTPSchema } from '$routes/(auth)';
 
 	export type VerifierProps = {
 		email: string;
@@ -26,8 +26,7 @@
 
 <script lang="ts">
 	import { Admonition } from '$lib/components';
-	import { actionsMap } from '$routes/(auth)/actionsMap';
-	import { VerifyEmailForm, VerifyMFAForm, VerifyPWForm } from '$routes/(auth)/components';
+	import { actionsMap, VerifyEmailForm, VerifyMFAForm, VerifyPWForm } from '$routes/(auth)';
 
 	interface Props {
 		veri: VerifierProps;

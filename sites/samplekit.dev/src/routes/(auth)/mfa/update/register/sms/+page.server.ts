@@ -4,7 +4,7 @@ import { auth } from '$lib/auth/server';
 import { checkedRedirect } from '$lib/http/server';
 import { message, superValidate, zod } from '$lib/superforms/server';
 import { transports } from '$lib/transport/server';
-import { phoneNumberSchema, verifyOTPSchema } from '$routes/(auth)/schemas';
+import { phoneNumberSchema, verifyOTPSchema } from '$routes/(auth)';
 
 export const load = async ({ url }) => {
 	const phoneNumber = url.searchParams.get('phone');

@@ -3,7 +3,7 @@ import { auth } from '$lib/auth/server';
 import { checkedRedirect } from '$lib/http/server';
 import { message, superValidate, zod } from '$lib/superforms/server';
 import { transports } from '$lib/transport/server';
-import { verifyOTPSchema } from '$routes/(auth)/schemas';
+import { verifyOTPSchema } from '$routes/(auth)';
 import type { Action } from '@sveltejs/kit';
 
 export const load = async ({ locals }) => {

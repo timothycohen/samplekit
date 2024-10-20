@@ -1,8 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/stores';
 	import { Admonition } from '$lib/components';
-	import { actionsMap } from '$routes/(auth)/actionsMap';
-	import { VerifyCodeForm, PhoneInput } from '$routes/(auth)/components';
+	import { actionsMap, VerifyCodeForm, PhoneInput } from '$routes/(auth)';
 
 	const { data } = $props();
 </script>

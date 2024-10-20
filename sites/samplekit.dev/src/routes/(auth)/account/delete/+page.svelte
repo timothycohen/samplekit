@@ -1,8 +1,7 @@
 <script lang="ts">
 	import { Admonition } from '$lib/components';
 	import I from '$lib/icons';
-	import { actionsMap } from '$routes/(auth)/actionsMap';
-	import { Verifier } from '$routes/(auth)/components';
+	import { actionsMap, Verifier } from '$routes/(auth)';
 
 	const { data } = $props();
 

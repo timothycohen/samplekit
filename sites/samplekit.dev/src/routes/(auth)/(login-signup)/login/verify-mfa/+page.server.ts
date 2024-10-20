@@ -1,7 +1,7 @@
 import { auth } from '$lib/auth/server';
 import { checkedRedirect } from '$lib/http/server';
 import { message, superValidate, zod } from '$lib/superforms/server';
-import { sendSMSTokenSchema, verifyOTPSchema } from '$routes/(auth)/schemas';
+import { sendSMSTokenSchema, verifyOTPSchema } from '$routes/(auth)';
 import type { Action } from '@sveltejs/kit';
 
 export const load = async ({ locals }) => {

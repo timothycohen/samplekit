@@ -7,7 +7,7 @@ import { logger } from '$lib/logging/server';
 import { createLimiter } from '$lib/rate-limit/server';
 import { message, superValidate, zod } from '$lib/superforms/server';
 import { transports } from '$lib/transport/server';
-import { signupSchema } from '$routes/(auth)/schemas';
+import { signupSchema } from '$routes/(auth)';
 
 const signupLimiter = createLimiter({ id: 'signupWithPassword', limiters: [{ kind: 'ipUa', rate: [3, 'd'] }] });
 

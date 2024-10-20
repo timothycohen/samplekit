@@ -2,7 +2,7 @@
 	import { enhance } from '$app/forms';
 	import { InputMessage } from '$lib/components';
 	import I from '$lib/icons';
-	import { actionsMap } from '$routes/(auth)/actionsMap';
+	import { actionsMap } from '$routes/(auth)';
 
 	const { form, data } = $props();
 </script>

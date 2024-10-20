@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { actionsMap } from '$routes/(auth)/actionsMap';
+	import { actionsMap } from '$routes/(auth)';
 	import MobileRoute from './MobileRoute.svelte';
 	import type { RouteGroup, RouteLeaf } from './routes';
 

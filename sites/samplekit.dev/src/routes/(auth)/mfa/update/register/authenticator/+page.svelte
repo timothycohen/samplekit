@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { Admonition } from '$lib/components';
-	import { actionsMap } from '$routes/(auth)/actionsMap';
-	import { VerifyCodeForm } from '$routes/(auth)/components';
+	import { actionsMap, VerifyCodeForm } from '$routes/(auth)';
 
 	const { data } = $props();
 </script>

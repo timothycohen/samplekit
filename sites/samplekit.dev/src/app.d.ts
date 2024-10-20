@@ -2,7 +2,7 @@
 // for information about these interfaces
 
 import type { SEOMeta } from '$lib/components/SEO.svelte';
-import type { Action as AuthActionRoutes } from '$routes/(auth)/actionsMap';
+import type { Action as AuthActionRoutes } from '$routes/(auth)';
 import type { SessionHandler } from '$routes/(auth)/hooks.server';
 import type { Action as DeployActionRoutes } from '$routes/deploymentAccess/actionsMap';
 import type { Action, ActionFailure } from '@sveltejs/kit';

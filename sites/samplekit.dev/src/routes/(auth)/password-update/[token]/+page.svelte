@@ -3,9 +3,7 @@
 	import { LogoLink, InputMessage } from '$lib/components';
 	import I from '$lib/icons';
 	import { superForm, zodClient } from '$lib/superforms/client';
-	import { actionsMap } from '$routes/(auth)/actionsMap';
-	import { PassInput } from '$routes/(auth)/components';
-	import { createNewPassSchema } from '$routes/(auth)/schemas';
+	import { actionsMap, createNewPassSchema, PassInput } from '$routes/(auth)';
 
 	const { data } = $props();
 

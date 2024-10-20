@@ -2,7 +2,7 @@ import { error, fail as formFail, redirect, type Action } from '@sveltejs/kit';
 import { auth } from '$lib/auth/server';
 import { checkedRedirect } from '$lib/http/server';
 import { superValidate, zod } from '$lib/superforms/server';
-import { deleteSessionSchema } from '$routes/(auth)/schemas';
+import { deleteSessionSchema } from '$routes/(auth)';
 
 export const load = () => {
 	error(404, 'Not Found');

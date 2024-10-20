@@ -1,6 +1,6 @@
 import { db } from '$lib/db/server';
 import { superValidate, zod } from '$lib/superforms/server';
-import { nameSchema } from '$routes/(auth)/schemas';
+import { nameSchema } from '$routes/(auth)';
 import type { Action } from '@sveltejs/kit';
 
 export const load = async ({ locals }) => {

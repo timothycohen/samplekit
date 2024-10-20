@@ -2,9 +2,8 @@ import { auth } from '$lib/auth/server';
 import { checkedRedirect } from '$lib/http/server';
 import { superValidate, zod } from '$lib/superforms/server';
 import { pluralize } from '$lib/utils/common';
-import { confirmPassSchema, sendSMSTokenSchema, verifyOTPSchema } from '$routes/(auth)/schemas';
+import { confirmPassSchema, sendSMSTokenSchema, verifyOTPSchema, type VerifierProps } from '$routes/(auth)';
 import { desiredParamsOrRedirect } from './utils';
-import type { VerifierProps } from '$routes/(auth)/components';
 
 export const load = async ({ locals, url }) => {
 	const { user, session } = await locals.seshHandler.userOrRedirect();

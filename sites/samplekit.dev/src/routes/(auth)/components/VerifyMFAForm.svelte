@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { Admonition } from '$lib/components';
-	import { MFASelector, SendSMSTokenForm, VerifyCodeForm, type VerifierProps } from '$routes/(auth)/components';
-	import PasskeyChallenge from './PasskeyChallenge.svelte';
+	import { MFASelector, SendSMSTokenForm, VerifyCodeForm, type VerifierProps } from '$routes/(auth)';
+	import PasskeyChallengeScript from './PasskeyChallengeScript.svelte';
 
 	interface Props {
 		mfa: VerifierProps['mfa'];
@@ -50,7 +50,7 @@
 			<VerifyCodeForm verifyOTPForm={mfa.sms.verifyOTPForm} action={verifySMSTokenAction} />
 		</div>
 	{:else if selectedMFAMethod === 'passkeys'}
-		<PasskeyChallenge {passkeyAction} onFinished={onPasskeyFinished} onError={(e) => (passkeyError = e)} />
+		<PasskeyChallengeScript {passkeyAction} onFinished={onPasskeyFinished} onError={(e) => (passkeyError = e)} />
 		{#if passkeyError}
 			<Admonition bold kind="caution" title="Error">
 				{passkeyError}

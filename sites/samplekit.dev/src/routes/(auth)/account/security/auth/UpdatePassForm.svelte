@@ -2,9 +2,7 @@
 	import { InputMessage } from '$lib/components';
 	import I from '$lib/icons';
 	import { superForm, type SuperValidated } from '$lib/superforms/client';
-	import { actionsMap } from '$routes/(auth)/actionsMap';
-	import { PassInput } from '$routes/(auth)/components';
-	import type { updatePassSchema } from '$routes/(auth)/schemas';
+	import { PassInput, actionsMap, type updatePassSchema } from '$routes/(auth)';
 
 	interface Props {
 		updatePassForm: SuperValidated<typeof updatePassSchema>;
