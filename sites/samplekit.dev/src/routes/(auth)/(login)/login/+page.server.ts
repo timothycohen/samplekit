@@ -1,6 +1,5 @@
 import { fail as formFail, type Action } from '@sveltejs/kit';
 import { auth } from '$lib/auth/server';
-import { turnstileFormInputName } from '$lib/botProtection/turnstile/common';
 import { validateTurnstile } from '$lib/botProtection/turnstile/server';
 import { getDeviceInfo } from '$lib/device-info';
 import { checkedRedirect } from '$lib/http/server';
@@ -35,16 +34,10 @@ export const load = async ({ locals }) => {
 const loginWithPassword: Action = async (event) => {
 	const { request, locals, getClientAddress } = event;
 	const formData = await request.formData();
-	const clientToken = formData.get(turnstileFormInputName);
 	const signinForm = await superValidate(formData, zod(signinSchema));
-
 	if (!signinForm.valid) return formFail(400, { signinForm });
-	if (clientToken === null || typeof clientToken !== 'string') return formFail(400, { signinForm });
 
-	const turnstileValidation = await validateTurnstile({
-		clientToken,
-		ip: request.headers.get('CF-Connecting-IP'),
-	});
+	const turnstileValidation = await validateTurnstile({ formData, headers: request.headers });
 	signinForm.data['turnstile-used'] = true;
 	if (turnstileValidation.error) {
 		signinForm.data.password = '';

@@ -130,19 +130,16 @@ If you want to test authentication without providing your own Turnstile key, com
 // src/routes/(auth)/(login)/signup/+page.server.ts
 const signupWithPassword: Action = async (event) => {
   ...
-    // const turnstileValidation = await validateTurnstile({
-    // 	clientToken,
-    // 	ip: request.headers.get('CF-Connecting-IP'),
-    // });
-    // signupForm.data['turnstile-used'] = true;
-    // if (turnstileValidation.error) {
-    // 	signupForm.data.password = '';
-    // 	return message(
-    // 		signupForm,
-    // 		{ fail: `We've detected unusual traffic. Please refresh and try again.` },
-    // 		{ status: 403 },
-    // 	);
-    // }
+  // const turnstileValidation = await validateTurnstile({ formData, headers: request.headers });
+	// signupForm.data['turnstile-used'] = true;
+	// if (turnstileValidation.error) {
+	// 	signupForm.data.password = '';
+	// 	return message(
+	// 		signupForm,
+	// 		{ fail: `We've detected unusual traffic. Please refresh and try again.` },
+	// 		{ status: 403 },
+	// 	);
+	// }
   ...
 }
 ```

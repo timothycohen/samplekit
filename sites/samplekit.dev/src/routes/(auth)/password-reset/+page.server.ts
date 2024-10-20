@@ -1,6 +1,5 @@
 import { error, type Action } from '@sveltejs/kit';
 import { auth } from '$lib/auth/server';
-import { turnstileFormInputName } from '$lib/botProtection/turnstile/common';
 import { validateTurnstile } from '$lib/botProtection/turnstile/server';
 import { createLimiter } from '$lib/rate-limit/server';
 import { message, superValidate, zod } from '$lib/superforms/server';
@@ -16,22 +15,10 @@ const resetPassLimiter = createLimiter({ id: 'emailPassReset', limiters: [{ kind
 const emailPassReset: Action = async (event) => {
 	const { request } = event;
 	const formData = await request.formData();
-	const clientToken = formData.get(turnstileFormInputName);
 	const emailPassResetForm = await superValidate(formData, zod(emailPassResetSchema));
-
 	if (!emailPassResetForm.valid) return message(emailPassResetForm, { fail: 'Invalid email' });
-	if (clientToken === null || typeof clientToken !== 'string') {
-		return message(
-			emailPassResetForm,
-			{ fail: `We've detected unusual traffic. Please refresh and try again.` },
-			{ status: 403 },
-		);
-	}
 
-	const turnstileValidation = await validateTurnstile({
-		clientToken,
-		ip: request.headers.get('CF-Connecting-IP'),
-	});
+	const turnstileValidation = await validateTurnstile({ formData, headers: request.headers });
 	emailPassResetForm.data['turnstile-used'] = true;
 	if (turnstileValidation.error) {
 		return message(

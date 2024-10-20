@@ -1,5 +1,6 @@
 import { TURNSTILE_SECRET_KEY } from '$env/static/private';
 import { logger } from '$lib/logging/server';
+import { turnstileFormInputName } from '../common';
 
 interface TurnstileTokenValidateResponse {
 	'error-codes': string[];
@@ -9,20 +10,23 @@ interface TurnstileTokenValidateResponse {
 }
 
 export const validateTurnstile = async ({
-	clientToken,
-	ip,
+	formData,
+	headers,
 }: {
-	clientToken: string;
-	ip: string | null;
+	formData: FormData;
+	headers: Headers;
 }): Promise<{ success: boolean; error: string | null | undefined }> => {
 	try {
+		const clientToken = formData.get(turnstileFormInputName);
+		if (typeof clientToken !== 'string') return { success: false, error: 'missing-token' };
+
 		const response = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
 			method: 'POST',
 			headers: { 'content-type': 'application/json' },
 			body: JSON.stringify({
 				secret: TURNSTILE_SECRET_KEY,
 				response: clientToken,
-				remoteip: ip,
+				remoteip: headers.get('CF-Connecting-IP'),
 			}),
 		});
 
