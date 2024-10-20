@@ -2,6 +2,7 @@
 	import { page } from '$app/stores';
 	import { Admonition } from '$lib/components';
 	import I from '$lib/icons';
+	import { actionsMap } from '$routes/(auth)/actionsMap';
 
 	const { data } = $props();
 
@@ -21,7 +22,7 @@
 					{/if}
 				</div>
 			{:else}
-				<form action="/logout?/logoutSingle" method="post" onsubmit={() => (submitting = 'all')}>
+				<form action={actionsMap.logoutSingle} method="post" onsubmit={() => (submitting = 'all')}>
 					<input type="hidden" value={$page.url.pathname} name="redirect_path" />
 					<input type="hidden" value={session.id} name="session_id" />
 					<button disabled={!!submitting} type="submit" class="btn-ghost absolute right-4 top-4 border-none">
@@ -58,13 +59,13 @@
 	</Admonition>
 
 	<div class="flex flex-wrap justify-between gap-4">
-		<form action="/logout?/logoutCurrent" method="post" onsubmit={() => (submitting = 'all')}>
+		<form action={actionsMap.logoutCurrent} method="post" onsubmit={() => (submitting = 'all')}>
 			<button disabled={!!submitting} type="submit" class="btn btn-accent">
 				<small>{submitting === 'current' ? 'Signout out...' : 'Sign out'}</small>
 			</button>
 		</form>
 
-		<form action="/logout?/logoutAll" method="post" onsubmit={() => (submitting = 'all')}>
+		<form action={actionsMap.logoutAll} method="post" onsubmit={() => (submitting = 'all')}>
 			<button disabled={!!submitting} type="submit" class="btn btn-hollow">
 				<small>{submitting === 'current' ? 'Signing out of all devices...' : 'Sign out of all devices'}</small>
 			</button>

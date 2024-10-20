@@ -26,6 +26,7 @@
 
 <script lang="ts">
 	import { Admonition } from '$lib/components';
+	import { actionsMap } from '$routes/(auth)/actionsMap';
 	import { VerifyEmailForm, VerifyMFAForm, VerifyPWForm } from '$routes/(auth)/components';
 
 	interface Props {
@@ -43,18 +44,18 @@
 	{#if veri.verified}
 		<Admonition kind="tip" title={veri.expirationMsg}></Admonition>
 	{:else if veri.kind === 'Email'}
-		<VerifyEmailForm email={veri.email} action="/account/verify/email?/sendSeshConfToken&next={veri.next}" />
+		<VerifyEmailForm email={veri.email} action={actionsMap.sendSeshConfToken(veri.next)} />
 	{:else if veri.kind === 'Password'}
 		<VerifyPWForm
 			email={veri.email}
 			confirmPassForm={veri.pass.confirmPassForm}
-			action="/account/verify?/seshConfFromPassword&next={veri.next}"
+			action={actionsMap.seshConfFromPassword(veri.next)}
 		/>
 	{:else if veri.kind === 'Identity'}
 		<VerifyMFAForm
 			mfa={veri.mfa}
-			verifySMSTokenAction="/account/verify?/seshConfFromSMS&next={veri.next}"
-			verifyAuthenticatorTokenAction="/account/verify?/seshConfFromAuthenticator&next={veri.next}"
+			verifySMSTokenAction={actionsMap.seshConfFromSMS(veri.next)}
+			verifyAuthenticatorTokenAction={actionsMap.seshConfFromAuthenticator(veri.next)}
 			passkeyAction="confirmUser"
 			onPasskeyFinished={() => location.reload()}
 		/>

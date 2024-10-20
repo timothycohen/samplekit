@@ -1,5 +1,6 @@
 <script lang="ts">
 	import I from '$lib/icons';
+	import { actionsMap } from '$routes/(auth)/actionsMap';
 
 	interface Props {
 		submitGoogle?: boolean;
@@ -11,7 +12,7 @@
 	let submitGoogle = $state(false);
 </script>
 
-<form action="/oauth/google?/passToGoogleOAuth" method="post" onsubmit={() => (submitGoogle = true)}>
+<form action={actionsMap.passToGoogleOAuth} method="post" onsubmit={() => (submitGoogle = true)}>
 	<input type="hidden" name="persistent" value={persistent} />
 	<button type="submit" class="btn btn-hollow h-10 w-full py-0" disabled={submitGoogle}>
 		{#if submitGoogle}

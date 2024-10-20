@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { actionsMap } from '$routes/(auth)/actionsMap';
 	import { VerifyMFAForm, LoginAsDiffUserForm } from '$routes/(auth)/components';
 
 	const { data } = $props();
@@ -14,8 +15,8 @@
 
 	<VerifyMFAForm
 		mfa={data}
-		verifySMSTokenAction="/login/verify-mfa?/loginWithSMS"
-		verifyAuthenticatorTokenAction="/login/verify-mfa?/loginWithAuthenticator"
+		verifySMSTokenAction={actionsMap.loginWithSMS}
+		verifyAuthenticatorTokenAction={actionsMap.loginWithAuthenticator}
 		passkeyAction="login"
 		onPasskeyFinished={() => location.reload()}
 	>

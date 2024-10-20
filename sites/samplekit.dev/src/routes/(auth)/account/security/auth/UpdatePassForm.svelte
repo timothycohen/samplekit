@@ -2,6 +2,7 @@
 	import { InputMessage } from '$lib/components';
 	import I from '$lib/icons';
 	import { superForm, type SuperValidated } from '$lib/superforms/client';
+	import { actionsMap } from '$routes/(auth)/actionsMap';
 	import { PassInput } from '$routes/(auth)/components';
 	import type { updatePassSchema } from '$routes/(auth)/schemas';
 
@@ -21,7 +22,7 @@
 	});
 </script>
 
-<form action="/account/security/auth?/updatePassFromCurrPass" method="post" use:enhance>
+<form action={actionsMap.updatePassFromCurrPass} method="post" use:enhance>
 	<input class="hidden" name="email" type="email" autocomplete="username" value={email} />
 
 	<label for="currentPassword" class="input-label">Current Password</label>

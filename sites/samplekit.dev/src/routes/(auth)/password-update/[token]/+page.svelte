@@ -3,6 +3,7 @@
 	import { LogoLink, InputMessage } from '$lib/components';
 	import I from '$lib/icons';
 	import { superForm, zodClient } from '$lib/superforms/client';
+	import { actionsMap } from '$routes/(auth)/actionsMap';
 	import { PassInput } from '$routes/(auth)/components';
 	import { createNewPassSchema } from '$routes/(auth)/schemas';
 
@@ -25,7 +26,7 @@
 
 				<h2 class="mb-6 text-xl font-medium">Update Password</h2>
 
-				<form action="/password-update/{$page.params['token']}?/createNewPassFromPwReset" method="post" use:enhance>
+				<form action={actionsMap.createNewPassFromPwReset($page.params['token'] ?? '')} method="post" use:enhance>
 					<input class="hidden" name="email" type="email" autocomplete="username" value={data.email} />
 					<label for="password" class="input-label">New Password</label>
 					<PassInput

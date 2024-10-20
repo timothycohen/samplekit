@@ -3,6 +3,7 @@
 	import I from '$lib/icons';
 	import { superForm, zodClient } from '$lib/superforms/client';
 	import { GoogleFormButton, Or } from '$routes/(auth)/(login-signup)/components';
+	import { actionsMap } from '$routes/(auth)/actionsMap';
 	import { PassInput } from '$routes/(auth)/components';
 	import { signupSchema } from '$routes/(auth)/schemas';
 	import { useTurnstileCtx } from '../turnstile.ctx.svelte';
@@ -22,7 +23,7 @@
 <GoogleFormButton persistent={$form.persistent} />
 <Or />
 
-<form action="/signup?/signupWithPassword" method="post" use:enhance use:turnstile.addForm={{ name: 'signup', form }}>
+<form action={actionsMap.signupWithPassword} method="post" use:enhance use:turnstile.addForm={{ name: 'signup', form }}>
 	<label for="email" class="input-label">Email</label>
 	<input
 		bind:value={$form.email}

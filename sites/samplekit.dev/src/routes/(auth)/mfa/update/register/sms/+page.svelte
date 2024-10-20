@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/stores';
 	import { Admonition } from '$lib/components';
+	import { actionsMap } from '$routes/(auth)/actionsMap';
 	import { VerifyCodeForm, PhoneInput } from '$routes/(auth)/components';
 
 	const { data } = $props();
@@ -10,7 +11,7 @@
 	<h2 class="t-base-lg font-medium">Step 2: Enter Phone Number</h2>
 	<PhoneInput
 		phoneNumberForm={data.sms.phoneNumberForm}
-		action="/mfa/update/register/sms?/SMSSetupFromSeshConf&{$page.url.search.slice(1)}"
+		action={actionsMap.SMSSetupFromSeshConf($page.url.searchParams.get('phone') ?? '')}
 	/>
 	{#if !data.sms.sanitizedPhone}
 		<p>A code will be sent to your phone number.</p>
@@ -26,7 +27,7 @@
 	{:else}
 		<VerifyCodeForm
 			verifyOTPForm={data.sms.verifySMSTokenForm}
-			action="/mfa/update/register/sms?/registerMFA_SMS_WithSeshConfAndSetupSMS"
+			action={actionsMap.registerMFA_SMS_WithSeshConfAndSetupSMS}
 		/>
 	{/if}
 </div>

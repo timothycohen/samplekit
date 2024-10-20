@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { Admonition } from '$lib/components';
+	import { actionsMap } from '$routes/(auth)/actionsMap';
 
 	const { form } = $props();
 </script>
@@ -14,7 +15,7 @@
 		<div>
 			<div class="flex gap-2">
 				<button class="btn btn-hollow" onclick={() => history.back()}>Cancel</button>
-				<form action="/change-to-password?/changeToEmailPassProvider" method="post">
+				<form action={actionsMap.changeToEmailPassProvider} method="post">
 					<button class="btn btn-accent" disabled={!!form?.fail || !!form?.success}>Send Setup Email</button>
 				</form>
 			</div>

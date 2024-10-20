@@ -2,6 +2,7 @@
 	import { slide } from 'svelte/transition';
 	import I from '$lib/icons';
 	import { superForm, zodClient, type SuperValidated } from '$lib/superforms/client';
+	import { actionsMap } from '$routes/(auth)/actionsMap';
 	import { nameSchema } from '$routes/(auth)/schemas';
 
 	interface Props {
@@ -45,7 +46,7 @@
 </div>
 
 {#if editingName}
-	<form action="/account/profile?/updateName" method="post" use:enhance transition:slide class="pb-10">
+	<form action={actionsMap.updateName} method="post" use:enhance transition:slide class="pb-10">
 		<label for="given_name" class="input-label">First name</label>
 		<input
 			bind:value={$form.given_name}

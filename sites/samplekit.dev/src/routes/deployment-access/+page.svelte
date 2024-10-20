@@ -3,6 +3,7 @@
 	import { InputMessage } from '$lib/components';
 	import { pluralize } from '$lib/utils/common';
 	import { PassInput } from '$routes/(auth)/components';
+	import { actionsMap } from './actionsMap';
 
 	const { data, form } = $props();
 
@@ -11,7 +12,7 @@
 
 <div class="grid place-content-center page">
 	{#if !data.deploymentAuth.authenticated}
-		<form use:enhance action="/deployment-access?/signin" method="post" class="max-w-sm">
+		<form use:enhance action={actionsMap.signin} method="post" class="max-w-sm">
 			<input type="text" name="username" value="deployment_access_token" class="hidden" />
 
 			<label for="password" class="text-center text-xl font-bold">Access Token</label>
@@ -28,10 +29,10 @@
 		</form>
 	{:else}
 		<p>You have {data.deploymentAuth.sessionCount} {pluralize('session', data.deploymentAuth.sessionCount)}</p>
-		<form action="/deployment-access?/signout" method="post" use:enhance>
+		<form action={actionsMap.signout} method="post" use:enhance>
 			<button type="submit" class="btn btn-hollow h-10 w-full py-0 transition-colors"> Sign Out </button>
 		</form>
-		<form action="/deployment-access?/signoutAll" method="post" use:enhance>
+		<form action={actionsMap.signoutAll} method="post" use:enhance>
 			<button type="submit" class="btn btn-hollow h-10 w-full py-0 transition-colors"> Sign Out Everywhere</button>
 		</form>
 	{/if}

@@ -3,6 +3,7 @@
 	import { InputMessage } from '$lib/components';
 	import I from '$lib/icons';
 	import { superForm, zodClient } from '$lib/superforms/client';
+	import { actionsMap } from '$routes/(auth)/actionsMap';
 	import { PassInput } from '$routes/(auth)/components';
 	import { signinSchema } from '$routes/(auth)/schemas';
 	import { GoogleFormButton, Or } from '../components';
@@ -47,7 +48,7 @@
 <Or />
 
 <form
-	action="/login?/loginWithPassword"
+	action={actionsMap.loginWithPassword}
 	method="post"
 	use:signinEnhance
 	use:turnstile.addForm={{ name: 'signin', form: signinForm }}
@@ -115,7 +116,7 @@
 		<div use:melt={$overlay} class="modal-overlay"></div>
 		<div class="modal-content" use:melt={$content}>
 			<form
-				action="/login?/emailPassReset"
+				action={actionsMap.emailPassReset}
 				method="post"
 				use:resetEnhance
 				use:turnstile.addForm={{ name: 'reset', form: resetForm }}
