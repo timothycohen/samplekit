@@ -5,7 +5,7 @@ import { superValidate, zod } from '$lib/superforms/server';
 import { deleteSessionSchema } from '$routes/(auth)/schemas';
 
 export const load = () => {
-	error(404);
+	error(404, 'Not Found');
 };
 
 const logoutCurrent: Action = async ({ locals }) => {

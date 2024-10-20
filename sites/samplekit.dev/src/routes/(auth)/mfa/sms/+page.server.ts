@@ -7,7 +7,7 @@ import { transports } from '$lib/transport/server';
 import { sendSMSTokenSchema } from '$routes/(auth)/schemas';
 
 export const load = () => {
-	error(404);
+	error(404, 'Not Found');
 };
 
 const smsVeriLimiter = createLimiter({
