@@ -115,7 +115,7 @@
 		<div use:melt={$overlay} class="modal-overlay"></div>
 		<div class="modal-content" use:melt={$content}>
 			<form
-				action="/password-reset?/emailPassReset"
+				action="/login?/emailPassReset"
 				method="post"
 				use:resetEnhance
 				use:turnstile.addForm={{ name: 'reset', form: resetForm }}

@@ -46,6 +46,7 @@ declare global {
 			type Action =
 				| null
 				| `/login?/loginWithPassword`
+				| `/login?/emailPassReset`
 				| `/signup?/signupWithPassword`
 				| `/account/delete?/deleteUserWithSeshConf`
 				| `/account/security/auth?/updatePassFromCurrPass`
@@ -67,7 +68,6 @@ declare global {
 				| `/mfa/update/register/sms?/SMSSetupFromSeshConf${_query}` // ?phone=${string} | '' for resend with JS disabled
 				| `/mfa/update/register/sms?/registerMFA_SMS_WithSeshConfAndSetupSMS`
 				| `/mfa/update/remove/${DB.MFAs.Kind}?/removeMFAWithSeshConf`
-				| `/password-reset?/emailPassReset`
 				| `/password-update/${string}?/createNewPassFromPwReset`
 				| `/account/profile?/updateName`
 				| '/shop/collections/all'
