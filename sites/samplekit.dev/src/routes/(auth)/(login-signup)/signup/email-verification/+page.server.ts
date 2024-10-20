@@ -11,7 +11,7 @@ export const load = async ({ locals }) => {
 	return { unverifiedEmail: seshUser.user.email };
 };
 
-const resendEmailVeriToVerifyEmailLink: App.CommonServerAction = async ({ locals }) => {
+const resendSignupEmailVerification: App.CommonServerAction = async ({ locals }) => {
 	const seshUser = await locals.seshHandler.getSessionUser();
 	if (!seshUser) return checkedRedirect('/login');
 	if (!seshUser.session.awaitingEmailVeri) return checkedRedirect('/account/profile');
@@ -24,4 +24,4 @@ const resendEmailVeriToVerifyEmailLink: App.CommonServerAction = async ({ locals
 	return { success: 'Sent' };
 };
 
-export const actions = { resendEmailVeriToVerifyEmailLink };
+export const actions = { resendSignupEmailVerification };

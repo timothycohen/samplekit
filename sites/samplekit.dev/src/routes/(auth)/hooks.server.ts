@@ -32,7 +32,8 @@ const createSeshHandler = ({ cookies }: { cookies: Cookies }): SessionHandler =>
 	const userOrRedirect: SessionHandler['userOrRedirect'] = async ({ skipCache } = {}) => {
 		const seshUser = await seshHandler.getSessionUser({ skipCache });
 		if (!seshUser) return redirect(302, '/login' satisfies CheckedRoute);
-		else if (seshUser.session.awaitingEmailVeri) return redirect(302, '/email-verification' satisfies CheckedRoute);
+		else if (seshUser.session.awaitingEmailVeri)
+			return redirect(302, '/signup/email-verification' satisfies CheckedRoute);
 		else if (seshUser.session.awaitingMFA) return redirect(302, '/login/verify-mfa' satisfies CheckedRoute);
 		return seshUser;
 	};

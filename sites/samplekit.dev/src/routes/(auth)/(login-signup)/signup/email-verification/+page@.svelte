@@ -17,7 +17,7 @@
 				<h1 class="mb-2 text-xl font-medium">Verify {data.unverifiedEmail}</h1>
 				<p class="mb-10 text-gray-11">Your email verification link was sent to your email.</p>
 
-				<form action="/email-verification?/resendEmailVeriToVerifyEmailLink" method="post" use:enhance>
+				<form action="/signup/email-verification?/resendSignupEmailVerification" method="post" use:enhance>
 					<button
 						class="btn btn-accent h-10 w-full py-0 {form?.success ? 'font-semibold' : ''}"
 						disabled={!!form?.success}

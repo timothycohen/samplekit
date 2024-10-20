@@ -12,9 +12,6 @@
 <svelte:head>
 	{#if !turnstileLoaded.flag}
 		<script async defer src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" {onload}></script>
-		<script>
-			// svelte-5-bug hack to force Svelte to track this
-		</script>
 	{/if}
 </svelte:head>
 

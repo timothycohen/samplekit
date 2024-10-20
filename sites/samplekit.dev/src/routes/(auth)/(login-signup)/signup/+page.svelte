@@ -2,7 +2,7 @@
 	import { InputMessage } from '$lib/components';
 	import I from '$lib/icons';
 	import { superForm, zodClient } from '$lib/superforms/client';
-	import { GoogleFormButton, Or } from '$routes/(auth)/(login)/components';
+	import { GoogleFormButton, Or } from '$routes/(auth)/(login-signup)/components';
 	import { PassInput } from '$routes/(auth)/components';
 	import { signupSchema } from '$routes/(auth)/schemas';
 	import { useTurnstileCtx } from '../turnstile.ctx.svelte';

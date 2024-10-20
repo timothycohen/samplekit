@@ -12,7 +12,7 @@ const signinLimiter = createLimiter({ id: 'signinWithPassword', limiters: [{ kin
 export const load = async ({ locals }) => {
 	const seshUser = await locals.seshHandler.getSessionUser();
 	if (seshUser) {
-		if (seshUser.session.awaitingEmailVeri) return checkedRedirect('/email-verification');
+		if (seshUser.session.awaitingEmailVeri) return checkedRedirect('/signup/email-verification');
 		if (seshUser.session.awaitingMFA) return checkedRedirect('/login/verify-mfa');
 		return checkedRedirect('/account/profile');
 	}
@@ -24,11 +24,7 @@ export const load = async ({ locals }) => {
 
 	signinForm.data.persistent = true;
 
-	return {
-		signinForm,
-		emailPassResetForm,
-		layout: { showFooter: false, showHeader: false },
-	};
+	return { signinForm, emailPassResetForm };
 };
 
 const loginWithPassword: Action = async (event) => {
@@ -48,7 +44,7 @@ const loginWithPassword: Action = async (event) => {
 		);
 	}
 
-	let sanitizedPath: '/account/profile' | '/email-verification' | '/login/verify-mfa' = '/account/profile';
+	let sanitizedPath: '/account/profile' | '/signup/email-verification' | '/login/verify-mfa' = '/account/profile';
 
 	const rateCheck = await signinLimiter.check(event);
 	if (rateCheck.forbidden) return formFail(403, { fail: 'Forbidden.' });
@@ -84,7 +80,7 @@ const loginWithPassword: Action = async (event) => {
 
 	locals.seshHandler.set({ session });
 
-	if (session.awaitingEmailVeri) sanitizedPath = '/email-verification';
+	if (session.awaitingEmailVeri) sanitizedPath = '/signup/email-verification';
 	else if (session.awaitingMFA) sanitizedPath = '/login/verify-mfa';
 
 	return checkedRedirect(sanitizedPath);

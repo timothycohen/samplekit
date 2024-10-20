@@ -43,10 +43,7 @@
 	{#if veri.verified}
 		<Admonition kind="tip" title={veri.expirationMsg}></Admonition>
 	{:else if veri.kind === 'Email'}
-		<VerifyEmailForm
-			email={veri.email}
-			action="/account/verify/email?/sendEmailVeriToSeshConfEmailLink&next={veri.next}"
-		/>
+		<VerifyEmailForm email={veri.email} action="/account/verify/email?/sendSeshConfToken&next={veri.next}" />
 	{:else if veri.kind === 'Password'}
 		<VerifyPWForm
 			email={veri.email}

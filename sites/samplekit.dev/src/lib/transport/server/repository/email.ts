@@ -13,7 +13,7 @@ export const email: Transports['email'] = {
 					header: 'Thanks for signing up!',
 					body: 'Please verify your email address to get full access.',
 					button_text: 'Verify Email',
-					href: `${PUBLIC_ORIGIN}/email-verification/${token}.json`,
+					href: `${PUBLIC_ORIGIN}/signup/email-verification/${token}.json`,
 					templateId: 'authEmails',
 				},
 			}),

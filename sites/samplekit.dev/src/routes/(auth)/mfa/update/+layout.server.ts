@@ -10,12 +10,9 @@ export const load = async ({ locals, url }) => {
 	const { user, session } = await locals.seshHandler.userOrRedirect();
 
 	const authDetails = await auth.provider.pass.MFA.getDetailsOrThrow(user.id);
-	const kind = authDetails.mfaCount
-		? ('Identity' as const)
-		: authDetails.method === 'oauth'
-			? ('Email' as const)
-			: ('Password' as const);
-	if (authDetails.method !== 'pass') return checkedRedirect('/account/security/auth');
+	if (authDetails.method === 'oauth') return checkedRedirect('/account/security/auth');
+
+	const kind = authDetails.mfaCount ? ('Identity' as const) : ('Password' as const);
 
 	const timeRemaining = auth.session.getTempConf({ session });
 	const verified = !!timeRemaining;

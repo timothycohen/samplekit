@@ -22,13 +22,15 @@ const sendSMSVeri: Action = async (event) => {
 	const { locals, request } = event;
 	const seshUser = await locals.seshHandler.getSessionUser();
 	if (!seshUser) return checkedRedirect('/login');
-	if (seshUser.session.awaitingEmailVeri) return checkedRedirect('/email-verification');
+	if (seshUser.session.awaitingEmailVeri) return checkedRedirect('/signup/email-verification');
 
-	const [sendSMSTokenForm, { mfas }] = await Promise.all([
+	const [sendSMSTokenForm, mfaDetails] = await Promise.all([
 		superValidate(request, zod(sendSMSTokenSchema)),
 		auth.provider.pass.MFA.getDetailsOrThrow(seshUser.user.id),
 	]);
-	const phoneNumber = mfas.sms;
+	if (mfaDetails.method === 'oauth') return message(sendSMSTokenForm, { fail: 'Forbidden.' }, { status: 403 });
+
+	const phoneNumber = mfaDetails.mfas.sms;
 
 	if (!phoneNumber) {
 		return message(sendSMSTokenForm, { fail: 'You have not registered a phone number.' }, { status: 403 });

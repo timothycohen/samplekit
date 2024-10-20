@@ -58,9 +58,9 @@ export const setupAuthenticator = pgTable('token_setup_authenticator', unlimSend
 
 /** Email Verification: limSend, unlimAttempt
  ** purpose: verify user's email (on first signup and to delete their account)
- ** creation: sendEmailVeriToSeshConfEmailLink (used when the provider is Google so there's no password or MFA to confirm), resendEmailVeriToVerifyEmailLink, /signup
+ ** creation: sendSeshConfToken (used when the provider is Google so there's no password or MFA to confirm), resendSignupEmailVerification, /signup
  ** transport: email
- ** validated: seshConfFromEmailVeri, verifyEmailWithEmailVeri
+ ** validated: seshConfFromEmailVeri, verifyEmailWithToken
  */
 export const emailVeri = pgTable('token_email_veri', limSendUnlimAttempt());
 

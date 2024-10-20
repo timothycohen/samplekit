@@ -52,11 +52,11 @@ declare global {
 				| `/account/verify?/seshConfFromPassword${_next}`
 				| `/account/verify?/seshConfFromSMS${_next}`
 				| `/account/verify?/seshConfFromAuthenticator${_next}`
-				| `/account/verify/email?/sendEmailVeriToSeshConfEmailLink${_next}`
+				| `/account/verify/email?/sendSeshConfToken${_next}`
 				| `/change-to-google?/passwordToLinkGoogle`
 				| `/change-to-password?/changeToEmailPassProvider`
-				| `/email-verification?/resendEmailVeriToVerifyEmailLink`
-				| `/login/google?/passToGoogleOAuth`
+				| `/signup/email-verification?/resendSignupEmailVerification`
+				| `/oauth/google?/passToGoogleOAuth`
 				| `/login/verify-mfa?/loginWithSMS`
 				| `/login/verify-mfa?/loginWithAuthenticator`
 				| `/logout?/logoutCurrent`

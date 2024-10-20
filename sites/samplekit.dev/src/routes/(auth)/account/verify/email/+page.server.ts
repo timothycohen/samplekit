@@ -3,30 +3,28 @@ import { auth } from '$lib/auth/server';
 import { sanitizeRedirectUrl } from '$lib/http/server';
 import { transports } from '$lib/transport/server';
 
-const sendEmailVeriToSeshConfEmailLink: App.CommonServerAction = async ({ locals, url }) => {
+const sendSeshConfToken: App.CommonServerAction = async ({ locals, url }) => {
 	const { user } = await locals.seshHandler.userOrRedirect();
-	const sanitizedPath = sanitizeRedirectUrl(url.searchParams.get('next'));
+	const redirectPath = sanitizeRedirectUrl(url.searchParams.get('next'));
+	if (!redirectPath) return formFail(400, { fail: 'Invalid redirect path' });
 
 	const { tokenErr, token } = await auth.token.emailVeri.createOrRefresh({ userId: user.id });
 	if (tokenErr) {
 		const err = auth.token.err.toFormFail(tokenErr);
-		if (sanitizedPath) return redirect(302, `${sanitizedPath}?fail=${err.data?.fail}`);
-		return err;
+		return redirect(302, `${redirectPath}?fail=${err.data?.fail}`);
 	}
 
 	const { transportErr } = await transports.email.send.seshConfToken({
 		token,
 		email: user.email,
-		redirectPath: '/account/delete',
+		redirectPath,
 	});
 	if (transportErr) {
 		const err = 'Sorry, we are unable to send this email.';
-		if (sanitizedPath) return redirect(302, `${sanitizedPath}?fail=${err}`);
-		return formFail(500, { fail: err });
+		return redirect(302, `${redirectPath}?fail=${err}`);
 	}
 
-	if (sanitizedPath) return redirect(302, `${sanitizedPath}?success=Sent`);
-	else return { success: 'Sent' };
+	return redirect(302, `${redirectPath}?success=Sent`);
 };
 
-export const actions = { sendEmailVeriToSeshConfEmailLink };
+export const actions = { sendSeshConfToken };

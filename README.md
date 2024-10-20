@@ -127,7 +127,7 @@ pnpm dev # start the vite server
 If you want to test authentication without providing your own Turnstile key, comment out the client and server checks.
 
 ```ts
-// src/routes/(auth)/(login)/signup/+page.server.ts
+// src/routes/(auth)/(login-signup)/signup/+page.server.ts
 const signupWithPassword: Action = async (event) => {
   ...
   // const turnstileValidation = await validateTurnstile({ formData, headers: request.headers });
@@ -145,13 +145,13 @@ const signupWithPassword: Action = async (event) => {
 ```
 
 ```diff
-<!-- src/routes/(auth)/(login)/signup/+page.svelte -->
+<!-- src/routes/(auth)/(login-signup)/signup/+page.svelte -->
 - <button ... disabled={$submitting|| !turnstile.token} type="submit">
 + <button ... disabled={$submitting} type="submit">
 ```
 
 ```diff
-<!-- src/routes/(auth)/(login)/login/+page.svelte -->
+<!-- src/routes/(auth)/(login-signup)/login/+page.svelte -->
 - const signinDisabled = $derived($signinSubmitting || $resetSubmitting || !turnstile.token);
 + const signinDisabled = $derived($signinSubmitting || $resetSubmitting);
 ```

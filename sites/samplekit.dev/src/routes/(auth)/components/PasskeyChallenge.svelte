@@ -1,9 +1,8 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { auth } from '$lib/auth/client';
-	import { assertUnreachable } from '$lib/utils/common';
+	import { loginWithPasskey } from '$routes/(auth)/(login-signup)/login/verify-mfa/passkey.json';
 	import { seshConfFromPasskey } from '$routes/(auth)/account/verify/passkey.json';
-	import { loginWithPasskey } from '$routes/(auth)/login/verify-mfa/passkey.json';
 	import { getPasskeyAuthOpts } from '$routes/(auth)/mfa/passkey/getAuthOptions.json';
 
 	interface Props {
@@ -15,27 +14,13 @@
 	const { passkeyAction, onFinished, onError }: Props = $props();
 
 	onMount(async () => {
-		const pipeline = (() => {
-			switch (passkeyAction) {
-				case 'login':
-					return { getOptions: getPasskeyAuthOpts, awaitUser: auth.passkey.startAuth, callback: loginWithPasskey };
-				case 'confirmUser':
-					return {
-						getOptions: getPasskeyAuthOpts,
-						awaitUser: auth.passkey.startAuth,
-						callback: seshConfFromPasskey,
-					};
-			}
-			assertUnreachable(passkeyAction);
-		})();
-
-		const { data, error: optsError } = await pipeline.getOptions.send();
+		const { data, error: optsError } = await getPasskeyAuthOpts.send();
 		if (optsError) return onError(optsError.message);
 
-		const { data: passkeyData, error: awaitUserErr } = await pipeline.awaitUser(data.opts);
+		const { data: passkeyData, error: awaitUserErr } = await auth.passkey.startAuth(data.opts);
 		if (awaitUserErr) return onError(awaitUserErr.message);
 
-		const { error } = await pipeline.callback.send({ passkeyData });
+		const { error } = await (passkeyAction === 'login' ? loginWithPasskey : seshConfFromPasskey).send({ passkeyData });
 		if (error) return onError(error.message);
 
 		return onFinished();

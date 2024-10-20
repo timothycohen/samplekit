@@ -21,7 +21,7 @@ const loginWithGoogle: RequestHandler = async ({ url, cookies, locals, request, 
 	}
 
 	const { user, error: authError } = await auth.user.getOrCreateOAuth(res.data, 'google');
-	if (authError) return redirect(302, '/oauth-sign-in/google');
+	if (authError) return redirect(302, '/login/oauth-disabled/google');
 
 	const session = await auth.session.create(
 		{

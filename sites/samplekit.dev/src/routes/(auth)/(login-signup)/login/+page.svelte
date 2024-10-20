@@ -3,9 +3,9 @@
 	import { InputMessage } from '$lib/components';
 	import I from '$lib/icons';
 	import { superForm, zodClient } from '$lib/superforms/client';
-	import { GoogleFormButton, Or } from '$routes/(auth)/(login)/components';
 	import { PassInput } from '$routes/(auth)/components';
 	import { signinSchema } from '$routes/(auth)/schemas';
+	import { GoogleFormButton, Or } from '../components';
 	import { useTurnstileCtx } from '../turnstile.ctx.svelte';
 
 	const { data } = $props();

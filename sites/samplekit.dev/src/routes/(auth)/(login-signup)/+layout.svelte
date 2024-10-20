@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { TurnstileEl } from '$lib/botProtection/turnstile/client';
 	import { LogoLink, Admonition } from '$lib/components';
-	import { DotPattern } from '$routes/(auth)/(login)/components';
+	import { DotPattern } from './components';
 	import { createTurnstileCtx, useTurnstileCtx } from './turnstile.ctx.svelte';
 
 	createTurnstileCtx();

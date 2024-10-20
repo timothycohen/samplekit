@@ -14,7 +14,7 @@ const signupLimiter = createLimiter({ id: 'signupWithPassword', limiters: [{ kin
 export const load = async ({ locals }) => {
 	const seshUser = await locals.seshHandler.getSessionUser();
 	if (seshUser) {
-		if (seshUser.session.awaitingEmailVeri) return checkedRedirect('/email-verification');
+		if (seshUser.session.awaitingEmailVeri) return checkedRedirect('/signup/email-verification');
 		if (seshUser.session.awaitingMFA) return checkedRedirect('/login/verify-mfa');
 		return checkedRedirect('/account/profile');
 	}
@@ -22,7 +22,7 @@ export const load = async ({ locals }) => {
 	const signupForm = await superValidate(zod(signupSchema), { id: 'signupForm_/signup' });
 	signupForm.data.persistent = true;
 
-	return { signupForm, layout: { showFooter: false, showHeader: false } };
+	return { signupForm };
 };
 
 const signupWithPassword: Action = async (event) => {
@@ -82,7 +82,7 @@ const signupWithPassword: Action = async (event) => {
 		logger.error('Unable to send email verification email. Sending user to email-verification page with resend link.');
 	}
 
-	return checkedRedirect('/email-verification');
+	return checkedRedirect('/signup/email-verification');
 };
 
 export const actions = { signupWithPassword };

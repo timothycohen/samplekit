@@ -3,7 +3,7 @@ import { getDeviceInfo } from '$lib/device-info';
 import { checkedRedirect } from '$lib/http/server';
 import type { RequestHandler } from '@sveltejs/kit';
 
-const verifyEmailWithEmailVeri: RequestHandler<{ token: string }> = async ({
+const verifyEmailWithToken: RequestHandler<{ token: string }> = async ({
 	params,
 	locals,
 	request,
@@ -36,4 +36,4 @@ const verifyEmailWithEmailVeri: RequestHandler<{ token: string }> = async ({
 	return checkedRedirect('/account/profile');
 };
 
-export const GET = verifyEmailWithEmailVeri;
+export const GET = verifyEmailWithToken;

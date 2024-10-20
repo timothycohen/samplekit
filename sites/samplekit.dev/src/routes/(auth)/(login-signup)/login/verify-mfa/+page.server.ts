@@ -7,7 +7,7 @@ import type { Action } from '@sveltejs/kit';
 export const load = async ({ locals }) => {
 	const seshUser = await locals.seshHandler.getSessionUser();
 	if (!seshUser) return checkedRedirect('/login');
-	if (seshUser.session.awaitingEmailVeri) return checkedRedirect('/email-verification');
+	if (seshUser.session.awaitingEmailVeri) return checkedRedirect('/signup/email-verification');
 	if (!seshUser.session.awaitingMFA) return checkedRedirect('/account/profile');
 
 	const authDetails = await auth.provider.pass.MFA.getDetailsOrThrow(seshUser.user.id);
@@ -41,7 +41,7 @@ export const load = async ({ locals }) => {
 const loginWithSMS: Action = async ({ request, locals }) => {
 	const seshUser = await locals.seshHandler.getSessionUser();
 	if (!seshUser) return checkedRedirect('/login');
-	if (seshUser.session.awaitingEmailVeri) return checkedRedirect('/email-verification');
+	if (seshUser.session.awaitingEmailVeri) return checkedRedirect('/signup/email-verification');
 	if (!seshUser.session.awaitingMFA) return checkedRedirect('/account/profile');
 
 	const verifySMSTokenForm = await superValidate(request, zod(verifyOTPSchema));
@@ -59,7 +59,7 @@ const loginWithSMS: Action = async ({ request, locals }) => {
 const loginWithAuthenticator: Action = async ({ request, locals }) => {
 	const seshUser = await locals.seshHandler.getSessionUser();
 	if (!seshUser) return checkedRedirect('/login');
-	if (seshUser.session.awaitingEmailVeri) return checkedRedirect('/email-verification');
+	if (seshUser.session.awaitingEmailVeri) return checkedRedirect('/signup/email-verification');
 	if (!seshUser.session.awaitingMFA) return checkedRedirect('/account/profile');
 
 	const verifyAuthenticatorTokenForm = await superValidate(request, zod(verifyOTPSchema));
