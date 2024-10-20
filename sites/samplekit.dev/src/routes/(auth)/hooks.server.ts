@@ -2,6 +2,7 @@ import '$lib/initServer';
 
 import { type Handle, redirect, type Cookies } from '@sveltejs/kit';
 import { auth, createAuthMiddleware } from '$lib/auth/server';
+import type { CheckedRoute } from '$lib/http/server';
 import type { ISessionHandler } from '@samplekit/auth/server';
 
 export type SessionHandler = ISessionHandler<DB.User, DB.Session> & {
@@ -22,27 +23,18 @@ export type SessionHandler = ISessionHandler<DB.User, DB.Session> & {
 const createSeshHandler = ({ cookies }: { cookies: Cookies }): SessionHandler => {
 	const seshHandler = auth.createSessionHandler(createAuthMiddleware({ cookies }));
 
-	const getVerifiedUser = async ({ skipCache }: { skipCache?: true } = {}) => {
+	const getVerifiedUser: SessionHandler['getVerifiedUser'] = async ({ skipCache } = {}) => {
 		const seshUser = await seshHandler.getSessionUser({ skipCache });
-
 		if (!seshUser || seshUser.session.awaitingEmailVeri || seshUser.session.awaitingMFA) return null;
-
 		return seshUser.user;
 	};
 
-	const userOrRedirect = async ({ skipCache }: { skipCache?: true } = {}) => {
+	const userOrRedirect: SessionHandler['userOrRedirect'] = async ({ skipCache } = {}) => {
 		const seshUser = await seshHandler.getSessionUser({ skipCache });
-
-		let sanitizedPath: null | string = null;
-		if (!seshUser) sanitizedPath = '/login';
-		else if (seshUser.session.awaitingEmailVeri) sanitizedPath = '/email-verification';
-		else if (seshUser.session.awaitingMFA) sanitizedPath = '/login/verify-mfa';
-
-		if (sanitizedPath) {
-			return redirect(302, sanitizedPath);
-		}
-
-		return seshUser!;
+		if (!seshUser) return redirect(302, '/login' satisfies CheckedRoute);
+		else if (seshUser.session.awaitingEmailVeri) return redirect(302, '/email-verification' satisfies CheckedRoute);
+		else if (seshUser.session.awaitingMFA) return redirect(302, '/login/verify-mfa' satisfies CheckedRoute);
+		return seshUser;
 	};
 
 	return Object.assign(seshHandler, { getVerifiedUser, userOrRedirect });
