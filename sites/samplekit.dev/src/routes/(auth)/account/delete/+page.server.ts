@@ -57,12 +57,7 @@ export const load = async ({ locals }) => {
 	return { veri, meta };
 };
 
-const deleteUserWithSeshConf: Action = async ({ locals }) => {
-	const { user, session } = await locals.seshHandler.userOrRedirect();
-
-	const timeRemaining = auth.session.getTempConf({ session });
-	if (timeRemaining === null) return checkedRedirect('/account/delete');
-
+const deleteUser = async (user: DB.User) => {
 	if (objectStorage.keyController.is.cdnUrl(user.avatar?.url)) {
 		const key = objectStorage.keyController.transform.cdnUrlToKey(user.avatar.url);
 		await Promise.all([
@@ -75,7 +70,15 @@ const deleteUserWithSeshConf: Action = async ({ locals }) => {
 		auth.user.delete({ userId: user.id }),
 		transports.email.send.accountDeleted({ email: user.email }),
 	]);
+};
 
+const deleteUserWithSeshConf: Action = async ({ locals }) => {
+	const { user, session } = await locals.seshHandler.userOrRedirect();
+
+	const timeRemaining = auth.session.getTempConf({ session });
+	if (timeRemaining === null) return checkedRedirect('/account/delete');
+
+	await deleteUser(user);
 	locals.seshHandler.set({ session: null });
 
 	return checkedRedirect('/');
