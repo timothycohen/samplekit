@@ -31,7 +31,7 @@ export const load = async ({ locals }) => {
 
 const loginWithPassword: Action = async (event) => {
 	const { request, locals, getClientAddress } = event;
-	const formData = await request.formData();
+	const formData = await request.formData().catch(() => new FormData());
 	const signinForm = await superValidate(formData, zod(signinSchema));
 	if (!signinForm.valid) return formFail(400, { signinForm });
 
@@ -90,7 +90,7 @@ const loginWithPassword: Action = async (event) => {
 
 const emailPassReset: Action = async (event) => {
 	const { request } = event;
-	const formData = await request.formData();
+	const formData = await request.formData().catch(() => new FormData());
 	const emailPassResetForm = await superValidate(formData, zod(emailPassResetSchema));
 	if (!emailPassResetForm.valid) return message(emailPassResetForm, { fail: 'Invalid email' });
 

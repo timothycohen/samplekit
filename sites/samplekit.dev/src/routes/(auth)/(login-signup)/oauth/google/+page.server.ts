@@ -9,7 +9,7 @@ export const load = () => {
 };
 
 const passToGoogleOAuth: Action = async ({ locals, cookies, request }) => {
-	const formData = await request.formData();
+	const formData = await request.formData().catch(() => new FormData());
 	const persistent = formData.get('persistent') === 'true';
 
 	if (await locals.seshHandler.getVerifiedUser()) return checkedRedirect('/account/profile');

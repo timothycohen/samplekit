@@ -15,7 +15,8 @@ const signin: App.CommonServerAction = async (event) => {
 	if (rateCheck.forbidden) return formFail(403, { fail: 'Forbidden.' });
 	if (rateCheck.limited) return formFail(429, { fail: rateCheck.humanTryAfter('requests') });
 
-	const accessToken = (await request.formData()).get('password');
+	const formData = await request.formData().catch(() => new FormData());
+	const accessToken = formData.get('password');
 	if (typeof accessToken !== 'string')
 		return formFail(400, { fail: `Missing token. ${rateCheck.humanAttemptsRemaining}` });
 

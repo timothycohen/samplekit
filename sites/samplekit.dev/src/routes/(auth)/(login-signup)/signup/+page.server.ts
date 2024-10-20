@@ -27,7 +27,7 @@ export const load = async ({ locals }) => {
 
 const signupWithPassword: Action = async (event) => {
 	const { request, locals, getClientAddress } = event;
-	const formData = await request.formData();
+	const formData = await request.formData().catch(() => new FormData());
 	const signupForm = await superValidate(formData, zod(signupSchema));
 	if (!signupForm.valid) return formFail(400, { signupForm });
 
