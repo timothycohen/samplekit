@@ -1,6 +1,6 @@
 import { auth } from '$lib/auth/server';
 import { checkedRedirect, jsonFail, jsonOk, parseReqJson } from '$lib/http/server';
-import { postReqSchema } from '.';
+import { loginWithPasskeyReqSchema, type LoginWithPasskeyRes } from '.';
 import type { RequestHandler } from '@sveltejs/kit';
 
 const loginWithPasskey: RequestHandler = async ({ request, locals }) => {
@@ -8,7 +8,7 @@ const loginWithPasskey: RequestHandler = async ({ request, locals }) => {
 	if (!seshUser) return checkedRedirect('/login');
 	const userId = seshUser.user.id;
 
-	const body = await parseReqJson(request, postReqSchema);
+	const body = await parseReqJson(request, loginWithPasskeyReqSchema);
 	if (!body.success) return jsonFail(400);
 	const clientAuthResponse = body.data.passkeyData;
 
@@ -32,7 +32,7 @@ const loginWithPasskey: RequestHandler = async ({ request, locals }) => {
 		auth.session.removeAwaitingMFA({ sessionId: seshUser.session.id }).then(() => locals.seshHandler.invalidateCache()),
 	]);
 
-	return jsonOk();
+	return jsonOk<LoginWithPasskeyRes>({ message: 'Success' });
 };
 
 export const POST = loginWithPasskey;

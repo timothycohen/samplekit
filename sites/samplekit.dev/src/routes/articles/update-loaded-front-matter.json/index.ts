@@ -4,10 +4,11 @@ import { ClientFetcher } from '$lib/http/client.svelte';
 import type { Result } from '$lib/utils/common';
 import type { RouteId } from './$types';
 
-export const putReqSchema = z.object({ wordCount: z.number(), articlePath: articlePathSchema });
-type PutReq = z.infer<typeof putReqSchema>;
-type PutRes = Result.Success;
-export const updateLoadedFrontMatter = new ClientFetcher<RouteId, PutRes, PutReq>(
-	'PUT',
-	'/articles/update-loaded-front-matter.json',
-);
+export const updateLoadedFrontMatterReqSchema = z.object({ wordCount: z.number(), articlePath: articlePathSchema });
+export type UpdateLoadedFrontMatterReq = z.infer<typeof updateLoadedFrontMatterReqSchema>;
+export type UpdateLoadedFrontMatterRes = Result.Success;
+export const updateLoadedFrontMatter = new ClientFetcher<
+	RouteId,
+	UpdateLoadedFrontMatterRes,
+	UpdateLoadedFrontMatterReq
+>('PUT', '/articles/update-loaded-front-matter.json');

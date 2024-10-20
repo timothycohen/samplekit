@@ -4,10 +4,13 @@ import type { Result } from '$lib/utils/common';
 import type { RouteId } from './$types';
 import type { z } from 'zod';
 
-export const postReqSchema = registrationResponseJSONSchema;
-export type PostReq = z.infer<typeof postReqSchema>;
-export type PostRes = Result.Success;
-export const registerMFA_Passkey_WithSeshConfAndPasskey = new ClientFetcher<RouteId, PostRes, PostReq>(
-	'POST',
-	'/(auth)/mfa/update/register/passkeys.json',
-);
+export const registerMFA_Passkey_WithSeshConfAndPasskeyReqSchema = registrationResponseJSONSchema;
+export type RegisterMFA_Passkey_WithSeshConfAndPasskeyReq = z.infer<
+	typeof registerMFA_Passkey_WithSeshConfAndPasskeyReqSchema
+>;
+export type RegisterMFA_Passkey_WithSeshConfAndPasskeyRes = Result.Success;
+export const registerMFA_Passkey_WithSeshConfAndPasskey = new ClientFetcher<
+	RouteId,
+	RegisterMFA_Passkey_WithSeshConfAndPasskeyRes,
+	RegisterMFA_Passkey_WithSeshConfAndPasskeyReq
+>('POST', '/(auth)/mfa/update/register/passkeys.json');

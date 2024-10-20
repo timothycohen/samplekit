@@ -2,10 +2,10 @@ import { json } from '@sveltejs/kit';
 import { httpCodeMap } from '../common';
 import type { ZodObject, ZodRawShape } from 'zod';
 
-export function jsonOk(): Response;
-export function jsonOk<Obliged extends Record<string, unknown> = never, T extends Obliged = Obliged>(body: T): Response;
-export function jsonOk<T>(body?: T) {
-	return body ? json({ data: body }) : json({ data: { message: 'Success' } });
+export function jsonOk<Obliged extends Record<string, unknown> = never, T extends Obliged = Obliged>(
+	body: T,
+): Response {
+	return json({ data: body });
 }
 
 export function jsonFail(status: 400 | 401 | 403 | 404 | 429 | 500): Response;

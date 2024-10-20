@@ -3,7 +3,13 @@ import { jsonFail, jsonOk, parseReqJson } from '$lib/http/server';
 import { objectStorage } from '$lib/object-storage/server';
 import { createLimiter } from '$lib/rate-limit/server';
 import { toHumanReadableTime } from '$lib/utils/common';
-import { MAX_UPLOAD_SIZE, putReqSchema, type GetRes, type PutRes } from '.';
+import {
+	MAX_UPLOAD_SIZE,
+	checkAndSaveUploadedAvatarReqSchema,
+	type DeleteAvatarRes,
+	type CheckAndSaveUploadedAvatarRes,
+	type GetSignedAvatarUploadUrlRes,
+} from '.';
 import type { RequestHandler } from '@sveltejs/kit';
 
 // generateS3UploadPost enforces max upload size and denies any upload that we don't sign
@@ -58,13 +64,13 @@ const getSignedAvatarUploadUrl: RequestHandler = async (event) => {
 		userId: user.id,
 	});
 
-	return jsonOk<GetRes>({ url: res.url, formDataFields: res.formDataFields, objectKey: key });
+	return jsonOk<GetSignedAvatarUploadUrlRes>({ url: res.url, formDataFields: res.formDataFields, objectKey: key });
 };
 
 const checkAndSaveUploadedAvatar: RequestHandler = async ({ request, locals }) => {
 	const { user } = await locals.seshHandler.userOrRedirect();
 
-	const body = await parseReqJson(request, putReqSchema);
+	const body = await parseReqJson(request, checkAndSaveUploadedAvatarReqSchema);
 	if (!body.success) return jsonFail(400);
 
 	const presignedObjectUrl = await db.presigned.get({ userId: user.id });
@@ -107,7 +113,7 @@ const checkAndSaveUploadedAvatar: RequestHandler = async ({ request, locals }) =
 		db.user.update({ userId: user.id, values: { avatar: newAvatar } }),
 	]);
 
-	return jsonOk<PutRes>({ savedImg: newAvatar });
+	return jsonOk<CheckAndSaveUploadedAvatarRes>({ savedImg: newAvatar });
 };
 
 const deleteAvatar: RequestHandler = async ({ locals }) => {
@@ -129,7 +135,7 @@ const deleteAvatar: RequestHandler = async ({ locals }) => {
 
 	await Promise.all(promises);
 
-	return jsonOk<PutRes>({ savedImg: null });
+	return jsonOk<DeleteAvatarRes>({ message: 'Success' });
 };
 
 export const GET = getSignedAvatarUploadUrl;

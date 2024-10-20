@@ -14,8 +14,7 @@ import {
 import { jsonFail, jsonOk, parseReqJson } from '$lib/http/server';
 import { logger } from '$lib/logging/server';
 import prettierConfig from '../../../../prettier.config';
-import { putReqSchema } from '.';
-import type { Result } from '$lib/utils/common';
+import { updateLoadedFrontMatterReqSchema, type UpdateLoadedFrontMatterRes } from '.';
 import type { RequestHandler } from '@sveltejs/kit';
 import type { Component } from 'svelte';
 
@@ -94,7 +93,7 @@ const pages = Object.entries(
 
 const updateLoadedFrontMatter: RequestHandler = async ({ request }) => {
 	if (!dev) return jsonFail(404);
-	const body = await parseReqJson(request, putReqSchema);
+	const body = await parseReqJson(request, updateLoadedFrontMatterReqSchema);
 	if (!body.success) return jsonFail(400);
 
 	const { wordCount, articlePath } = body.data;
@@ -128,10 +127,10 @@ const updateLoadedFrontMatter: RequestHandler = async ({ request }) => {
 
 	const outFilePath = path.join(generatedDirPath, 'metadata.ts');
 	const old = fs.existsSync(outFilePath) ? fs.readFileSync(outFilePath, { encoding: 'utf-8' }) : '';
-	if (old === neu) return jsonOk<Result.Success>({ message: 'Success' });
+	if (old === neu) return jsonOk<UpdateLoadedFrontMatterRes>({ message: 'Success' });
 	fs.writeFileSync(outFilePath, neu);
 	logger.info(`Updated front matter for \`${articlePath}\``);
-	return jsonOk<Result.Success>({ message: 'Success' });
+	return jsonOk<UpdateLoadedFrontMatterRes>({ message: 'Success' });
 };
 
 // save as TS code instead of JSON

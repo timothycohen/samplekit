@@ -1,7 +1,7 @@
 import { db } from '$lib/db/server';
 import { jsonFail, jsonOk, parseReqJson } from '$lib/http/server';
 import { croppedImgSchema } from '$lib/image/common';
-import type { PutRes } from '.';
+import type { UpdateAvatarCropRes } from '.';
 import type { RequestHandler } from '@sveltejs/kit';
 
 const updateAvatarCrop: RequestHandler = async ({ locals, request }) => {
@@ -14,7 +14,7 @@ const updateAvatarCrop: RequestHandler = async ({ locals, request }) => {
 
 	await db.user.update({ userId: user.id, values: { avatar } });
 
-	return jsonOk<PutRes>({ savedImg: avatar });
+	return jsonOk<UpdateAvatarCropRes>({ savedImg: avatar });
 };
 
 export const PUT = updateAvatarCrop;

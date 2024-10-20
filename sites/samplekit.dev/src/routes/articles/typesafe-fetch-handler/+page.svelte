@@ -290,8 +290,8 @@ shiki-end -->
 <CodeTopper title="$routes/demos/name-list.json/index.ts">
 	<!-- shiki-start
 ```ts
-type PutReq = { name: string };
-export type PutRes = { allNames: string[] };
+type AddNameToListReq = { name: string };
+export type AddNameToListRes = { allNames: string[] };
 export const addNameToList = new ClientFetcher();
 ```
 shiki-end -->
@@ -315,10 +315,10 @@ shiki-end -->
 ```ts
 import type { RouteId } from './$types';//!d"diff-add"
 
-type PutReq = { name: string };
-export type PutRes = { allNames: string[] };
+type AddNameToListReq = { name: string };
+export type AddNameToListRes = { allNames: string[] };
 export const addNameToList = new ClientFetcher();//!d"diff-remove"
-export const addNameToList = new ClientFetcher<RouteId, PutRes, PutReq>('PUT', '/demos/name-list.json');//!d"diff-add"
+export const addNameToList = new ClientFetcher<RouteId, AddNameToListRes, AddNameToListReq>('PUT', '/demos/name-list.json');//!d"diff-add"
 ```
 shiki-end -->
 </CodeTopper>
@@ -375,7 +375,7 @@ shiki-end -->
 const addNameToList: RequestHandler = async ({ locals, request }) => {
 	return jsonFail(403);
 	// or
-	return jsonOk<GetRes>(res);
+	return jsonOk<AddNameToListRes>(res);
 };
 export const PUT = addNameToList;
 ```
@@ -393,9 +393,9 @@ shiki-end -->
 <CodeTopper title="$routes/demos/[id]/name/index.ts">
 	<!-- shiki-start
 ```ts
-type PutReq = { name: string };
-export type PutRes = { allNames: string[] };
-export const addNameToList = new DynClientFetcher<PutRes, PutReq, { id: string }>('PUT', ({ id }) => `/demos/${id}/name.json`);
+type AddNameToListReq = { name: string };
+export type AddNameToListRes = { allNames: string[] };
+export const addNameToList = new DynClientFetcher<AddNameToListRes, AddNameToListReq, { id: string }>('PUT', ({ id }) => `/demos/${id}/name.json`);
 ```
 shiki-end -->
 </CodeTopper>

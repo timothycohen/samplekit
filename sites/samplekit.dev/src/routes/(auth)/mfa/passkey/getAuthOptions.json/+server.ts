@@ -1,6 +1,6 @@
 import { auth } from '$lib/auth/server';
 import { checkedRedirect, jsonFail, jsonOk } from '$lib/http/server';
-import type { GetRes } from '.';
+import type { GetPasskeyAuthOptsRes } from '.';
 import type { RequestHandler } from '@sveltejs/kit';
 
 const getPasskeyAuthOpts: RequestHandler = async ({ locals }) => {
@@ -13,7 +13,7 @@ const getPasskeyAuthOpts: RequestHandler = async ({ locals }) => {
 	const opts = await auth.provider.pass.MFA.passkey.createAuthOpts({ savedPasskeys });
 	await auth.token.passkeyChallenge.createOrReplace({ userId: seshUser.user.id, challenge: opts.challenge });
 
-	return jsonOk<GetRes>({ opts });
+	return jsonOk<GetPasskeyAuthOptsRes>({ opts });
 };
 
 export const GET = getPasskeyAuthOpts;

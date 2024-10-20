@@ -6,7 +6,7 @@ import { createLimiter } from '$lib/rate-limit/server';
 import { message, superValidate, zod } from '$lib/superforms/server';
 import { transports } from '$lib/transport/server';
 import { confirmPassSchema, verifyOTPSchema } from '$routes/(auth)/schemas';
-import { seshConfFromPasskeyReqSchema } from './dtos.common';
+import { seshConfFromPasskeyReqSchema, type SeshConfFromPasskeyRes } from './dtos.common';
 
 const seshConfLimiter = createLimiter({
 	id: 'seshConfFromPassword',
@@ -150,5 +150,5 @@ export const seshConfFromPasskey: RequestHandler = async ({ request, locals }) =
 		auth.session.addTempConf({ sessionId: session.id }).then(() => locals.seshHandler.invalidateCache()),
 	]);
 
-	return jsonOk();
+	return jsonOk<SeshConfFromPasskeyRes>({ message: 'Success' });
 };

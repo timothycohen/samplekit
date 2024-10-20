@@ -1,11 +1,19 @@
 import { dev } from '$app/environment';
 import { jsonFail, jsonOk, parseReqJson } from '$lib/http/server';
 import { shop } from '$lib/shop';
-import { delSchema, postSchema, putSchema, type GetRes } from '.';
+import {
+	addCartItemReqSchema,
+	removeCartItemReqSchema,
+	updateCartItemQtyReqSchema,
+	type AddCartItemRes,
+	type RemoveCartItemRes,
+	type UpdateCartItemQtyRes,
+	type GetCartItemsRes,
+} from '.';
 import type { RequestHandler } from '@sveltejs/kit';
 
 const addCartItem: RequestHandler = async ({ request, cookies, fetch }) => {
-	const body = await parseReqJson(request, postSchema);
+	const body = await parseReqJson(request, addCartItemReqSchema);
 	if (!body.success) return jsonFail(400);
 	const merchandiseId = body.data.id;
 
@@ -30,11 +38,11 @@ const addCartItem: RequestHandler = async ({ request, cookies, fetch }) => {
 		return jsonFail(500, 'Could not add to cart');
 	}
 
-	return jsonOk();
+	return jsonOk<AddCartItemRes>({ message: 'Success' });
 };
 
 const removeCartItem: RequestHandler = async ({ request, cookies, fetch }) => {
-	const body = await parseReqJson(request, delSchema);
+	const body = await parseReqJson(request, removeCartItemReqSchema);
 	if (!body.success) return jsonFail(400);
 	const { lineId } = body.data;
 
@@ -43,14 +51,14 @@ const removeCartItem: RequestHandler = async ({ request, cookies, fetch }) => {
 
 	try {
 		await shop.cart.removeFrom({ cartId, lineIds: [lineId], fetch });
-		return jsonOk();
+		return jsonOk<RemoveCartItemRes>({ message: 'Success' });
 	} catch {
 		return jsonFail(500, 'Error removing item from cart');
 	}
 };
 
 const updateCartItemQty: RequestHandler = async ({ request, cookies, fetch }) => {
-	const body = await parseReqJson(request, putSchema);
+	const body = await parseReqJson(request, updateCartItemQtyReqSchema);
 	if (!body.success) return jsonFail(400);
 	const { lineId, quantity, variantId } = body.data;
 
@@ -63,7 +71,7 @@ const updateCartItemQty: RequestHandler = async ({ request, cookies, fetch }) =>
 		} else {
 			await shop.cart.update({ cartId, lines: [{ id: lineId, merchandiseId: variantId, quantity }], fetch });
 		}
-		return jsonOk();
+		return jsonOk<UpdateCartItemQtyRes>({ message: 'Success' });
 	} catch {
 		return jsonFail(500, 'Error updating item quantity');
 	}
@@ -85,7 +93,7 @@ const getCartItems: RequestHandler = async ({ cookies, fetch }) => {
 		cookies.set('cartId', cartId!, { httpOnly: true, secure: !dev, path: '/', maxAge: 86400 });
 	}
 
-	return jsonOk<GetRes>({ cart });
+	return jsonOk<GetCartItemsRes>({ cart });
 };
 
 export const POST = addCartItem;
