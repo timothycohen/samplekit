@@ -3,7 +3,7 @@ import { uniqueUserReference } from './user-and-auth/utils';
 
 export const presignedUrls = pgTable('presigned_url', {
 	...uniqueUserReference({ onDelete: 'cascade' }),
-	bucketUrl: varchar('url').notNull(),
+	url: varchar('url').notNull(),
 	key: varchar('key').primaryKey(),
 	created: timestamp('created', { mode: 'date' }).notNull().defaultNow(),
 });

@@ -363,7 +363,7 @@ export type UploadUrlFetching = {
 	uri: string;
 	crop: CropValue;
 	uploadProgress: Tweened<number>;
-	getUploadArgsPromise: Promise<Result<{ bucketUrl: string; formDataFields: Record<string, string> }>>;
+	getUploadArgsPromise: Promise<Result<{ url: string; formDataFields: Record<string, string> }>>;
 };
 export type ImageStorageUploading = {
 	state: 'image_storage_uploading';
@@ -417,9 +417,9 @@ shiki-end -->
 import type { CroppedImg, CropValue } from '$lib/image/common';
 import type { Result } from '$lib/utils/common';
 
-type GetUploadArgs = () => Promise<Result<{ bucketUrl: string; formDataFields: Record<string, string> }>>;
+type GetUploadArgs = () => Promise<Result<{ url: string; formDataFields: Record<string, string> }>>;
 type Upload = (a: {
-	bucketUrl: string;
+	url: string;
 	formData: FormData;
 	uploadProgress: { tweened: Tweened<number>; scale: number };
 }) => { promise: Promise<Result<{ status: number }>>; abort: () => void };
@@ -646,7 +646,7 @@ export class CropImgUploadController {
 		}
 		uploadProgress.set(10);
 
-		const { bucketUrl, formDataFields } = getUploadArgsPromised.data;
+		const { url, formDataFields } = getUploadArgsPromised.data;
 
 		const formData = new FormData();
 		for (const [key, value] of Object.entries(formDataFields)) {
@@ -656,7 +656,7 @@ export class CropImgUploadController {
 
 		/** Upload file to image storage (progress 10-90%) */
 		const { abort: abortUpload, promise: imageUploadPromise } = this.#upload({
-			bucketUrl,
+			url,
 			formData,
 			uploadProgress: { tweened: uploadProgress, scale: 0.9 },
 		});

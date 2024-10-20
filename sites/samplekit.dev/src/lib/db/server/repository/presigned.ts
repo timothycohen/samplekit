@@ -4,11 +4,11 @@ import { db } from '../singleton';
 import type { DBRepository } from './types';
 
 export const presigned: DBRepository['presigned'] = {
-	insertOrOverwrite: async ({ userId, bucketUrl, key, created }) => {
+	insertOrOverwrite: async ({ userId, url, key, created }) => {
 		await db
 			.insert(presignedUrls)
-			.values({ userId, bucketUrl, key, created })
-			.onConflictDoUpdate({ target: presignedUrls.userId, set: { created, bucketUrl, key } });
+			.values({ userId, url, key, created })
+			.onConflictDoUpdate({ target: presignedUrls.userId, set: { created, url, key } });
 	},
 	get: async ({ userId }) => {
 		return await db

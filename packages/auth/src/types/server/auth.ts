@@ -25,7 +25,7 @@ export declare namespace Auth {
 		awaitingEmailVeri: boolean;
 		login: Date;
 		lastSeen: Date;
-		temporaryConfirmationExpires: Date;
+		tempConfirmationExpires: Date;
 		persistent: boolean;
 	};
 

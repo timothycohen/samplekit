@@ -49,7 +49,7 @@ const getSignedAvatarUploadUrl: RequestHandler = async (event) => {
 	});
 	if (!res) return jsonFail(500, 'Failed to generate upload URL');
 	await db.presigned.insertOrOverwrite({
-		bucketUrl: objectStorage.keyController.transform.keyToObjectUrl(key),
+		url: objectStorage.keyController.transform.keyToObjectUrl(key),
 		userId: user.id,
 		key,
 	});
@@ -70,7 +70,7 @@ const checkAndSaveUploadedAvatar: RequestHandler = async ({ request, locals }) =
 	const presignedObjectUrl = await db.presigned.get({ userId: user.id });
 	if (!presignedObjectUrl) return jsonFail(400);
 
-	const cdnUrl = objectStorage.keyController.transform.objectUrlToCDNUrl(presignedObjectUrl.bucketUrl);
+	const cdnUrl = objectStorage.keyController.transform.objectUrlToCDNUrl(presignedObjectUrl.url);
 	const imageExists = await fetch(cdnUrl, { method: 'HEAD' }).then((res) => res.ok);
 	if (!imageExists) {
 		await db.presigned.delete({ userId: user.id });
@@ -80,7 +80,7 @@ const checkAndSaveUploadedAvatar: RequestHandler = async ({ request, locals }) =
 
 	const newAvatar = { crop: body.data.crop, url: cdnUrl };
 	const oldAvatar = user.avatar;
-	const newKey = objectStorage.keyController.transform.objectUrlToKey(presignedObjectUrl.bucketUrl);
+	const newKey = objectStorage.keyController.transform.objectUrlToKey(presignedObjectUrl.url);
 
 	const { error: moderationError } = await objectStorage.detectModerationLabels({ s3Key: newKey });
 

@@ -18,7 +18,7 @@ export const sessions = pgTable('session', {
 
 	// time info (not required for auth)
 	login: timestamp('login', { mode: 'date' }).notNull(),
-	lastSeen: timestamp('lastSeen', { mode: 'date' }).notNull(),
+	lastSeen: timestamp('last_seen', { mode: 'date' }).notNull(),
 
 	/**
 	 ** purpose: verify email, pw, or mfa (depending on provider) before allowing account modifications (updating mfa, deleting account, etc.)
@@ -27,6 +27,6 @@ export const sessions = pgTable('session', {
 	 ** checked: restricts access to account/delete, mfa/update, SMSSetupFromSeshConf
 	 ** validated: deleteUserWithSeshConf, registerMFA_Authenticator_WithSeshConf, registerMFA_SMS_WithSeshConfAndSetupSMS, removeMFAWithSeshConf
 	 */
-	temporaryConfirmationExpires: timestamp('send_time', { mode: 'date' }).notNull(),
+	tempConfirmationExpires: timestamp('temp_confirmation_expires', { mode: 'date' }).notNull(),
 });
 export const sessionSchema = createSelectSchema(sessions);

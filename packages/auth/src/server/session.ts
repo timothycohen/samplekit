@@ -18,7 +18,7 @@ export const createAuthSession: <S, SCtx>(a: {
 				awaitingEmailVeri,
 				lastSeen: new Date(),
 				login: new Date(),
-				temporaryConfirmationExpires: new Date(),
+				tempConfirmationExpires: new Date(),
 				persistent,
 			};
 			await dbSession.insert(transformSession.toClient(res, passToTransformSession));
@@ -32,18 +32,18 @@ export const createAuthSession: <S, SCtx>(a: {
 			dbSession.update({ sessionId, values: { awaitingMFA: false } }),
 		/** Default duration is 10 minutes */
 		addTempConf: async ({ sessionId, duration }: { sessionId: string; duration?: number }) => {
-			const temporaryConfirmationExpires = new Date(Date.now() + (duration ?? 1000 * 60 * 10));
-			await dbSession.update({ sessionId, values: { temporaryConfirmationExpires } });
+			const tempConfirmationExpires = new Date(Date.now() + (duration ?? 1000 * 60 * 10));
+			await dbSession.update({ sessionId, values: { tempConfirmationExpires } });
 		},
 		getAll: dbSession.getAll,
 		removeTempConf: async ({ sessionId }: { sessionId: string }) => {
-			await dbSession.update({ sessionId, values: { temporaryConfirmationExpires: new Date() } });
+			await dbSession.update({ sessionId, values: { tempConfirmationExpires: new Date() } });
 		},
 		getTempConf: ({ session }: { session: Auth.Session }) => {
-			const { temporaryConfirmationExpires } = session;
-			if (!temporaryConfirmationExpires) return null;
-			if (temporaryConfirmationExpires <= new Date()) return null;
-			return Math.floor((temporaryConfirmationExpires.getTime() - Date.now()) / 1000 / 60);
+			const { tempConfirmationExpires } = session;
+			if (!tempConfirmationExpires) return null;
+			if (tempConfirmationExpires <= new Date()) return null;
+			return Math.floor((tempConfirmationExpires.getTime() - Date.now()) / 1000 / 60);
 		},
 	};
 };
