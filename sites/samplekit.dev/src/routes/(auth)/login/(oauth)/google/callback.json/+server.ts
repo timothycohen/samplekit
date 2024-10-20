@@ -4,7 +4,7 @@ import { PUBLIC_GOOGLE_OAUTH_CLIENT_ID } from '$env/static/public';
 import { auth } from '$lib/auth/server';
 import { getDeviceInfo } from '$lib/device-info';
 import { checkedRedirect } from '$lib/http/server';
-import { PUBLIC_GOOGLE_OAUTH_LOGIN_PATHNAME } from '$routes/(auth)/consts';
+import { PUBLIC_GOOGLE_OAUTH_LOGIN_PATHNAME } from '../consts';
 
 const loginWithGoogle: RequestHandler = async ({ url, cookies, locals, request, getClientAddress }) => {
 	if (await locals.seshHandler.getVerifiedUser()) return checkedRedirect('/account/profile');

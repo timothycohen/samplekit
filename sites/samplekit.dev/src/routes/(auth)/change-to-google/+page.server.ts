@@ -3,8 +3,8 @@ import { PUBLIC_GOOGLE_OAUTH_CLIENT_ID } from '$env/static/public';
 import { auth } from '$lib/auth/server';
 import { checkedRedirect } from '$lib/http/server';
 import { message, superValidate, zod } from '$lib/superforms/server';
-import { PUBLIC_GOOGLE_OAUTH_LINK_PATHNAME } from '$routes/(auth)/consts';
 import { confirmPassSchema } from '$routes/(auth)/schemas';
+import { PUBLIC_GOOGLE_OAUTH_LINK_PATHNAME, type ChangeToGoogleError } from './consts';
 
 export const load = async ({ locals, url }) => {
 	const seshUser = await locals.seshHandler.getSessionUser();
@@ -15,16 +15,10 @@ export const load = async ({ locals, url }) => {
 
 	const confirmPassForm = await superValidate(zod(confirmPassSchema), { id: 'confirmPassForm_/change-to-google' });
 
-	const error = url.searchParams.get('error') as null | 'auth-failed' | 'email-mismatch';
+	const error = url.searchParams.get('error') as null | ChangeToGoogleError;
 	let errMsg = null;
-	switch (error) {
-		case 'auth-failed':
-			errMsg = 'Authentication failed.';
-			break;
-		case 'email-mismatch':
-			errMsg = `You are not logged into Google as ${seshUser.user.email}`;
-			break;
-	}
+	if (error === 'auth-failed') errMsg = 'Authentication failed.';
+	else if (error === 'email-mismatch') errMsg = `You are not logged into Google as ${seshUser.user.email}`;
 
 	return {
 		errMsg,

@@ -6,7 +6,7 @@ import { getDeviceInfo } from '$lib/device-info';
 import { checkedRedirect } from '$lib/http/server';
 import { logger } from '$lib/logging/server';
 import { transports } from '$lib/transport/server';
-import { PUBLIC_GOOGLE_OAUTH_LINK_PATHNAME } from '$routes/(auth)/consts';
+import { PUBLIC_GOOGLE_OAUTH_LINK_PATHNAME, type ChangeToGoogleError } from '../consts';
 
 const changeToGoogleProvider: RequestHandler = async ({ url, cookies, locals, request, getClientAddress }) => {
 	const { user, session: oldSession } = await locals.seshHandler.userOrRedirect();
@@ -24,11 +24,11 @@ const changeToGoogleProvider: RequestHandler = async ({ url, cookies, locals, re
 	});
 	if (!res.success) {
 		logger.error(res.error);
-		return redirect(302, '/change-to-google?error=auth-failed');
+		return redirect(302, `/change-to-google?error=${'auth-failed' satisfies ChangeToGoogleError}`);
 	}
 
 	if (res.data.clean_email !== user.email) {
-		return redirect(302, '/change-to-google?error=email-mismatch');
+		return redirect(302, `/change-to-google?error=${'email-mismatch' satisfies ChangeToGoogleError}`);
 	}
 
 	const [session] = await Promise.all([

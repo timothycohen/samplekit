@@ -2,7 +2,7 @@ import { error, redirect, type Action } from '@sveltejs/kit';
 import { PUBLIC_GOOGLE_OAUTH_CLIENT_ID } from '$env/static/public';
 import { auth } from '$lib/auth/server';
 import { checkedRedirect } from '$lib/http/server';
-import { PUBLIC_GOOGLE_OAUTH_LOGIN_PATHNAME } from '$routes/(auth)/consts';
+import { PUBLIC_GOOGLE_OAUTH_LOGIN_PATHNAME } from './consts';
 
 export const load = () => {
 	error(404);
