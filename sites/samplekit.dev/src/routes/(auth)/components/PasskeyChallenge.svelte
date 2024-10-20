@@ -2,7 +2,7 @@
 	import { onMount } from 'svelte';
 	import { auth } from '$lib/auth/client';
 	import { loginWithPasskey } from '$routes/(auth)/(login-signup)/login/verify-mfa/passkey.json';
-	import { seshConfFromPasskey } from '$routes/(auth)/account/verify/passkey.json';
+	import { seshConfFromPasskey } from '$routes/(auth)/account/verify/handlers.client';
 	import { getPasskeyAuthOpts } from '$routes/(auth)/mfa/passkey/getAuthOptions.json';
 
 	interface Props {
