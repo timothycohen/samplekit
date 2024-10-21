@@ -171,9 +171,10 @@ If desired, you can remove the `redis:latest` and `postgres:latest` images with 
 Contributions are welcome – [create an issue](https://github.com/timothycohen/samplekit/issues) or submit a pull request to main from a feature branch.
 
 Run `pnpm validate` before committing.
-This script runs the same validation in the CI pipeline and will block merging if it fails.
+This runs the same [validation script](./scripts/.githooks/pre-commit) used in the CI pipeline and will block merges if it fails.
+If you haven't already, you may have to build the packages and create the `.svelte-kit` files first: `pnpm install --frozen-lockfile && pnpm build:packages && pnpm sync && pnpm validate`.
 
-If you plan to make multiple commits, run `githooks:init`, which will automatically run `pnpm validate` on commit.
+If you plan to make multiple commits, run `pnpm githooks:init`, which will automatically run the validation script on commit.
 
 If a contribution to an NPM package or VS Code extension results in a SEMVER change, please run `pnpm changeset` and follow the instructions before committing.
 This is unnecessary for websites.
