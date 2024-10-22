@@ -150,7 +150,7 @@ export class AccordionSlider {
 			destroy() {
 				try {
 					bindParentWidth.disconnect();
-				} catch (_) {
+				} catch {
 					// HMR bug with ResizeObserver
 				}
 			},

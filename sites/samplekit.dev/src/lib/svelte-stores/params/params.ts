@@ -109,7 +109,7 @@ export const createSelectParam = <Value extends { paramName: string | null }>(
 	const hasParamName = (maybe: unknown): maybe is { value: { paramName: string } } => {
 		try {
 			if (typeof ((maybe ?? {}) as { value: { paramName: string } })?.value?.paramName !== 'string') return false;
-		} catch (_) {
+		} catch {
 			return false;
 		}
 		return true;
