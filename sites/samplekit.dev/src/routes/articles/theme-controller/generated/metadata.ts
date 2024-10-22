@@ -15,10 +15,13 @@ export default {
 	video,
 	tags: ['dark mode', 'multiple themes', 'tailwind', 'css variables', 'FOUC'],
 	featured: true,
-	updates: [{ at: new Date('2024-08-13T22:53:19.000Z'), descriptions: ['Update to runes.', 'Add view transition.'] }],
+	updates: [
+		{ at: new Date('2024-10-21T22:59:46.000Z'), descriptions: ['Improve diffing.'] },
+		{ at: new Date('2024-08-13T22:53:19.000Z'), descriptions: ['Update to runes.', 'Add view transition.'] },
+	],
 	articlePath: '/articles/theme-controller',
-	wordCount: 3454,
-	readingTime: 16,
+	wordCount: 4107,
+	readingTime: 19,
 	toc: [
 		{ title: 'Goals', href: '/articles/theme-controller/#goals' },
 		{

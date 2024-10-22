@@ -2,20 +2,6 @@
 var STORAGE_KEY_THEME_DAY = 'theme_day';
 var STORAGE_KEY_THEME_NIGHT = 'theme_night';
 var STORAGE_KEY_THEME_SYNC_MODE = 'theme_sync_mode';
-function getBrowserCookie(name) {
-    var nameEQ = "".concat(name, "=");
-    var cookies = document.cookie.split(';');
-    for (var i = 0; i < cookies.length; i++) {
-        var cookie = cookies[i];
-        while ((cookie === null || cookie === void 0 ? void 0 : cookie.charAt(0)) === ' ') {
-            cookie = cookie.substring(1, cookie.length);
-        }
-        if ((cookie === null || cookie === void 0 ? void 0 : cookie.indexOf(nameEQ)) === 0) {
-            return cookie.substring(nameEQ.length, cookie.length);
-        }
-    }
-    return null;
-}
 var THEMES = [
     { name: 'daffodil', scheme: 'light' },
     { name: 'desert', scheme: 'dark' },
@@ -25,11 +11,6 @@ var THEMES = [
 var DEFAULT_THEME_DAY = { name: 'bellflower', scheme: 'light' };
 var DEFAULT_THEME_NIGHT = { name: 'amethyst', scheme: 'dark' };
 var DEFAULT_THEME_SYNC_MODE = 'sync_system';
-var getSystemScheme = function () {
-    if (typeof window === 'undefined' || !window.matchMedia)
-        return 'light';
-    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-};
 var normalizeThemeMode = function (val) {
     if (!val)
         return DEFAULT_THEME_SYNC_MODE;
@@ -55,15 +36,6 @@ var normalizeThemeNight = function (name, getter) {
         return DEFAULT_THEME_NIGHT;
     return (_a = THEMES.find(function (t) { return t.name === name && t.scheme === scheme; })) !== null && _a !== void 0 ? _a : DEFAULT_THEME_NIGHT;
 };
-var getStoredThemeModeClient = function () {
-    return normalizeThemeMode(getBrowserCookie(STORAGE_KEY_THEME_SYNC_MODE));
-};
-var getStoredThemeDayClient = function () {
-    return normalizeThemeDay(getBrowserCookie("".concat(STORAGE_KEY_THEME_DAY, "_name")), getBrowserCookie);
-};
-var getStoredThemeNightClient = function () {
-    return normalizeThemeNight(getBrowserCookie("".concat(STORAGE_KEY_THEME_NIGHT, "_name")), getBrowserCookie);
-};
 var setThemeOnDoc = function (_a) {
     var name = _a.name, scheme = _a.scheme;
     if (scheme === 'dark') {
@@ -79,6 +51,34 @@ var setThemeOnDoc = function (_a) {
 };
 var setSystemSchemeOnDoc = function (systemScheme) {
     document.documentElement.setAttribute('data-prefer-scheme', systemScheme);
+};
+function getBrowserCookie(name) {
+    var nameEQ = "".concat(name, "=");
+    var cookies = document.cookie.split(';');
+    for (var i = 0; i < cookies.length; i++) {
+        var cookie = cookies[i];
+        while ((cookie === null || cookie === void 0 ? void 0 : cookie.charAt(0)) === ' ') {
+            cookie = cookie.substring(1, cookie.length);
+        }
+        if ((cookie === null || cookie === void 0 ? void 0 : cookie.indexOf(nameEQ)) === 0) {
+            return cookie.substring(nameEQ.length, cookie.length);
+        }
+    }
+    return null;
+}
+var getSystemScheme = function () {
+    if (typeof window === 'undefined' || !window.matchMedia)
+        return 'light';
+    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+};
+var getStoredThemeModeClient = function () {
+    return normalizeThemeMode(getBrowserCookie(STORAGE_KEY_THEME_SYNC_MODE));
+};
+var getStoredThemeDayClient = function () {
+    return normalizeThemeDay(getBrowserCookie("".concat(STORAGE_KEY_THEME_DAY, "_name")), getBrowserCookie);
+};
+var getStoredThemeNightClient = function () {
+    return normalizeThemeNight(getBrowserCookie("".concat(STORAGE_KEY_THEME_NIGHT, "_name")), getBrowserCookie);
 };
 var initTheme = function () {
     var mode = getStoredThemeModeClient();

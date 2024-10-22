@@ -1,6 +1,7 @@
 import { tick } from 'svelte';
 import { storeMode, storeTheme } from './storeTheme';
-import { setThemeOnDoc, type ModeApplied, type Theme, setSystemSchemeOnDoc } from './themeUtils';
+import { setThemeOnDoc, setSystemSchemeOnDoc } from './themeUtils';
+import type { SystemScheme, Mode, ModeApplied, Theme } from './themeUtils';
 
 export type InitialTheme = {
 	systemScheme: 'light' | 'dark';
@@ -22,8 +23,8 @@ export type InitialTheme = {
  */
 export class ThemeController {
 	#initializedOnClient = $state() as boolean;
-	#systemScheme = $state() as 'light' | 'dark';
-	#mode = $state() as 'fixed_day' | 'fixed_night' | 'sync_system';
+	#systemScheme = $state() as SystemScheme;
+	#mode = $state() as Mode;
 	#themeDay = $state() as Theme;
 	#themeNight = $state() as Theme;
 
