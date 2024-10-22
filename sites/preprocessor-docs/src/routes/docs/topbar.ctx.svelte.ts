@@ -1,5 +1,5 @@
+import { TopbarController } from '$lib/nav/topbar';
 import { defineCtx } from '$lib/utils/client';
-import { TopbarController } from './topbarController.svelte';
 
 const [get, set] = defineCtx<TopbarController>();
 

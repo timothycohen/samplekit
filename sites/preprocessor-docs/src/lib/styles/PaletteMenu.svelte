@@ -3,9 +3,9 @@
 	import { clickoutside, windowEscape } from '$lib/actions';
 	import { KeyboardLoop, dropdownController } from '$lib/controllers';
 	import I from '$lib/icons';
-	import { useThemeControllerCtx, type Theme } from '$lib/styles';
+	import { ThemeController, type Theme } from '$lib/styles';
 
-	const themeController = useThemeControllerCtx();
+	const { themeController }: { themeController: ThemeController } = $props();
 	const dropdown = dropdownController('#palette-menu > button:first-child');
 </script>
 

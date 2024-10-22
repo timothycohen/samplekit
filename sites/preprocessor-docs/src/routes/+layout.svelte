@@ -4,7 +4,8 @@
 	import { tick } from 'svelte';
 	import { browser } from '$app/environment';
 	import { beforeNavigate, afterNavigate } from '$app/navigation';
-	import { getStoredThemeOnClient, createThemeControllerCtx } from '$lib/styles';
+	import { getStoredThemeOnClient } from '$lib/styles';
+	import { createThemeControllerCtx } from './themeController.ctx';
 
 	const { children } = $props();
 

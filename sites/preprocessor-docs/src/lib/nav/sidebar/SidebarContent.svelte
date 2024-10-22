@@ -3,13 +3,11 @@
 	import { toc } from '$lib/nav/sidebar';
 	import TOCActive from './TOCActive.svelte';
 	import TOCInactive from './TOCInactive.svelte';
-	import { useSidebarCtx } from './context.svelte';
 	import { TocObserver } from './observeToc.svelte';
+	import type { SidebarState } from './SidebarState.svelte';
 	import type { Pathname } from './generated/toc';
 
-	const sidebar = useSidebarCtx();
-
-	const { pathname }: { pathname: Pathname } = $props();
+	const { pathname, sidebar }: { pathname: Pathname; sidebar: SidebarState } = $props();
 
 	const pages = [
 		{ href: '/docs/code-decoration/', title: 'Code Decoration' },

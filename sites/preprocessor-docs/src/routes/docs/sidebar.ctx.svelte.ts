@@ -1,5 +1,5 @@
 import { defineCtx } from '$lib/utils/client';
-import { SidebarState } from './SidebarState.svelte';
+import { SidebarState } from '../../lib/nav/sidebar/SidebarState.svelte';
 
 const [get, set] = defineCtx<SidebarState>();
 
