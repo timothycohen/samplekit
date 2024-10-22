@@ -1,3 +1,9 @@
+<!--
+  @component
+
+  Ensure `createMobileNavCtx` has been called in a parent component.
+-->
+
 <script lang="ts">
 	import { onMount, type Snippet } from 'svelte';
 	import { page } from '$app/stores';

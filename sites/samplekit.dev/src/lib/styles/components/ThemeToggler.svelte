@@ -1,3 +1,9 @@
+<!--
+  @component
+
+  Ensure `createThemeControllerCtx` has been called in a parent component.
+-->
+
 <script lang="ts">
 	import { useThemeControllerCtx, ThemeSwitchDayNightSystem } from '$lib/styles';
 	import { keyboard } from '$lib/svelte-actions';

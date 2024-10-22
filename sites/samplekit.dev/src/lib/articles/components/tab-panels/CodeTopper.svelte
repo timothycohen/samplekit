@@ -1,3 +1,9 @@
+<!--
+  @component
+
+  Ensure `createCollapsedCtx` has been called in a parent component.
+-->
+
 <script lang="ts">
 	import I from '$lib/icons';
 	import Copy from './Copy.svelte';

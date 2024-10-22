@@ -1,3 +1,9 @@
+<!--
+  @component
+
+  Ensure `createCollapsedCtx` has been called in a parent component.
+-->
+
 <script lang="ts" module>
 	import type { WrapperProps } from '$lib/articles/load';
 	import type { NoPropComponent } from '$lib/utils/common';
