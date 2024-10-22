@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { TurnstileEl } from '$lib/botProtection/turnstile/client';
+	import { TurnstileEl } from '$lib/bot-protection/turnstile/client';
 	import { LogoLink, Admonition } from '$lib/components';
 	import { DotPattern } from './components';
 	import { createTurnstileCtx, useTurnstileCtx } from './turnstile.ctx.svelte';

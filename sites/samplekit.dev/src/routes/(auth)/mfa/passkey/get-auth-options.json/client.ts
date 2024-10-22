@@ -4,5 +4,5 @@ import type { GetPasskeyAuthOptsRes } from './common';
 
 export const getPasskeyAuthOpts = new ClientFetcher<RouteId, GetPasskeyAuthOptsRes>(
 	'GET',
-	'/(auth)/mfa/passkey/getAuthOptions.json',
+	'/(auth)/mfa/passkey/get-auth-options.json',
 );

@@ -5,10 +5,10 @@
 	import I from '$lib/icons';
 	import { handleToPath } from '$lib/shop';
 	import { useNavCtx } from '../../navAndDrawer.ctx';
-	import Available from '../searchAndFilter/Available.svelte';
-	import Price from '../searchAndFilter/Price.svelte';
-	import SearchBar from '../searchAndFilter/SearchBar.svelte';
-	import SortBy from '../searchAndFilter/SortBy.svelte';
+	import Available from '../search-and-filter/Available.svelte';
+	import Price from '../search-and-filter/Price.svelte';
+	import SearchBar from '../search-and-filter/SearchBar.svelte';
+	import SortBy from '../search-and-filter/SortBy.svelte';
 
 	interface Props {
 		collections?: { title: string; path: string }[];

@@ -1,4 +1,4 @@
-import { Turnstile } from '$lib/botProtection/turnstile/client';
+import { Turnstile } from '$lib/bot-protection/turnstile/client';
 import { defineCtx } from '$lib/utils/client';
 
 const [getCtx, setCtx] = defineCtx<Turnstile>();

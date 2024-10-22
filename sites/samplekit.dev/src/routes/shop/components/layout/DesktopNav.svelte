@@ -5,7 +5,7 @@
 	import { handleToPath } from '$lib/shop';
 	import { useNavCtx } from '../../navAndDrawer.ctx';
 	import OpenCartBtn from '../cart/OpenCartBtn.svelte';
-	import SearchBar from '../searchAndFilter/SearchBar.svelte';
+	import SearchBar from '../search-and-filter/SearchBar.svelte';
 
 	interface Props {
 		menu: { title: string; path: string }[];

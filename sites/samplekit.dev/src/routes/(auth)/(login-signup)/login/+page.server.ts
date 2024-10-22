@@ -1,6 +1,6 @@
 import { fail as formFail, type Action } from '@sveltejs/kit';
 import { auth } from '$lib/auth/server';
-import { validateTurnstile } from '$lib/botProtection/turnstile/server';
+import { validateTurnstile } from '$lib/bot-protection/turnstile/server';
 import { getDeviceInfo } from '$lib/device-info';
 import { checkedRedirect } from '$lib/http/server';
 import { createLimiter } from '$lib/rate-limit/server';

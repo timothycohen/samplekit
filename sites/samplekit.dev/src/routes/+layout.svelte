@@ -5,7 +5,7 @@
 	import { browser } from '$app/environment';
 	import { beforeNavigate, afterNavigate } from '$app/navigation';
 	import { page } from '$app/stores';
-	import { createTurnstileLoadedFlagCtx } from '$lib/botProtection/turnstile/client';
+	import { createTurnstileLoadedFlagCtx } from '$lib/bot-protection/turnstile/client';
 	import { Header, SEO } from '$lib/components';
 	import { createMobileNavCtx } from '$lib/components/layout';
 	import { createThemeControllerCtx, ThemeToggler } from '$lib/styles';

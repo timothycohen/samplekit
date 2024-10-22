@@ -1,6 +1,6 @@
-import { parseIndexRange, parseLineRange } from './optionType/range.js';
-import { takeRustyString } from './optionType/rustyString.js';
-import { escapeOptGroup } from './optionType/utils.js';
+import { parseIndexRange, parseLineRange } from './option-type/range.js';
+import { takeRustyString } from './option-type/rustyString.js';
+import { escapeOptGroup } from './option-type/utils.js';
 import type { Range, PropertyArrays } from '../types.js';
 
 const warn = (str: string, msg: string) => {

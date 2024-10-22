@@ -856,7 +856,7 @@ import MagicString from 'magic-string';
 import { parse } from 'svelte/compiler';
 import { getOrLoadOpts } from './defaultOpts.js';
 import { codeToDecoratedHtmlSync } from './highlight.js';
-import { stripOptions } from './stripOptions/index.js';
+import { stripOptions } from './strip-options/index.js';
 import type { PreprocessOpts, Logger, PreprocessorGroup } from './types.js';
 
 export function processCodeblockSync({

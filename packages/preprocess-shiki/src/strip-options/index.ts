@@ -1,5 +1,5 @@
 import { findAllSubstrWindows } from './findAllSubstrWindows.js';
-import { displayLineRange } from './optionType/range.js';
+import { displayLineRange } from './option-type/range.js';
 import { parseGlobalOptGroup } from './parseGlobalOptGroup.js';
 import { parseLineOptGroup } from './parseLineOptGroup.js';
 import { splitCodeFence } from './splitCodeFence.js';

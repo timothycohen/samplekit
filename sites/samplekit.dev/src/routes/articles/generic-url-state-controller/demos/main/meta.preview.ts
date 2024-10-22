@@ -11,19 +11,19 @@ export default [
 	{ title: 'paramsGeneric.ts', loadRaw: () => import('/src/lib/svelte-stores/params/paramsGeneric.ts?raw') },
 	{
 		title: 'Available.svelte',
-		loadRaw: () => import('/src/routes/shop/components/searchAndFilter/Available.svelte?raw'),
+		loadRaw: () => import('/src/routes/shop/components/search-and-filter/Available.svelte?raw'),
 	},
 	{
 		title: 'NoResults.svelte',
-		loadRaw: () => import('/src/routes/shop/components/searchAndFilter/NoResults.svelte?raw'),
+		loadRaw: () => import('/src/routes/shop/components/search-and-filter/NoResults.svelte?raw'),
 	},
-	{ title: 'Price.svelte', loadRaw: () => import('/src/routes/shop/components/searchAndFilter/Price.svelte?raw') },
+	{ title: 'Price.svelte', loadRaw: () => import('/src/routes/shop/components/search-and-filter/Price.svelte?raw') },
 	{
 		title: 'SearchBar.svelte',
 		loadRaw: () => import('/src/routes/articles/generic-url-state-controller/demos/main/Search.svelte?raw'),
 	},
 	{
 		title: 'SortBy.svelte',
-		loadRaw: () => import('/src/routes/shop/components/searchAndFilter/SortBy.svelte?raw'),
+		loadRaw: () => import('/src/routes/shop/components/search-and-filter/SortBy.svelte?raw'),
 	},
 ] satisfies ModuleDefinitions;
