@@ -3,7 +3,8 @@ import type { ModuleDefinitions } from '$lib/articles/load';
 export default [
 	{
 		title: 'Appearance',
-		loadComponent: () => import('../../../../appearance/+page.svelte'),
+		//@ts-expect-error – This will fail fast in dev if it's moved
+		loadComponent: () => import('/src/routes/appearance/+page.svelte'),
 		icon: 'svelte',
 	},
 	{ title: 'Appearance.svelte', loadRaw: () => import('/src/routes/appearance/+page.svelte?raw') },
