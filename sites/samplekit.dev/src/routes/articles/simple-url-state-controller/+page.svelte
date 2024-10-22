@@ -594,7 +594,6 @@ shiki-end -->
 	<!-- shiki-start
 	```ts
 /** `$store` is equivalent to $page.url.searchParams.getAll(`${param}`) */
-/** `$store` is equivalent to $page.url.searchParams.getAll(`${param}`) */
 export const searchParams = (
 	param: string,
 	{ clean, skipInitGoto }: { clean?: (value: string | null) => string | null; skipInitGoto?: true } = {},

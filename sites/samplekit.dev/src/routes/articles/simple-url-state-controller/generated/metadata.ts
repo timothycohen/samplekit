@@ -14,7 +14,7 @@ export default {
 	featured: true,
 	series: { name: 'URL State Controller', position: 1 },
 	articlePath: '/articles/simple-url-state-controller',
-	wordCount: 2672,
+	wordCount: 2665,
 	readingTime: 12,
 	toc: [
 		{ title: 'Thinking through the API', href: '/articles/simple-url-state-controller/#thinking-through-the-api' },
