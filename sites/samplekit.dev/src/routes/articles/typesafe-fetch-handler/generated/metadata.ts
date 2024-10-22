@@ -13,12 +13,14 @@ export default {
 	tags: ['typescript', 'http', 'DX', 'client-server', 'request handlers', 'endpoints'],
 	featured: true,
 	updates: [
-		{ at: new Date('2024-10-18T23:05:58.000Z'), descriptions: ['Improve jsonOk type.'] },
-		{ at: new Date('2024-10-13T21:24:39.000Z'), descriptions: ['Tweak RequestHandler placement.'] },
+		{
+			at: new Date('2024-10-22T22:04:51.000Z'),
+			descriptions: ['Clearer interfaces.', 'Improve jsonOk type.', 'Tweak RequestHandler placement.'],
+		},
 		{ at: new Date('2024-08-13T22:26:40.000Z'), descriptions: ['Update to runes.'] },
 	],
 	articlePath: '/articles/typesafe-fetch-handler',
-	wordCount: 1913,
+	wordCount: 1976,
 	readingTime: 9,
 	toc: [
 		{

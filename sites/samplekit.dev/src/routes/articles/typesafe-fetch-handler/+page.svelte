@@ -16,8 +16,10 @@
 		tags: ['typescript', 'http', 'DX', 'client-server', 'request handlers', 'endpoints'],
 		featured: true,
 		updates: [
-			{ at: new Date('2024-10-18 19:05:58 -0400'), descriptions: ['Improve jsonOk type.'] },
-			{ at: new Date('2024-10-13 17:24:39 -0400'), descriptions: ['Tweak RequestHandler placement.'] },
+			{
+				at: new Date('2024-10-22 18:04:51 -0400'),
+				descriptions: ['Clearer interfaces.', 'Improve jsonOk type.', 'Tweak RequestHandler placement.'],
+			},
 			{ at: new Date('2024-08-13 18:26:40 -0400'), descriptions: ['Update to runes.'] },
 		],
 	} satisfies RawFrontMatter;
@@ -398,17 +400,8 @@ shiki-end -->
 <p>
 	We're almost done designing the API. However, we've so far assumed the route is static. What if it's
 	<code>/demos/[id]/name</code> instead? We can make another flavor of <code>ClientFetcher</code> that takes a function
-	to create the url. Let's call it <code>DynClientFetcher</code>.
+	to create the url. Let's call it <code>DynClientFetcher</code>, and use it like this:
 </p>
-
-<CodeTopper title="$routes/demos/[id]/name/common.ts">
-	<!-- shiki-start
-```ts
-export type AddNameToListReq = { name: string };
-export type AddNameToListRes = { allNames: string[] };
-```
-shiki-end -->
-</CodeTopper>
 
 <CodeTopper title="$routes/demos/[id]/name/client.ts">
 	<!-- shiki-start
@@ -419,9 +412,28 @@ export const addNameToList = new DynClientFetcher<AddNameToListRes, AddNameToLis
 shiki-end -->
 </CodeTopper>
 
+<p>
+	The interface will look almost exactly the same as <code>Fetcher</code>, but with a <code>sendUrl</code> method that
+	takes the <code>urlProps</code>.
+</p>
+
+<!-- shiki-start
+```ts
+interface DynFetcher<ResponseData, RequestData = void> {
+	submitting: boolean;
+	delayed: boolean;
+	timeout: boolean;
+	sendUrl: (urlProps: URLProps, body: RequestData) => Promise<Result<ResponseData>>;//!d"highlight"
+}
+```
+shiki-end -->
+
 <HAnchor tag="h3" title="Options" />
 
-<p>The final consideration is to accept some control options.</p>
+<p>
+	The final consideration is to accept some control options. We'll optionally pass in <code>GlobalOpts</code> when
+	creating the controller, and <code>LocalOpts</code> when calling the <code>send</code> or <code>sendUrl</code> methods.
+</p>
 
 <!-- shiki-start
 ```ts
@@ -432,13 +444,21 @@ type LocalOpts = {
 	timeoutMs?: number;
 	abortSignal?: AbortSignal;
 };
+
 type GlobalOpts = { invalidate?: true; preventDuplicateRequests?: true };
 
 interface Fetcher<ResponseData, RequestData = void> {
 	submitting: boolean;
 	delayed: boolean;
 	timeout: boolean;
-	send: (body: RequestData, localOpts?: LocalOpts) => Promise<Result<ResponseData>>;
+	send: (body: RequestData, localOpts?: LocalOpts) => Promise<Result<ResponseData>>;//!d"diff-add" s", localOpts?: LocalOpts"
+}
+
+interface DynClientFetcher {
+	submitting: boolean;
+	delayed: boolean;
+	timeout: boolean;
+	sendUrl: (urlProps: URLProps, body: RequestData, localOpts?: LocalOpts) => Promise<Result<ResponseData>>;//!d"diff-add" s", localOpts?: LocalOpts"
 }
 ```
 shiki-end -->
