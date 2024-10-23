@@ -11,7 +11,10 @@
 		description:
 			'Select an image, crop it, upload it to an AWS S3 Bucket with a progress indicator, moderate it with Rekognition, save it to the DB, and serve it via AWS Cloudfront.',
 		publishedAt: new Date('2024-03-20 16:37:01 -0400'),
-		updates: [{ at: new Date('2024-08-16 18:59:25 -0400'), descriptions: ['Use runes.'] }],
+		updates: [
+			{ at: new Date('2024-10-22 20:04:17 -0400'), descriptions: ['Add object storage interfaces.'] },
+			{ at: new Date('2024-08-16 18:59:25 -0400'), descriptions: ['Use runes.'] },
+		],
 		authors: [{ name: 'Tim Cohen', email: 'contact@timcohen.dev' }],
 		imgSm,
 		// video,
@@ -29,7 +32,7 @@
 </script>
 
 {#snippet Code(a: { title: string; rawHTML: string })}
-	<CodeTopper title={data.code.avatarEditor.title}>
+	<CodeTopper title={a.title}>
 		<!-- eslint-disable-next-line svelte/no-at-html-tags -->
 		{@html a.rawHTML}
 	</CodeTopper>
@@ -418,11 +421,10 @@ import type { CroppedImg, CropValue } from '$lib/image/common';
 import type { Result } from '$lib/utils/common';
 
 type GetUploadArgs = () => Promise<Result<{ url: string; formDataFields: Record<string, string> }>>;
-type Upload = (a: {
-	url: string;
-	formData: FormData;
-	uploadProgress: { tweened: Tweened<number>; scale: number };
-}) => { promise: Promise<Result<{ status: number }>>; abort: () => void };
+type Upload = (a: { url: string; formData: FormData; uploadProgress: { tweened: Tweened<number>; scale: number } }) => {
+	promise: Promise<Result<{ status: number }>>;
+	abort: () => void;
+};
 type SaveToDb = (a: { crop: CropValue }) => Promise<Result<{ savedImg: CroppedImg | null }>>;
 type DeletePreexistingImg = () => Promise<Result<Result.Success>>;
 type SaveCropToDb = (a: { crop: CropValue }) => Promise<Result<{ savedImg: CroppedImg | null }>>;
@@ -920,7 +922,7 @@ shiki-end -->
 	callbacks, we'll promisify it and split the <code>promise</code> and <code>abort</code>.
 </p>
 
-{@render Code(data.code.objectStorage)}
+<TabPanels files={data.code.uploader} />
 
 <HAnchor tag="h3" title="Client Endpoints" />
 
@@ -972,31 +974,31 @@ shiki-end -->
 		<!-- shiki-start
 ```json
 {
-"Version": "2012-10-17",
-"Statement": [
-	{
-		"Sid": "s3",
-		"Effect": "Allow",
-		"Action": [
-			"s3:PutObject",
-			"s3:DeleteObject"
-		],
-		"Resource": [
-			"arn:aws:s3:::samplekit",
-			"arn:aws:s3:::samplekit/*"
-		]
-	},
-	{ //! d"diff-add"
-		"Sid": "cloudfront", //! d"diff-add"
-		"Effect": "Allow", //! d"diff-add"
-		"Action": [ //! d"diff-add"
-			"cloudfront:CreateInvalidation" //! d"diff-add"
-		], //! d"diff-add"
-		"Resource": [ //! d"diff-add"
-			"arn:aws:cloudfront::069636842578:distribution/*" //! d"diff-add"
-		] //! d"diff-add"
-	} //! d"diff-add"
-]
+	"Version": "2012-10-17",
+	"Statement": [
+		{
+			"Sid": "s3",
+			"Effect": "Allow",
+			"Action": [
+				"s3:PutObject",
+				"s3:DeleteObject"
+			],
+			"Resource": [
+				"arn:aws:s3:::samplekit",
+				"arn:aws:s3:::samplekit/*"
+			]
+		},
+		{ //! d"diff-add"
+			"Sid": "cloudfront", //! d"diff-add"
+			"Effect": "Allow", //! d"diff-add"
+			"Action": [ //! d"diff-add"
+				"cloudfront:CreateInvalidation" //! d"diff-add"
+			], //! d"diff-add"
+			"Resource": [ //! d"diff-add"
+				"arn:aws:cloudfront::069636842578:distribution/*" //! d"diff-add"
+			] //! d"diff-add"
+		} //! d"diff-add"
+	]
 }
 ```
 shiki-end -->
@@ -1008,42 +1010,42 @@ shiki-end -->
 		<!-- shiki-start
 ```json
 {
-"Version": "2012-10-17",
-"Statement": [
-	{
-		"Sid": "s3",
-		"Effect": "Allow",
-		"Action": [
-			"s3:PutObject",
-			"s3:DeleteObject",
-			"s3:GetObject" //! d"diff-add"
-		],
-		"Resource": [
-			"arn:aws:s3:::samplekit",
-			"arn:aws:s3:::samplekit/*"
-		]
-	},
-	{
-		"Sid": "cloudfront",
-		"Effect": "Allow",
-		"Action": [
-			"cloudfront:CreateInvalidation"
-		],
-		"Resource": [
-			"arn:aws:cloudfront::069636842578:distribution/*"
-		]
-	},
-	{ //! d"diff-add"
-		"Sid": "rekognition", //! d"diff-add"
-		"Effect": "Allow", //! d"diff-add"
-		"Action": [ //! d"diff-add"
-			"rekognition:DetectModerationLabels" //! d"diff-add"
-		], //! d"diff-add"
-		"Resource": [ //! d"diff-add"
-			"*" //! d"diff-add"
-		] //! d"diff-add"
-	} //! d"diff-add"
-]
+	"Version": "2012-10-17",
+	"Statement": [
+		{
+			"Sid": "s3",
+			"Effect": "Allow",
+			"Action": [
+				"s3:PutObject",
+				"s3:DeleteObject",
+				"s3:GetObject" //! d"diff-add"
+			],
+			"Resource": [
+				"arn:aws:s3:::samplekit",
+				"arn:aws:s3:::samplekit/*"
+			]
+		},
+		{
+			"Sid": "cloudfront",
+			"Effect": "Allow",
+			"Action": [
+				"cloudfront:CreateInvalidation"
+			],
+			"Resource": [
+				"arn:aws:cloudfront::069636842578:distribution/*"
+			]
+		},
+		{ //! d"diff-add"
+			"Sid": "rekognition", //! d"diff-add"
+			"Effect": "Allow", //! d"diff-add"
+			"Action": [ //! d"diff-add"
+				"rekognition:DetectModerationLabels" //! d"diff-add"
+			], //! d"diff-add"
+			"Resource": [ //! d"diff-add"
+				"*" //! d"diff-add"
+			] //! d"diff-add"
+		} //! d"diff-add"
+	]
 }
 ```
 shiki-end -->
@@ -1091,7 +1093,7 @@ shiki-end -->
 		"AllowedOrigins": ["*"],
 		"ExposeHeaders": []
 	}
-	]
+]
 ```
 shiki-end -->
 	</CodeTopper>
@@ -1122,7 +1124,7 @@ shiki-end -->
 <HAnchor tag="h2" title="AWS" />
 <p>
 	If you don't already have one, you will need to <a href="https://aws.amazon.com/" data-external>
-		set up account at aws.amazon.com
+		set up an account at aws.amazon.com
 	</a>. We will create four services. S3 will hold the images, Rekognition will moderate explicit content, CloudFront
 	will serve the images, and IAM will manage access.
 </p>

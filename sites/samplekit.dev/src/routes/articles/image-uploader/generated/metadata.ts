@@ -12,10 +12,13 @@ export default {
 	imgSm,
 	tags: ['state controller', 'image uploads', 'aws', 'db', 's3', 'cloudfront', 'rekognition', 'rate limiting'],
 	featured: true,
-	updates: [{ at: new Date('2024-08-16T22:59:25.000Z'), descriptions: ['Use runes.'] }],
+	updates: [
+		{ at: new Date('2024-10-23T00:04:17.000Z'), descriptions: ['Add object storage interfaces.'] },
+		{ at: new Date('2024-08-16T22:59:25.000Z'), descriptions: ['Use runes.'] },
+	],
 	articlePath: '/articles/image-uploader',
-	wordCount: 6096,
-	readingTime: 28,
+	wordCount: 5953,
+	readingTime: 27,
 	toc: [
 		{
 			title: 'Upload Flow Options',

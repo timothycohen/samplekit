@@ -31,10 +31,18 @@ const code = {
 		title: 'AvatarEditor.svelte',
 		loadRaw: () => import('/src/routes/account/profile/AvatarEditor.svelte?raw'),
 	}),
-	objectStorage: await processCodeDefined({
-		title: 'uploadToCloudStorage.ts',
-		loadRaw: () => import('/src/lib/object-storage/client/uploadToCloudStorage.ts?raw'),
-	}),
+	uploader: processCode([
+		{
+			title: 'uploadToCloudStorage',
+			lang: 'ts',
+			loadRaw: () => import('/src/lib/object-storage/client/uploadToCloudStorage.ts?raw'),
+		},
+		{
+			title: 'ObjectStorageClient',
+			lang: 'ts',
+			loadRaw: () => import('/src/lib/object-storage/client/types.ts?raw'),
+		},
+	]),
 	api: {
 		client: processCode([
 			{
@@ -76,6 +84,11 @@ const code = {
 			title: 'rekognition.ts',
 			loadRaw: () => import('/src/lib/object-storage/server/rekognition.ts?raw'),
 		},
+		{
+			title: 'ObjectStorageServer',
+			lang: 'ts',
+			loadRaw: () => import('/src/lib/object-storage/server/types.ts?raw'),
+		},
 	]),
 	keyController: await processCodeDefined({
 		title: '$lib/object-storage/server/s3CloudfrontKeyController.ts',
@@ -96,11 +109,11 @@ const code = {
 		},
 	]),
 	imageSchema: await processCodeDefined({
-		title: 'imageSchema.ts',
+		title: '$lib/image/common/schemas.ts',
 		loadRaw: () => import('/src/lib/image/common/schemas.ts?raw'),
 	}),
 	loadFileImports: await processCodeDefined({
-		title: 'imageUtils.ts',
+		title: '$lib/image/client/utils.ts',
 		loadRaw: () => import('/src/lib/image/client/utils.ts?raw'),
 	}),
 };
