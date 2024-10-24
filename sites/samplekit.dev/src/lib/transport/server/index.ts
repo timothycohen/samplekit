@@ -1,3 +1,2 @@
-export * from './email';
-export * from './sms';
+export { transports } from './repository';
 export { INTERCEPT_TRANSPORTS } from './consts';

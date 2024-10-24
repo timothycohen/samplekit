@@ -1,6 +1,7 @@
 import { PUBLIC_ORIGIN } from '$env/static/public';
 import { allPostData } from '$lib/articles/load';
-import { getCollections, getProducts } from '$lib/shop';
+import { shop } from '$lib/shop';
+import type { RequestHandler } from '@sveltejs/kit';
 
 /** https://www.sitemaps.org/protocol.html */
 type SiteMapUrl = {
@@ -10,7 +11,7 @@ type SiteMapUrl = {
 	priority?: number;
 };
 
-export const GET = async ({ fetch }) => {
+const sitemap: RequestHandler = async ({ fetch }) => {
 	const rootUrls = ['/login', '/signup'].map((p) => ({
 		loc: `${PUBLIC_ORIGIN}${p}`,
 	})) satisfies SiteMapUrl[];
@@ -24,8 +25,8 @@ export const GET = async ({ fetch }) => {
 		'/shop',
 		'/shop/collections',
 		'/shop/collections/all',
-		...(await getCollections({ fetch })).map((c) => `/shop/collections/${c.handle}`),
-		...(await getProducts({ fetch, filters: {} })).map((p) => `/shop/product/${p.handle}`),
+		...(await shop.collection.getAll({ fetch })).map((c) => `/shop/collections/${c.handle}`),
+		...(await shop.product.getAll({ fetch, filters: {} })).map((p) => `/shop/product/${p.handle}`),
 	].map((p) => ({ loc: `${PUBLIC_ORIGIN}${p}` })) satisfies SiteMapUrl[];
 
 	return new Response(render([...rootUrls, ...articleUrls, ...shopUrls]), {
@@ -59,3 +60,5 @@ ${sitemapUrls
 	)
 	.join('\n')}
 </urlset>`;
+
+export const GET = sitemap;

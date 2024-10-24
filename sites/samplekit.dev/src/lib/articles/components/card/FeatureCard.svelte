@@ -1,6 +1,6 @@
 <script lang="ts">
 	import LinksAndDate from './LinksAndDate.svelte';
-	import type { LoadedFrontMatter } from '$lib/articles/schema';
+	import type { LoadedFrontMatter } from '$lib/articles/schemas';
 
 	type Props = {
 		metadata: Pick<

@@ -2,7 +2,9 @@
 	import { page } from '$app/stores';
 	import { LogoIcon } from '$lib/components';
 	import I from '$lib/icons';
-	import { PaletteMenu } from '$lib/styles';
+	import { PaletteMenu, ThemeController } from '$lib/styles';
+
+	const { themeController }: { themeController: ThemeController } = $props();
 
 	const title = $derived.by(() => {
 		if ($page.url.pathname.includes('code-decoration')) return 'Code Decoration';
@@ -12,7 +14,7 @@
 	});
 </script>
 
-<PaletteMenu />
+<PaletteMenu {themeController} />
 
 <h2 class="flex-1 overflow-hidden overflow-ellipsis whitespace-nowrap text-center text-xl">{title}</h2>
 

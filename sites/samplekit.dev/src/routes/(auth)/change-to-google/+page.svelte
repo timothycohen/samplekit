@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { Admonition } from '$lib/components';
 	import I from '$lib/icons';
-	import { VerifyPWForm } from '$routes/(auth)/components';
+	import { actionsMap, VerifyPWForm } from '$routes/(auth)';
 
 	const { data } = $props();
 
@@ -30,7 +30,7 @@
 			<VerifyPWForm
 				email={data.email}
 				confirmPassForm={data.confirmPassForm}
-				action="/change-to-google?/passwordToLinkGoogle"
+				action={actionsMap.passwordToLinkGoogle}
 				onSubmitting={(submitting) => (disabled = submitting)}
 			>
 				{#snippet buttons()}

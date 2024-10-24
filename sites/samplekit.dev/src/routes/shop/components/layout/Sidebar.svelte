@@ -3,9 +3,12 @@
 	import { fade, fly } from 'svelte/transition';
 	import { page } from '$app/stores';
 	import I from '$lib/icons';
-	import { Available, Price, SearchBar, SortBy } from '$routes/shop/components';
-	import { useNavService } from '$routes/shop/services';
-	import { handleToPath } from '$routes/shop/utils';
+	import { handleToPath } from '$lib/shop';
+	import { useNavCtx } from '../../navAndDrawer.ctx';
+	import Available from '../search-and-filter/Available.svelte';
+	import Price from '../search-and-filter/Price.svelte';
+	import SearchBar from '../search-and-filter/SearchBar.svelte';
+	import SortBy from '../search-and-filter/SortBy.svelte';
 
 	interface Props {
 		collections?: { title: string; path: string }[];
@@ -13,7 +16,7 @@
 
 	const { collections = [] }: Props = $props();
 
-	const { desktopDrawer, drawerProps, mobileDrawer } = useNavService();
+	const { desktopDrawer, drawerProps, mobileDrawer } = useNavCtx();
 
 	const {
 		elements: { overlay, content, title, close, portalled },

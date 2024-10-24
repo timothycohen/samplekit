@@ -1,10 +1,10 @@
-import type { LoadedFrontMatter } from '$lib/articles/schema';
+import type { LoadedFrontMatter } from '$lib/articles/schemas';
 import imgSm from '/src/routes/articles/simple-url-state-controller/assets/simple-url-state-controller-thumbnail-1200w.webp';
 import imgLg from '/src/routes/articles/simple-url-state-controller/assets/simple-url-state-controller-q30.webp';
 export default {
 	title: 'Simple URL State Controller',
 	implementationPath: '/articles/simple-url-state-controller#demo',
-	srcCodeHref: 'https://github.com/timothycohen/samplekit/tree/main/sites/samplekit.dev/src/lib/stores/params',
+	srcCodeHref: 'https://github.com/timothycohen/samplekit/tree/main/sites/samplekit.dev/src/lib/svelte-stores/params',
 	description: 'Store state in the URL with a few simple Svelte stores.',
 	publishedAt: new Date('2024-03-07T18:29:34.000Z'),
 	authors: [{ name: 'Tim Cohen', email: 'contact@timcohen.dev' }],
@@ -14,7 +14,7 @@ export default {
 	featured: true,
 	series: { name: 'URL State Controller', position: 1 },
 	articlePath: '/articles/simple-url-state-controller',
-	wordCount: 2672,
+	wordCount: 2665,
 	readingTime: 12,
 	toc: [
 		{ title: 'Thinking through the API', href: '/articles/simple-url-state-controller/#thinking-through-the-api' },

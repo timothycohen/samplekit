@@ -1,8 +1,8 @@
 <script lang="ts">
 	// svg from https://toggles.dev/
 	import { tick, type Snippet } from 'svelte';
-	import { clickOutside, keyboard, windowEscape } from '$lib/actions';
 	import I from '$lib/icons';
+	import { clickOutside, keyboard, windowEscape } from '$lib/svelte-actions';
 
 	interface Props {
 		modeApplied: 'day' | 'night';

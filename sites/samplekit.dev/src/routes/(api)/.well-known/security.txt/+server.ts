@@ -1,13 +1,14 @@
 import { PUBLIC_ORIGIN } from '$env/static/public';
-import { securityEmail } from '$routes/(api)/consts';
+import { SECURITY_EMAIL } from '$lib/consts';
+import type { RequestHandler } from '@sveltejs/kit';
 
-export const GET = () => {
+const security: RequestHandler = () => {
 	const endOfYear = new Date(new Date().getFullYear(), 11, 31, 23, 59, 59, 999).toISOString();
 	const canonicalLink = `${PUBLIC_ORIGIN}/.well-known/security.txt`;
 	const policyLink = `${PUBLIC_ORIGIN}/security-policy`;
 
 	return new Response(
-		`Contact: mailto:${securityEmail}
+		`Contact: mailto:${SECURITY_EMAIL}
 Expires: ${endOfYear}
 Canonical: ${canonicalLink}
 Policy: ${policyLink}`,
@@ -19,3 +20,5 @@ Policy: ${policyLink}`,
 		},
 	);
 };
+
+export const GET = security;

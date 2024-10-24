@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { ThreeItemGridItem } from '$routes/shop/components';
+	import ThreeItemGridItem from './ThreeItemGridItem.svelte';
 	import type { Product } from '$lib/shop';
 
 	interface Props {

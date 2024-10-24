@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { invalidateAll } from '$app/navigation';
-	import { type nameSchema } from '$routes/(auth)/validators';
+	import { type nameSchema } from '$routes/(auth)';
 	import EditableAvatar from './EditableAvatar.svelte';
 	import EditableName from './EditableName.svelte';
 	import type { SuperValidated } from '$lib/superforms/client';

@@ -2,14 +2,14 @@
 	import { page } from '$app/stores';
 	import { Switch } from '$lib/components';
 	import { SearchBar, Price, SortBy } from '$routes/shop/components';
-	import { createSearchAndFilterService, useSearchAndFilterService } from '$routes/shop/services';
+	import { createSearchAndFilterCtx, useSearchAndFilterCtx } from '$routes/shop/searchAndFilter.ctx';
 
-	createSearchAndFilterService();
+	createSearchAndFilterCtx();
 
 	const {
 		params: { query, available, price, sortBy },
 		reset,
-	} = useSearchAndFilterService();
+	} = useSearchAndFilterCtx();
 </script>
 
 <div class="flex h-full flex-col justify-around gap-8">

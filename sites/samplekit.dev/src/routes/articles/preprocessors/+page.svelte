@@ -2,7 +2,7 @@
 	import { GH_TREE } from '$lib/consts';
 	import video from './assets/2024-08-05_22-41-28_889x627.mp4';
 	import imgSm from './assets/preprocessors-thumbnail-1200w.webp';
-	import type { RawFrontMatter } from '$lib/articles/schema';
+	import type { RawFrontMatter } from '$lib/articles/schemas';
 
 	export const metadata = {
 		title: 'Blog with Preprocessors',
@@ -25,8 +25,7 @@
 </script>
 
 <script lang="ts">
-	import { CodeTopper } from '$lib/articles/components';
-	import { TabPanels, HAnchor } from '$lib/components';
+	import { CodeTopper, HAnchor, TabPanels } from '$lib/articles/components';
 	import { GH_ROOT } from '$lib/consts';
 
 	const { data } = $props();
@@ -859,7 +858,7 @@ import MagicString from 'magic-string';
 import { parse } from 'svelte/compiler';
 import { getOrLoadOpts } from './defaultOpts.js';
 import { codeToDecoratedHtmlSync } from './highlight.js';
-import { stripOptions } from './stripOptions/index.js';
+import { stripOptions } from './strip-options/index.js';
 import type { PreprocessOpts, Logger, PreprocessorGroup } from './types.js';
 
 export function processCodeblockSync({

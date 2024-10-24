@@ -3,7 +3,7 @@
 	import video from './assets/2024-08-05_19-56-30_800x645.mp4';
 	import imgLg from './assets/theme-controller-q30.webp';
 	import imgSm from './assets/theme-controller-thumbnail-1200w.webp';
-	import type { RawFrontMatter } from '$lib/articles/schema';
+	import type { RawFrontMatter } from '$lib/articles/schemas';
 
 	export const metadata = {
 		title: 'Theme Controller',
@@ -13,6 +13,7 @@
 			'A theme controller that uses CSS variables to control light/dark mode with multiple themes, saves user preference to Cookies, and avoids flashes of unstyled content.',
 		publishedAt: new Date('2024-03-06 13:36:17 -0500'),
 		updates: [
+			{ at: new Date('2024-10-21 18:59:46 -0400'), descriptions: ['Improve diffing.'] },
 			{ at: new Date('2024-08-13 18:53:19 -0400'), descriptions: ['Update to runes.', 'Add view transition.'] },
 		],
 		authors: [{ name: 'Tim Cohen', email: 'contact@timcohen.dev' }],
@@ -25,8 +26,7 @@
 </script>
 
 <script lang="ts">
-	import { CodeTopper } from '$lib/articles/components';
-	import { HAnchor } from '$lib/components';
+	import { CodeTopper, HAnchor } from '$lib/articles/components';
 	import { GH_ROOT } from '$lib/consts';
 </script>
 
@@ -113,7 +113,7 @@
 
 <p>First an example using <a href="https://github.com/radix-ui/colors" data-external>Radix UI Colors</a>:</p>
 
-<CodeTopper title="adaptiveColorThemes.css">
+<CodeTopper title="adaptiveColorThemes.css" copyable={false}>
 	<!-- shiki-start
 ```css
 .light {
@@ -129,7 +129,7 @@
 shiki-end -->
 </CodeTopper>
 
-<CodeTopper title="tailwind.config.ts">
+<CodeTopper title="tailwind.config.ts" copyable={false}>
 	<!-- shiki-start
 		```ts
 const colors = {//! d"hide"
@@ -154,7 +154,7 @@ shiki-end -->
 	By changing <code>class="light"</code> to <code>class="dark"</code>, all the themed color variables will change.
 </p>
 
-<CodeTopper title="src/app.html">
+<CodeTopper title="src/app.html" copyable={false}>
 	<!-- shiki-start
 ```html
 <html lang="en" data-theme="adaptive-theme" class="light">//!d"highlight" s#"class="light""#
@@ -166,7 +166,7 @@ shiki-end -->
 shiki-end -->
 </CodeTopper>
 
-<CodeTopper title="src/app.html">
+<CodeTopper title="src/app.html" copyable={false}>
 	<!-- shiki-start
 ```html
 <html lang="en" data-theme="adaptive-theme" class="dark">//!d"highlight" s#"class="dark""#
@@ -182,7 +182,7 @@ shiki-end -->
 
 <p>Now lets look at an example using a <a href="https://daisyui.com/docs/themes/" data-external>DaisyUI</a> theme:</p>
 
-<CodeTopper title="staticColorThemes.css">
+<CodeTopper title="staticColorThemes.css" copyable={false}>
 	<!-- shiki-start
 ```css
 [data-theme='cupcake'] {
@@ -196,7 +196,7 @@ shiki-end -->
 shiki-end -->
 </CodeTopper>
 
-<CodeTopper title="src/app.html">
+<CodeTopper title="src/app.html" copyable={false}>
 	<!-- shiki-start
 ```html
 &openhtmlcomment; only the data-theme matters for the css.
@@ -211,7 +211,7 @@ shiki-end -->
 shiki-end -->
 </CodeTopper>
 
-<CodeTopper title="src/app.html">
+<CodeTopper title="src/app.html" copyable={false}>
 	<!-- shiki-start
 ```html
 <html lang="en" data-theme="business" class="dark">//!d"highlight" s#"data-theme="business""#
@@ -229,7 +229,7 @@ shiki-end -->
 
 <p>If we look back at our Radix UI example:</p>
 
-<CodeTopper title="adaptiveColorThemes.css">
+<CodeTopper title="adaptiveColorThemes.css" copyable={false}>
 	<!-- shiki-start
 ```css
 .light {
@@ -250,7 +250,7 @@ shiki-end -->
 	the variables up one level.
 </p>
 
-<CodeTopper title="adaptiveColorThemes.css">
+<CodeTopper title="adaptiveColorThemes.css" copyable={false}>
 	<!-- shiki-start
 ```css
 :root {
@@ -272,7 +272,7 @@ shiki-end -->
 
 <p>Similarly:</p>
 
-<CodeTopper title="staticColorThemes.css">
+<CodeTopper title="staticColorThemes.css" copyable={false}>
 	<!-- shiki-start
 ```css
 :root {
@@ -300,15 +300,15 @@ shiki-end -->
 <HAnchor tag="h2" title="Controller Components" />
 
 <div>
-	Now that we've pulled some design tokens into our css, we can control the entire theme using just
-	<code>data-theme</code> and <code>class</code> attributes on some top level HTML tag. Our state with then look like:
+	Now that we've pulled some design tokens into our CSS, we can control the entire theme using just
+	<code>data-theme</code> and <code>class</code> attributes on some top level HTML tag. Our state will then look like:
 	<!-- shiki-ts type Theme = { name: string, scheme: 'light' | 'dark' }; shiki-ts -->. We can force specific components
 	to use a different theme by adding a wrapper with those properties.
 </div>
 
 <p>This website uses these themes:</p>
 
-<CodeTopper title="themeUtils.ts">
+<CodeTopper title="$lib/styles/themeUtils.ts">
 	<!-- shiki-start
 ```ts
 export const THEMES = [
@@ -354,7 +354,7 @@ md-end -->
 
 <p>The controller can be as simple as this:</p>
 
-<CodeTopper title="Fixed Theme Picker Controller">
+<CodeTopper title="Fixed Theme Picker Controller" copyable={false}>
 	<!-- shiki-start
 ```ts
 import { THEMES, getStoredThemeOnClient, storeThemeOnClient, setThemeOnDoc, type Theme } from './themeUtils';
@@ -410,19 +410,29 @@ shiki-end -->
 	Because we'll be using the data in our theme controller components, we'll need some Svelte store or rune reactivity.
 </p>
 
-<CodeTopper title="themeUtils.ts">
+<CodeTopper title="$lib/styles/themeUtils.ts">
 	<!-- shiki-start
 ```ts
-export type SystemScheme = 'light' | 'dark';
-export type Mode = 'fixed_day' | 'fixed_night' | 'sync_system';
-export type ModeApplied = 'day' | 'night';
+export const THEMES = [
+	{ name: 'daffodil', scheme: 'light' },
+	{ name: 'desert', scheme: 'dark' },
+	{ name: 'bellflower', scheme: 'light' },
+	{ name: 'amethyst', scheme: 'dark' },
+] as const satisfies { name: string; scheme: 'light' | 'dark' }[];
+
+export type Theme = (typeof THEMES)[number];
+export type SystemScheme = Theme['scheme'];//!d"diff-add"
+export type Mode = 'fixed_day' | 'fixed_night' | 'sync_system';//!d"diff-add"
+export type ModeApplied = 'day' | 'night';//!d"diff-add"
 ```
 shiki-end -->
 </CodeTopper>
 
-<CodeTopper title="themeController.svelte.ts">
+<CodeTopper title="$lib/styles/themeController.svelte.ts">
 	<!-- shiki-start
 ```ts
+import type { SystemScheme, Mode, Theme, ModeApplied } from './themeUtils';
+
 export class ThemeController {
 	// the browser `prefers-color-scheme`
 	#systemScheme = $state() as SystemScheme;
@@ -441,7 +451,7 @@ export class ThemeController {
 				? 'night'
 				: this.#systemScheme === 'light'
 					? 'day'
-					: 'night',
+					: 'night'
 	);
 
 	// the theme actually applied
@@ -450,6 +460,28 @@ export class ThemeController {
 	// knowing if the store is initialized can be useful when loading external scripts
 	// that render light/dark components (for example Turnstile or reCAPTCHA)
 	#initializedOnClient = $state(false);
+
+	get initializedOnClient() {
+		return this.#initializedOnClient;
+	}
+	get systemScheme() {
+		return this.#systemScheme;
+	}
+	get mode() {
+		return this.#mode;
+	}
+	get modeApplied() {
+		return this.#modeApplied;
+	}
+	get themeDay() {
+		return this.#themeDay;
+	}
+	get themeNight() {
+		return this.#themeNight;
+	}
+	get themeApplied() {
+		return this.#themeApplied;
+	}
 }
 ```
 shiki-end -->
@@ -462,22 +494,42 @@ shiki-end -->
 	it can be as simple as:
 </p>
 
-<CodeTopper title="themeUtils.ts">
+<CodeTopper title="$lib/styles/themeUtils.ts">
+	<!-- shiki-start
+d"diff-add" l"1-7"
+```ts
+export const STORAGE_KEY_THEME_DAY = 'theme_day';
+export const STORAGE_KEY_THEME_NIGHT = 'theme_night';
+export const STORAGE_KEY_THEME_SYNC_MODE = 'theme_sync_mode';
+export type StorageKey =
+	| `${typeof STORAGE_KEY_THEME_DAY | typeof STORAGE_KEY_THEME_NIGHT}_${'name' | 'scheme'}`
+	| typeof STORAGE_KEY_THEME_SYNC_MODE;
+
+export const THEMES = [
+	{ name: 'daffodil', scheme: 'light' },
+	{ name: 'desert', scheme: 'dark' },
+	{ name: 'bellflower', scheme: 'light' },
+	{ name: 'amethyst', scheme: 'dark' },
+] as const satisfies { name: string; scheme: 'light' | 'dark' }[];
+
+export type Theme = (typeof THEMES)[number];
+export type SystemScheme = Theme['scheme'];
+export type Mode = 'fixed_day' | 'fixed_night' | 'sync_system';
+export type ModeApplied = 'day' | 'night';
+```
+shiki-end -->
+</CodeTopper>
+
+<CodeTopper title="$lib/styles/storeTheme.ts">
 	<!-- shiki-start
 ```ts
-const STORAGE_KEY_THEME_DAY = 'theme_day';
-const STORAGE_KEY_THEME_NIGHT = 'theme_night';
-const STORAGE_KEY_THEME_SYNC_MODE = 'theme_sync_mode';
+import type { StorageKey } from './themeUtils';
 
-type Key =
-	| `${typeof STORAGE_KEY_THEME_DAY | typeof STORAGE_KEY_THEME_NIGHT}_${'name' | 'scheme'}`
-	| 'theme_sync_mode';
-
-function getStorage(name: Key): string | null {
+export function getStorage(key: StorageKey): string | null {
 	return localStorage.getItem(key);
 }
 
-function setStorage(name: Key, value: string, days?: number): void {
+export function setStorage(key: StorageKey, value: string): void {
 	localStorage.setItem(key, value);
 }
 ```
@@ -492,46 +544,86 @@ shiki-end -->
 
 <p>If we want to have access to the values on the server, we might prefer <code>Cookies</code>.</p>
 
-<CodeTopper title="+layout.server.ts">
+<CodeTopper title="$lib/styles/themeUtils.ts">
 	<!-- shiki-start
+d"diff-add" l"19-48"
 ```ts
-const getThemeOnServer = (cookies: Cookies) => ({
-	mode: normalizeThemeMode(cookies.get('theme_sync_mode' satisfies StorageKey)),
-	themeDay: normalizeThemeDay(cookies.get('theme_day_name' satisfies StorageKey), cookies.get),
-	themeNight: normalizeThemeNight(cookies.get('theme_night_name' satisfies StorageKey), cookies.get),
-});
+export const STORAGE_KEY_THEME_DAY = 'theme_day';
+export const STORAGE_KEY_THEME_NIGHT = 'theme_night';
+export const STORAGE_KEY_THEME_SYNC_MODE = 'theme_sync_mode';
+export type StorageKey =
+	| `${typeof STORAGE_KEY_THEME_DAY | typeof STORAGE_KEY_THEME_NIGHT}_${'name' | 'scheme'}`
+	| typeof STORAGE_KEY_THEME_SYNC_MODE;
 
-export const load: LayoutServerLoad = async ({ cookies }) => {
-	return { theme: getThemeOnServer(cookies) };
-	// {
-	//   mode: 'fixed_night',
-	//   themeDay: { name: 'bellflower', scheme: 'light' },
-	//   themeNight: { name: 'amethyst', scheme: 'dark' }
-	// }
+export const THEMES = [
+	{ name: 'daffodil', scheme: 'light' },
+	{ name: 'desert', scheme: 'dark' },
+	{ name: 'bellflower', scheme: 'light' },
+	{ name: 'amethyst', scheme: 'dark' }
+] as const satisfies { name: string; scheme: 'light' | 'dark' }[];
+
+export type Theme = (typeof THEMES)[number];
+export type SystemScheme = Theme['scheme'];
+export type Mode = 'fixed_day' | 'fixed_night' | 'sync_system';
+export type ModeApplied = 'day' | 'night';
+
+const DEFAULT_THEME_DAY = { name: 'bellflower', scheme: 'light' } as const satisfies Theme;
+const DEFAULT_THEME_NIGHT = { name: 'amethyst', scheme: 'dark' } as const satisfies Theme;
+const DEFAULT_THEME_SYNC_MODE: Mode = 'sync_system';
+
+export const normalizeThemeMode = (val: string | null | undefined): Mode => {
+	if (!val) return DEFAULT_THEME_SYNC_MODE;
+	if (val === 'fixed_day' || val === 'fixed_night' || val === 'sync_system') return val;
+	return DEFAULT_THEME_SYNC_MODE;
+};
+
+export const normalizeThemeDay = (
+	name: string | null | undefined,
+	getter: (key: StorageKey) => string | null | undefined
+): Theme => {
+	if (!name) return DEFAULT_THEME_DAY;
+	const scheme = getter(`${STORAGE_KEY_THEME_DAY}_scheme`);
+	if (!scheme) return DEFAULT_THEME_DAY;
+	return THEMES.find((t) => t.name === name && t.scheme === scheme) ?? DEFAULT_THEME_DAY;
+};
+
+export const normalizeThemeNight = (
+	name: string | null | undefined,
+	getter: (key: StorageKey) => string | null | undefined
+): Theme => {
+	if (!name) return DEFAULT_THEME_NIGHT;
+	const scheme = getter(`${STORAGE_KEY_THEME_NIGHT}_scheme`);
+	if (!scheme) return DEFAULT_THEME_NIGHT;
+	return THEMES.find((t) => t.name === name && t.scheme === scheme) ?? DEFAULT_THEME_NIGHT;
 };
 ```
 shiki-end -->
 </CodeTopper>
 
-<CodeTopper title="themeUtils.ts">
+<CodeTopper title="$lib/styles/storeTheme.ts">
 	<!-- shiki-start
+d"diff-remove" l"1-9"
+d"diff-add" l"10-47"
 ```ts
-function getBrowserCookie(name: StorageKey): string | null {
-	const nameEQ = `${name}=`;
-	const cookies = document.cookie.split(';');
+import type { StorageKey } from './themeUtils';
 
-	for (let i = 0; i < cookies.length; i++) {
-		let cookie = cookies[i];
-		while (cookie?.charAt(0) === ' ') {
-			cookie = cookie.substring(1, cookie.length);
-		}
-		if (cookie?.indexOf(nameEQ) === 0) {
-			return cookie.substring(nameEQ.length, cookie.length);
-		}
-	}
-
-	return null;
+export function getStorage(key: StorageKey): string | null {
+	return localStorage.getItem(key);
 }
+
+export function setStorage(key: StorageKey, value: string): void {
+	localStorage.setItem(key, value);
+}
+import { normalizeThemeDay, normalizeThemeMode, normalizeThemeNight, STORAGE_KEY_THEME_SYNC_MODE } from './themeUtils';
+import type {
+	Mode,
+	ModeApplied,
+	STORAGE_KEY_THEME_NIGHT,
+	STORAGE_KEY_THEME_DAY,
+	StorageKey,
+	Theme,
+} from './themeUtils';
+import type { Cookies } from '@sveltejs/kit';
 
 function setBrowserCookie(name: StorageKey, value: string, days?: number): void {
 	let expires = '';
@@ -544,8 +636,24 @@ function setBrowserCookie(name: StorageKey, value: string, days?: number): void 
 
 	document.cookie = `${name}=${value}${expires}; path=/`;
 }
+
+export const storeTheme = ({ kind, theme }: { kind: ModeApplied; theme: Theme }) => {
+	const storageKey: typeof STORAGE_KEY_THEME_DAY | typeof STORAGE_KEY_THEME_NIGHT = `theme_${kind}`;
+	setBrowserCookie(`${storageKey}_name`, theme.name);
+	setBrowserCookie(`${storageKey}_scheme`, theme.scheme);
+};
+
+export const storeMode = (mode: Mode) => {
+	setBrowserCookie(STORAGE_KEY_THEME_SYNC_MODE, mode);
+};
+
+export const getThemeOnServer = (cookies: Cookies) => ({
+	mode: normalizeThemeMode(cookies.get('theme_sync_mode' satisfies StorageKey)),
+	themeDay: normalizeThemeDay(cookies.get('theme_day_name' satisfies StorageKey), cookies.get),
+	themeNight: normalizeThemeNight(cookies.get('theme_night_name' satisfies StorageKey), cookies.get),
+});
 ```
-shiki-end -->
+	shiki-end -->
 </CodeTopper>
 
 <HAnchor tag="h3" title="Document" />
@@ -554,34 +662,15 @@ shiki-end -->
 
 <p>Let's create the necessary helper functions.</p>
 
-<CodeTopper title="themeUtils.ts">
+<CodeTopper title="$lib/styles/themeUtils.ts">
 	<!-- shiki-start
 ```ts
-// Compile this to /static/themeUtils.js and import into app.html to prevent FOUC
-
 export const STORAGE_KEY_THEME_DAY = 'theme_day';
 export const STORAGE_KEY_THEME_NIGHT = 'theme_night';
 export const STORAGE_KEY_THEME_SYNC_MODE = 'theme_sync_mode';
 export type StorageKey =
 	| `${typeof STORAGE_KEY_THEME_DAY | typeof STORAGE_KEY_THEME_NIGHT}_${'name' | 'scheme'}`
-	| 'theme_sync_mode';
-
-function getBrowserCookie(name: StorageKey): string | null {
-	const nameEQ = `${name}=`;
-	const cookies = document.cookie.split(';');
-
-	for (let i = 0; i < cookies.length; i++) {
-		let cookie = cookies[i];
-		while (cookie?.charAt(0) === ' ') {
-			cookie = cookie.substring(1, cookie.length);
-		}
-		if (cookie?.indexOf(nameEQ) === 0) {
-			return cookie.substring(nameEQ.length, cookie.length);
-		}
-	}
-
-	return null;
-}
+	| typeof STORAGE_KEY_THEME_SYNC_MODE;
 
 export const THEMES = [
 	{ name: 'daffodil', scheme: 'light' },
@@ -591,18 +680,13 @@ export const THEMES = [
 ] as const satisfies { name: string; scheme: 'light' | 'dark' }[];
 
 export type Theme = (typeof THEMES)[number];
-export type SystemScheme = 'light' | 'dark';
+export type SystemScheme = Theme['scheme'];
 export type Mode = 'fixed_day' | 'fixed_night' | 'sync_system';
 export type ModeApplied = 'day' | 'night';
 
 const DEFAULT_THEME_DAY = { name: 'bellflower', scheme: 'light' } as const satisfies Theme;
 const DEFAULT_THEME_NIGHT = { name: 'amethyst', scheme: 'dark' } as const satisfies Theme;
 const DEFAULT_THEME_SYNC_MODE: Mode = 'sync_system';
-
-export const getSystemScheme = (): SystemScheme => {
-	if (typeof window === 'undefined' || !window.matchMedia) return 'light';
-	return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-};
 
 export const normalizeThemeMode = (val: string | null | undefined): Mode => {
 	if (!val) return DEFAULT_THEME_SYNC_MODE;
@@ -630,57 +714,99 @@ export const normalizeThemeNight = (
 	return THEMES.find((t) => t.name === name && t.scheme === scheme) ?? DEFAULT_THEME_NIGHT;
 };
 
-export const getStoredThemeModeClient = (): Mode => {
-	return normalizeThemeMode(getBrowserCookie(STORAGE_KEY_THEME_SYNC_MODE));
-};
-
-export const getStoredThemeDayClient = (): Theme => {
-	return normalizeThemeDay(getBrowserCookie(`${STORAGE_KEY_THEME_DAY}_name`), getBrowserCookie);
-};
-
-export const getStoredThemeNightClient = (): Theme => {
-	return normalizeThemeNight(getBrowserCookie(`${STORAGE_KEY_THEME_NIGHT}_name`), getBrowserCookie);
-};
-
-export const setThemeOnDoc = ({ name, scheme }: Theme) => {
-	if (scheme === 'dark') {
-		document.documentElement.classList.remove('light');
-		document.documentElement.classList.add('dark');
-		document.documentElement.dataset['theme'] = name;
-	} else {
-		document.documentElement.classList.add('light');
-		document.documentElement.classList.remove('dark');
-		document.documentElement.dataset['theme'] = name;
-	}
-};
-
-export const setSystemSchemeOnDoc = (systemScheme: SystemScheme) => {
-	document.documentElement.setAttribute('data-prefer-scheme', systemScheme);
-};
+export const setThemeOnDoc = ({ name, scheme }: Theme) => {//! d"diff-add"
+	if (scheme === 'dark') {//! d"diff-add"
+		document.documentElement.classList.remove('light');//! d"diff-add"
+		document.documentElement.classList.add('dark');//! d"diff-add"
+		document.documentElement.dataset['theme'] = name;//! d"diff-add"
+	} else {//! d"diff-add"
+		document.documentElement.classList.add('light');//! d"diff-add"
+		document.documentElement.classList.remove('dark');//! d"diff-add"
+		document.documentElement.dataset['theme'] = name;//! d"diff-add"
+	}//! d"diff-add"
+};//! d"diff-add"
 ```
 shiki-end -->
 </CodeTopper>
 
 <p>Now we can add our set methods on our controller.</p>
 
-<CodeTopper title="themeController.svelte.ts">
+<CodeTopper title="$lib/styles/themeController.svelte.ts">
 	<!-- shiki-start
 ```ts
-export class ThemeController {
-	...
-	setTheme({ kind, theme }: { kind: ModeApplied; theme: Theme }) {
-		if (kind === 'day') this.#themeDay = theme;
-		else this.#themeNight = theme;
-		storeTheme({ kind, theme });
-		setThemeOnDoc(this.#themeApplied);
-	}
+import { storeMode, storeTheme } from './storeTheme'; //! d"diff-add"
+import type { SystemScheme, Mode, Theme, ModeApplied } from './themeUtils';
+import { setThemeOnDoc } from './themeUtils';//! d"diff-add"
 
-	setMode(mode: 'fixed_day' | 'fixed_night' | 'sync_system') {
-		this.#mode = mode;
-		storeMode(this.#mode);
-		setThemeOnDoc(this.#themeApplied);
+export class ThemeController {
+	// the browser `prefers-color-scheme`
+	#systemScheme = $state() as SystemScheme;
+	// the toggle switch between fixed light/dark modes or system sync
+	#mode = $state() as Mode;
+	// the user's preferred day theme
+	#themeDay = $state() as Theme;
+	// the user's preferred night theme
+	#themeNight = $state() as Theme;
+
+	// the mode applied after converting sync_system to the user's preferred scheme
+	#modeApplied: ModeApplied = $derived(
+		this.#mode === 'fixed_day'
+			? 'day'
+			: this.#mode === 'fixed_night'
+				? 'night'
+				: this.#systemScheme === 'light'
+					? 'day'
+					: 'night'
+	);
+
+	// the theme actually applied
+	#themeApplied = $derived(this.#modeApplied === 'day' ? this.#themeDay : this.#themeNight);
+
+	// knowing if the store is initialized can be useful when loading external scripts
+	// that render light/dark components (for example Turnstile or reCAPTCHA)
+	#initializedOnClient = $state(false);
+
+	get initializedOnClient() {
+		return this.#initializedOnClient;
 	}
-	...
+	get systemScheme() {
+		return this.#systemScheme;
+	}
+	get mode() {
+		return this.#mode;
+	}
+	get modeApplied() {
+		return this.#modeApplied;
+	}
+	setMode(mode: 'fixed_day' | 'fixed_night' | 'sync_system') {//! d"diff-add"
+		this.#mode = mode;//! d"diff-add"
+		storeMode(this.#mode);//! d"diff-add"
+		setThemeOnDoc(this.#themeApplied);//! d"diff-add"
+	}//! d"diff-add"
+	set mode(mode: 'fixed_day' | 'fixed_night' | 'sync_system') {//! d"diff-add"
+		this.setMode(mode);//! d"diff-add"
+	}//! d"diff-add"
+	get themeDay() {
+		return this.#themeDay;
+	}
+	get themeNight() {
+		return this.#themeNight;
+	}
+	get themeApplied() {
+		return this.#themeApplied;
+	}
+	setTheme({ kind, theme }: { kind: ModeApplied; theme: Theme }) {//! d"diff-add"
+		if (kind === 'day') this.#themeDay = theme;//! d"diff-add"
+		else this.#themeNight = theme;//! d"diff-add"
+		storeTheme({ kind, theme });//! d"diff-add"
+		setThemeOnDoc(this.#themeApplied);//! d"diff-add"
+	}//! d"diff-add"
+	set themeDay(theme) {//! d"diff-add"
+		this.setTheme({ kind: 'day', theme });//! d"diff-add"
+	}//! d"diff-add"
+	set themeNight(theme) {//! d"diff-add"
+		this.setTheme({ kind: 'night', theme });//! d"diff-add"
+	}//! d"diff-add"
 }
 ```
 shiki-end -->
@@ -692,9 +818,35 @@ shiki-end -->
 	listener in the constructor.
 </p>
 
-<CodeTopper title="themeController.svelte.ts">
+<CodeTopper title="$lib/styles/themeUtils.ts">
 	<!-- shiki-start
+p c"no-lines"
+d"diff-add" l"3-5"
 ```ts
+...
+
+export const setSystemSchemeOnDoc = (systemScheme: SystemScheme) => {
+	document.documentElement.setAttribute('data-prefer-scheme', systemScheme);
+};
+```
+shiki-end -->
+</CodeTopper>
+
+<CodeTopper title="$lib/styles/themeController.svelte.ts">
+	<!-- shiki-start
+d"diff-add" l"14-34"
+```ts
+import { storeMode, storeTheme } from './storeTheme';
+import { SystemScheme, Mode, Theme, ModeApplied } from './themeUtils';
+import { setThemeOnDoc, setSystemSchemeOnDoc } from './themeUtils';//! d"diff-add" s", setSystemSchemeOnDoc"
+
+export type InitialTheme = {//! d"diff-add"
+	systemScheme: 'light' | 'dark';//! d"diff-add"
+	mode: 'fixed_day' | 'fixed_night' | 'sync_system';//! d"diff-add"
+	themeDay: Theme;//! d"diff-add"
+	themeNight: Theme;//! d"diff-add"
+};//! d"diff-add"
+
 export class ThemeController {
 	...
 	constructor(initial: InitialTheme) {
@@ -724,49 +876,6 @@ export class ThemeController {
 shiki-end -->
 </CodeTopper>
 
-<p>And now we can implement the getters and setters consumed by the controller.</p>
-
-<CodeTopper title="themeController.svelte.ts">
-	<!-- shiki-start
-```ts
-class ThemeController {
-	...
-	get initializedOnClient() {
-		return this.#initializedOnClient;
-	}
-	get systemScheme() {
-		return this.#systemScheme;
-	}
-	get mode() {
-		return this.#mode;
-	}
-	set mode(mode: 'fixed_day' | 'fixed_night' | 'sync_system') {
-		this.setMode(mode);
-	}
-	get themeDay() {
-		return this.#themeDay;
-	}
-	set themeDay(theme) {
-		this.setTheme({ kind: 'day', theme });
-	}
-	get themeNight() {
-		return this.#themeNight;
-	}
-	set themeNight(theme) {
-		this.setTheme({ kind: 'night', theme });
-	}
-	get modeApplied() {
-		return this.#modeApplied;
-	}
-	get themeApplied() {
-		return this.#themeApplied;
-	}
-	...
-}
-```
-shiki-end -->
-</CodeTopper>
-
 <HAnchor tag="h3" title="Prevent FOUC" />
 
 <p>The only thing left on our checklist is to remove the flash of the wrong theme when the user refreshes.</p>
@@ -778,9 +887,44 @@ shiki-end -->
 	<code>/static</code>, and call it in <code>app.html</code>.
 </p>
 
-<CodeTopper title="themeUtils.ts">
+<CodeTopper title="$lib/styles/themeUtils.ts">
 	<!-- shiki-start
 ```ts
+...
+function getBrowserCookie(name: StorageKey): string | null {
+	const nameEQ = `${name}=`;
+	const cookies = document.cookie.split(';');
+
+	for (let i = 0; i < cookies.length; i++) {
+		let cookie = cookies[i];
+		while (cookie?.charAt(0) === ' ') {
+			cookie = cookie.substring(1, cookie.length);
+		}
+		if (cookie?.indexOf(nameEQ) === 0) {
+			return cookie.substring(nameEQ.length, cookie.length);
+		}
+	}
+
+	return null;
+}
+
+export const getSystemScheme = (): SystemScheme => {
+	if (typeof window === 'undefined' || !window.matchMedia) return 'light';
+	return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+};
+
+export const getStoredThemeModeClient = (): Mode => {
+	return normalizeThemeMode(getBrowserCookie(STORAGE_KEY_THEME_SYNC_MODE));
+};
+
+export const getStoredThemeDayClient = (): Theme => {
+	return normalizeThemeDay(getBrowserCookie(`${STORAGE_KEY_THEME_DAY}_name`), getBrowserCookie);
+};
+
+export const getStoredThemeNightClient = (): Theme => {
+	return normalizeThemeNight(getBrowserCookie(`${STORAGE_KEY_THEME_NIGHT}_name`), getBrowserCookie);
+};
+
 export const initTheme = () => {
 	const mode = getStoredThemeModeClient();
 	const systemScheme = getSystemScheme();
@@ -819,16 +963,22 @@ shiki-end -->
 	<!-- shiki-start
 	```html
 <!doctype html>
-<html lang="en" data-theme="amethyst" class="dark">
+<html lang="en" data-theme="amethyst" class="dark">//!d"diff-add" s#"data-theme="amethyst" class="dark""#
 	<head>
-		&openhtmlcomment; theme &closehtmlcomment;
-		<script src="/themeUtils.js"></script>
-		<script>
-			initTheme();
-		</script>
-		...
+		&openhtmlcomment; theme &closehtmlcomment;//!d"diff-add"
+		<script src="/themeUtils.js"></script>//!d"diff-add"
+		<script>//!d"diff-add"
+			initTheme();//!d"diff-add"
+		</script>//!d"diff-add"
+
+		<meta charset="utf-8" />
+		<link rel="icon" href="%sveltekit.assets%/favicon.png" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		%sveltekit.head%
 	</head>
-	...
+	<body data-sveltekit-preload-data="hover">
+		<div style="display: contents">%sveltekit.body%</div>
+	</body>
 </html>
 ```
 shiki-end -->
@@ -836,8 +986,8 @@ shiki-end -->
 
 <div>
 	Alternatively, you could write a placeholder like <!-- shiki-html <html lang="en" replace-me-with-theme> shiki-html -->
-	in <code>app.html</code> and then replace it in <code>hooks.server.ts</code> using the request cookies. That's nice
-	because it doesn't require a separate init script, but it won't work with <code>adapter-static</code>.
+	in <code>app.html</code> and then replace it in <code>hooks.server.ts</code> using <code>request.cookies</code>.
+	That's nice because it doesn't require a separate init script, but it won't work with <code>adapter-static</code>.
 </div>
 
 <HAnchor tag="h2" title="Using our theme" />
@@ -880,9 +1030,10 @@ shiki-end -->
 <HAnchor tag="h3" title="Tailwind" />
 
 <p>
-	Getting this working with Tailwind is easy. This is for Radix UI, so each Tailwind class references one of its 12 css
-	variables. If it's gray, it also has alpha colors. Otherwise, it has a special "contrast" color. Just adapt it to
-	whatever design tokens you have.
+	Getting this working with Tailwind is easy. This is for
+	<a href="https://github.com/radix-ui/colors/tree/main/src" data-external="">Radix UI</a>, so each Tailwind class
+	references one of its 12 css variables. If it's gray, it also has alpha colors. Otherwise, it has a special "contrast"
+	color. Just adapt it to whatever design tokens you have.
 </p>
 
 <CodeTopper title="tailwind.config.ts">
@@ -1020,82 +1171,106 @@ shiki-end -->
 <HAnchor tag="h2" title="Bonus Animation" />
 
 <p>
-	I saw a fun View Transition pull request on the VitePress repo by user hooray. As of August 2024, the API only has 72%
-	global usage, but it's a fun progressive enhancement, so let's add it.
+	I saw a fun <code>View Transition</code> pull request on the VitePress repo by user hooray. As of August 2024, the API
+	only has <a href="https://caniuse.com/view-transitions" data-external="">72% global usage</a>, but it's a fun
+	progressive enhancement, so let's add it.
 </p>
 
-<CodeTopper title="themeController.svelte.ts">
+<CodeTopper title="$lib/styles/themeController.svelte.ts">
 	<!-- shiki-start
+d"diff-add" l"48-91"
 ```ts
-#animateThemeOnDoc() {
-	/**
-	 * Credit [@hooray](https://github.com/hooray)
-	 * @see https://github.com/vuejs/vitepress/pull/2347
-	 */
-	const allowTransition =
-		// @ts-expect-error – experimental
-		document.startViewTransition &&
-		!window.matchMedia('(prefers-reduced-motion: reduce)').matches &&
-		// Too buggy on mobile. The clip path is offset by the status bar height and it causes some elements to be cut off
-		window.innerWidth >= 620;
+import { tick } from 'svelte';//! d"diff-add"
 
-	const el: SVGElement | null = document.querySelector('label[for="theme-switch-btn"]');
-
-	if (!allowTransition || !el) {
-		setThemeOnDoc(this.#themeApplied);
-		return;
+class ThemeController {
+	...
+	get initializedOnClient() {
+		return this.#initializedOnClient;
+	}
+	get systemScheme() {
+		return this.#systemScheme;
+	}
+	get mode() {
+		return this.#mode;
+	}
+	get modeApplied() {
+		return this.#modeApplied;
+	}
+	setMode(mode: 'fixed_day' | 'fixed_night' | 'sync_system', opts: { animate: boolean }) {//! d"diff-add" s", opts: { animate: boolean }"
+		this.#mode = mode;
+		storeMode(this.#mode);
+		if (opts.animate) this.#animateThemeOnDoc();//! d"diff-add"
+		else setThemeOnDoc(this.#themeApplied);//! d"diff-add" s"	else "
+	}
+	set mode(mode: 'fixed_day' | 'fixed_night' | 'sync_system') {
+		this.setMode(mode, { animate: false });//! d"diff-add" s", { animate: false }"
+	}
+	get themeDay() {
+		return this.#themeDay;
+	}
+	get themeNight() {
+		return this.#themeNight;
+	}
+	get themeApplied() {
+		return this.#themeApplied;
+	}
+	setTheme({ kind, theme, animate }: { kind: ModeApplied; theme: Theme; animate: boolean }) {//! d"diff-add" s", animate" s"; animate: boolean"
+		if (kind === 'day') this.#themeDay = theme;
+		else this.#themeNight = theme;
+		storeTheme({ kind, theme });
+		if (animate) this.#animateThemeOnDoc();//! d"diff-add"
+		else setThemeOnDoc(this.#themeApplied);//! d"diff-add" s"	else "
+	}
+	set themeDay(theme) {
+		this.setTheme({ kind: 'day', theme, animate: false });//! d"diff-add" s", animate: false"
+	}
+	set themeNight(theme) {
+		this.setTheme({ kind: 'night', theme, animate: false });//! d"diff-add" s", animate: false"
 	}
 
-	// @ts-expect-error – experimental
-	const transition = document.startViewTransition(async () => {
-		setThemeOnDoc(this.#themeApplied);
-		await tick();
-	});
+	#animateThemeOnDoc() {
+		/**
+		* Credit [@hooray](https://github.com/hooray)
+		* @see https://github.com/vuejs/vitepress/pull/2347
+		*/
+		const allowTransition =
+			document.startViewTransition &&
+			!window.matchMedia('(prefers-reduced-motion: reduce)').matches &&
+			// Too buggy on mobile. The clip path is offset by the status bar height and it causes some elements to be cut off
+			window.innerWidth >= 620;
 
-	const rect = el.getBoundingClientRect();
-	const x = rect.left + rect.width / 2;
-	const y = rect.top + rect.height / 2;
+		const el: SVGElement | null = document.querySelector('label[for="theme-switch-btn"]');
 
-	const endRadius = Math.hypot(Math.max(x, window.innerWidth - x), Math.max(y, window.innerHeight - y));
-	const clipPath = [`circle(0px at ${x}px ${y}px)`, `circle(${endRadius}px at ${x}px ${y}px)`];
+		if (!allowTransition || !el) {
+			setThemeOnDoc(this.#themeApplied);
+			return;
+		}
 
-	transition.ready.then(() => {
-		document.documentElement.animate(
-			{
-				clipPath: this.#modeApplied === 'night' ? [...clipPath].reverse() : clipPath,
-			},
-			{
-				duration: this.#modeApplied === 'night' ? 250 : 350,
-				easing: 'ease-in-out',
-				pseudoElement: this.#modeApplied === 'night' ? '::view-transition-old(root)' : '::view-transition-new(root)',
-			},
-		);
-	});
-}
+		const transition = document.startViewTransition(async () => {
+			setThemeOnDoc(this.#themeApplied);
+			await tick();
+		});
 
-setTheme({ kind, theme, animate }: { kind: ModeApplied; theme: Theme; animate: boolean }) {//! d"diff-add" s"animate: boolean"
-	if (kind === 'day') this.#themeDay = theme;
-	else this.#themeNight = theme;
-	storeTheme({ kind, theme });
-	if (animate) this.#animateThemeOnDoc();//! d"diff-add"
-	else setThemeOnDoc(this.#themeApplied);//! d"diff-add"
-}
+		const rect = el.getBoundingClientRect();
+		const x = rect.left + rect.width / 2;
+		const y = rect.top + rect.height / 2;
 
-setMode(mode: 'fixed_day' | 'fixed_night' | 'sync_system', opts: { animate: boolean }) {//! d"diff-add" s"animate: boolean"
-	this.#mode = mode;
-	storeMode(this.#mode);
-	if (opts.animate) this.#animateThemeOnDoc();//! d"diff-add"
-	else setThemeOnDoc(this.#themeApplied);//! d"diff-add"
-}
+		const endRadius = Math.hypot(Math.max(x, window.innerWidth - x), Math.max(y, window.innerHeight - y));
+		const clipPath = [`circle(0px at ${x}px ${y}px)`, `circle(${endRadius}px at ${x}px ${y}px)`];
 
-set mode(mode: 'fixed_day' | 'fixed_night' | 'sync_system') {
-	this.setMode(mode, { animate: false });//! d"diff-add" s"{ animate: false }"
-}
-set themeDay(theme) {
-	this.setTheme({ kind: 'day', theme, animate: false });//! d"diff-add" s"animate: false"
-}
-set themeNight(theme) {
-	this.setTheme({ kind: 'night', theme, animate: false });//! d"diff-add" s"animate: false"
+		transition.ready.then(() => {
+			document.documentElement.animate(
+				{
+					clipPath: this.#modeApplied === 'night' ? [...clipPath].reverse() : clipPath,
+				},
+				{
+					duration: this.#modeApplied === 'night' ? 250 : 350,
+					easing: 'ease-in-out',
+					pseudoElement: this.#modeApplied === 'night' ? '::view-transition-old(root)' : '::view-transition-new(root)',
+				},
+			);
+		});
+	}
 }
 ```
 shiki-end -->

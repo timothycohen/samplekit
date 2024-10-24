@@ -1,24 +1,20 @@
-import { eq } from 'drizzle-orm';
-import { db, users } from '$lib/db/server';
-import { jsonFail, jsonOk } from '$lib/http/server';
+import { db } from '$lib/db/server';
+import { jsonFail, jsonOk, parseReqJson } from '$lib/http/server';
 import { croppedImgSchema } from '$lib/image/common';
-import type { PutRes } from '.';
-import type { RequestHandler } from './$types';
-import type { RequestEvent } from '@sveltejs/kit';
+import type { UpdateAvatarCropRes } from './common';
+import type { RequestHandler } from '@sveltejs/kit';
 
-const updateAvatarCrop = async ({ locals, request }: RequestEvent) => {
+const updateAvatarCrop: RequestHandler = async ({ locals, request }) => {
 	const { user } = await locals.seshHandler.userOrRedirect();
 	if (!user.avatar) return jsonFail(400, 'No avatar to crop');
 
-	const body = await request.json().catch(() => null);
+	const body = await parseReqJson(request, croppedImgSchema, { overrides: { url: user.avatar.url } });
+	if (!body.success) return jsonFail(400);
+	const avatar = body.data;
 
-	const parsed = croppedImgSchema.safeParse({ ...body, url: user.avatar.url });
-	if (!parsed.success) return jsonFail(400);
-	const avatar = parsed.data;
+	await db.user.update({ userId: user.id, values: { avatar } });
 
-	await db.update(users).set({ avatar }).where(eq(users.id, user.id));
-
-	return jsonOk<PutRes>({ savedImg: avatar });
+	return jsonOk<UpdateAvatarCropRes>({ savedImg: avatar });
 };
 
-export const PUT: RequestHandler = updateAvatarCrop;
+export const PUT = updateAvatarCrop;

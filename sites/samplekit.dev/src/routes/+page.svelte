@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { CardList } from '$lib/articles/components/card';
+	import { CardList } from '$lib/articles/components';
 	import { LogoIcon } from '$lib/components';
 	import I from '$lib/icons';
 	import Slider from './home/Slider.svelte';

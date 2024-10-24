@@ -1,12 +1,11 @@
 import { fail as formFail } from '@sveltejs/kit';
-import { createLimiter } from '$lib/botProtection/rateLimit/server';
-import { deploymentAccessController } from './controller';
-import type { Actions } from './$types';
+import { createLimiter } from '$lib/rate-limit/server';
+import { deploymentAccess } from './repository';
 
 const signinLimiter = createLimiter({ id: 'deployment-access-signin', limiters: [{ kind: 'ipUa', rate: [5, '5m'] }] });
 
 export const load = async ({ cookies }) => {
-	return { deploymentAuth: await deploymentAccessController.countAuthenticatedSessions({ cookies }) };
+	return { deploymentAuth: await deploymentAccess.countAuthenticatedSessions({ cookies }) };
 };
 
 const signin: App.CommonServerAction = async (event) => {
@@ -16,11 +15,12 @@ const signin: App.CommonServerAction = async (event) => {
 	if (rateCheck.forbidden) return formFail(403, { fail: 'Forbidden.' });
 	if (rateCheck.limited) return formFail(429, { fail: rateCheck.humanTryAfter('requests') });
 
-	const accessToken = (await request.formData()).get('password');
+	const formData = await request.formData().catch(() => new FormData());
+	const accessToken = formData.get('password');
 	if (typeof accessToken !== 'string')
 		return formFail(400, { fail: `Missing token. ${rateCheck.humanAttemptsRemaining}` });
 
-	const { success } = await deploymentAccessController.createSession({ accessToken, cookies });
+	const { success } = await deploymentAccess.createSession({ accessToken, cookies });
 	if (!success) return formFail(403, { fail: `Invalid token. ${rateCheck.humanAttemptsRemaining}` });
 
 	signinLimiter.clear(event);
@@ -28,13 +28,13 @@ const signin: App.CommonServerAction = async (event) => {
 };
 
 const signout: App.CommonServerAction = async ({ cookies }) => {
-	await deploymentAccessController.deleteSession({ cookies });
+	await deploymentAccess.deleteSession({ cookies });
 	return { success: 'true' };
 };
 
 const signoutAll: App.CommonServerAction = async ({ cookies }) => {
-	await deploymentAccessController.deleteAllSessions({ cookies });
+	await deploymentAccess.deleteAllSessions({ cookies });
 	return { success: 'true' };
 };
 
-export const actions: Actions = { signin, signout, signoutAll };
+export const actions = { signin, signout, signoutAll };

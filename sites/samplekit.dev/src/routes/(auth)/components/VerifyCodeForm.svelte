@@ -2,7 +2,7 @@
 	import { InputMessage, CodeInput } from '$lib/components';
 	import I from '$lib/icons';
 	import { superForm, type SuperValidated } from '$lib/superforms/client';
-	import type { verifyOTPSchema } from '$routes/(auth)/validators';
+	import type { verifyOTPSchema } from '$routes/(auth)';
 
 	interface Props {
 		action: App.Form.Action;

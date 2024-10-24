@@ -1,9 +1,8 @@
 import { codeToDecoratedHtmlSync } from '@samplekit/preprocess-shiki';
 import { opts } from '$lib/shiki';
 import { splitAndProcess } from './common';
-import type { ArticlePath } from '$lib/articles/schema';
-import type { CodeProcessedEager, CodeProcessedLazy, ModuleDefinitions } from './types';
-import type { CodeDefined } from './types';
+import type { ArticlePath } from '$lib/articles/schemas';
+import type { CodeDefined, CodeProcessedEager, CodeProcessedLazy, ModuleDefinitions } from './types';
 
 const processOne = <T extends string>(codeDefined: Omit<CodeDefined, 'title'> & { title: T }) => {
 	const lang = codeDefined.lang ?? codeDefined.title.split('.').pop() ?? '';

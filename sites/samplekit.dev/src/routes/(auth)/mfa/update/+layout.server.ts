@@ -2,21 +2,16 @@ import { auth } from '$lib/auth/server';
 import { checkedRedirect } from '$lib/http/server';
 import { superValidate, zod } from '$lib/superforms/server';
 import { pluralize } from '$lib/utils/common';
-import { confirmPassSchema, sendSMSTokenSchema, verifyOTPSchema } from '$routes/(auth)/validators';
+import { confirmPassSchema, sendSMSTokenSchema, verifyOTPSchema, type VerifierProps } from '$routes/(auth)';
 import { desiredParamsOrRedirect } from './utils';
-import type { VerifierProps } from '$routes/(auth)/components';
-import type { LayoutServerLoad } from './$types';
 
-export const load: LayoutServerLoad = async ({ locals, url }) => {
+export const load = async ({ locals, url }) => {
 	const { user, session } = await locals.seshHandler.userOrRedirect();
 
 	const authDetails = await auth.provider.pass.MFA.getDetailsOrThrow(user.id);
-	const kind = authDetails.mfaCount
-		? ('Identity' as const)
-		: authDetails.method === 'oauth'
-			? ('Email' as const)
-			: ('Password' as const);
-	if (authDetails.method !== 'pass') return checkedRedirect('/account/security/auth');
+	if (authDetails.method === 'oauth') return checkedRedirect('/account/security/auth');
+
+	const kind = authDetails.mfaCount ? ('Identity' as const) : ('Password' as const);
 
 	const timeRemaining = auth.session.getTempConf({ session });
 	const verified = !!timeRemaining;

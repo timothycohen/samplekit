@@ -1,5 +1,7 @@
-import type { WrapperProps } from '$lib/components/PatternWrapper.svelte';
-import type { NoPropComponent } from '$lib/utils/common';
+import type { Component } from 'svelte';
+
+export type DemoComponent = Component;
+export type WrapperProps = { bg?: true; center?: true; noBorder?: true; noPadding?: true };
 
 export type CodeDefined = {
 	title: string;
@@ -44,8 +46,8 @@ type ComponentProcessedBase = {
 	icon?: 'svelte';
 	rawHTML?: never;
 };
-export type ComponentProcessedLazy = ComponentProcessedBase & { component: Promise<NoPropComponent> };
-export type ComponentProcessedEager = ComponentProcessedBase & { component: NoPropComponent };
+export type ComponentProcessedLazy = ComponentProcessedBase & { component: Promise<DemoComponent> };
+export type ComponentProcessedEager = ComponentProcessedBase & { component: DemoComponent };
 
 export type MergedProcessed = {
 	main?: (CodeProcessedEager | ComponentProcessedEager)[];

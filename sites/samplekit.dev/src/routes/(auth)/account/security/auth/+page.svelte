@@ -5,6 +5,7 @@
 	import { mfaLabels } from '$lib/auth/common';
 	import { Admonition } from '$lib/components';
 	import I from '$lib/icons';
+	import { actionsMap } from '$routes/(auth)';
 	import UpdatePassForm from './UpdatePassForm.svelte';
 
 	const { data } = $props();
@@ -192,13 +193,13 @@
 
 	<div class="grid grid-cols-1 gap-4 sm:grid-cols-[2fr,_1fr]">
 		<div class="flex flex-wrap justify-between gap-4 sm:justify-start">
-			<form action="/logout?/logoutCurrent" method="post" onsubmit={() => (signingOut = 'current')}>
+			<form action={actionsMap.logoutCurrent} method="post" onsubmit={() => (signingOut = 'current')}>
 				<button disabled={!!signingOut} type="submit" class="btn btn-accent">
 					<small>{signingOut === 'current' ? 'Signing out...' : 'Sign out'}</small>
 				</button>
 			</form>
 
-			<form action="/logout?/logoutAll" method="post" onsubmit={() => (signingOut = 'all')}>
+			<form action={actionsMap.logoutAll} method="post" onsubmit={() => (signingOut = 'all')}>
 				<button disabled={!!signingOut} type="submit" class="btn btn-hollow">
 					<small>{signingOut === 'current' ? 'Signing out of all devices...' : 'Sign out of all devices'}</small>
 				</button>

@@ -10,13 +10,12 @@ import {
 	type ArticlePath,
 	type RawFrontMatter,
 	type ReadingTime,
-} from '$lib/articles/schema';
-import { jsonFail, jsonOk } from '$lib/http/server';
+} from '$lib/articles/schemas';
+import { jsonFail, jsonOk, parseReqJson } from '$lib/http/server';
 import { logger } from '$lib/logging/server';
 import prettierConfig from '../../../../prettier.config';
-import { putReqSchema } from '.';
-import type { Result } from '$lib/utils/common/types';
-import type { RequestEvent, RequestHandler } from '@sveltejs/kit';
+import { updateLoadedFrontMatterReqSchema, type UpdateLoadedFrontMatterRes } from './common';
+import type { RequestHandler } from '@sveltejs/kit';
 import type { Component } from 'svelte';
 
 const WPM = 225;
@@ -92,12 +91,12 @@ const pages = Object.entries(
 	{} as Record<ArticlePath, { metadata: RawFrontMatter }>,
 );
 
-const updateLoadedFrontMatter = async ({ request }: RequestEvent) => {
+const updateLoadedFrontMatter: RequestHandler = async ({ request }) => {
 	if (!dev) return jsonFail(404);
-	const validated = putReqSchema.safeParse(await request.json().catch(() => null));
-	if (!validated.success) return jsonFail(400);
+	const body = await parseReqJson(request, updateLoadedFrontMatterReqSchema);
+	if (!body.success) return jsonFail(400);
 
-	const { wordCount, articlePath } = validated.data;
+	const { wordCount, articlePath } = body.data;
 	const routesFilePath = path.join(import.meta.dirname, '..', '..', '..', '..', 'src', 'routes');
 	const articleDirname = path.join(routesFilePath, articlePath);
 	const articleUrlPath = path.join(articleDirname, '+page.svelte');
@@ -128,13 +127,11 @@ const updateLoadedFrontMatter = async ({ request }: RequestEvent) => {
 
 	const outFilePath = path.join(generatedDirPath, 'metadata.ts');
 	const old = fs.existsSync(outFilePath) ? fs.readFileSync(outFilePath, { encoding: 'utf-8' }) : '';
-	if (old === neu) return jsonOk<Result.Success>({ message: 'Success' });
+	if (old === neu) return jsonOk<UpdateLoadedFrontMatterRes>({ message: 'Success' });
 	fs.writeFileSync(outFilePath, neu);
 	logger.info(`Updated front matter for \`${articlePath}\``);
-	return jsonOk<Result.Success>({ message: 'Success' });
+	return jsonOk<UpdateLoadedFrontMatterRes>({ message: 'Success' });
 };
-
-export const PUT: RequestHandler = updateLoadedFrontMatter;
 
 // save as TS code instead of JSON
 // this is not strictly necessary but is a nice QOL.
@@ -144,7 +141,7 @@ export const PUT: RequestHandler = updateLoadedFrontMatter;
 
 function codeGen(obj: object) {
 	const entries = Object.entries(obj);
-	let importStr = `import type { LoadedFrontMatter } from '$lib/articles/schema';\n`;
+	let importStr = `import type { LoadedFrontMatter } from '$lib/articles/schemas';\n`;
 
 	const props = entries.map(([key, value]) => {
 		if ((key === 'imgSm' || key === 'imgLg' || key === 'video') && value.startsWith('/src/')) {
@@ -186,3 +183,5 @@ function codeGen(obj: object) {
 
 // 	return neu;
 // }
+
+export const PUT = updateLoadedFrontMatter;

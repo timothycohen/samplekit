@@ -1,7 +1,13 @@
+import { tokenKinds } from './consts.js';
 import { createGetOrCreate } from './getOrCreate.js';
 import { createValidate } from './validate.js';
-import { tokenKinds } from './vars.js';
-import type { Config, DbAdapterProvider, DbAdapterToken, TransformProvider } from '../types/index.js';
+import type {
+	ServerAuthToken,
+	Config,
+	DbAdapterProvider,
+	DbAdapterToken,
+	TransformProvider,
+} from '../../types/server/index.js';
 
 export const createAuthToken = <P, PWOP, CtxP>({
 	dbProvider,
@@ -13,64 +19,39 @@ export const createAuthToken = <P, PWOP, CtxP>({
 	transformProvider: TransformProvider<P, CtxP>;
 	dbToken: DbAdapterToken;
 	config: Config;
-}) => {
-	const { createOrReplacePasskeyChallengeToken, getCreateOrReplaceSetupSMSVeri, getOrCreateToken } = createGetOrCreate({
-		config,
-		dbToken,
-	});
+}): ServerAuthToken => {
+	const c = createGetOrCreate({ config, dbToken });
 
-	const { getValidUnlimSendUnlimAttempt, validateLimAttemptToken, validateLimSendUnlimAttempt } = createValidate({
-		config,
-		dbToken,
-	});
+	const v = createValidate({ config, dbToken });
 
 	return {
 		emailVeri: {
-			createOrRefresh: (a: { userId: string }) => getOrCreateToken({ tokenKind: 'email_veri', ...a }),
-			validate: (a: { token: string; checkOnly?: true }) =>
-				validateLimSendUnlimAttempt({ tokenKind: 'email_veri', ...a }),
+			createOrRefresh: c.getOrCreateEmailVeri,
+			validate: v.validateEmailVeri,
 		},
 		passkeyChallenge: {
-			createOrReplace: createOrReplacePasskeyChallengeToken,
-			getChallenge: async (a: { userId: string }) => {
-				const res = await getValidUnlimSendUnlimAttempt({ tokenKind: 'passkey_challenge', checkOnly: true, ...a });
-				return res.tokenErr ? { tokenErr: res.tokenErr } : { challenge: res.storedToken.token };
-			},
-			delete: (a: { userId: string }) => dbToken.deleteByUserId({ tokenKind: 'passkey_challenge', ...a }),
+			createOrReplace: c.createOrReplacePasskeyChallengeToken,
+			getChallenge: v.getValidPasskeyChallenge,
+			delete: (a) => dbToken.deleteByUserId({ tokenKind: 'passkey_challenge', ...a }),
 		},
 		pwReset: {
-			createOrRefresh: (a: { userId: string }) => getOrCreateToken({ tokenKind: 'pw_reset', ...a }),
-			validate: (a: { token: string; checkOnly?: true }) =>
-				validateLimSendUnlimAttempt({ tokenKind: 'pw_reset', ...a }),
+			createOrRefresh: c.getOrCreatePwReset,
+			validate: v.validatePwReset,
 		},
 		setupSMSVeri: {
-			createOrUpdate: getCreateOrReplaceSetupSMSVeri,
-			validate: async (a: { token: string; userId: string; checkOnly?: true }) => {
-				const res = await validateLimAttemptToken({ tokenKind: 'setup_sms_veri', ...a });
-				return res.tokenErr ? { tokenErr: res.tokenErr } : { phoneNumber: res.validated.phoneNumber };
-			},
+			createOrUpdate: c.getCreateOrReplaceSetupSMSVeri,
+			validate: v.validateSetupSmsVeri,
 		},
 		smsVeri: {
-			createOrRefresh: async (a: { userId: string }) => {
-				const res = await getOrCreateToken({ tokenKind: 'sms_veri', ...a });
-				return res.tokenErr ? { tokenErr: res.tokenErr } : { otp: res.token };
-			},
-			validate: async (a: { token: string; userId: string; checkOnly?: true }) => {
-				const res = await validateLimAttemptToken({ tokenKind: 'sms_veri', ...a });
-				return res.tokenErr ? { tokenErr: res.tokenErr } : {};
-			},
+			createOrRefresh: c.getOrCreateSmsVeri,
+			validate: v.validateSmsVeri,
 		},
 		setupAuthenticator: {
-			createOrRefresh: async (a: { userId: string }) => {
-				return { secret: (await getOrCreateToken({ tokenKind: 'setup_authenticator', ...a })).token };
-			},
-			validate: async (a: { token: string; userId: string; checkOnly?: true }) => {
-				const res = await validateLimAttemptToken({ tokenKind: 'setup_authenticator', ...a });
-				return res.tokenErr ? { tokenErr: res.tokenErr } : { secret: res.validated.token };
-			},
+			createOrRefresh: c.getOrCreateSetupAuthenticator,
+			validate: v.validateSetupAuthenticator,
 		},
 		authenticator: {
-			isValid: async ({ token, userId }: { token: string; userId: string }) => {
+			isValid: async ({ token, userId }) => {
 				const provider = await dbProvider.getByUserId({ kind: 'pass', userId });
 				if (!provider) return { valid: false };
 				const secret = transformProvider.toLib(provider).authenticator;

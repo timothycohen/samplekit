@@ -2,7 +2,7 @@
 	import { GH_BLOB } from '$lib/consts';
 	import imgLg from './assets/typesafe-fetch-handler-q30.webp';
 	import imgSm from './assets/typesafe-fetch-handler-thumbnail-1200w.webp';
-	import type { RawFrontMatter } from '$lib/articles/schema';
+	import type { RawFrontMatter } from '$lib/articles/schemas';
 
 	export const metadata = {
 		title: 'TypeSafe Fetch Handler',
@@ -15,14 +15,18 @@
 		imgLg,
 		tags: ['typescript', 'http', 'DX', 'client-server', 'request handlers', 'endpoints'],
 		featured: true,
-		updates: [{ at: new Date('2024-08-13 18:26:40 -0400'), descriptions: ['Update to runes.'] }],
+		updates: [
+			{
+				at: new Date('2024-10-22 18:04:51 -0400'),
+				descriptions: ['Clearer interfaces.', 'Improve jsonOk type.', 'Tweak RequestHandler placement.'],
+			},
+			{ at: new Date('2024-08-13 18:26:40 -0400'), descriptions: ['Update to runes.'] },
+		],
 	} satisfies RawFrontMatter;
 </script>
 
 <script lang="ts">
-	import { CodeTopper } from '$lib/articles/components';
-	import { HAnchor } from '$lib/components';
-	import TabPanels from '$lib/components/TabPanels.svelte';
+	import { CodeTopper, HAnchor, TabPanels } from '$lib/articles/components';
 	import { GH_ROOT } from '$lib/consts';
 	import I from '$lib/icons';
 
@@ -193,7 +197,7 @@ shiki-end -->
 <!-- shiki-start
 ```svelte
 <script lang="ts">
-	import { addNameToList } from '$routes/demos/name-list.json';
+	import { addNameToList } from '$routes/demos/name-list.json/client';
 
 	const loadNames = async () => {
 		// fully typed body. no route or method to remember
@@ -267,29 +271,39 @@ shiki-end -->
 
 <p>
 	Let's declare that every endpoint has a <code>*.json</code> folder. Inside is a <code>+server.ts</code> with
-	<code>RequestHandler</code>s and an <code>index.ts</code> file with types and client fetch wrappers.
+	<code>RequestHandler</code>s, a <code>common.ts</code> file with types and constants, and a <code>client.ts</code> file
+	with client fetch wrappers.
 </p>
 
 <p>
 	It's already easy to understand what's going on because the files are side by side, but for uniformity and ease of
 	search, I name the server endpoint handler and client fetch wrapper the same thing. Explicit naming instead of lambdas
-	serves as a form of documentation.
+	serves as a form of documentation. Another bonus is that every endpoint can be grepped with
+	<code>": RequestHandler"</code>.
 </p>
 
 <CodeTopper title="$routes/demos/name-list.json/+server.ts">
 	<!-- shiki-start
 ```ts
-const addNameToList = async ({ locals, request }: RequestEvent) => { ... };
-export const PUT: RequestHandler = addNameToList;
+const addNameToList: RequestHandler = async ({ locals, request }) => { ... };
+export const PUT = addNameToList;
 ```
 shiki-end -->
 </CodeTopper>
 
-<CodeTopper title="$routes/demos/name-list.json/index.ts">
+<CodeTopper title="$routes/demos/name-list.json/common.ts">
 	<!-- shiki-start
 ```ts
-type PutReq = { name: string };
-export type PutRes = { allNames: string[] };
+export type AddNameToListReq = { name: string };
+export type AddNameToListRes = { allNames: string[] };
+```
+shiki-end -->
+</CodeTopper>
+
+<CodeTopper title="$routes/demos/name-list.json/client.ts">
+	<!-- shiki-start
+```ts
+import type { AddNameToListReq, AddNameToListRes } from './common.ts'
 export const addNameToList = new ClientFetcher();
 ```
 shiki-end -->
@@ -308,15 +322,17 @@ shiki-end -->
 	Love ya SvelteKit!
 </p>
 
-<CodeTopper title="$routes/demos/name-list.json/index.ts">
+<CodeTopper title="$routes/demos/name-list.json/client.ts">
 	<!-- shiki-start
 ```ts
-import type { RouteId } from './$types';//!d"diff-add"
+import type { RouteId } from './$types'; //!d"diff-add"
+import type { AddNameToListReq, AddNameToListRes } from './common.ts';
 
-type PutReq = { name: string };
-export type PutRes = { allNames: string[] };
-export const addNameToList = new ClientFetcher();//!d"diff-remove"
-export const addNameToList = new ClientFetcher<RouteId, PutRes, PutReq>('PUT', '/demos/name-list.json');//!d"diff-add"
+export const addNameToList = new ClientFetcher(); //!d"diff-remove"
+export const addNameToList = new ClientFetcher<RouteId, AddNameToListRes, AddNameToListReq>(//!d"diff-add"
+	'PUT',//!d"diff-add"
+	'/demos/name-list.json/client'//!d"diff-add"
+);//!d"diff-add"
 ```
 shiki-end -->
 </CodeTopper>
@@ -370,12 +386,12 @@ shiki-end -->
 <CodeTopper title="$routes/demos/name-list.json/+server.ts">
 	<!-- shiki-start
 ```ts
-const addNameToList = async ({ locals, request }: RequestEvent) => {
+const addNameToList: RequestHandler = async ({ locals, request }) => {
 	return jsonFail(403);
 	// or
-	return jsonOk<GetRes>(res);
+	return jsonOk<AddNameToListRes>(res);
 };
-export const PUT: RequestHandler = addNameToList;
+export const PUT = addNameToList;
 ```
 shiki-end -->
 </CodeTopper>
@@ -385,22 +401,40 @@ shiki-end -->
 <p>
 	We're almost done designing the API. However, we've so far assumed the route is static. What if it's
 	<code>/demos/[id]/name</code> instead? We can make another flavor of <code>ClientFetcher</code> that takes a function
-	to create the url. Let's call it <code>DynClientFetcher</code>.
+	to create the url. Let's call it <code>DynClientFetcher</code>, and use it like this:
 </p>
 
-<CodeTopper title="$routes/demos/[id]/name/index.ts">
+<CodeTopper title="$routes/demos/[id]/name/client.ts">
 	<!-- shiki-start
 ```ts
-type PutReq = { name: string };
-export type PutRes = { allNames: string[] };
-export const addNameToList = new DynClientFetcher<PutRes, PutReq, { id: string }>('PUT', ({ id }) => `/demos/${id}/name.json`);
+import type { AddNameToListReq, AddNameToListRes } from './common.ts'
+export const addNameToList = new DynClientFetcher<AddNameToListRes, AddNameToListReq, { id: string }>('PUT', ({ id }) => `/demos/${id}/name.json`);
 ```
 shiki-end -->
 </CodeTopper>
 
+<p>
+	The interface will look almost exactly the same as <code>Fetcher</code>, but with a <code>sendUrl</code> method that
+	takes the <code>urlProps</code>.
+</p>
+
+<!-- shiki-start
+```ts
+interface DynFetcher<ResponseData, RequestData = void> {
+	submitting: boolean;
+	delayed: boolean;
+	timeout: boolean;
+	sendUrl: (urlProps: URLProps, body: RequestData) => Promise<Result<ResponseData>>;//!d"highlight"
+}
+```
+shiki-end -->
+
 <HAnchor tag="h3" title="Options" />
 
-<p>The final consideration is to accept some control options.</p>
+<p>
+	The final consideration is to accept some control options. We'll optionally pass in <code>GlobalOpts</code> when
+	creating the controller, and <code>LocalOpts</code> when calling the <code>send</code> or <code>sendUrl</code> methods.
+</p>
 
 <!-- shiki-start
 ```ts
@@ -411,13 +445,21 @@ type LocalOpts = {
 	timeoutMs?: number;
 	abortSignal?: AbortSignal;
 };
+
 type GlobalOpts = { invalidate?: true; preventDuplicateRequests?: true };
 
 interface Fetcher<ResponseData, RequestData = void> {
 	submitting: boolean;
 	delayed: boolean;
 	timeout: boolean;
-	send: (body: RequestData, localOpts?: LocalOpts) => Promise<Result<ResponseData>>;
+	send: (body: RequestData, localOpts?: LocalOpts) => Promise<Result<ResponseData>>;//!d"diff-add" s", localOpts?: LocalOpts"
+}
+
+interface DynClientFetcher {
+	submitting: boolean;
+	delayed: boolean;
+	timeout: boolean;
+	sendUrl: (urlProps: URLProps, body: RequestData, localOpts?: LocalOpts) => Promise<Result<ResponseData>>;//!d"diff-add" s", localOpts?: LocalOpts"
 }
 ```
 shiki-end -->

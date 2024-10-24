@@ -1,11 +1,9 @@
-import { fail as formFail } from '@sveltejs/kit';
+import { fail as formFail, type Action } from '@sveltejs/kit';
 import { auth } from '$lib/auth/server';
 import { message, superValidate, zod } from '$lib/superforms/server';
-import { updatePassSchema } from '$routes/(auth)/validators';
-import type { Actions, PageServerLoad } from './$types';
-import type { Action } from '@sveltejs/kit';
+import { updatePassSchema } from '$routes/(auth)';
 
-export const load: PageServerLoad = async ({ locals }) => {
+export const load = async ({ locals }) => {
 	const { user } = await locals.seshHandler.userOrRedirect();
 	const [authDetails, updatePassForm] = await Promise.all([
 		auth.provider.pass.MFA.getDetailsOrThrow(user.id),
@@ -48,4 +46,4 @@ const updatePassFromCurrPass: Action = async ({ request, locals }) => {
 	return message(updatePassForm, { success: 'Updated!' });
 };
 
-export const actions: Actions = { updatePassFromCurrPass };
+export const actions = { updatePassFromCurrPass };

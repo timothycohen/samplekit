@@ -1,7 +1,6 @@
 <script lang="ts">
 	import Variant from './ProductVariant.svelte';
 	import type { ProductOption, ProductVariant } from '$lib/shop';
-	import type { ProductOptionWithAvailableForSale } from '$routes/shop/utils';
 
 	interface Props {
 		options: ProductOption[];
@@ -27,6 +26,13 @@
 		return !!combinations.find(
 			(combination) => keys.every((key) => combination.variant[key] === next[key]) && combination.availableForSale,
 		)?.availableForSale;
+	};
+
+	type ProductOptionWithAvailableForSale = {
+		id: string;
+		name: string;
+		clean: string;
+		values: { name: string; clean: string; available: boolean }[];
 	};
 
 	const loadOptions = ({

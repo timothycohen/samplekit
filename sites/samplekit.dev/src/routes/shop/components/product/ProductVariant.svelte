@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { searchParam } from '$lib/stores';
+	import { searchParam } from '$lib/svelte-stores';
 
 	interface Props {
 		option: {

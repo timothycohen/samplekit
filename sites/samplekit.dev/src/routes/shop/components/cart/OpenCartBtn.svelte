@@ -1,6 +1,6 @@
 <script lang="ts">
 	import I from '$lib/icons';
-	import { useCartCtx } from '$routes/shop/services';
+	import { useCartCtx } from '../../cart.ctx.svelte';
 
 	const cart = useCartCtx();
 </script>

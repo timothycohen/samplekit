@@ -13,6 +13,7 @@ type LocalOpts = {
 	timeoutMs?: number;
 	abortSignal?: AbortSignal;
 };
+
 type GlobalOpts = { invalidate?: true; preventDuplicateRequests?: true };
 
 function createFetcher<RequestData, ResponseData>(

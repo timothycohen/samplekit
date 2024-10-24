@@ -1,7 +1,6 @@
 <script lang="ts">
-	import { GridTileImage } from '$routes/shop/components';
-	import { handleToPath } from '$routes/shop/utils';
-	import type { Product } from '$lib/shop';
+	import { handleToPath, type Product } from '$lib/shop';
+	import GridTileImage from '../shared/GridTileImage.svelte';
 
 	interface Props {
 		relatedProducts: Product[];

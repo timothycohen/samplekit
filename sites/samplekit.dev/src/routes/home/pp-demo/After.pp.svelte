@@ -1,5 +1,5 @@
-<script>
-	import LogoIcon from '$lib/components/LogoIcon.svelte';
+<script lang="ts">
+	import { LogoIcon } from '$lib/components';
 	import I from '$lib/icons';
 </script>
 

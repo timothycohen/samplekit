@@ -1,8 +1,9 @@
 import type { ModuleDefinitions } from '$lib/articles/load';
 
 export default [
-	{ title: 'index.ts', loadRaw: () => import('./index.ts?raw') },
-	{ title: '+server.ts', loadRaw: () => import('./+server.ts?raw') },
+	{ title: 'common.ts', loadRaw: () => import('./demo.json/common.ts?raw') },
+	{ title: 'client.ts', loadRaw: () => import('./demo.json/client.ts?raw') },
+	{ title: '+server.ts', loadRaw: () => import('./demo.json/+server.ts?raw') },
 	{
 		title: 'Fetch Detailed',
 		loadComponent: () => import('./FetchDetailed.svelte'),

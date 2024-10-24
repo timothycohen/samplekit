@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Robot } from '$routes/(auth)/components';
+	import { Robot } from '$routes/(auth)';
 </script>
 
 <section class="grid h-screen-nav max-h-screen place-content-center gap-10 md:grid-cols-2 md:gap-20">

@@ -3,21 +3,17 @@
 	import { beforeNavigate, afterNavigate } from '$app/navigation';
 	import { page } from '$app/stores';
 	import I from '$lib/icons';
-	import { DesktopNav, Sidebar, MobileNav, Cart } from '$routes/shop/components';
-	import {
-		createSearchAndFilterService,
-		useSearchAndFilterService,
-		createNavService,
-		useNavService,
-		createCartCtx,
-	} from '$routes/shop/services';
+	import { createCartCtx } from './cart.ctx.svelte';
+	import { DesktopNav, Sidebar, MobileNav, Cart } from './components';
+	import { createNavCtx, useNavCtx } from './navAndDrawer.ctx';
+	import { createSearchAndFilterCtx, useSearchAndFilterCtx } from './searchAndFilter.ctx';
 
-	createSearchAndFilterService();
-	createNavService();
+	createSearchAndFilterCtx();
+	createNavCtx();
 	createCartCtx();
 
-	const { reset, pullFromUrl } = useSearchAndFilterService();
-	const { closeOnNavListener } = useNavService();
+	const { reset, pullFromUrl } = useSearchAndFilterCtx();
+	const { closeOnNavListener } = useNavCtx();
 
 	onMount(() => {
 		const { destroy } = closeOnNavListener();

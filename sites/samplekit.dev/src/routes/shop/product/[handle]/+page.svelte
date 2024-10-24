@@ -1,10 +1,10 @@
 <script lang="ts">
-	import { Gallery, ProductDescription, RelatedProducts } from '$routes/shop/components';
-	import { useNavService } from '$routes/shop/services';
+	import { Gallery, ProductDescription, RelatedProducts } from '../../components';
+	import { useNavCtx } from '../../navAndDrawer.ctx';
 
 	const { data } = $props();
 
-	const { desktopNav, desktopDrawer, mobileDrawer } = useNavService();
+	const { desktopNav, desktopDrawer, mobileDrawer } = useNavCtx();
 	$desktopNav = { menuUnderneath: false, showDrawerToggle: true };
 	$desktopDrawer = { showSortAndFilters: false };
 	$mobileDrawer = { showSearch: true, showSortAndFilters: false };

@@ -12,7 +12,7 @@ type ReplaceExact<T extends string, S extends string, D extends string> = T exte
 
 type RouteId = NonNullable<LayoutRouteId>;
 type AuthRemoved = Replace<RouteId, '/(auth)', ''>;
-type LoginRemoved = Replace<AuthRemoved, '/(login)', ''>;
+type LoginRemoved = Replace<AuthRemoved, '/(login-signup)', ''>;
 // prettier-ignore
 type UpdateReplaced = ReplaceExact<LoginRemoved,'/mfa/update', `/mfa/update?next=${'register' | 'remove'}-${DB.MFAs.Kind}`>;
 type MFAKindReplaced = Replace<UpdateReplaced, '[mfaKind=mfaKinds]', `${DB.MFAs.Kind}`>;

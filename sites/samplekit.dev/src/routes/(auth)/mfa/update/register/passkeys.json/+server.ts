@@ -1,19 +1,20 @@
 import { mfaLabels } from '$lib/auth/common';
 import { auth } from '$lib/auth/server';
-import { transports } from '$lib/auth/server';
-import { checkedRedirect } from '$lib/http/server';
-import { jsonFail, jsonOk } from '$lib/http/server';
-import type { PostReq } from '.';
-import type { RequestHandler } from './$types';
-import type { RequestEvent } from '@sveltejs/kit';
+import { checkedRedirect, jsonFail, jsonOk, parseReqJson } from '$lib/http/server';
+import { transports } from '$lib/transport/server';
+import {
+	registerMFA_Passkey_WithSeshConfAndPasskeyReqSchema,
+	type RegisterMFA_Passkey_WithSeshConfAndPasskeyRes,
+} from './common';
+import type { RequestHandler } from '@sveltejs/kit';
 
-const registerMFA_Passkey_WithSeshConfAndPasskey = async ({ request, locals }: RequestEvent): Promise<Response> => {
+const registerMFA_Passkey_WithSeshConfAndPasskey: RequestHandler = async ({ request, locals }) => {
 	const seshUser = await locals.seshHandler.getSessionUser();
 	if (!seshUser) return checkedRedirect('/login');
 
-	const body = await (request.json() as Promise<PostReq>).catch(() => null);
-	if (!body) return jsonFail(400);
-	const clientRegResponse = body.passkeyData;
+	const body = await parseReqJson(request, registerMFA_Passkey_WithSeshConfAndPasskeyReqSchema);
+	if (!body.success) return jsonFail(400);
+	const clientRegResponse = body.data.passkeyData;
 
 	const { tokenErr, challenge } = await auth.token.passkeyChallenge.getChallenge({ userId: seshUser.user.id });
 	if (tokenErr) return auth.token.err.toJsonFail(tokenErr);
@@ -33,10 +34,14 @@ const registerMFA_Passkey_WithSeshConfAndPasskey = async ({ request, locals }: R
 		auth.session.deleteOthers({ userId: seshUser.user.id, sessionId: seshUser.session.id }),
 		auth.session.removeTempConf({ sessionId: seshUser.session.id }).then(() => locals.seshHandler.invalidateCache()),
 		auth.token.passkeyChallenge.delete({ userId: seshUser.user.id }),
-		transports.sendEmail.MFAUpdate({ editKind: 'added', email: seshUser.user.email, mfaLabel: mfaLabels['passkeys'] }),
+		transports.email.send.MFAChanged({
+			editKind: 'added',
+			email: seshUser.user.email,
+			mfaLabel: mfaLabels['passkeys'],
+		}),
 	]);
 
-	return jsonOk();
+	return jsonOk<RegisterMFA_Passkey_WithSeshConfAndPasskeyRes>({ message: 'Success' });
 };
 
-export const POST: RequestHandler = registerMFA_Passkey_WithSeshConfAndPasskey;
+export const POST = registerMFA_Passkey_WithSeshConfAndPasskey;

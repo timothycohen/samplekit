@@ -1,4 +1,4 @@
-import type { ArticlePath } from '$lib/articles/schema';
+import type { ArticlePath } from '$lib/articles/schemas';
 import type {
 	ModuleDefinitions,
 	DemoName,

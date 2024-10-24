@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { Admonition } from '$lib/components';
-	import { VerifyCodeForm } from '$routes/(auth)/components';
+	import { actionsMap, VerifyCodeForm } from '$routes/(auth)';
 
 	const { data } = $props();
 </script>
@@ -29,6 +29,6 @@
 	<h2 class="t-base-lg font-medium">Step 3: Verify Authenticator Code</h2>
 	<VerifyCodeForm
 		verifyOTPForm={data.authenticator.verifyAuthenticatorTokenForm}
-		action="/mfa/update/register/authenticator?/registerMFA_Authenticator_WithSeshConf"
+		action={actionsMap.registerMFA_Authenticator_WithSeshConf}
 	/>
 </div>

@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { minMaxVal } from '$lib/actions';
 	import I from '$lib/icons';
-	import type { SearchParam, SearchParams } from '$lib/stores';
+	import { minMaxVal } from '$lib/svelte-actions';
+	import type { SearchParam, SearchParams } from '$lib/svelte-stores';
 
 	interface Props {
 		authorNames: string[];

@@ -1,15 +1,13 @@
 import { auth } from '$lib/auth/server';
-import { transports } from '$lib/auth/server';
-import { deleteS3Object, invalidateCloudfront, keyController } from '$lib/cloudStorage/server';
 import { checkedRedirect } from '$lib/http/server';
+import { objectStorage } from '$lib/object-storage/server';
 import { superValidate, zod } from '$lib/superforms/server';
+import { transports } from '$lib/transport/server';
 import { pluralize } from '$lib/utils/common';
-import { confirmPassSchema, sendSMSTokenSchema, verifyOTPSchema } from '$routes/(auth)/validators';
-import type { VerifierProps } from '$routes/(auth)/components';
-import type { Actions, PageServerLoad } from './$types';
+import { confirmPassSchema, sendSMSTokenSchema, verifyOTPSchema, type VerifierProps } from '$routes/(auth)';
 import type { Action } from '@sveltejs/kit';
 
-export const load: PageServerLoad = async ({ locals }) => {
+export const load = async ({ locals }) => {
 	const { user, session } = await locals.seshHandler.userOrRedirect();
 
 	const authDetails = await auth.provider.pass.MFA.getDetailsOrThrow(user.id);
@@ -58,25 +56,31 @@ export const load: PageServerLoad = async ({ locals }) => {
 	return { veri, meta };
 };
 
+const deleteUser = async (user: DB.User) => {
+	if (objectStorage.keyController.is.cdnUrl(user.avatar?.url)) {
+		const key = objectStorage.keyController.transform.cdnUrlToKey(user.avatar.url);
+		await Promise.all([
+			objectStorage.delete({ key, guard: () => objectStorage.keyController.guard.root({ key }) }),
+			objectStorage.invalidateCDN({ keys: [key] }),
+		]);
+	}
+
+	await Promise.all([
+		auth.user.delete({ userId: user.id }),
+		transports.email.send.accountDeleted({ email: user.email }),
+	]);
+};
+
 const deleteUserWithSeshConf: Action = async ({ locals }) => {
 	const { user, session } = await locals.seshHandler.userOrRedirect();
 
 	const timeRemaining = auth.session.getTempConf({ session });
 	if (timeRemaining === null) return checkedRedirect('/account/delete');
 
-	if (keyController.is.cloudfrontUrl(user.avatar?.url)) {
-		const key = keyController.transform.cloudfrontUrlToKey(user.avatar.url);
-		await Promise.all([
-			deleteS3Object({ key, guard: () => keyController.guard.root({ key }) }),
-			invalidateCloudfront({ keys: [key] }),
-		]);
-	}
-
-	await Promise.all([auth.user.delete({ userId: user.id }), transports.sendEmail.delete({ email: user.email })]);
-
+	await deleteUser(user);
 	locals.seshHandler.set({ session: null });
 
 	return checkedRedirect('/');
 };
 
-export const actions: Actions = { deleteUserWithSeshConf };
+export const actions = { deleteUserWithSeshConf };

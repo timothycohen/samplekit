@@ -2,7 +2,7 @@
 	import { LoadingDots } from '$lib/components';
 	import I from '$lib/icons';
 	import { logger } from '$lib/logging/client';
-	import { useCartCtx } from '$routes/shop/services';
+	import { useCartCtx } from '../../cart.ctx.svelte';
 	import type { Result } from '$lib/utils/common';
 
 	interface Props {

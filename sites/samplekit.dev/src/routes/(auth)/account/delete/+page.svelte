@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { Admonition } from '$lib/components';
 	import I from '$lib/icons';
-	import { Verifier } from '$routes/(auth)/components';
+	import { actionsMap, Verifier } from '$routes/(auth)';
 
 	const { data } = $props();
 
@@ -25,7 +25,7 @@
 		</Admonition>
 
 		<form
-			action="/account/delete?/deleteUserWithSeshConf"
+			action={actionsMap.deleteUserWithSeshConf}
 			method="post"
 			onsubmit={() => (submitting = true)}
 			class="w-full sm:w-96"

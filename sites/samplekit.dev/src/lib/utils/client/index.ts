@@ -1,1 +1,1 @@
-export { defineContext } from './defineContext';
+export { defineCtx } from './defineCtx';

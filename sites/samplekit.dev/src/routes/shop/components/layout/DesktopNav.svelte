@@ -2,12 +2,13 @@
 	import { melt } from '@melt-ui/svelte';
 	import { page } from '$app/stores';
 	import I from '$lib/icons';
-	import { SearchBar, OpenCartBtn } from '$routes/shop/components';
-	import { useNavService } from '$routes/shop/services';
-	import { handleToPath, type MenuWithPath } from '$routes/shop/utils';
+	import { handleToPath } from '$lib/shop';
+	import { useNavCtx } from '../../navAndDrawer.ctx';
+	import OpenCartBtn from '../cart/OpenCartBtn.svelte';
+	import SearchBar from '../search-and-filter/SearchBar.svelte';
 
 	interface Props {
-		menu: MenuWithPath;
+		menu: { title: string; path: string }[];
 		collections?: { title: string; path: string }[] | undefined;
 	}
 
@@ -18,7 +19,7 @@
 		drawerProps: {
 			elements: { trigger },
 		},
-	} = $state(useNavService());
+	} = $state(useNavCtx());
 
 	const limitedMenu = $state(menu.filter((m) => m.title === 'Catalog'));
 </script>

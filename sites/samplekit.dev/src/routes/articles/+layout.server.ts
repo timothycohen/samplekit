@@ -1,10 +1,10 @@
 import { error } from '@sveltejs/kit';
 import { allPostData } from '$lib/articles/load';
 import { processedCodeMap, loadMainOnce } from '$lib/articles/load/demos/server';
-import { type ServerFrontMatter } from '$lib/articles/schema';
-import type { LayoutRouteId, LayoutServerLoad } from './$types';
+import { type ServerFrontMatter } from '$lib/articles/schemas';
+import type { LayoutRouteId } from './$types';
 
-export const load: LayoutServerLoad = async ({ route }) => {
+export const load = async ({ route }) => {
 	const articlePath = route.id as Exclude<LayoutRouteId, '/articles'>;
 
 	const frontMatter = allPostData.find((p) => p.articlePath === articlePath);

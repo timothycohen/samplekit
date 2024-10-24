@@ -2,23 +2,18 @@
 	import { onMount, type Snippet } from 'svelte';
 	import { page } from '$app/stores';
 	import I from '$lib/icons';
-	import {
-		createTopbarCtx,
-		useSidebarCtx,
-		useTopbarCtx,
-		TopbarContent,
-		SidebarContent,
-		createSidebarCtx,
-		getStoredSidebarOnClient,
-	} from '$lib/nav';
-	import { useThemeControllerCtx } from '$lib/styles';
+	import { TopbarContent, SidebarContent, getStoredSidebarOnClient } from '$lib/nav';
+	import { useThemeControllerCtx } from '../themeController.ctx';
 	import { createCodeThemeCtx } from './codeTheme.ctx.svelte';
+	import { createSidebarCtx, useSidebarCtx } from './sidebar.ctx.svelte';
+	import { createTopbarCtx, useTopbarCtx } from './topbar.ctx.svelte';
 	import type { Pathname } from '$lib/nav/sidebar/generated/toc';
 
 	const { children }: { children: Snippet } = $props();
 
 	createSidebarCtx(getStoredSidebarOnClient());
 	const sidebar = useSidebarCtx();
+
 	createTopbarCtx({
 		get value() {
 			return sidebar.open;
@@ -26,7 +21,8 @@
 	});
 	const topbar = useTopbarCtx();
 
-	createCodeThemeCtx(useThemeControllerCtx());
+	const themeController = useThemeControllerCtx();
+	createCodeThemeCtx(themeController);
 
 	$effect(() =>
 		document.documentElement.style.setProperty('--nav-height', `${sidebar.open ? `var(--full-nav-height)` : '0px'}`),
@@ -51,7 +47,7 @@
 	<input id="sidebar-toggler" type="checkbox" checked={sidebar.open} onchange={toggleChecked} />
 
 	<nav class="sidebar" aria-label="Table of Contents">
-		<SidebarContent pathname={$page.url.pathname as Pathname} />
+		<SidebarContent pathname={$page.url.pathname as Pathname} {sidebar} />
 	</nav>
 
 	<div class="page-wrapper">
@@ -65,7 +61,7 @@
 				>
 					<I.Menu />
 				</label>
-				<TopbarContent />
+				<TopbarContent {themeController} />
 			</div>
 		</div>
 

@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { NoResults, GridTileImage } from '$routes/shop/components';
-	import { handleToPath } from '$routes/shop/utils';
+	import { handleToPath } from '$lib/shop';
+	import { NoResults, GridTileImage } from '../../components';
 
 	const { data } = $props();
 </script>

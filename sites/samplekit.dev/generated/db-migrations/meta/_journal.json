@@ -29,6 +29,20 @@
       "when": 1710275855296,
       "tag": "0003_heavy_wraith",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1728959114000,
+      "tag": "0004_new_bug",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1729370603583,
+      "tag": "0005_bumpy_patch",
+      "breakpoints": true
     }
   ]
 }

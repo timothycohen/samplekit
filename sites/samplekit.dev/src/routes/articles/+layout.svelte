@@ -1,22 +1,31 @@
 <script lang="ts">
 	import { fly } from 'svelte/transition';
 	import { dev } from '$app/environment';
-	import { Vaul, Changelog, DateLine, Series, TOC } from '$lib/articles/components';
-	import { FeatureCard } from '$lib/articles/components/card';
-	import { TabPanels, HAnchor, Portal } from '$lib/components';
+	import {
+		HAnchor,
+		Vaul,
+		Changelog,
+		DateLine,
+		Series,
+		TOC,
+		FeatureCard,
+		TabPanels,
+		createCollapsedCtx,
+		useCollapsedCtx,
+	} from '$lib/articles/components';
+	import { Portal } from '$lib/components';
 	import { GH_ROOT } from '$lib/consts';
 	import I from '$lib/icons';
-	import { createCollapsedService, useCollapsedService } from '$lib/services/codeCollapse';
 	import { pluralize } from '$lib/utils/common';
-	import { updateLoadedFrontMatter } from './update-loaded-front-matter.json';
+	import { updateLoadedFrontMatter } from './update-loaded-front-matter.json/client';
 
 	const { data, children } = $props();
 	const article = $derived(data.article);
 
 	let sidebarOpen = $state(true);
 
-	createCollapsedService(false);
-	const globalCollapsed = useCollapsedService();
+	createCollapsedCtx(false);
+	const globalCollapsed = useCollapsedCtx();
 
 	if (dev) {
 		$effect(() => {

@@ -1,6 +1,5 @@
 import { auth } from '$lib/auth/server';
 import { pluralize } from '$lib/utils/common';
-import type { PageServerLoad } from './$types';
 
 const lastSeen = ({ lastSeen, updateEvery }: { lastSeen: Date; updateEvery: number }) => {
 	const diff = Date.now() - lastSeen.getTime();
@@ -17,7 +16,7 @@ const lastSeen = ({ lastSeen, updateEvery }: { lastSeen: Date; updateEvery: numb
 	return `${minutes} ${pluralize('minute', minutes)} ago`;
 };
 
-export const load: PageServerLoad = async ({ locals }) => {
+export const load = async ({ locals }) => {
 	const { user, session } = await locals.seshHandler.userOrRedirect();
 
 	const allSessions = (await auth.session.getAll({ userId: user.id }))

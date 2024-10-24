@@ -5,17 +5,17 @@
 	import { browser } from '$app/environment';
 	import { beforeNavigate, afterNavigate } from '$app/navigation';
 	import { page } from '$app/stores';
-	import { createTurnstileLoadedFlag } from '$lib/botProtection/turnstile/client';
+	import { createTurnstileLoadedFlagCtx } from '$lib/bot-protection/turnstile/client';
 	import { Header, SEO } from '$lib/components';
-	import { createMobileNavCtx } from '$lib/components/layout/nav/context.svelte';
+	import { createMobileNavCtx } from '$lib/components/layout';
 	import { GH_BLOB } from '$lib/consts';
-	import { createThemeControllerCtx } from '$lib/styles';
+	import { createThemeControllerCtx, ThemeToggler } from '$lib/styles';
 
 	const { children, data } = $props();
 
 	createThemeControllerCtx(data.initialTheme);
 	createMobileNavCtx();
-	createTurnstileLoadedFlag();
+	createTurnstileLoadedFlagCtx();
 
 	const smoothNavigationOnlyOnSamePage = () => {
 		if (browser) document.documentElement.style.scrollBehavior = 'smooth';
@@ -38,7 +38,9 @@
 <SEO meta={$page.data.meta} />
 
 {#if $page.data.layout.showHeader}
-	<Header />
+	<Header>
+		<ThemeToggler />
+	</Header>
 {/if}
 
 <div class="{$page.data.layout.showHeader ? 'min-h-screen-nav' : 'min-h-screen'} relative flex flex-col">

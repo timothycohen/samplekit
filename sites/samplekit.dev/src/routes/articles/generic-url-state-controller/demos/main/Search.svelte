@@ -1,10 +1,10 @@
 <script lang="ts">
 	import I from '$lib/icons';
-	import { useSearchAndFilterService } from '$routes/shop/services';
+	import { useSearchAndFilterCtx } from '$routes/shop/searchAndFilter.ctx';
 
 	const {
 		params: { query },
-	} = useSearchAndFilterService();
+	} = useSearchAndFilterCtx();
 
 	interface Props {
 		onsubmit: (e: SubmitEvent & { currentTarget: EventTarget & HTMLFormElement }) => void;
@@ -14,7 +14,7 @@
 </script>
 
 <div class="relative">
-	<form method="get" action="/" {onsubmit}>
+	<form action={null} method="get" {onsubmit}>
 		<input
 			name="query"
 			type="text"

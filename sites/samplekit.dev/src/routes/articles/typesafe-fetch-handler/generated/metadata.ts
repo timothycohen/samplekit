@@ -1,4 +1,4 @@
-import type { LoadedFrontMatter } from '$lib/articles/schema';
+import type { LoadedFrontMatter } from '$lib/articles/schemas';
 import imgSm from '/src/routes/articles/typesafe-fetch-handler/assets/typesafe-fetch-handler-thumbnail-1200w.webp';
 import imgLg from '/src/routes/articles/typesafe-fetch-handler/assets/typesafe-fetch-handler-q30.webp';
 export default {
@@ -12,9 +12,15 @@ export default {
 	imgLg,
 	tags: ['typescript', 'http', 'DX', 'client-server', 'request handlers', 'endpoints'],
 	featured: true,
-	updates: [{ at: new Date('2024-08-13T22:26:40.000Z'), descriptions: ['Update to runes.'] }],
+	updates: [
+		{
+			at: new Date('2024-10-22T22:04:51.000Z'),
+			descriptions: ['Clearer interfaces.', 'Improve jsonOk type.', 'Tweak RequestHandler placement.'],
+		},
+		{ at: new Date('2024-08-13T22:26:40.000Z'), descriptions: ['Update to runes.'] },
+	],
 	articlePath: '/articles/typesafe-fetch-handler',
-	wordCount: 1823,
+	wordCount: 1976,
 	readingTime: 9,
 	toc: [
 		{

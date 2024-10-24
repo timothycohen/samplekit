@@ -1,4 +1,4 @@
-import type { LoadedFrontMatter } from '$lib/articles/schema';
+import type { LoadedFrontMatter } from '$lib/articles/schemas';
 import imgSm from '/src/routes/articles/theme-controller/assets/theme-controller-thumbnail-1200w.webp';
 import imgLg from '/src/routes/articles/theme-controller/assets/theme-controller-q30.webp';
 import video from '/src/routes/articles/theme-controller/assets/2024-08-05_19-56-30_800x645.mp4';
@@ -15,10 +15,13 @@ export default {
 	video,
 	tags: ['dark mode', 'multiple themes', 'tailwind', 'css variables', 'FOUC'],
 	featured: true,
-	updates: [{ at: new Date('2024-08-13T22:53:19.000Z'), descriptions: ['Update to runes.', 'Add view transition.'] }],
+	updates: [
+		{ at: new Date('2024-10-21T22:59:46.000Z'), descriptions: ['Improve diffing.'] },
+		{ at: new Date('2024-08-13T22:53:19.000Z'), descriptions: ['Update to runes.', 'Add view transition.'] },
+	],
 	articlePath: '/articles/theme-controller',
-	wordCount: 3454,
-	readingTime: 16,
+	wordCount: 4107,
+	readingTime: 19,
 	toc: [
 		{ title: 'Goals', href: '/articles/theme-controller/#goals' },
 		{

@@ -1,8 +1,7 @@
 <script lang="ts" module>
-	import { TabPanelItem } from '$lib/components';
 	import { GH_TREE } from '$lib/consts';
 	import imgSm from './assets/generic-url-state-controller-thumbnail-1200w.webp';
-	import type { RawFrontMatter } from '$lib/articles/schema';
+	import type { RawFrontMatter } from '$lib/articles/schemas';
 
 	export const metadata = {
 		title: 'Generic URL State Controller',
@@ -19,8 +18,8 @@
 </script>
 
 <script lang="ts">
-	import CodeTopper from '$lib/articles/components/CodeTopper.svelte';
-	import { HAnchor, Admonition, TabPanels } from '$lib/components';
+	import { CodeTopper, HAnchor, TabPanels, TabPanelItem } from '$lib/articles/components';
+	import { Admonition } from '$lib/components';
 	import { GH_ROOT } from '$lib/consts';
 
 	const { data } = $props();
@@ -35,7 +34,7 @@
 ```svelte
 <script lang="ts">
 	import { writable } from 'svelte/store'
-	import { searchParams, searchParam } from '$lib/stores';
+	import { searchParams, searchParam } from '$lib/svelte-stores';
 
 	const store = writable<string | null>(null)
 	$store = 'hello';

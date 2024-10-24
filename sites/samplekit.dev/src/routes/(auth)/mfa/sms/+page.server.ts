@@ -1,15 +1,13 @@
-import { error, redirect } from '@sveltejs/kit';
+import { error, redirect, type Action } from '@sveltejs/kit';
 import { auth } from '$lib/auth/server';
-import { transports } from '$lib/auth/server';
-import { createLimiter } from '$lib/botProtection/rateLimit/server';
 import { checkedRedirect, sanitizeRedirectUrl } from '$lib/http/server';
+import { createLimiter } from '$lib/rate-limit/server';
 import { message, superValidate, zod } from '$lib/superforms/server';
-import { sendSMSTokenSchema } from '$routes/(auth)/validators';
-import type { Actions, PageServerLoad } from './$types';
-import type { Action } from '@sveltejs/kit';
+import { transports } from '$lib/transport/server';
+import { sendSMSTokenSchema } from '$routes/(auth)';
 
-export const load: PageServerLoad = () => {
-	error(404);
+export const load = () => {
+	error(404, 'Not Found');
 };
 
 const smsVeriLimiter = createLimiter({
@@ -24,13 +22,15 @@ const sendSMSVeri: Action = async (event) => {
 	const { locals, request } = event;
 	const seshUser = await locals.seshHandler.getSessionUser();
 	if (!seshUser) return checkedRedirect('/login');
-	if (seshUser.session.awaitingEmailVeri) return checkedRedirect('/email-verification');
+	if (seshUser.session.awaitingEmailVeri) return checkedRedirect('/signup/email-verification');
 
-	const [sendSMSTokenForm, { mfas }] = await Promise.all([
+	const [sendSMSTokenForm, mfaDetails] = await Promise.all([
 		superValidate(request, zod(sendSMSTokenSchema)),
 		auth.provider.pass.MFA.getDetailsOrThrow(seshUser.user.id),
 	]);
-	const phoneNumber = mfas.sms;
+	if (mfaDetails.method === 'oauth') return message(sendSMSTokenForm, { fail: 'Forbidden.' }, { status: 403 });
+
+	const phoneNumber = mfaDetails.mfas.sms;
 
 	if (!phoneNumber) {
 		return message(sendSMSTokenForm, { fail: 'You have not registered a phone number.' }, { status: 403 });
@@ -57,4 +57,4 @@ const sendSMSVeri: Action = async (event) => {
 	else return message(sendSMSTokenForm, { success: 'Text Resent!' });
 };
 
-export const actions: Actions = { sendSMSVeri };
+export const actions = { sendSMSVeri };

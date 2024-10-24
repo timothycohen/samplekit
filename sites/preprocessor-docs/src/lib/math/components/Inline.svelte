@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { katex } from '..';
+	import { katex } from '@samplekit/preprocess-katex/katex.js';
 
 	const { eq }: { eq: string } = $props();
 </script>

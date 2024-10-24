@@ -1,12 +1,9 @@
-import { fail as formFail, redirect } from '@sveltejs/kit';
+import { fail as formFail, redirect, type Action } from '@sveltejs/kit';
 import { auth } from '$lib/auth/server';
-import { createLimiter } from '$lib/botProtection/rateLimit/server';
-import { checkedRedirect } from '$lib/http/server';
-import { sanitizeRedirectUrl } from '$lib/http/server';
+import { checkedRedirect, sanitizeRedirectUrl } from '$lib/http/server';
+import { createLimiter } from '$lib/rate-limit/server';
 import { message, superValidate, zod } from '$lib/superforms/server';
-import { confirmPassSchema, verifyOTPSchema } from '$routes/(auth)/validators';
-import type { Actions } from './$types';
-import type { Action } from '@sveltejs/kit';
+import { confirmPassSchema, verifyOTPSchema } from '$routes/(auth)';
 
 const seshConfLimiter = createLimiter({
 	id: 'seshConfFromPassword',
@@ -83,5 +80,4 @@ const seshConfFromAuthenticator: Action = async ({ request, locals }) => {
 	if (sanitizedPath) return redirect(302, sanitizedPath);
 };
 
-// prettier-ignore
-export const actions: Actions = { seshConfFromPassword, seshConfFromSMS, seshConfFromAuthenticator };
+export const actions = { seshConfFromPassword, seshConfFromSMS, seshConfFromAuthenticator };

@@ -1,20 +1,4 @@
-export namespace Log {
-	export type Lvl = 'trace' | 'debug' | 'info' | 'warn' | 'error' | 'fatal';
-	// What the user can pass in
-	export type Raw = string | Error | Record<string, unknown>;
-	// The internal storage format is always a record
-	export type Obj = { msg?: string[]; err?: Error } & Record<string, unknown>;
-	export type MergeFn = (a: Obj, b: Obj) => Obj;
-}
-
-const isRecord = (o: unknown): o is Record<string, unknown> => typeof o === 'object' && o !== null && !Array.isArray(o);
-
-type LoggerProps = {
-	enabled?: boolean;
-	base?: Log.Raw;
-	write?: (a: { lvl: number; log: Log.Obj }) => void;
-	mergeFn?: Log.MergeFn;
-};
+import type { ILogger, Log, LoggerProps } from './types';
 
 /**
  * ## A logger that supports base data, disabling, child loggers, and custom write functions
@@ -138,8 +122,7 @@ type LoggerProps = {
  * });
  * ```
  */
-
-export class Logger {
+export class Logger implements ILogger {
 	static readonly levels = Object.freeze(['trace', 'debug', 'info', 'warn', 'error', 'fatal'] as const);
 
 	static lvlNumToStr(n: number): Log.Lvl {
@@ -347,4 +330,8 @@ export class Logger {
 		const write = a.write ?? this.write;
 		return new Logger({ mergeFn, base, enabled, write });
 	}
+}
+
+function isRecord(o: unknown): o is Record<string, unknown> {
+	return typeof o === 'object' && o !== null && !Array.isArray(o);
 }

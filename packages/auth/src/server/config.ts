@@ -4,7 +4,7 @@ import { customAlphabet, nanoid } from 'nanoid';
 // @ts-ignore cjs only
 import { authenticator } from 'otplib';
 import QRCode from 'qrcode';
-import type { DefaultConfig } from './types/config.js';
+import type { Config, DefaultConfig, RequiredConfig } from '../types/server/config.js';
 
 const hashScrypt = (password: string): Promise<string> => {
 	return new Promise((resolve, reject) => {
@@ -91,4 +91,9 @@ export const createConfigDefaults = ({ authenticatorName }: { authenticatorName:
 			setup_sms_veri: { size: 6, alphabet: 'number', maxSend, timeoutMs },
 		},
 	};
+};
+
+export const createConfig = (config: RequiredConfig): Config => {
+	const configDefaults = createConfigDefaults({ authenticatorName: config.authenticatorName });
+	return { ...configDefaults, ...config };
 };

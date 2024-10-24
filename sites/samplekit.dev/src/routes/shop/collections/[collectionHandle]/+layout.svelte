@@ -1,12 +1,13 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import I from '$lib/icons';
-	import { Available, SortBy, Price } from '$routes/shop/components';
-	import { useNavService, useSearchAndFilterService } from '$routes/shop/services';
+	import { Available, SortBy, Price } from '../../components';
+	import { useNavCtx } from '../../navAndDrawer.ctx';
+	import { useSearchAndFilterCtx } from '../../searchAndFilter.ctx';
 
-	const { filterCount } = useSearchAndFilterService();
+	const { filterCount } = useSearchAndFilterCtx();
 
-	const { desktopNav, desktopDrawer, mobileDrawer } = useNavService();
+	const { desktopNav, desktopDrawer, mobileDrawer } = useNavCtx();
 	$desktopNav = { menuUnderneath: true, showDrawerToggle: false };
 	$desktopDrawer = { showSortAndFilters: true };
 	$mobileDrawer = { showSearch: true, showSortAndFilters: true };

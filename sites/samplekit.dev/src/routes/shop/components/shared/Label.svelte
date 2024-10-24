@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { formatPrice } from '$routes/shop/utils';
+	import { formatPrice } from '$lib/shop';
 
 	interface Props {
 		title: string;

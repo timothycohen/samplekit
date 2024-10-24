@@ -2,16 +2,19 @@
 	// import video from './assets/2024-08-05_21-17-07_465x474_24fps.mp4';
 	import { GH_BLOB } from '$lib/consts';
 	import imgSm from './assets/image-uploader-thumbnail-1200w.webp';
-	import type { RawFrontMatter } from '$lib/articles/schema';
+	import type { RawFrontMatter } from '$lib/articles/schemas';
 
 	export const metadata = {
 		title: 'Image Cropper And Uploader',
 		implementationPath: '/account/profile',
-		srcCodeHref: `${GH_BLOB}/sites/samplekit.dev/src/lib/cloudStorage/client/cropImgUploadController.svelte.ts`,
+		srcCodeHref: `${GH_BLOB}/sites/samplekit.dev/src/lib/object-storage/client/cropImgUploadController.svelte.ts`,
 		description:
 			'Select an image, crop it, upload it to an AWS S3 Bucket with a progress indicator, moderate it with Rekognition, save it to the DB, and serve it via AWS Cloudfront.',
 		publishedAt: new Date('2024-03-20 16:37:01 -0400'),
-		updates: [{ at: new Date('2024-08-16 18:59:25 -0400'), descriptions: ['Use runes.'] }],
+		updates: [
+			{ at: new Date('2024-10-22 20:04:17 -0400'), descriptions: ['Add object storage interfaces.'] },
+			{ at: new Date('2024-08-16 18:59:25 -0400'), descriptions: ['Use runes.'] },
+		],
 		authors: [{ name: 'Tim Cohen', email: 'contact@timcohen.dev' }],
 		imgSm,
 		// video,
@@ -21,8 +24,8 @@
 </script>
 
 <script lang="ts">
-	import { CodeTopper } from '$lib/articles/components';
-	import { TabPanels, HAnchor, Admonition } from '$lib/components';
+	import { CodeTopper, HAnchor, TabPanels } from '$lib/articles/components';
+	import { Admonition } from '$lib/components';
 	import { GH_ROOT, GH_TREE } from '$lib/consts';
 	import img_uploaderFlow from './assets/image-uploader-flow-q30.webp';
 
@@ -30,7 +33,7 @@
 </script>
 
 {#snippet Code(a: { title: string; rawHTML: string })}
-	<CodeTopper title={data.code.avatarEditor.title}>
+	<CodeTopper title={a.title}>
 		<!-- eslint-disable-next-line svelte/no-at-html-tags -->
 		{@html a.rawHTML}
 	</CodeTopper>
@@ -364,7 +367,7 @@ export type UploadUrlFetching = {
 	uri: string;
 	crop: CropValue;
 	uploadProgress: Tweened<number>;
-	getUploadArgsPromise: Promise<Result<{ bucketUrl: string; formDataFields: Record<string, string> }>>;
+	getUploadArgsPromise: Promise<Result<{ url: string; formDataFields: Record<string, string> }>>;
 };
 export type ImageStorageUploading = {
 	state: 'image_storage_uploading';
@@ -418,12 +421,11 @@ shiki-end -->
 import type { CroppedImg, CropValue } from '$lib/image/common';
 import type { Result } from '$lib/utils/common';
 
-type GetUploadArgs = () => Promise<Result<{ bucketUrl: string; formDataFields: Record<string, string> }>>;
-type Upload = (a: {
-	bucketUrl: string;
-	formData: FormData;
-	uploadProgress: { tweened: Tweened<number>; scale: number };
-}) => { promise: Promise<Result<{ status: number }>>; abort: () => void };
+type GetUploadArgs = () => Promise<Result<{ url: string; formDataFields: Record<string, string> }>>;
+type Upload = (a: { url: string; formData: FormData; uploadProgress: { tweened: Tweened<number>; scale: number } }) => {
+	promise: Promise<Result<{ status: number }>>;
+	abort: () => void;
+};
 type SaveToDb = (a: { crop: CropValue }) => Promise<Result<{ savedImg: CroppedImg | null }>>;
 type DeletePreexistingImg = () => Promise<Result<Result.Success>>;
 type SaveCropToDb = (a: { crop: CropValue }) => Promise<Result<{ savedImg: CroppedImg | null }>>;
@@ -647,7 +649,7 @@ export class CropImgUploadController {
 		}
 		uploadProgress.set(10);
 
-		const { bucketUrl, formDataFields } = getUploadArgsPromised.data;
+		const { url, formDataFields } = getUploadArgsPromised.data;
 
 		const formData = new FormData();
 		for (const [key, value] of Object.entries(formDataFields)) {
@@ -657,7 +659,7 @@ export class CropImgUploadController {
 
 		/** Upload file to image storage (progress 10-90%) */
 		const { abort: abortUpload, promise: imageUploadPromise } = this.#upload({
-			bucketUrl,
+			url,
 			formData,
 			uploadProgress: { tweened: uploadProgress, scale: 0.9 },
 		});
@@ -890,14 +892,10 @@ md-end -->
 
 <!-- shiki-start
 ```ts
-import { uploadS3PresignedPost, CropImgUploadController } from '$lib/cloudStorage/client';
-import { updateAvatarCrop } from './avatar/crop.json';
-import {
-	MAX_UPLOAD_SIZE,
-	getSignedAvatarUploadUrl,
-	checkAndSaveUploadedAvatar,
-	deleteAvatar,
-} from './avatar/upload.json';
+import { objectStorage, CropImgUploadController } from '$lib/object-storage/client';
+import { updateAvatarCrop } from './avatar/crop.json/client';
+import { getSignedAvatarUploadUrl, checkAndSaveUploadedAvatar, deleteAvatar } from './avatar/upload.json/client';
+import { MAX_UPLOAD_SIZE } from './avatar/upload.json/common';
 ```
 shiki-end -->
 <!--#endregion UI -->
@@ -922,7 +920,7 @@ shiki-end -->
 	callbacks, we'll promisify it and split the <code>promise</code> and <code>abort</code>.
 </p>
 
-{@render Code(data.code.cloudStorage)}
+<TabPanels files={data.code.uploader} />
 
 <HAnchor tag="h3" title="Client Endpoints" />
 
@@ -974,31 +972,31 @@ shiki-end -->
 		<!-- shiki-start
 ```json
 {
-"Version": "2012-10-17",
-"Statement": [
-	{
-		"Sid": "s3",
-		"Effect": "Allow",
-		"Action": [
-			"s3:PutObject",
-			"s3:DeleteObject"
-		],
-		"Resource": [
-			"arn:aws:s3:::samplekit",
-			"arn:aws:s3:::samplekit/*"
-		]
-	},
-	{ //! d"diff-add"
-		"Sid": "cloudfront", //! d"diff-add"
-		"Effect": "Allow", //! d"diff-add"
-		"Action": [ //! d"diff-add"
-			"cloudfront:CreateInvalidation" //! d"diff-add"
-		], //! d"diff-add"
-		"Resource": [ //! d"diff-add"
-			"arn:aws:cloudfront::069636842578:distribution/*" //! d"diff-add"
-		] //! d"diff-add"
-	} //! d"diff-add"
-]
+	"Version": "2012-10-17",
+	"Statement": [
+		{
+			"Sid": "s3",
+			"Effect": "Allow",
+			"Action": [
+				"s3:PutObject",
+				"s3:DeleteObject"
+			],
+			"Resource": [
+				"arn:aws:s3:::samplekit",
+				"arn:aws:s3:::samplekit/*"
+			]
+		},
+		{ //! d"diff-add"
+			"Sid": "cloudfront", //! d"diff-add"
+			"Effect": "Allow", //! d"diff-add"
+			"Action": [ //! d"diff-add"
+				"cloudfront:CreateInvalidation" //! d"diff-add"
+			], //! d"diff-add"
+			"Resource": [ //! d"diff-add"
+				"arn:aws:cloudfront::069636842578:distribution/*" //! d"diff-add"
+			] //! d"diff-add"
+		} //! d"diff-add"
+	]
 }
 ```
 shiki-end -->
@@ -1010,42 +1008,42 @@ shiki-end -->
 		<!-- shiki-start
 ```json
 {
-"Version": "2012-10-17",
-"Statement": [
-	{
-		"Sid": "s3",
-		"Effect": "Allow",
-		"Action": [
-			"s3:PutObject",
-			"s3:DeleteObject",
-			"s3:GetObject" //! d"diff-add"
-		],
-		"Resource": [
-			"arn:aws:s3:::samplekit",
-			"arn:aws:s3:::samplekit/*"
-		]
-	},
-	{
-		"Sid": "cloudfront",
-		"Effect": "Allow",
-		"Action": [
-			"cloudfront:CreateInvalidation"
-		],
-		"Resource": [
-			"arn:aws:cloudfront::069636842578:distribution/*"
-		]
-	},
-	{ //! d"diff-add"
-		"Sid": "rekognition", //! d"diff-add"
-		"Effect": "Allow", //! d"diff-add"
-		"Action": [ //! d"diff-add"
-			"rekognition:DetectModerationLabels" //! d"diff-add"
-		], //! d"diff-add"
-		"Resource": [ //! d"diff-add"
-			"*" //! d"diff-add"
-		] //! d"diff-add"
-	} //! d"diff-add"
-]
+	"Version": "2012-10-17",
+	"Statement": [
+		{
+			"Sid": "s3",
+			"Effect": "Allow",
+			"Action": [
+				"s3:PutObject",
+				"s3:DeleteObject",
+				"s3:GetObject" //! d"diff-add"
+			],
+			"Resource": [
+				"arn:aws:s3:::samplekit",
+				"arn:aws:s3:::samplekit/*"
+			]
+		},
+		{
+			"Sid": "cloudfront",
+			"Effect": "Allow",
+			"Action": [
+				"cloudfront:CreateInvalidation"
+			],
+			"Resource": [
+				"arn:aws:cloudfront::069636842578:distribution/*"
+			]
+		},
+		{ //! d"diff-add"
+			"Sid": "rekognition", //! d"diff-add"
+			"Effect": "Allow", //! d"diff-add"
+			"Action": [ //! d"diff-add"
+				"rekognition:DetectModerationLabels" //! d"diff-add"
+			], //! d"diff-add"
+			"Resource": [ //! d"diff-add"
+				"*" //! d"diff-add"
+			] //! d"diff-add"
+		} //! d"diff-add"
+	]
 }
 ```
 shiki-end -->
@@ -1093,7 +1091,7 @@ shiki-end -->
 		"AllowedOrigins": ["*"],
 		"ExposeHeaders": []
 	}
-	]
+]
 ```
 shiki-end -->
 	</CodeTopper>
@@ -1124,7 +1122,7 @@ shiki-end -->
 <HAnchor tag="h2" title="AWS" />
 <p>
 	If you don't already have one, you will need to <a href="https://aws.amazon.com/" data-external>
-		set up account at aws.amazon.com
+		set up an account at aws.amazon.com
 	</a>. We will create four services. S3 will hold the images, Rekognition will moderate explicit content, CloudFront
 	will serve the images, and IAM will manage access.
 </p>
@@ -1281,7 +1279,7 @@ shiki-end -->
 
 <p>
 	SampleKit uses its
-	<a href="{GH_BLOB}/sites/samplekit.dev/src/lib/botProtection/rateLimit/server.ts" data-external> own rate limiter </a>
+	<a href="{GH_BLOB}/sites/samplekit.dev/src/lib/rate-limit/server.ts" data-external> own rate limiter </a>
 	around a Redis client so that multiple instances of the app can be deployed. If that's not a consideration, a good in-memory
 	rate limiter is
 	<a href="https://github.com/ciscoheat/sveltekit-rate-limiter/blob/main/src/lib/server/index.ts" data-external>

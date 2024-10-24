@@ -1,11 +1,13 @@
 import { z } from 'zod';
 import { DB_NAME } from '$env/static/private';
-import { jsonFail, jsonOk } from '$lib/http/server';
+import { jsonFail, jsonOk, parseReqJson } from '$lib/http/server';
 import { logger } from '$lib/logging/server';
-import type { createLimiter } from '$lib/botProtection/rateLimit/server';
+import type { createLimiter } from '$lib/rate-limit/server';
+import type { Result } from '$lib/utils/common';
 import type { RequestEvent } from '@sveltejs/kit';
 
-const postReq = z.object({ cron_api_key: z.string(), expected_db_name: z.string() });
+const guardApiKeyReq = z.object({ cron_api_key: z.string(), expected_db_name: z.string() });
+type GuardApiKeyRes = Result.Success;
 
 const log = (method: 'info' | 'error', log: { id: string; address: string; err_code?: string }) => {
 	logger[method](log);
@@ -42,19 +44,19 @@ export const guardApiKey = async ({
 	protectedFn: () => Promise<Record<string, unknown> | void | null | undefined>;
 }) => {
 	const { request, getClientAddress } = event;
-	const req = postReq.safeParse(await request.json().catch(() => ({})));
+	const body = await parseReqJson(request, guardApiKeyReq);
 
 	const err: null | { err_code: string; status: 400 | 403 | 429 } = await (async () => {
-		if (!req.success) {
-			return { err_code: req.error.issues[0]?.code ?? 'bad_request', status: 400 };
+		if (!body.success) {
+			return { err_code: body.error.issues[0]?.code ?? 'bad_request', status: 400 };
 		}
-		if (req.data.expected_db_name !== DB_NAME) {
+		if (body.data.expected_db_name !== DB_NAME) {
 			return { err_code: 'incorrect_env', status: 403 };
 		}
 		if (await limiter.check(event).then((r) => r.forbidden || r.limited)) {
 			return { err_code: 'rate_limited', status: 429 };
 		}
-		if (expectedKey === '' || expectedKey !== req.data.cron_api_key) {
+		if (expectedKey === '' || expectedKey !== body.data.cron_api_key) {
 			return { err_code: 'incorrect_key', status: 403 };
 		}
 
@@ -82,6 +84,6 @@ export const guardApiKey = async ({
 	} else {
 		const loggables = (await protectedFn()) ?? {};
 		log('info', { id, address: getClientAddress(), ...loggables });
-		return jsonOk();
+		return jsonOk<GuardApiKeyRes>({ message: 'Success' });
 	}
 };

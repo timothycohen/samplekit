@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { actionsMap } from '$routes/(auth)';
 	import MobileRoute from './MobileRoute.svelte';
 	import type { RouteGroup, RouteLeaf } from './routes';
 
@@ -38,7 +39,7 @@
 				<MobileRoute {route} {onNavItemClick}>
 					{#snippet onGroupLine()}
 						{#if route.groupText === 'Security'}
-							<form action="/logout?/logoutCurrent" method="post">
+							<form action={actionsMap.logoutCurrent} method="post">
 								<button type="submit" class="btn btn-ghost text-base">
 									<small>{'Sign out'}</small>
 								</button>

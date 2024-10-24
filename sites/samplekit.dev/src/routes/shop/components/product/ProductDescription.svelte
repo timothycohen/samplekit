@@ -1,9 +1,8 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-	import { AddToCartBtn } from '$routes/shop/components';
-	import { formatPrice } from '$routes/shop/utils';
+	import { formatPrice, type Product } from '$lib/shop';
+	import AddToCartBtn from '../cart/AddToCartBtn.svelte';
 	import VariantSelector from './VariantSelector.svelte';
-	import type { Product } from '$lib/shop';
 
 	interface Props {
 		product: Product;

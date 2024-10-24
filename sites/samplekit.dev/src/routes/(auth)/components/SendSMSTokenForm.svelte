@@ -2,7 +2,7 @@
 	import { InputMessage } from '$lib/components';
 	import I from '$lib/icons';
 	import { superForm, type SuperValidated } from '$lib/superforms/client';
-	import type { sendSMSTokenSchema } from '$routes/(auth)/validators';
+	import { actionsMap, type sendSMSTokenSchema } from '$routes/(auth)';
 
 	interface Props {
 		sendSMSTokenForm: SuperValidated<typeof sendSMSTokenSchema>;
@@ -15,7 +15,7 @@
 	const sent = $derived(!!$message?.success);
 </script>
 
-<form action="/mfa/sms?/sendSMSVeri" method="post" use:enhance>
+<form action={actionsMap.sendSMSVeri} method="post" use:enhance>
 	<button class="btn btn-hollow h-10 py-0" disabled={$submitting || sent} type="submit">
 		{#if sent}
 			<I.Check class="inline h-5 w-5 text-success-7/40" />

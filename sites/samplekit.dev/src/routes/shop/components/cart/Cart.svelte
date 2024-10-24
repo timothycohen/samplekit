@@ -1,12 +1,12 @@
 <script lang="ts">
 	import { fade, fly } from 'svelte/transition';
-	import { windowEscape } from '$lib/actions';
 	import { Notice } from '$lib/components';
 	import I from '$lib/icons';
-	import { RemoveFromCartBtn } from '$routes/shop/components';
-	import { useCartCtx } from '$routes/shop/services';
-	import { DEFAULT_SELECTED_OPTION, formatPrice } from '$routes/shop/utils';
+	import { DEFAULT_SELECTED_PRODUCT_VARIANT, formatPrice } from '$lib/shop';
+	import { windowEscape } from '$lib/svelte-actions';
+	import { useCartCtx } from '../../cart.ctx.svelte';
 	import EditItemQuantityBtn from './EditItemQuantityBtn.svelte';
+	import RemoveFromCartBtn from './RemoveFromCartBtn.svelte';
 
 	const cart = useCartCtx();
 </script>
@@ -73,7 +73,7 @@
 												<span class="leading-tight">
 													{line.merchandise.product.title}
 												</span>
-												{#if line.merchandise.title !== DEFAULT_SELECTED_OPTION}
+												{#if line.merchandise.title !== DEFAULT_SELECTED_PRODUCT_VARIANT}
 													<p class="text-sm">
 														{line.merchandise.title}
 													</p>

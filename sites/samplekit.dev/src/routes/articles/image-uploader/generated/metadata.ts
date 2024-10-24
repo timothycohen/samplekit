@@ -1,10 +1,10 @@
-import type { LoadedFrontMatter } from '$lib/articles/schema';
+import type { LoadedFrontMatter } from '$lib/articles/schemas';
 import imgSm from '/src/routes/articles/image-uploader/assets/image-uploader-thumbnail-1200w.webp';
 export default {
 	title: 'Image Cropper And Uploader',
 	implementationPath: '/account/profile',
 	srcCodeHref:
-		'https://github.com/timothycohen/samplekit/blob/main/sites/samplekit.dev/src/lib/cloudStorage/client/cropImgUploadController.svelte.ts',
+		'https://github.com/timothycohen/samplekit/blob/main/sites/samplekit.dev/src/lib/object-storage/client/cropImgUploadController.svelte.ts',
 	description:
 		'Select an image, crop it, upload it to an AWS S3 Bucket with a progress indicator, moderate it with Rekognition, save it to the DB, and serve it via AWS Cloudfront.',
 	publishedAt: new Date('2024-03-20T20:37:01.000Z'),
@@ -12,10 +12,13 @@ export default {
 	imgSm,
 	tags: ['state controller', 'image uploads', 'aws', 'db', 's3', 'cloudfront', 'rekognition', 'rate limiting'],
 	featured: true,
-	updates: [{ at: new Date('2024-08-16T22:59:25.000Z'), descriptions: ['Use runes.'] }],
+	updates: [
+		{ at: new Date('2024-10-23T00:04:17.000Z'), descriptions: ['Add object storage interfaces.'] },
+		{ at: new Date('2024-08-16T22:59:25.000Z'), descriptions: ['Use runes.'] },
+	],
 	articlePath: '/articles/image-uploader',
-	wordCount: 6151,
-	readingTime: 28,
+	wordCount: 5953,
+	readingTime: 27,
 	toc: [
 		{
 			title: 'Upload Flow Options',

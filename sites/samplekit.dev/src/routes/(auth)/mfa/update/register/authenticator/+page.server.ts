@@ -1,13 +1,12 @@
 import { mfaLabels } from '$lib/auth/common';
 import { auth } from '$lib/auth/server';
-import { transports } from '$lib/auth/server';
 import { checkedRedirect } from '$lib/http/server';
 import { message, superValidate, zod } from '$lib/superforms/server';
-import { verifyOTPSchema } from '$routes/(auth)/validators';
-import type { Actions, PageServerLoad } from './$types';
+import { transports } from '$lib/transport/server';
+import { verifyOTPSchema } from '$routes/(auth)';
 import type { Action } from '@sveltejs/kit';
 
-export const load: PageServerLoad = async ({ locals }) => {
+export const load = async ({ locals }) => {
 	const { user } = await locals.seshHandler.userOrRedirect();
 
 	const [verifyAuthenticatorTokenForm, { secret }] = await Promise.all([
@@ -49,10 +48,10 @@ const registerMFA_Authenticator_WithSeshConf: Action = async ({ request, locals 
 		auth.provider.pass.MFA.enable({ userId: user.id, authenticator: secret }),
 		auth.session.deleteOthers({ userId: user.id, sessionId: session.id }),
 		auth.session.removeTempConf({ sessionId: session.id }).then(() => locals.seshHandler.invalidateCache()),
-		transports.sendEmail.MFAUpdate({ editKind: 'added', email: user.email, mfaLabel: mfaLabels['authenticator'] }),
+		transports.email.send.MFAChanged({ editKind: 'added', email: user.email, mfaLabel: mfaLabels['authenticator'] }),
 	]);
 
 	return checkedRedirect(`/account/security/auth`);
 };
 
-export const actions: Actions = { registerMFA_Authenticator_WithSeshConf };
+export const actions = { registerMFA_Authenticator_WithSeshConf };

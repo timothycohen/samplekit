@@ -2,14 +2,14 @@
 	import { melt } from '@melt-ui/svelte';
 	import { LogoIcon } from '$lib/components';
 	import I from '$lib/icons';
-	import { OpenCartBtn } from '$routes/shop/components';
-	import { useNavService } from '$routes/shop/services';
+	import { useNavCtx } from '../../navAndDrawer.ctx';
+	import OpenCartBtn from '../cart/OpenCartBtn.svelte';
 
 	const {
 		drawerProps: {
 			elements: { trigger },
 		},
-	} = useNavService();
+	} = useNavCtx();
 </script>
 
 <nav

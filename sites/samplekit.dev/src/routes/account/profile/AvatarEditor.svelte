@@ -1,16 +1,12 @@
 <script lang="ts">
 	import { fade } from 'svelte/transition';
-	import { uploadS3PresignedPost, CropImgUploadController } from '$lib/cloudStorage/client';
 	import { FileInput } from '$lib/components';
-	import { ImageCrop, UploadProgress, ImageCardBtns, ImageCardOverlays } from '$lib/image/client';
+	import { ImageCrop, UploadProgress, ImageCardBtns, ImageCardOverlays } from '$lib/image/components';
+	import { objectStorage, CropImgUploadController } from '$lib/object-storage/client';
 	import ConfirmDelAvatarModal from './ConfirmDelAvatarModal.svelte';
-	import { updateAvatarCrop } from './avatar/crop.json';
-	import {
-		MAX_UPLOAD_SIZE,
-		getSignedAvatarUploadUrl,
-		checkAndSaveUploadedAvatar,
-		deleteAvatar,
-	} from './avatar/upload.json';
+	import { updateAvatarCrop } from './avatar/crop.json/client';
+	import { getSignedAvatarUploadUrl, checkAndSaveUploadedAvatar, deleteAvatar } from './avatar/upload.json/client';
+	import { MAX_UPLOAD_SIZE } from './avatar/upload.json/common';
 
 	interface Props {
 		avatar: DB.User['avatar'];
@@ -24,7 +20,7 @@
 		saveCropToDb: updateAvatarCrop.send,
 		delImg: deleteAvatar.send,
 		getUploadArgs: getSignedAvatarUploadUrl.send,
-		upload: uploadS3PresignedPost,
+		upload: objectStorage.upload,
 		saveToDb: checkAndSaveUploadedAvatar.send,
 	});
 
