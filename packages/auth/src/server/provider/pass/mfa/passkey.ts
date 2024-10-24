@@ -24,14 +24,8 @@ const getSavedDevices = (savedPasskeys: Auth.MFAs['passkeys']) =>
 	savedPasskeys?.map((device) => ({
 		id: device.credentialID,
 		type: 'public-key' as const,
-		transport: device.transport,
+		transports: device.transports,
 	})) ?? [];
-
-const intoAuthenticator = (savedPasskey: NonNullable<Auth.MFAs['passkeys']>[number]) => ({
-	...savedPasskey,
-	credentialID: savedPasskey.credentialID,
-	credentialPublicKey: str64ToU8Arr(savedPasskey.credentialPublicKey),
-});
 
 export const createPasskey = <P, PWOP, PCtx>({
 	config,
@@ -87,9 +81,8 @@ export const createPasskey = <P, PWOP, PCtx>({
 				return { error: { status: 403, message: 'Verification failed.', code: 'no_registration_info' } };
 			}
 
-			const { counter } = registrationInfo;
-			const credentialID = registrationInfo.credentialID;
-			const credentialPublicKey = uint8ArrToStr64(registrationInfo.credentialPublicKey);
+			const { counter, id: credentialID, publicKey } = registrationInfo.credential;
+			const credentialPublicKey = uint8ArrToStr64(publicKey);
 
 			const savedPasskeys = await getSaved(userId);
 			const existingPasskey = savedPasskeys?.some((passkey) => credentialID === passkey.credentialID);
@@ -102,7 +95,7 @@ export const createPasskey = <P, PWOP, PCtx>({
 				credentialPublicKey,
 				credentialID,
 				counter,
-				transport: clientRegResponse.response.transports,
+				transports: clientRegResponse.response.transports,
 			};
 
 			const newPasskeys = savedPasskeys ? [...savedPasskeys, newPasskey] : [newPasskey];
@@ -126,7 +119,12 @@ export const createPasskey = <P, PWOP, PCtx>({
 					expectedOrigin: config.env.PUBLIC_ORIGIN,
 					expectedRPID: config.passkey.rpID,
 					requireUserVerification: true,
-					authenticator: intoAuthenticator(savedPasskey),
+					credential: {
+						counter: savedPasskey.counter,
+						id: savedPasskey.credentialID,
+						publicKey: str64ToU8Arr(savedPasskey.credentialPublicKey),
+						transports: savedPasskey.transports,
+					},
 				});
 			} catch {
 				return { error: { status: 403, message: 'Verification failed.', code: 'authentication_failed' } };

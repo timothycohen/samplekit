@@ -1,6 +1,6 @@
+import type { HighlighterCore, ThemeInput, LanguageInput, DecorationItem, ShikiTransformer } from '@shikijs/types';
 import type { Properties } from 'hast';
-import type { HighlighterCore, ThemeInput, LanguageInput, DecorationItem, ShikiTransformer } from 'shiki/core';
-import type { BundledLanguage, BundledTheme } from 'shiki/types.mjs';
+import type { BundledLanguage, BundledTheme } from 'shiki';
 import type { PreprocessorGroup } from 'svelte/compiler';
 
 export type {
@@ -110,9 +110,9 @@ export type CreateOptsArgs = {
 	 *
 	 * Note that 'light' and 'dark' are not special names. Any valid css variable will work.
 	 *
-	 * Loaded default langs: 'svelte', 'diff', 'json', 'sh', and 'sql'.
+	 * Loaded default langs: 'svelte', 'js', 'ts', 'html', 'css', 'md', 'diff', 'json', 'sh', and 'sql'.
 	 *
-	 * Note that each shiki bundled language may include others. For example, 'svelte' includes 'ts', 'js', 'html', 'css', etc.
+	 * Note that each shiki bundled language may include others. For example, 'svelte' includes 'js', 'css', etc.
 	 */
 	highlighter?: { cssVarToThemeName?: Record<string, string> } & (
 		| { core?: HighlighterCore; theme?: never; lang?: never }

@@ -2,7 +2,7 @@ import { getOrLoadOpts, codeToDecoratedHtmlSync, updateOpts, defaultTransformMap
 
 const opts = await getOrLoadOpts({
 	highlighter: {
-		lang: { bundled: ['svelte', 'latex'] },
+		lang: { bundled: ['svelte', 'js', 'ts', 'html', 'css', 'latex', 'md', 'sh'] },
 		theme: { bundled: ['rose-pine-dawn', 'catppuccin-latte'] },
 		cssVarToThemeName: { daffodil: 'rose-pine-dawn', dark: 'darker', bellflower: 'catppuccin-latte' },
 	},
