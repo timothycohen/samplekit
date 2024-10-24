@@ -187,7 +187,7 @@ shiki-end -->
 				If none are provided, it creates a
 				<a
 					data-external
-					href="https://github.com/timothycohen/samplekit/tree/staging/packages/preprocess-shiki/src/defaultOpts.ts"
+					href="https://github.com/timothycohen/samplekit/tree/main/packages/preprocess-shiki/src/defaultOpts.ts"
 				>
 					default
 				</a>. Every language you've loaded will be available to the preprocessor in inline and fenced code.
@@ -295,7 +295,12 @@ shiki-end -->
 	. The
 	<code>opts</code> parameter used on this site includes the default custom theme –
 	<code>
-		<a data-external href="https://github.com/timothycohen/dark-theme"> Darker </a>
+		<a
+			data-external
+			href="https://github.com/timothycohen/samplekit/blob/main/packages/preprocess-shiki/src/themes/darker.ts"
+		>
+			Darker
+		</a>
 	</code> – and two extra Shiki bundled themes:
 </div>
 
@@ -1042,10 +1047,7 @@ shiki-end -->
 <p>
 	See the full options at
 	<code>
-		<a
-			data-external
-			href="https://github.com/timothycohen/samplekit/tree/staging/packages/preprocess-shiki/src/types.ts"
-		>
+		<a data-external href="https://github.com/timothycohen/samplekit/tree/main/packages/preprocess-shiki/src/types.ts">
 			src/types.ts
 		</a>
 	</code>.

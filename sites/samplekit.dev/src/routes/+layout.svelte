@@ -8,6 +8,7 @@
 	import { createTurnstileLoadedFlagCtx } from '$lib/bot-protection/turnstile/client';
 	import { Header, SEO } from '$lib/components';
 	import { createMobileNavCtx } from '$lib/components/layout';
+	import { GH_BLOB } from '$lib/consts';
 	import { createThemeControllerCtx, ThemeToggler } from '$lib/styles';
 
 	const { children, data } = $props();
@@ -52,7 +53,7 @@
 			<div class="flex justify-center gap-2">
 				<span>A project by <a class="link" href="mailto:contact@timcohen.dev">Timothy Cohen</a> </span>
 				|
-				<a class="link" href="https://github.com/timothycohen/samplekit/blob/main/LICENSE"> MIT License </a>
+				<a class="link" href="{GH_BLOB}/LICENSE"> MIT License </a>
 			</div>
 		</footer>
 	{/if}

@@ -1,6 +1,6 @@
 {
 	"name": "svelte-pp-markdown",
-	"version": "1.0.3",
+	"version": "1.0.4",
 	"private": true,
 	"displayName": "Svelte Markdown Preprocessor",
 	"description": "Syntax highlighting for Markdown in Svelte HTML comments.",
@@ -42,7 +42,7 @@
 	"homepage": "https://preprocessors.samplekit.dev",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/timothycohen/samplekit/tree/staging/packages/preprocess-markdown-vscode"
+		"url": "https://github.com/timothycohen/samplekit/tree/main/packages/preprocess-markdown-vscode"
 	},
 	"bugs": {
 		"url": "https://github.com/timothycohen/samplekit/issues"

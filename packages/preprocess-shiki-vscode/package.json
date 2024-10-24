@@ -1,6 +1,6 @@
 {
 	"name": "svelte-pp-shiki",
-	"version": "1.0.3",
+	"version": "1.0.4",
 	"private": true,
 	"displayName": "Svelte Shiki Preprocessor",
 	"description": "Syntax highlighting for code blocks in Svelte HTML comments.",
@@ -50,7 +50,7 @@
 	"homepage": "https://preprocessors.samplekit.dev",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/timothycohen/samplekit/tree/staging/packages/preprocess-shiki-vscode"
+		"url": "https://github.com/timothycohen/samplekit/tree/main/packages/preprocess-shiki-vscode"
 	},
 	"bugs": {
 		"url": "https://github.com/timothycohen/samplekit/issues"

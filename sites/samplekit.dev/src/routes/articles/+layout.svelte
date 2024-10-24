@@ -14,6 +14,7 @@
 		useCollapsedCtx,
 	} from '$lib/articles/components';
 	import { Portal } from '$lib/components';
+	import { GH_ROOT } from '$lib/consts';
 	import I from '$lib/icons';
 	import { pluralize } from '$lib/utils/common';
 	import { updateLoadedFrontMatter } from './update-loaded-front-matter.json/client';
@@ -200,7 +201,7 @@
 			<Changelog updates={article.updates} />
 			<p>
 				Have a suggestion? File an
-				<a href="https://github.com/timothycohen/samplekit/issues" data-external>issue</a>.
+				<a href="{GH_ROOT}/issues" data-external>issue</a>.
 			</p>
 		</div>
 	</footer>

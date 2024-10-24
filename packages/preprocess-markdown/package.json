@@ -1,6 +1,6 @@
 {
 	"name": "@samplekit/preprocess-markdown",
-	"version": "1.0.4",
+	"version": "1.0.5",
 	"description": "Svelte preprocessor for Markdown using Marked.",
 	"author": "Tim Cohen <contact@timcohen.dev>",
 	"license": "MIT",
@@ -31,7 +31,7 @@
 	"homepage": "https://preprocessors.samplekit.dev",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/timothycohen/samplekit/tree/staging/packages/preprocess-markdown"
+		"url": "https://github.com/timothycohen/samplekit/tree/main/packages/preprocess-markdown"
 	},
 	"bugs": {
 		"url": "https://github.com/timothycohen/samplekit/issues"

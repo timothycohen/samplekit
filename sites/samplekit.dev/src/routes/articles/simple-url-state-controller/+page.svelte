@@ -1,4 +1,5 @@
 <script lang="ts" module>
+	import { GH_TREE } from '$lib/consts';
 	import imgLg from './assets/simple-url-state-controller-q30.webp';
 	import imgSm from './assets/simple-url-state-controller-thumbnail-1200w.webp';
 	import type { RawFrontMatter } from '$lib/articles/schemas';
@@ -6,7 +7,7 @@
 	export const metadata = {
 		title: 'Simple URL State Controller',
 		implementationPath: '/articles/simple-url-state-controller#demo',
-		srcCodeHref: 'https://github.com/timothycohen/samplekit/tree/main/sites/samplekit.dev/src/lib/svelte-stores/params',
+		srcCodeHref: `${GH_TREE}/sites/samplekit.dev/src/lib/svelte-stores/params`,
 		description: 'Store state in the URL with a few simple Svelte stores.',
 		publishedAt: new Date('2024-03-07 13:29:34 -0500'),
 		authors: [{ name: 'Tim Cohen', email: 'contact@timcohen.dev' }],
@@ -21,6 +22,7 @@
 <script lang="ts">
 	import { HAnchor, CodeTopper } from '$lib/articles/components';
 	import { Admonition } from '$lib/components';
+	import { GH_ROOT } from '$lib/consts';
 	import I from '$lib/icons';
 	import { searchParam } from '$lib/svelte-stores';
 
@@ -738,10 +740,7 @@ shiki-end -->
 <p>
 	And that's it! We've created a simple wrapper around a derived store that syncs application state with the URL. This
 	is everything we need to write the demo at the top of the article.
-	<a
-		href="https://github.com/timothycohen/samplekit/tree/main/sites/samplekit.dev/src/routes/articles/simple-url-state-controller/demos/main"
-		data-external
-	>
+	<a href="{GH_TREE}/sites/samplekit.dev/src/routes/articles/simple-url-state-controller/demos/main" data-external>
 		Full code here
 	</a>.
 </p>
@@ -768,6 +767,6 @@ shiki-end -->
 
 <p>
 	Have any questions or comments? Share it in the
-	<a href="https://github.com/timothycohen/samplekit/discussions" data-external>GitHub discussions</a>! Thanks for
-	reading and see you in the <a href="/articles/generic-url-state-controller">next one</a>!
+	<a href="{GH_ROOT}/discussions" data-external>GitHub discussions</a>! Thanks for reading and see you in the
+	<a href="/articles/generic-url-state-controller">next one</a>!
 </p>

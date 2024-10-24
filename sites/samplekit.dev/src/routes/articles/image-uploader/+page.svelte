@@ -1,13 +1,13 @@
 <script lang="ts" module>
 	// import video from './assets/2024-08-05_21-17-07_465x474_24fps.mp4';
+	import { GH_BLOB } from '$lib/consts';
 	import imgSm from './assets/image-uploader-thumbnail-1200w.webp';
 	import type { RawFrontMatter } from '$lib/articles/schemas';
 
 	export const metadata = {
 		title: 'Image Cropper And Uploader',
 		implementationPath: '/account/profile',
-		srcCodeHref:
-			'https://github.com/timothycohen/samplekit/blob/main/sites/samplekit.dev/src/lib/object-storage/client/cropImgUploadController.svelte.ts',
+		srcCodeHref: `${GH_BLOB}/sites/samplekit.dev/src/lib/object-storage/client/cropImgUploadController.svelte.ts`,
 		description:
 			'Select an image, crop it, upload it to an AWS S3 Bucket with a progress indicator, moderate it with Rekognition, save it to the DB, and serve it via AWS Cloudfront.',
 		publishedAt: new Date('2024-03-20 16:37:01 -0400'),
@@ -26,6 +26,7 @@
 <script lang="ts">
 	import { CodeTopper, HAnchor, TabPanels } from '$lib/articles/components';
 	import { Admonition } from '$lib/components';
+	import { GH_ROOT, GH_TREE } from '$lib/consts';
 	import img_uploaderFlow from './assets/image-uploader-flow-q30.webp';
 
 	const { data } = $props();
@@ -741,9 +742,7 @@ shiki-end -->
 <p>
 	One of our requirements is that the user should be able to crop their image. We'll do a <code>CSS</code> crop so we
 	don't have to worry about modifying the image. This website uses
-	<a href="https://github.com/timothycohen/samplekit/tree/staging/packages/svelte-crop-window">
-		@samplekit/svelte-crop-window
-	</a>
+	<a href="{GH_TREE}/packages/svelte-crop-window"> @samplekit/svelte-crop-window </a>
 	which is a loving rune/builder based rewrite of
 	<a href="https://github.com/sabine/svelte-crop-window" data-external>sabine/svelte-crop-window</a>. This package will
 	handle the cropping logic for us, and we'll simply store that data alongside the url.
@@ -880,8 +879,7 @@ md-end -->
 	components created above using the <code>CropImgUploadController</code>. It receives an avatar from the parent and
 	passes the changes back up with <code>onCancel</code> and <code>onNewAvatar</code> callbacks. This component lives on
 	a page behind an auth guard. SampleKit uses
-	<a href="https://github.com/timothycohen/samplekit/tree/staging/packages/auth" data-external>its own auth package</a>.
-	There are many other options. For example,
+	<a href="{GH_TREE}/packages/auth" data-external>its own auth package</a>. There are many other options. For example,
 	<a href="https://lucia-auth.com/" data-external>Lucia Auth</a>.
 </p>
 
@@ -1281,12 +1279,7 @@ shiki-end -->
 
 <p>
 	SampleKit uses its
-	<a
-		href="https://github.com/timothycohen/samplekit/blob/staging/sites/samplekit.dev/src/lib/rate-limit/server.ts"
-		data-external
-	>
-		own rate limiter
-	</a>
+	<a href="{GH_BLOB}/sites/samplekit.dev/src/lib/rate-limit/server.ts" data-external> own rate limiter </a>
 	around a Redis client so that multiple instances of the app can be deployed. If that's not a consideration, a good in-memory
 	rate limiter is
 	<a href="https://github.com/ciscoheat/sveltekit-rate-limiter/blob/main/src/lib/server/index.ts" data-external>
@@ -1324,7 +1317,6 @@ shiki-end -->
 
 <p>
 	As always, please do share your thoughts over in the
-	<a href="https://github.com/timothycohen/samplekit/discussions" data-external>GitHub discussions</a>. Until next time,
-	happy coding!
+	<a href="{GH_ROOT}/discussions" data-external>GitHub discussions</a>. Until next time, happy coding!
 </p>
 <!--#endregion Conclusion -->

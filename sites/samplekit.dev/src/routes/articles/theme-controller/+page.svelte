@@ -1,4 +1,5 @@
 <script lang="ts" module>
+	import { GH_TREE } from '$lib/consts';
 	import video from './assets/2024-08-05_19-56-30_800x645.mp4';
 	import imgLg from './assets/theme-controller-q30.webp';
 	import imgSm from './assets/theme-controller-thumbnail-1200w.webp';
@@ -7,7 +8,7 @@
 	export const metadata = {
 		title: 'Theme Controller',
 		implementationPath: '/appearance',
-		srcCodeHref: 'https://github.com/timothycohen/samplekit/tree/main/sites/samplekit.dev/src/lib/styles',
+		srcCodeHref: `${GH_TREE}/sites/samplekit.dev/src/lib/styles`,
 		description:
 			'A theme controller that uses CSS variables to control light/dark mode with multiple themes, saves user preference to Cookies, and avoids flashes of unstyled content.',
 		publishedAt: new Date('2024-03-06 13:36:17 -0500'),
@@ -26,6 +27,7 @@
 
 <script lang="ts">
 	import { CodeTopper, HAnchor } from '$lib/articles/components';
+	import { GH_ROOT } from '$lib/consts';
 </script>
 
 <p>
@@ -96,9 +98,7 @@
 
 <p>
 	This website shows one such implementation using the methods described below. The complete source code can be found at
-	<a href="https://github.com/timothycohen/samplekit/tree/main/sites/samplekit.dev/src/lib/styles" data-external>
-		$lib/styles
-	</a>.
+	<a href="{GH_TREE}/sites/samplekit.dev/src/lib/styles" data-external> $lib/styles </a>.
 </p>
 
 <HAnchor tag="h2" title="Organizing the CSS" />
@@ -1350,6 +1350,6 @@ shiki-end -->
 
 <p>
 	Do you have an even better way? I'd love it hear it! Share it in the
-	<a href="https://github.com/timothycohen/samplekit/discussions" data-external>GitHub discussions</a>
+	<a href="{GH_ROOT}/discussions" data-external>GitHub discussions</a>
 	!
 </p>
