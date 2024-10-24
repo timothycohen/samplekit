@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 trap "printf '\n=====================\naborted\n=====================\n'; exit 1" INT
 
