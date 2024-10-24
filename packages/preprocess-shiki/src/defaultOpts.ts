@@ -1,7 +1,19 @@
-import { createHighlighterCore } from 'shiki/core';
+import { createHighlighterCore } from '@shikijs/core';
 import type { BundledLanguage, CreateHighlighterArgs, CreateOptsArgs, PreprocessOpts } from './types.js';
+// 'shiki' langs and themes are dynamically imported
 
-export const defaultBundledLangNames = ['svelte', 'diff', 'json', 'sh', 'sql'] satisfies BundledLanguage[];
+export const defaultBundledLangNames = [
+	'svelte',
+	'js',
+	'ts',
+	'html',
+	'css',
+	'md',
+	'diff',
+	'json',
+	'sh',
+	'sql',
+] satisfies BundledLanguage[];
 
 export const defaultCssVarToThemeName = { dark: 'darker', light: 'rose-pine-dawn' };
 

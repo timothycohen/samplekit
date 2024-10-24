@@ -4,7 +4,7 @@ import type { ClientAuth } from '../../types/client.js';
 export const passkey: ClientAuth['passkey'] = {
 	startReg: async (optionsJSON) => {
 		try {
-			return { data: await startRegistration(optionsJSON) };
+			return { data: await startRegistration({ optionsJSON }) };
 		} catch (err) {
 			if (err instanceof Error) {
 				return { error: err } as { error: Error };
@@ -15,7 +15,7 @@ export const passkey: ClientAuth['passkey'] = {
 	},
 	startAuth: async (optionsJSON) => {
 		try {
-			return { data: await startAuthentication(optionsJSON) };
+			return { data: await startAuthentication({ optionsJSON }) };
 		} catch (err) {
 			if (err instanceof Error) {
 				return { error: err } as { error: Error };

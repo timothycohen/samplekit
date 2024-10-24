@@ -126,7 +126,6 @@ export class ThemeController {
 			return;
 		}
 
-		// @ts-expect-error – experimental
 		const transition = document.startViewTransition(async () => {
 			setThemeOnDoc(this.#themeApplied);
 			await tick();

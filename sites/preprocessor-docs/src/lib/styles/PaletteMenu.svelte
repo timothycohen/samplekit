@@ -57,7 +57,7 @@
 		background: hsl(var(--iris-3-dark));
 		color: hsl(var(--iris-12-dark));
 	}
-	#palette-menu-btn:has(+ #palette-menu .amethyst:hover) {
+	#palette-menu-btn:global(:has(+ #palette-menu .amethyst:hover)) {
 		--fill-color: hsl(var(--iris-7-dark));
 	}
 
@@ -65,7 +65,7 @@
 		background: hsl(var(--iris-3-light));
 		color: hsl(var(--iris-12-light));
 	}
-	#palette-menu-btn:has(+ #palette-menu .bellflower:hover) {
+	#palette-menu-btn:global(:has(+ #palette-menu .bellflower:hover)) {
 		--fill-color: hsl(var(--iris-7-light));
 	}
 
@@ -73,7 +73,7 @@
 		background: hsl(var(--amber-3-dark));
 		color: hsl(var(--amber-12-dark));
 	}
-	#palette-menu-btn:has(+ #palette-menu .desert:hover) {
+	#palette-menu-btn:global(:has(+ #palette-menu .desert:hover)) {
 		--fill-color: hsl(var(--amber-7-dark));
 	}
 
@@ -81,7 +81,7 @@
 		background: hsl(var(--amber-3-light));
 		color: hsl(var(--amber-12-light));
 	}
-	#palette-menu-btn:has(+ #palette-menu .daffodil:hover) {
+	#palette-menu-btn:global(:has(+ #palette-menu .daffodil:hover)) {
 		--fill-color: hsl(var(--amber-7-light));
 	}
 </style>

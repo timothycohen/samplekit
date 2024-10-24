@@ -1,6 +1,7 @@
 import type { LoadedFrontMatter } from '$lib/articles/schemas';
 import imgSm from '/src/routes/articles/simple-url-state-controller/assets/simple-url-state-controller-thumbnail-1200w.webp';
 import imgLg from '/src/routes/articles/simple-url-state-controller/assets/simple-url-state-controller-q30.webp';
+
 export default {
 	title: 'Simple URL State Controller',
 	implementationPath: '/articles/simple-url-state-controller#demo',

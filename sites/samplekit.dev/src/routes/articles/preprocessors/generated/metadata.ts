@@ -1,6 +1,7 @@
 import type { LoadedFrontMatter } from '$lib/articles/schemas';
 import imgSm from '/src/routes/articles/preprocessors/assets/preprocessors-thumbnail-1200w.webp';
 import video from '/src/routes/articles/preprocessors/assets/2024-08-05_22-41-28_889x627.mp4';
+
 export default {
 	title: 'Blog with Preprocessors',
 	implementationPath: '/articles/preprocessors/#demo',

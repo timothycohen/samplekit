@@ -292,8 +292,7 @@ shiki-end -->
 	The preprocessor transpiles the code to HTML and injects styles that you can target with CSS. If no
 	<code>cssVarToThemeName</code> is defined in <code>opts</code>, the default is used:
 	<!-- shiki-ts { dark: 'darker', light: 'rose-pine-dawn' } shiki-ts -->
-	. The
-	<code>opts</code> parameter used on this site includes the default custom theme –
+	. The <code>opts</code> parameter used on this site includes the default custom theme –
 	<code>
 		<a
 			data-external
@@ -301,14 +300,14 @@ shiki-end -->
 		>
 			Darker
 		</a>
-	</code> – and two extra Shiki bundled themes:
+	</code> – and two bundled themes:
 </div>
 
 <!-- shiki-start
 ```js
 const opts = await getOrLoadOpts({
 	highlighter: {
-		lang: { bundled: ['svelte', 'latex'] },
+		lang: { bundled: ['svelte', 'js', 'ts', 'html', 'json', 'latex', 'md', 'sh'] },
 		theme: { bundled: ['rose-pine-dawn', 'catppuccin-latte'] }, // to remove 'darker', pass in custom: []
 		cssVarToThemeName: { daffodil: 'rose-pine-dawn', dark: 'darker', bellflower: 'catppuccin-latte' },
 	},
@@ -680,7 +679,7 @@ shiki-end -->
 
 <!-- shiki-start
 ```ts
-const defaultBundledLangNames = ['svelte', 'diff', 'json', 'sh', 'sql'];
+const defaultBundledLangNames = ['svelte', 'js', 'ts', 'html', 'css', 'md', 'diff', 'json', 'sh', 'sql'];
 const defaultCssVarToThemeName = { dark: 'darker', light: 'rose-pine-dawn' };
 const defaultcssVarPrefix = '--h-';
 ```

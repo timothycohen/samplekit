@@ -44,7 +44,6 @@ export class ThemeController {
 			return;
 		}
 
-		// @ts-expect-error – experimental
 		const transition = document.startViewTransition(async () => {
 			el.style.setProperty('--fill-color', window.getComputedStyle(el).getPropertyValue('--fill-color'));
 			setThemeOnDoc(this.#theme);

@@ -1,6 +1,6 @@
 import fs from 'fs';
 import postcss from 'postcss';
-import postcssJs from 'postcss-js';
+import { objectify } from 'postcss-js';
 import type { PluginCreator } from 'tailwindcss/types/config';
 
 /**
@@ -12,7 +12,7 @@ const buildPluginCreator =
 	({ addBase, addComponents, addUtilities }) => {
 		const css = fs.readFileSync(cssFilePath, 'utf8');
 		const root = postcss.parse(css);
-		const jss = postcssJs.objectify(root);
+		const jss = objectify(root);
 
 		if ('@layer base' in jss) {
 			addBase(jss['@layer base']);

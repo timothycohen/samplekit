@@ -1,9 +1,10 @@
 type Base64Url = string;
+
 export type AuthenticatorDevice = {
 	credentialPublicKey: Base64Url;
 	credentialID: Base64Url;
 	counter: number;
-	transport?: string[]; // import('@simplewebauthn/types').AuthenticatorTransportFuture[];
+	transports?: Array<AuthenticatorTransport | 'cable' | 'smart-card'>;
 };
 
 export declare namespace Auth {

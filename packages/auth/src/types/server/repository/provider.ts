@@ -1,8 +1,12 @@
 import type { Result } from '../../../utils/common/index.js';
-import type { PublicKeyCredentialCreationOptionsJSON, PublicKeyCredentialRequestOptionsJSON } from '../../common.js';
+import type {
+	AuthenticationResponseJSON,
+	PublicKeyCredentialCreationOptionsJSON,
+	PublicKeyCredentialRequestOptionsJSON,
+	RegistrationResponseJSON,
+} from '../../common.js';
 import type { Auth, AuthenticatorDevice } from '../auth.js';
 import type { Cookies } from '../cookie.js';
-import type { startAuthentication, startRegistration } from '@simplewebauthn/browser';
 
 export type ServerAuthProviderCommon = {
 	changeToPass: (arg: { userId: string; email: string; password: string; provider: 'email' }) => Promise<void>;
@@ -60,12 +64,12 @@ export type ServerAuthProviderPassMfa = ServerAuthProviderMfaCommon & {
 		verifyClientReg: (a: {
 			expectedChallenge: string;
 			userId: string;
-			clientRegResponse: Awaited<ReturnType<typeof startRegistration>>;
+			clientRegResponse: RegistrationResponseJSON;
 		}) => Promise<Result<NonNullable<Auth.MFAs['passkeys']>>>;
 		verifyClientAuth: (a: {
 			expectedChallenge: string;
 			userId: string;
-			clientAuthResponse: Awaited<ReturnType<typeof startAuthentication>>;
+			clientAuthResponse: AuthenticationResponseJSON;
 			savedPasskeys: Auth.MFAs['passkeys'];
 		}) => Promise<Result<Result.Success>>;
 		getSaved: (userId: string) => Promise<AuthenticatorDevice[] | null>;

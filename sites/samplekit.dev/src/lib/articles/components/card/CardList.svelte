@@ -1,4 +1,5 @@
 <script lang="ts">
+	// TODO: the 'Video Speed Controller' Google Chrome extension is fighting Svelte and throwing an error
 	import { fly } from 'svelte/transition';
 	import type { FeatureCard } from '$lib/articles/load';
 
