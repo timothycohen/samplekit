@@ -2,7 +2,7 @@
 
 import fs from 'fs';
 import path from 'path';
-import prettier from 'prettier';
+import { format } from 'prettier';
 import { dev } from '$app/environment';
 import {
 	loadedFrontMatter,
@@ -123,7 +123,8 @@ const updateLoadedFrontMatter: RequestHandler = async ({ request }) => {
 		return jsonFail(500);
 	}
 
-	const neu = await prettier.format(codeGen(frontMatter.data), { ...prettierConfig, parser: 'typescript' });
+	const generated = codeGen(frontMatter.data);
+	const neu = await format(generated, { ...prettierConfig, parser: 'typescript' });
 
 	const outFilePath = path.join(generatedDirPath, 'metadata.ts');
 	const old = fs.existsSync(outFilePath) ? fs.readFileSync(outFilePath, { encoding: 'utf-8' }) : '';
@@ -160,7 +161,7 @@ function codeGen(obj: object) {
 			return `${key}: ${JSON.stringify(value)}`;
 		}
 	});
-	return importStr + `export default { ${props.join(', ')} } satisfies LoadedFrontMatter;`;
+	return importStr + `\n\nexport default { ${props.join(', ')} } satisfies LoadedFrontMatter;`;
 }
 
 // function codeGen(frontMatter: LoadedFrontMatter) {

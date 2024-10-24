@@ -103,6 +103,7 @@ const config = [
 		languageOptions: { parserOptions: { parser: ts.parser } },
 	},
 	// globals
+	// note that .ts files (via tsconfig) will still resolve node globals via "types" and browser globals via "lib"
 	{
 		name: 'globals/client',
 		files: clientFiles,
@@ -127,7 +128,10 @@ const config = [
 	{
 		name: 'eslint-plugin-import',
 		plugins: { import: imports },
+		// https://github.com/import-js/eslint-plugin-import?tab=readme-ov-file#rules
 		rules: {
+			'import/newline-after-import': 'warn',
+			'import/no-empty-named-blocks': 'warn',
 			'import/order': [
 				'warn',
 				{
@@ -135,6 +139,12 @@ const config = [
 					alphabetize: { order: 'asc' },
 				},
 			],
+			'import/no-duplicates': 'warn',
+			'import/named': 'warn',
+			'import/default': 'warn',
+			'import/export': 'warn',
+			'import/no-named-as-default': 'warn',
+			'import/no-named-as-default-member': 'warn',
 		},
 	},
 	// globals

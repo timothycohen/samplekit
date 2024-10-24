@@ -1,6 +1,7 @@
 <script lang="ts">
 	import Icon from './Icon.svelte';
 	import type { SVGAttributes } from 'svelte/elements';
+
 	type Attrs = SVGAttributes<SVGSVGElement>;
 
 	const { ...attrs }: Attrs = $props();

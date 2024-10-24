@@ -1,5 +1,6 @@
 <script lang="ts">
 	import Icon from './_Icon.svelte';
+
 	const { ...attrs }: import('svelte/elements').SVGAttributes<SVGSVGElement> = $props();
 </script>
 
