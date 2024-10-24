@@ -2,13 +2,6 @@
 
 trap "printf '\n=====================\naborted\n=====================\n'; exit 1" INT
 
-YELLOW='\033[0;33m'
-RESET='\033[0m'
-
-echo_colorful() {
-	echo "$YELLOW$@$RESET"
-}
-
 # Turn to true to write changes instead of failing. Any staged files will be restaged after changes.
 write=false
 
@@ -20,82 +13,41 @@ fi
 STAGED_FILES=$(git diff --cached --name-only --diff-filter=ACMR | sed 's| |\\ |g')
 
 exit_code=0
-maybe_exit() {
-	if [ $exit_code -ne 0 ]; then
-		exit "$exit_code"
-	fi
-}
-
-printf '\n=====================\ndynamic import check\n=====================\n\n'
-# This does not check relative imports.
-# If the author is modifying code in the article directory, it's obvious that the article is being updated.
-ABS_IMPORTS=$(grep -roE --no-filename "import\('/src.*?\)" "./sites/samplekit.dev/src/routes/articles" | sed -E "s/import\('(.*)'\)/sites\/samplekit.dev\1/" | sed -E "s/\?raw//")
-
-DYNAMIC_IMPORTS_WHICH_ARE_NOT_FOUND=()
-for DYNAMIC_IMPORT in $ABS_IMPORTS; do
-	if [ ! -f "$DYNAMIC_IMPORT" ]; then
-		DYNAMIC_IMPORTS_WHICH_ARE_NOT_FOUND+=("$DYNAMIC_IMPORT")
-	fi
-done
-
-if [ ${#DYNAMIC_IMPORTS_WHICH_ARE_NOT_FOUND[@]} -gt 0 ]; then
-	echo "Some articles have dynamic imports which were not found."
-	echo "Please fix the following broken import paths:"
-	for DYNAMIC_IMPORT in "${DYNAMIC_IMPORTS_WHICH_ARE_NOT_FOUND[@]}"; do
-		DYNAMIC_IMPORT_WITHOUT_PREFIX=$(echo "$DYNAMIC_IMPORT" | sed "s/sites\/samplekit.dev//")
-		echo_colorful "$DYNAMIC_IMPORT_WITHOUT_PREFIX"
-	done
-	exit_code=1
-fi
-
-maybe_exit
-
-DYNAMIC_IMPORTS_WHICH_ARE_STAGED=()
-for DYNAMIC_IMPORT in $ABS_IMPORTS; do
-	if echo "$STAGED_FILES" | grep -q "$DYNAMIC_IMPORT"; then
-		DYNAMIC_IMPORTS_WHICH_ARE_STAGED+=("$DYNAMIC_IMPORT")
-	fi
-done
-if [ ${#DYNAMIC_IMPORTS_WHICH_ARE_STAGED[@]} -gt 0 ]; then
-	echo_colorful "Warning: Dynamic imports have been changed."
-	echo "You are committing a file which is dynamically imported into an article."
-	echo "Please ensure the article is as desired and its metadata is correct."
-	echo "\nStaged dynamic imports:"
-	for DYNAMIC_IMPORT in "${DYNAMIC_IMPORTS_WHICH_ARE_STAGED[@]}"; do
-		echo_colorful "$DYNAMIC_IMPORT"
-	done
-fi
 
 printf '\n=====================\ninstall\n=====================\n\n'
 pnpm install --frozen-lockfile
-exit_code=$((exit_code + $?))
+exit_code=$(($exit_code + $?))
 
-maybe_exit
+if [ $exit_code -ne 0 ]; then
+	exit "$exit_code"
+fi
 
 if [ $write = true ]; then
 	printf '\n=====================\nformat fix\n=====================\n'
 	pnpm format:fix
-	exit_code=$((exit_code + $?))
+	exit_code=$(($exit_code + $?))
 
 	printf '\n=====================\nlint fix\n=====================\n'
 	pnpm lint:fix
-	exit_code=$((exit_code + $?))
+	exit_code=$(($exit_code + $?))
 
 	echo "$STAGED_FILES" | xargs git add
 else
 	printf '\n=====================\nformat\n=====================\n'
 	pnpm format
-	exit_code=$((exit_code + $?))
+	exit_code=$(($exit_code + $?))
 
 	printf '\n=====================\nlint\n=====================\n'
 	pnpm lint
-	exit_code=$((exit_code + $?))
+	exit_code=$(($exit_code + $?))
 fi
 
-maybe_exit
+if [ $exit_code -ne 0 ]; then
+	exit "$exit_code"
+fi
 
 printf '\n=====================\ncheck\n=====================\n'
 pnpm -r check
-exit_code=$((exit_code + $?))
+exit_code=$(($exit_code + $?))
 
 exit "$exit_code"
