@@ -10,6 +10,7 @@
 	import { createMobileNavCtx } from '$lib/components/layout';
 	import { GH_BLOB } from '$lib/consts';
 	import { createThemeControllerCtx, ThemeToggler } from '$lib/styles';
+	import { createWSCtx } from '$lib/ws/client';
 
 	const { children, data } = $props();
 
@@ -33,6 +34,8 @@
 	};
 
 	smoothNavigationOnlyOnSamePage();
+
+	createWSCtx();
 </script>
 
 <SEO meta={$page.data.meta} />

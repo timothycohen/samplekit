@@ -52,5 +52,8 @@ COPY --from=build $REPO/node_modules $REPO/node_modules
 COPY --from=build $REPO/generated/db-migrations $REPO/generated/db-migrations
 COPY --from=build $REPO/build $REPO/build
 
+COPY --from=BUILD $REPO/scripts/prodServer.js $REPO/scripts/prodServer.js
+COPY --from=BUILD $REPO/scripts/ws/utils.js $REPO/scripts/ws/utils.js
+
 EXPOSE 3000
-CMD ["node", "/usr/src/app/sites/samplekit.dev/build/index.js"]
+CMD ["node", "/usr/src/app/sites/samplekit.dev/scripts/prodServer.js"]

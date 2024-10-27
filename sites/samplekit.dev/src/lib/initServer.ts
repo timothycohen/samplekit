@@ -18,6 +18,7 @@ import { shopConnectedOrExit } from '$lib/shop/api/connectedOrExit.server';
 import { INTERCEPT_TRANSPORTS } from '$lib/transport/server';
 import { getSES } from '$lib/transport/server/email/ses';
 import { getTwilio } from '$lib/transport/server/sms/twilio';
+import { initializeSocketIoOrExit } from '$lib/ws/server';
 
 getServerLogflare();
 initSentry();
@@ -65,6 +66,8 @@ if (!PUBLIC_SHOPIFY_API_VERSION || !PUBLIC_SHOPIFY_STOREFRONT_ACCESS_TOKEN || !P
 	if (!PUBLIC_SHOPIFY_STORE_DOMAIN) setupLogger.fatal(`PUBLIC_SHOPIFY_STORE_DOMAIN is not set.`);
 	process.exit(1);
 }
+
+initializeSocketIoOrExit();
 
 await Promise.all([kv.connectOrExit(), dbConnectedOrExit(), shopConnectedOrExit()]);
 await migrateDb();

@@ -1,8 +1,10 @@
 import { dev } from '$app/environment';
 import type { Cookies, MiddlewareContext } from '@samplekit/auth/server';
 
+export const sessionCookieName = 'samplekit_session' as const;
+
 const sessionCookie = {
-	name: 'samplekit_session' as const,
+	name: sessionCookieName,
 	attributes: {
 		httpOnly: true,
 		secure: !dev,

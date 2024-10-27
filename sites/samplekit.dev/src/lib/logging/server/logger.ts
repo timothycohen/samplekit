@@ -39,3 +39,4 @@ export const logger = new Logger({
 });
 
 export const setupLogger = logger.child({ base: '[SETUP] ' });
+export const wsLogger = logger.child({ base: '[WS] ' });

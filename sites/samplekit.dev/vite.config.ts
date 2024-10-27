@@ -1,5 +1,6 @@
 import { sentrySvelteKit } from '@sentry/sveltekit';
 import { sveltekit } from '@sveltejs/kit/vite';
+import { createWebSocketServer, resetWebSocketServer } from './scripts/ws/utils';
 import type { UserConfig } from 'vite';
 
 export default {
@@ -14,6 +15,20 @@ export default {
 			autoUploadSourceMaps: false,
 		}),
 		sveltekit(),
+		{
+			name: 'integratedWebSocketServer',
+			configureServer(server) {
+				if (!server.httpServer) throw new Error('No ViteDevServer found');
+				createWebSocketServer(server.httpServer);
+
+				server.watcher.on('change', () => {
+					resetWebSocketServer();
+				});
+			},
+			configurePreviewServer(server) {
+				createWebSocketServer(server.httpServer);
+			},
+		},
 	],
 	// https://github.com/sveltejs/kit/issues/11658 – Make sure to check Safari
 	esbuild: {
