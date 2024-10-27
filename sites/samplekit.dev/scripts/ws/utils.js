@@ -5,6 +5,7 @@
  */
 
 import { Server } from 'socket.io';
+import { adapter } from './redisAdapter';
 
 const WS_SYMBOL = Symbol.for('samplekit.wss');
 
@@ -12,7 +13,7 @@ const WS_SYMBOL = Symbol.for('samplekit.wss');
 
 /** @param {HttpServer} httpServer */
 export const createWebSocketServer = (httpServer) => {
-	const server = new Server(httpServer);
+	const server = new Server(httpServer, { adapter });
 	// @ts-expect-error - Not typing globalThis
 	globalThis[WS_SYMBOL] = server;
 };
