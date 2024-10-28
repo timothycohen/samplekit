@@ -10,9 +10,10 @@
 	import { createMobileNavCtx } from '$lib/components/layout';
 	import { GH_BLOB } from '$lib/consts';
 	import { createThemeControllerCtx, ThemeToggler } from '$lib/styles';
-	import { createWSCtx } from '$lib/ws/client';
+	import { createWSCtx, useWsCtx } from '$lib/ws/client';
 
 	const { children, data } = $props();
+	const userId = $derived($page.data['user']?.id ?? null);
 
 	createThemeControllerCtx(data.initialTheme);
 	createMobileNavCtx();
@@ -36,6 +37,18 @@
 	smoothNavigationOnlyOnSamePage();
 
 	createWSCtx();
+	const wsClient = useWsCtx();
+
+	let inited = false;
+	$effect(() => {
+		// eslint-disable-next-line @typescript-eslint/no-unused-expressions
+		userId;
+		if (inited) {
+			wsClient.reset();
+		} else {
+			inited = true;
+		}
+	});
 </script>
 
 <SEO meta={$page.data.meta} />

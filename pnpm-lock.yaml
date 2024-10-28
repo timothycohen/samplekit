@@ -296,6 +296,9 @@ importers:
       body-scroll-lock-upgrade:
         specifier: ^1.1.0
         version: 1.1.0
+      canvas-confetti:
+        specifier: ^1.9.3
+        version: 1.9.3
       drizzle-orm:
         specifier: ^0.35.2
         version: 0.35.2(@opentelemetry/api@1.9.0)(@types/pg@8.11.10)(pg@8.13.0)
@@ -360,6 +363,9 @@ importers:
       '@tailwindcss/typography':
         specifier: ^0.5.15
         version: 0.5.15(tailwindcss@3.4.14)
+      '@types/canvas-confetti':
+        specifier: ^1.6.4
+        version: 1.6.4
       '@types/pg':
         specifier: ^8.11.10
         version: 8.11.10
@@ -3033,6 +3039,9 @@ packages:
     peerDependencies:
       tailwindcss: '>=3.0.0 || insiders || >=4.0.0-alpha.20'
 
+  '@types/canvas-confetti@1.6.4':
+    resolution: {integrity: sha512-fNyZ/Fdw/Y92X0vv7B+BD6ysHL4xVU5dJcgzgxLdGbn8O3PezZNIJpml44lKM0nsGur+o/6+NZbZeNTt00U1uA==}
+
   '@types/connect@3.4.36':
     resolution: {integrity: sha512-P63Zd/JUGq+PdrM1lv0Wv5SBYeA2+CORvbrXbngriYY0jzLUWfQMQQxOhjONEz/wlHOAxOdY7CY65rgQdTjq2w==}
 
@@ -3632,6 +3641,9 @@ packages:
 
   caniuse-lite@1.0.30001669:
     resolution: {integrity: sha512-DlWzFDJqstqtIVx1zeSpIMLjunf5SmwOw0N2Ck/QSQdS8PLS4+9HrLaYei4w8BIAL7IB/UEDu889d8vhCTPA0w==}
+
+  canvas-confetti@1.9.3:
+    resolution: {integrity: sha512-rFfTURMvmVEX1gyXFgn5QMn81bYk70qa0HLzcIOSVEyl57n6o9ItHeBtUSWdvKAPY0xlvBHno4/v3QPrT83q9g==}
 
   capital-case@1.0.4:
     resolution: {integrity: sha512-ds37W8CytHgwnhGGTi88pcPyR15qoNkOpYwmMMfnWqqWgESapLqvDx6huFjQ5vqWSn2Z06173XNA7LtMOeUh1A==}
@@ -11078,6 +11090,8 @@ snapshots:
       postcss-selector-parser: 6.0.10
       tailwindcss: 3.4.14
 
+  '@types/canvas-confetti@1.6.4': {}
+
   '@types/connect@3.4.36':
     dependencies:
       '@types/node': 20.14.15
@@ -11796,6 +11810,8 @@ snapshots:
     optional: true
 
   caniuse-lite@1.0.30001669: {}
+
+  canvas-confetti@1.9.3: {}
 
   capital-case@1.0.4:
     dependencies:
