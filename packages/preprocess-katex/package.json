@@ -1,6 +1,6 @@
 {
 	"name": "@samplekit/preprocess-katex",
-	"version": "1.0.5",
+	"version": "2.0.0",
 	"description": "Svelte preprocessor for TeX using KaTeX.",
 	"author": "Tim Cohen <contact@timcohen.dev>",
 	"license": "MIT",

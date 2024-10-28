@@ -1,5 +1,13 @@
 # @samplekit/preprocess-katex
 
+## 2.0.0
+
+### Major Changes
+
+- breaking: move import of LaTeX util to /client ([#25](https://github.com/timothycohen/samplekit/pull/25))
+
+- breaking: bump svelte peer dependency to ^5.0.0 ([#27](https://github.com/timothycohen/samplekit/pull/27))
+
 ## 1.0.5
 
 ### Patch Changes
