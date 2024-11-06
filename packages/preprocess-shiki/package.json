@@ -1,6 +1,6 @@
 {
 	"name": "@samplekit/preprocess-shiki",
-	"version": "2.0.0",
+	"version": "2.0.1",
 	"description": "Svelte preprocessor for code highlighting using Shiki.",
 	"author": "Tim Cohen <contact@timcohen.dev>",
 	"license": "MIT",

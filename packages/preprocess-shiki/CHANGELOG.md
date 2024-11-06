@@ -1,5 +1,11 @@
 # @samplekit/preprocess-shiki
 
+## 2.0.1
+
+### Patch Changes
+
+- fix: remove relative path in dynamic imports ([#29](https://github.com/timothycohen/samplekit/pull/29))
+
 ## 2.0.0
 
 ### Major Changes
