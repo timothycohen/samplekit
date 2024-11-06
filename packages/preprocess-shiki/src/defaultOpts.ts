@@ -64,12 +64,12 @@ export const defaultEscapeSvelte = (({ highlightedHtml }) =>
 const createDefaultHighlighter = async (a?: CreateHighlighterArgs) => {
 	const langs = [
 		...(a?.lang?.custom ?? []),
-		...(a?.lang?.bundled ?? defaultBundledLangNames).map((l) => import(`../node_modules/shiki/dist/langs/${l}.mjs`)),
+		...(a?.lang?.bundled ?? defaultBundledLangNames).map((l) => import(/* @vite-ignore */ `shiki/langs/${l}.mjs`)),
 	];
 
 	const themes = [
 		...(a?.theme?.custom ?? [import('./themes/darker.js')]),
-		...(a?.theme?.bundled?.map((t) => import(`../node_modules/shiki/dist/themes/${t}.mjs`)) ?? [
+		...(a?.theme?.bundled?.map((t) => import(/* @vite-ignore */ `shiki/themes/${t}.mjs`)) ?? [
 			import('shiki/themes/rose-pine-dawn.mjs'),
 		]),
 	];
