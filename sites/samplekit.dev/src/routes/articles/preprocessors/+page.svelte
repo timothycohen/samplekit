@@ -468,6 +468,15 @@ const display = { start: String.raw`\[`, end: String.raw`\]` };
 const inline = { start: String.raw`\(`, end: String.raw`\)` };
 const delimLoc = { start: 3, end: -3 };
 
+type RenderToString = (
+	tex: string,
+	options: {
+		displayMode?: boolean | undefined;
+		throwOnError: true;
+		strict: (errorCode: string, errorMsg: string) => 'ignore' | undefined;
+	},
+) => string;
+
 export function processKatex({
 	include,
 	logger,
@@ -475,7 +484,7 @@ export function processKatex({
 }: {
 	include?: (filename: string) => boolean;
 	logger?: Logger;
-	renderToString?: (tex: string, options?: katex.KatexOptions) => string;
+	renderToString?: RenderToString;
 } = {}) {
 	return {
 		name: 'katex',
@@ -554,6 +563,15 @@ const catchStdErr = ({ tmpWrite, trappedFn }: { trappedFn: () => void; tmpWrite:
 	}//! d"diff-add"
 };//! d"diff-add"
 
+type RenderToString = (
+	tex: string,
+	options: {
+		displayMode?: boolean | undefined;
+		throwOnError: true;
+		strict: (errorCode: string, errorMsg: string) => 'ignore' | undefined;
+	},
+) => string;
+
 export function processKatex({
 	include,
 	logger,
@@ -561,7 +579,7 @@ export function processKatex({
 }: {
 	include?: (filename: string) => boolean;
 	logger?: Logger;
-	renderToString?: (tex: string, options?: katex.KatexOptions) => string;
+	renderToString?: RenderToString;
 } = {}) {
 	return {
 		name: 'katex',
@@ -649,7 +667,7 @@ shiki-end -->
 
 <CodeTopper title="preprocess-katex">
 	<!-- shiki-start
-d"diff-add" l"21-79" l"114" l"118" l"121-124" l"126"
+d"diff-add" l"21-79"
 ```ts
 import { walk } from 'estree-walker';
 import katex from 'katex';
@@ -731,6 +749,15 @@ function restoreSvelte(mathString: string, extractedSvelteContent: string[]): st
 	});
 }
 
+type RenderToString = (
+	tex: string,
+	options: {
+		displayMode?: boolean | undefined;
+		throwOnError: true;
+		strict: (errorCode: string, errorMsg: string) => 'ignore' | undefined;
+	},
+) => string;
+
 export function processKatex({
 	include,
 	logger,
@@ -738,7 +765,7 @@ export function processKatex({
 }: {
 	include?: (filename: string) => boolean;
 	logger?: Logger;
-	renderToString?: (tex: string, options?: katex.KatexOptions) => string;
+	renderToString?: RenderToString;
 } = {}) {
 	return {
 		name: 'katex',
@@ -764,19 +791,19 @@ export function processKatex({
 					let parsed;
 					try {
 						const rawInput = String.raw`${trimmed.slice(delimLoc.start, delimLoc.end)}`;
-						const { svelteFreeString, extractedSvelteContent } = replaceSvelteAndStore(rawInput);
+						const { svelteFreeString, extractedSvelteContent } = replaceSvelteAndStore(rawInput);//! d"diff-add"
 						const warns: Error[] = [];
 						catchStdErr({
 							trappedFn: () => {
-								const mathString = renderToString(svelteFreeString, {
+								const mathString = renderToString(svelteFreeString, {//! d"diff-add"
 									displayMode,
 									throwOnError: true,
-									strict: (errorCode: string, errorMsg: string) => {
-										if (errorCode === 'unknownSymbol' && errorMsg.startsWith('Unrecognized Unicode character'))
-											return 'ignore';
-									},
+									strict: (errorCode: string, errorMsg: string) => {//! d"diff-add"
+										if (errorCode === 'unknownSymbol' && errorMsg.startsWith('Unrecognized Unicode character'))//! d"diff-add"
+											return 'ignore';//! d"diff-add"
+									},//! d"diff-add"
 								});
-								parsed = restoreSvelte(mathString, extractedSvelteContent);
+								parsed = restoreSvelte(mathString, extractedSvelteContent);//! d"diff-add"
 							},
 							tmpWrite: (str) => {
 								if (!str.startsWith('No character metrics for ')) warns.push(Error(str));
