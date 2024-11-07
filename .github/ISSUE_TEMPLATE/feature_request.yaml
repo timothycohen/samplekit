@@ -1,0 +1,44 @@
+name: 'Feature Request'
+description: Suggest a new feature
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for helping us improve!
+
+        Before starting, please check the existing issues to see if your feature request has already been submitted.
+
+        If it has, give it a thumbs up or comment with your use case to help us prioritize it.
+
+        ---
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem does this feature solve?
+    validations:
+      required: true
+  - type: textarea
+    id: solution
+    attributes:
+      label: What does the proposed solution and its API look like?
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+  - type: dropdown
+    id: importance
+    attributes:
+      label: Importance
+      description: How important is this feature to you?
+      options:
+        - nice to have
+        - important
+        - blocker
+    validations:
+      required: true
+  - type: textarea
+    id: additional-info
+    attributes:
+      label: Additional Info

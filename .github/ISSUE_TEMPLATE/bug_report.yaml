@@ -1,0 +1,63 @@
+name: 'Bug report'
+description: Report an issue
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for helping us improve!
+
+        Before starting, please make the issue is reproducible with the latest versions of the packages you're using.
+
+        Note that packages are released with changeset PRs and sites are released with prod [tags](https://github.com/timothycohen/samplekit/tags). This means an unreleased fix may already exist in the main branch.
+
+        ---
+  - type: input
+    id: reproduction-link
+    attributes:
+      label: Link to minimal reproduction
+      description: |
+        Please provide a [StackBlitz](https://stackblitz.com/fork/github/sveltejs/kit-template-default) or GitHub repo link.
+
+        The reproduction should be **minimal**. Do not add code that is not directly related to the issue.
+      placeholder: Reproduction Link
+    validations:
+      required: true
+  - type: textarea
+    id: steps-to-reproduce
+    attributes:
+      label: Steps to reproduce
+      description: |
+        After opening your reproduction, what should we do to reproduce the bug?
+      placeholder: Steps to reproduce
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What is expected?
+    validations:
+      required: true
+  - type: textarea
+    id: actually-happening
+    attributes:
+      label: What is actually happening?
+    validations:
+      required: true
+  - type: textarea
+    id: system-info
+    attributes:
+      label: System Info
+      description: Output of `npx envinfo --system --binaries --browsers --npmPackages "@samplekit/*"`
+      render: shell
+      placeholder: System, binaries, browsers, SampleKit Packages
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs
+      description: 'Logs, stack traces, etc.'
+      render: Shell
+  - type: textarea
+    id: additional-info
+    attributes:
+      label: Additional Info
+      description: Background, context, etc.
