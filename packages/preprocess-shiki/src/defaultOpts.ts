@@ -1,6 +1,7 @@
 import { createHighlighterCore } from '@shikijs/core';
+import { bundledLanguages } from 'shiki/langs';
+import { bundledThemes } from 'shiki/themes';
 import type { BundledLanguage, CreateHighlighterArgs, CreateOptsArgs, PreprocessOpts } from './types.js';
-// 'shiki' langs and themes are dynamically imported
 
 export const defaultBundledLangNames = [
 	'svelte',
@@ -64,14 +65,20 @@ export const defaultEscapeSvelte = (({ highlightedHtml }) =>
 const createDefaultHighlighter = async (a?: CreateHighlighterArgs) => {
 	const langs = [
 		...(a?.lang?.custom ?? []),
-		...(a?.lang?.bundled ?? defaultBundledLangNames).map((l) => import(/* @vite-ignore */ `shiki/langs/${l}.mjs`)),
+		...(a?.lang?.bundled ?? defaultBundledLangNames).map((l) => {
+			const lang = bundledLanguages[l];
+			if (!lang) throw new Error(`Language '${l}' is not a bundled Shiki language.`);
+			return lang;
+		}),
 	];
 
 	const themes = [
 		...(a?.theme?.custom ?? [import('./themes/darker.js')]),
-		...(a?.theme?.bundled?.map((t) => import(/* @vite-ignore */ `shiki/themes/${t}.mjs`)) ?? [
-			import('shiki/themes/rose-pine-dawn.mjs'),
-		]),
+		...(a?.theme?.bundled?.map((t) => {
+			const theme = bundledThemes[t];
+			if (!theme) throw new Error(`Theme '${t}' is not a bundled Shiki theme.`);
+			return theme;
+		}) ?? [import('shiki/themes/rose-pine-dawn.mjs')]),
 	];
 
 	return await createHighlighterCore({ themes, langs, loadWasm: import('shiki/wasm') });
