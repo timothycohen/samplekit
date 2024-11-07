@@ -105,7 +105,7 @@ shiki-end -->
 		<span class="step-content">
 			<span class="lg:text-lg">
 				<!-- shiki-start
-d"diff-add" l"1" l"5-6" l"11-14"
+d"diff-add" l"1" l"5-6" l"11-16"
 ```ts
 import { processKatex, createKatexLogger } from '@samplekit/preprocess-katex';
 import adapter from '@sveltejs/adapter-auto';
@@ -120,6 +120,8 @@ const config = {
 		processKatex({
 			include: (filename) => filename.startsWith(preprocessorRoot),
 			logger: createKatexLogger(formatFilename),
+			// optionally use your own katex installation
+			// renderToString: katex.renderToString
 		}),
 		vitePreprocess(),
 	],
@@ -141,6 +143,22 @@ shiki-end -->
 			<a data-external href="https://marketplace.visualstudio.com/items?itemName=samplekit.svelte-pp-katex">
 				samplekit.svelte-pp-katex
 			</a>
+		</span>
+	</li>
+
+	<li class="step">
+		<span class="step-title">Import <code>katex.css</code> into your <code>app.css</code></span>
+		<span class="step-content">
+			<span class="lg:text-lg">
+				<!-- shiki-start
+p c"no-lines"
+```css
+@import '@samplekit/preprocess-katex/katex.css';
+/* optionally use your own katex installation */
+/* @import 'katex/dist/katex.css'; */
+```
+shiki-end -->
+			</span>
 		</span>
 	</li>
 </ol>

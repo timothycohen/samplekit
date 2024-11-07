@@ -1,5 +1,4 @@
 <script lang="ts">
-	import '@samplekit/preprocess-katex/katex.css';
 	import '../app.css';
 	import { tick } from 'svelte';
 	import { browser } from '$app/environment';

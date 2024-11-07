@@ -1,3 +1,4 @@
+@import '@samplekit/preprocess-katex/katex.css';
 @import './lib/styles/css/tokens.css';
 @import './lib/styles/css/themes.css';
 @import './lib/styles/css/code.css';

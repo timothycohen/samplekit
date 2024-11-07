@@ -13,13 +13,13 @@
 		"check": "tsc --noEmit",
 		"validate": "pnpm install --frozen-lockfile && pnpm format && pnpm lint && pnpm check",
 		"clean": "rm -rf dist",
-		"build": "pnpm clean && tsc",
+		"build": "pnpm clean && tsc && cp src/katex.css dist && cp -r node_modules/katex/dist/fonts dist",
 		"prepublishOnly": "pnpm build"
 	},
 	"exports": {
 		".": "./dist/index.js",
 		"./client": "./dist/client.js",
-		"./katex.css": "./node_modules/katex/dist/katex.css",
+		"./katex.css": "./dist/katex.css",
 		"./katex.js": "./dist/katex.js",
 		"./package.json": "./package.json"
 	},
