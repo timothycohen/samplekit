@@ -20,7 +20,7 @@ export default {
 		{ at: new Date('2024-03-20T20:11:27.000Z'), descriptions: ['Expand processor syntax beyond highlighting.'] },
 	],
 	articlePath: '/articles/preprocessors',
-	wordCount: 3891,
+	wordCount: 3957,
 	readingTime: 18,
 	toc: [
 		{

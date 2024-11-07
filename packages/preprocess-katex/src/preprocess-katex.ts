@@ -78,6 +78,15 @@ function restoreSvelte(mathString: string, extractedSvelteContent: string[]): st
 	});
 }
 
+type RenderToString = (
+	tex: string,
+	options: {
+		displayMode?: boolean | undefined;
+		throwOnError: true;
+		strict: (errorCode: string, errorMsg: string) => 'ignore' | undefined;
+	},
+) => string;
+
 export function processKatex({
 	include,
 	logger,
@@ -85,7 +94,7 @@ export function processKatex({
 }: {
 	include?: (filename: string) => boolean;
 	logger?: Logger;
-	renderToString?: (tex: string, options?: katex.KatexOptions) => string;
+	renderToString?: RenderToString;
 } = {}) {
 	return {
 		name: 'katex',
