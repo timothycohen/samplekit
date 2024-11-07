@@ -1,5 +1,11 @@
 # @samplekit/preprocess-shiki
 
+## 3.0.0
+
+### Major Changes
+
+- breaking: throw if passing an unsupported bundled lang/theme ([#34](https://github.com/timothycohen/samplekit/pull/34))
+
 ## 2.0.1
 
 ### Patch Changes

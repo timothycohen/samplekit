@@ -1,5 +1,13 @@
 # @samplekit/preprocess-katex
 
+## 2.0.1
+
+### Patch Changes
+
+- fix: katex.css export location ([#32](https://github.com/timothycohen/samplekit/pull/32))
+
+- loosen renderToString type ([#33](https://github.com/timothycohen/samplekit/pull/33))
+
 ## 2.0.0
 
 ### Major Changes
