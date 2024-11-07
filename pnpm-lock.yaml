@@ -384,9 +384,6 @@ importers:
       postcss-js:
         specifier: ^4.0.1
         version: 4.0.1(postcss@8.4.47)
-      shiki:
-        specifier: ^1.22.0
-        version: 1.22.0
       svelte:
         specifier: ^5.0.2
         version: 5.0.2
