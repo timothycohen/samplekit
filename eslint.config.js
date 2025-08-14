@@ -1,6 +1,5 @@
 import js from '@eslint/js';
 import prettier from 'eslint-config-prettier';
-import disableAutofix from 'eslint-plugin-disable-autofix';
 import imports from 'eslint-plugin-import';
 import svelte from 'eslint-plugin-svelte';
 import globals from 'globals';
@@ -37,12 +36,6 @@ const config = [
 		files: ['*.js', '**/*.js', '*.ts', '**/*.ts', '*.svelte', '**/*.svelte'],
 		ignores: ['**/scripts/**'],
 		rules: { 'no-console': 'error' },
-	},
-	// disable some autofixes so they don't change on save while in the middle of writing code
-	{
-		name: 'eslint-plugin-disable-autofix',
-		plugins: { 'disable-autofix': disableAutofix },
-		rules: { 'prefer-const': 'off', 'disable-autofix/prefer-const': ['warn', { destructuring: 'all' }] },
 	},
 	// ts
 	...ts.configs.recommended,

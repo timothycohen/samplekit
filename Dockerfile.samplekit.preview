@@ -9,7 +9,7 @@
 # Expects:
 # `./sites/samplekit.dev/.env.preview' – vars will be baked into the image
 
-FROM node:20.14-alpine AS build
+FROM node:24.3.0-alpine AS build
 WORKDIR /usr/src/app
 ARG ROOT=/usr/src/app
 ARG REPO=/usr/src/app/sites/samplekit.dev
@@ -20,10 +20,11 @@ RUN cp /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 COPY . $ROOT
 
 RUN corepack enable pnpm
+RUN corepack prepare pnpm@10.12.4 --activate
 RUN pnpm install
 RUN echo preview | pnpm --filter samplekit.dev build
 
-FROM node:20.14-alpine
+FROM node:24.3.0-alpine
 WORKDIR /usr/src/app
 ARG ROOT=/usr/src/app
 ARG REPO=/usr/src/app/sites/samplekit.dev

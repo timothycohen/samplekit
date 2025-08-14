@@ -10,7 +10,7 @@
 # `ENV_FILE`: full contents of .env – vars will be baked into the image
 # `MODE`: staging or production
 
-FROM node:20.14-alpine AS build
+FROM node:24.3.0-alpine AS build
 WORKDIR /usr/src/app
 ARG ROOT=/usr/src/app
 ARG REPO=/usr/src/app/sites/samplekit.dev
@@ -27,10 +27,11 @@ RUN echo $ENV_FILE > $REPO/.env.$MODE
 RUN sed -i 's/ /\'$'\n/g' $REPO/.env.$MODE
 
 RUN corepack enable pnpm
+RUN corepack prepare pnpm@10.12.4 --activate
 RUN pnpm install
 RUN echo $MODE | pnpm --filter samplekit.dev build
 
-FROM node:20.14-alpine
+FROM node:24.3.0-alpine
 WORKDIR /usr/src/app
 ARG ROOT=/usr/src/app
 ARG REPO=/usr/src/app/sites/samplekit.dev

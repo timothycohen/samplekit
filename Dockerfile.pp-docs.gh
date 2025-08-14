@@ -1,9 +1,10 @@
-FROM node:20.14-alpine AS build
+FROM node:24.3.0-alpine AS build
 WORKDIR /usr/src/app
 
 COPY . /usr/src/app
 
 RUN corepack enable pnpm
+RUN corepack prepare pnpm@10.12.4 --activate
 RUN pnpm install
 RUN pnpm --filter preprocessor-docs build
 
