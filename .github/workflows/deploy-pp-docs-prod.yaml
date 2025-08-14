@@ -2,11 +2,6 @@
 # Expects:
 # permissions / variables / secrets defined in deploy-permissions.md
 
-# Trigger from the command line like this:
-# TAG=pp-docs-prod/$(git rev-parse --short HEAD)
-# git tag $TAG
-# git push origin $TAG
-
 name: Deploy pp-docs-prod
 
 on:

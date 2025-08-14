@@ -33,7 +33,10 @@
 		"generate:theme_utils": "./scripts/generate-theme-utils.sh",
 		"generate:graphql_codegen": "graphql-codegen",
 		"generate": "for cmd in db_migrations theme_utils graphql_codegen; do pnpm generate:$cmd; done",
-		"ses:update_templates": "env-cmd -f .env.production node ./scripts/email/updateTemplates.js"
+		"ses:update_templates": "env-cmd -f .env.production node ./scripts/email/updateTemplates.js",
+		"require-main-branch": "if [ \"$(git rev-parse --abbrev-ref HEAD)\" != \"main\" ]; then echo 'ERROR: Not on main branch.'; exit 1; fi",
+		"deploy:staging": "TAG=sk-staging/$(git rev-parse --short HEAD) && git tag $TAG && git push origin $TAG",
+		"deploy:production": "pnpm require-main-branch && TAG=sk-prod/$(git rev-parse --short HEAD) && git tag $TAG && git push origin $TAG"
 	},
 	"dependencies": {
 		"@aws-sdk/client-cloudfront": "^3.675.0",

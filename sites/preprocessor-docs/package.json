@@ -21,7 +21,10 @@
 		"dev": "vite dev",
 		"build": "pnpm build:dependencies && pnpm build:site",
 		"preview": "vite preview",
-		"generate:toc": "npx tsx ./scripts/generate-toc.ts"
+		"generate:toc": "npx tsx ./scripts/generate-toc.ts",
+		"require-main-branch": "if [ \"$(git rev-parse --abbrev-ref HEAD)\" != \"main\" ]; then echo 'ERROR: Not on main branch.'; exit 1; fi",
+		"deploy:staging": "TAG=pp-docs-staging/$(git rev-parse --short HEAD) && git tag $TAG && git push origin $TAG",
+		"deploy:production": "pnpm require-main-branch && TAG=pp-docs-prod/$(git rev-parse --short HEAD) && git tag $TAG && git push origin $TAG"
 	},
 	"devDependencies": {
 		"@samplekit/preprocess-katex": "workspace:^",
